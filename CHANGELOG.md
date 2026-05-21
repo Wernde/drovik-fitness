@@ -4,6 +4,29 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Phase 3 — Supabase Auth + Sync Layer
+
+### Added
+- Supabase email/password login with persistent session (stays logged in across PWA restarts)
+- Login screen — shown automatically when no session exists
+- Route guard in `App.tsx` — app is inaccessible without a valid session
+- `AuthContext` — provides session, signIn, and signOut to the whole app
+- Sign Out button in the bottom nav bar
+- `sync.ts` — bidirectional push/pull sync engine:
+  - Push: uploads all unsynced local rows (where `syncedAt` is null) to Supabase
+  - Pull: downloads any Supabase rows newer than the latest local `syncedAt`
+  - Last-write-wins conflict resolution via `updatedAt` timestamp
+  - Covers all 8 tables (exercises, programs, workoutDays, dayExercises, workoutSessions, sessionExercises, sets, bodyWeightLogs)
+- `useSyncStatus` hook — triggers sync on login and whenever the device comes back online
+- Sync status dot in the nav bar (blue pulse = syncing, red = error, nothing = idle)
+- `supabase/schema.sql` — full Supabase schema with RLS policies (run once in SQL editor)
+- `.env.example` — documents required environment variables
+- Dexie v2 migration — seeds missing exercises on existing devices that were installed before new seeds were added
+- GitHub Actions updated to inject `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` secrets at build time
+- CI upgraded to Node.js 24
+
+---
+
 ## Phase 2 — Local Data Layer (Dexie) + Exercise Library
 
 ### Added
