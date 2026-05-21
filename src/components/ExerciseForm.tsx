@@ -14,6 +14,8 @@ const CATEGORIES: { value: ExerciseCategory; label: string }[] = [
   { value: 'machine',    label: 'Machine' },
   { value: 'cable',      label: 'Cable' },
   { value: 'bodyweight', label: 'Bodyweight' },
+  { value: 'kettlebell', label: 'Kettlebell' },
+  { value: 'band',       label: 'Band' },
   { value: 'cardio',     label: 'Cardio' },
 ]
 
@@ -126,7 +128,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Incline Dumbbell Press"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
               autoFocus
             />
           </div>
@@ -139,7 +141,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ExerciseCategory)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
               {CATEGORIES.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -155,7 +157,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={muscleGroup}
               onChange={(e) => setMuscleGroup(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
             >
               <option value="">Select muscle group…</option>
               {MUSCLE_GROUPS.map((g) => (

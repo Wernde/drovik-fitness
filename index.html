@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
 
-    <!-- Makes the page render at the device's native width instead of zooming out to fit a desktop layout. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+      width=device-width  — render at the phone's native pixel width, not a desktop width.
+      initial-scale=1.0   — don't zoom in or out on first load.
+      viewport-fit=cover  — let the app draw behind the iPhone notch / home bar so
+                            we can handle the safe-area ourselves with CSS env().
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- PWA / Safari home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes" />

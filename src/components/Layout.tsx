@@ -61,7 +61,17 @@ export default function Layout() {
       </main>
 
       {/* ── Bottom navigation bar ── */}
-      <nav className="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex items-center justify-around z-50">
+      {/*
+        The nav sits above the iPhone home bar. `paddingBottom` uses the CSS
+        env() safe-area variable so the tappable icons stay above the bar on
+        all devices. The inner h-16 div keeps icons at a fixed 64 px height
+        regardless of the safe area size below.
+      */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-50"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <div className="h-16 flex items-center justify-around">
         {navItems.map(({ to, label, icon }) => (
           <NavLink
             key={to}
@@ -82,6 +92,7 @@ export default function Layout() {
             <span>{label}</span>
           </NavLink>
         ))}
+        </div>
       </nav>
     </div>
   )

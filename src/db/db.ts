@@ -35,6 +35,8 @@ export type ExerciseCategory =
   | 'machine'
   | 'cable'
   | 'bodyweight'
+  | 'kettlebell'
+  | 'band'
   | 'cardio'
 
 export interface Exercise extends BaseRecord {

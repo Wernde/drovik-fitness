@@ -25,6 +25,8 @@ const FILTERS: { value: FilterCategory; label: string }[] = [
   { value: 'machine',    label: 'Machine' },
   { value: 'cable',      label: 'Cable' },
   { value: 'bodyweight', label: 'Bodyweight' },
+  { value: 'kettlebell', label: 'Kettlebell' },
+  { value: 'band',       label: 'Band' },
   { value: 'cardio',     label: 'Cardio' },
 ]
 
@@ -35,6 +37,8 @@ const CATEGORY_COLOURS: Record<ExerciseCategory, string> = {
   machine:    'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300',
   cable:      'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
   bodyweight: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300',
+  kettlebell: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300',
+  band:       'bg-lime-100 text-lime-800 dark:bg-lime-900/40 dark:text-lime-300',
   cardio:     'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300',
 }
 
@@ -44,6 +48,8 @@ const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
   machine:    'Machine',
   cable:      'Cable',
   bodyweight: 'Bodyweight',
+  kettlebell: 'Kettlebell',
+  band:       'Band',
   cardio:     'Cardio',
 }
 
@@ -125,7 +131,7 @@ export default function Exercises() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search exercises…"
-          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
         />
       </div>
 
