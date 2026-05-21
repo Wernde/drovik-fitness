@@ -8,6 +8,7 @@ import ProgramDetail from './pages/ProgramDetail'
 import DayDetail from './pages/DayDetail'
 import Log from './pages/Log'
 import History from './pages/History'
+import SessionDetail from './pages/SessionDetail'
 import Progress from './pages/Progress'
 import Exercises from './pages/Exercises'
 
@@ -36,7 +37,8 @@ function AppRoutes() {
         <Route path="programs/:programId"              element={<ProgramDetail />} />
         <Route path="programs/:programId/days/:dayId"  element={<DayDetail />} />
         <Route path="log"       element={<Log />} />
-        <Route path="history"   element={<History />} />
+        <Route path="history"             element={<History />} />
+        <Route path="history/:sessionId"  element={<SessionDetail />} />
         <Route path="progress"  element={<Progress />} />
         <Route path="exercises" element={<Exercises />} />
         <Route path="*"         element={<Navigate to="/" replace />} />
