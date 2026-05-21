@@ -4,6 +4,20 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Phase 4 — Program Builder
+
+### Added
+- Programs list (`/programs`): create, edit, delete programs; mark one as active; shows day count per program
+- Program detail (`/programs/:id`): add, rename, reorder (up/down), and delete workout days
+- Day detail (`/programs/:id/days/:dayId`): add exercises from the library, set target sets / reps / weight / notes; reorder and delete exercises
+- ExercisePicker: full-screen searchable exercise selector with category filter; already-added exercises shown dimmed
+- DayExerciseForm: slide-up form for setting or editing exercise targets (sets, reps, weight, notes)
+- ProgramForm / DayForm: slide-up modals for creating and editing programs and days
+- New routes: `/programs/:programId` and `/programs/:programId/days/:dayId`
+- All changes sync to Supabase automatically via the existing sync layer
+
+---
+
 ## Phase 3 — Supabase Auth + Sync Layer
 
 ### Added
