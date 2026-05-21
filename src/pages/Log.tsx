@@ -14,35 +14,34 @@ import WorkoutLogger from '../components/WorkoutLogger'
 export default function Log() {
   const [starting, setStarting] = useState(false)
 
-  // Find any unfinished session (finishedAt === null).
-  const activeSession = useLiveQuery(
-    () => db.workoutSessions
+  // Single compound query so we have one unambiguous loading state.
+  // useLiveQuery returns undefined while loading; once resolved, each field
+  // may be undefined (no match) or the actual record — that's intentional.
+  const data = useLiveQuery(async () => {
+    const activeSession = await db.workoutSessions
       .filter((s) => !s.deleted && s.finishedAt === null)
-      .first(),
-    [],
-  )
+      .first()
 
-  // Active program + its days.
-  const activeProgram = useLiveQuery(
-    () => db.programs.filter((p) => p.isActive && !p.deleted).first(),
-    [],
-  )
+    const activeProgram = await db.programs
+      .filter((p) => p.isActive && !p.deleted)
+      .first()
 
-  const programDays = useLiveQuery(
-    () => activeProgram
-      ? db.workoutDays
+    const programDays = activeProgram
+      ? await db.workoutDays
           .where('programId').equals(activeProgram.id)
           .filter((d) => !d.deleted)
           .toArray()
           .then((list) => list.sort((a, b) => a.order - b.order))
-      : [],
-    [activeProgram?.id],
-  )
+      : []
 
-  // Loading state — useLiveQuery returns undefined until Dexie resolves.
-  if (activeSession === undefined || activeProgram === undefined || programDays === undefined) {
+    return { activeSession, activeProgram, programDays }
+  }, [])
+
+  if (data === undefined) {
     return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
   }
+
+  const { activeSession, activeProgram, programDays } = data
 
   // ── Active workout ───────────────────────────────────────────────────────────
 
