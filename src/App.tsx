@@ -5,6 +5,7 @@ import Programs from './pages/Programs'
 import Log from './pages/Log'
 import History from './pages/History'
 import Progress from './pages/Progress'
+import Exercises from './pages/Exercises'
 
 // HashRouter is used instead of BrowserRouter because GitHub Pages doesn't support
 // server-side URL rewriting. With HashRouter, the URL looks like:
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="log" element={<Log />} />
           <Route path="history" element={<History />} />
           <Route path="progress" element={<Progress />} />
+          <Route path="exercises" element={<Exercises />} />
           {/* Redirect any unknown URL back to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
