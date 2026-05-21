@@ -11,6 +11,7 @@ import Log from './pages/Log'
 import History from './pages/History'
 import SessionDetail from './pages/SessionDetail'
 import Exercises from './pages/Exercises'
+import Settings from './pages/Settings'
 
 // Progress is lazy-loaded so Recharts (~360 KB) is only fetched when the tab is first opened.
 const Progress = lazy(() => import('./pages/Progress'))
@@ -44,6 +45,7 @@ function AppRoutes() {
         <Route path="history/:sessionId"  element={<SessionDetail />} />
         <Route path="progress"  element={<Suspense fallback={<div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>}><Progress /></Suspense>} />
         <Route path="exercises" element={<Exercises />} />
+        <Route path="settings"  element={<Settings />} />
         <Route path="*"         element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
