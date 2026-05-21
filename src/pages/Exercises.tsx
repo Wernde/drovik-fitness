@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, type Exercise, type ExerciseCategory } from '../db/db'
 import ExerciseForm from '../components/ExerciseForm'
+import MuscleIcon from '../components/MuscleIcon'
 
 // ── Category filter config ─────────────────────────────────────────────────────
 
@@ -162,8 +163,11 @@ export default function Exercises() {
             <li key={exercise.id}>
               {/* Normal row */}
               {confirmDelete !== exercise.id ? (
-                <div className="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 px-4 py-3">
-                  {/* Info */}
+                <div className="flex items-center gap-3 rounded-xl bg-gray-50 dark:bg-gray-800/60 px-3 py-2">
+                  {/* Muscle group diagram */}
+                  <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />
+
+                  {/* Name + muscle group */}
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{exercise.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{exercise.muscleGroup}</p>

@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  CSS variables used by MuscleIcon.tsx.
+  Defining them here (outside @layer) means the media query overrides
+  them automatically when the device is in dark mode.
+*/
+:root {
+  --muscle-body: #e5e7eb;  /* gray-200 — body silhouette, light mode */
+  --muscle-hi:   #0ea5e9;  /* sky-500  — highlighted muscle, light mode */
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --muscle-body: #4b5563;  /* gray-600 — body silhouette, dark mode */
+    --muscle-hi:   #38bdf8;  /* sky-400  — highlighted muscle, dark mode */
+  }
+}
+
 /* Prevent content sliding under the fixed bottom nav bar. */
 @layer base {
   body {
