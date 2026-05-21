@@ -1,7 +1,7 @@
 import { Outlet, NavLink } from 'react-router-dom'
+import { useSyncStatus } from '../sync/useSyncStatus'
+import { useAuth } from '../contexts/AuthContext'
 
-// Each nav item: which route it links to, what label to show, and an inline SVG icon.
-// Icons are from Heroicons v2 (MIT licence) — solid style.
 const navItems = [
   {
     to: '/',
@@ -52,46 +52,79 @@ const navItems = [
   },
 ]
 
+// ── Sync indicator icon ────────────────────────────────────────────────────────
+
+function SyncIndicator({ status }: { status: 'idle' | 'syncing' | 'error' }) {
+  if (status === 'syncing') {
+    return (
+      <div
+        title="Syncing…"
+        className="w-2 h-2 rounded-full bg-sky-400 animate-pulse"
+      />
+    )
+  }
+  if (status === 'error') {
+    return (
+      <div
+        title="Sync failed — changes saved locally"
+        className="w-2 h-2 rounded-full bg-red-400"
+      />
+    )
+  }
+  return null
+}
+
+// ── Layout ────────────────────────────────────────────────────────────────────
+
 export default function Layout() {
+  const { signOut } = useAuth()
+  const { status }  = useSyncStatus()
+
   return (
     <div className="flex flex-col min-h-screen">
-      {/* ── Main content ── */}
       <main className="flex-1">
         <Outlet />
       </main>
 
-      {/* ── Bottom navigation bar ── */}
-      {/*
-        The nav sits above the iPhone home bar. `paddingBottom` uses the CSS
-        env() safe-area variable so the tappable icons stay above the bar on
-        all devices. The inner h-16 div keeps icons at a fixed 64 px height
-        regardless of the safe area size below.
-      */}
       <nav
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 z-50"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <div className="h-16 flex items-center justify-around">
-        {navItems.map(({ to, label, icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            // NavLink passes `isActive` so we can style the active tab differently.
-            // Using `end` on the Home link so it only highlights when on exactly "/".
-            end={to === '/'}
-            className={({ isActive }) =>
-              [
-                'flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors',
-                isActive
-                  ? 'text-sky-500'
-                  : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300',
-              ].join(' ')
-            }
+          {navItems.map(({ to, label, icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={to === '/'}
+              className={({ isActive }) =>
+                [
+                  'flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors',
+                  isActive
+                    ? 'text-sky-500'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300',
+                ].join(' ')
+              }
+            >
+              {icon}
+              <span>{label}</span>
+            </NavLink>
+          ))}
+
+          {/* Sign-out + sync indicator */}
+          <button
+            onClick={signOut}
+            className="flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 relative"
+            aria-label="Sign out"
           >
-            {icon}
-            <span>{label}</span>
-          </NavLink>
-        ))}
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+              <path fillRule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z" clipRule="evenodd" />
+            </svg>
+            <span>Sign out</span>
+            {/* Dot shows sync status */}
+            <span className="absolute top-1 right-1">
+              <SyncIndicator status={status} />
+            </span>
+          </button>
         </div>
       </nav>
     </div>

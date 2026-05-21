@@ -130,6 +130,7 @@ class DrovikDB extends Dexie {
     // The strings define which fields are indexed for fast querying.
     // Only 'id' is the primary key; everything else is a secondary index.
     // You only need to index fields you filter or sort by.
+    // Version 1 — initial schema (Phase 1 & 2).
     this.version(1).stores({
       exercises:        'id, category, muscleGroup, name',
       programs:         'id',
@@ -139,6 +140,25 @@ class DrovikDB extends Dexie {
       sessionExercises: 'id, workoutSessionId, exerciseId',
       sets:             'id, sessionExerciseId',
       bodyWeightLogs:   'id, date',
+    })
+
+    // Version 2 — Phase 3. Schema is unchanged; the upgrade callback inserts
+    // any seed exercises that are missing on existing devices (the on('populate')
+    // hook only runs on brand-new databases, so returning users never got new
+    // exercises added after their first install).
+    this.version(2).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      workoutDays:      'id, programId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
+      const missing  = seedExercises.filter((e) => !existing.has(e.id))
+      if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
     })
 
     // 'populate' fires exactly once — when the database is first created on

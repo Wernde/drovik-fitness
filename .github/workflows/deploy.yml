@@ -4,13 +4,11 @@ on:
   push:
     branches: [main]
 
-# Grants the workflow permission to write to GitHub Pages.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Only run one deployment at a time; don't cancel an in-progress run.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -37,14 +35,15 @@ jobs:
 
       - name: Build app
         run: npm run build
+        env:
+          VITE_SUPABASE_URL:      ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
-      # Packages the dist/ folder as a Pages artifact.
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
-      # Deploys the artifact to GitHub Pages.
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
