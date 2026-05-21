@@ -13,6 +13,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, type Exercise, type ExerciseCategory } from '../db/db'
 import ExerciseForm from '../components/ExerciseForm'
 import MuscleIcon from '../components/MuscleIcon'
+import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
 // ── Category filter config ─────────────────────────────────────────────────────
 
@@ -178,6 +179,29 @@ export default function Exercises() {
                     <p className="font-medium text-sm truncate">{exercise.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">{exercise.muscleGroup}</p>
                   </div>
+
+                  {/* YouTube play button — only shown when a video URL is set */}
+                  {exercise.videoUrl && (() => {
+                    const vid   = getYouTubeId(exercise.videoUrl)
+                    const thumb = vid ? getYouTubeThumbnail(vid) : null
+                    return thumb ? (
+                      <a
+                        href={exercise.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-none relative rounded overflow-hidden w-14 h-10"
+                        aria-label={`Watch ${exercise.name} demo`}
+                      >
+                        <img src={thumb} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5 drop-shadow">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </a>
+                    ) : null
+                  })()}
 
                   {/* Category badge */}
                   <span className={`flex-none text-xs font-medium rounded-full px-2 py-0.5 ${CATEGORY_COLOURS[exercise.category]}`}>

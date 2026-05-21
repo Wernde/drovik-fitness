@@ -24,6 +24,7 @@ function seed(
     category,
     muscleGroup,
     isCustom: false,
+    videoUrl: null,
     createdAt: SEED_DATE,
     updatedAt: SEED_DATE,
     syncedAt: null,

@@ -44,6 +44,7 @@ export interface Exercise extends BaseRecord {
   category: ExerciseCategory
   muscleGroup: string
   isCustom: boolean   // true = user-created, false = pre-seeded
+  videoUrl: string | null
 }
 
 // ── Programs ──────────────────────────────────────────────────────────────────
@@ -159,6 +160,23 @@ class DrovikDB extends Dexie {
       const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
       const missing  = seedExercises.filter((e) => !existing.has(e.id))
       if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
+    // Version 3 — adds videoUrl to exercises. The upgrade sets the field to
+    // null on all existing rows so the TypeScript type is always satisfied.
+    this.version(3).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      workoutDays:      'id, programId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      await tx.table('exercises').toCollection().modify((ex) => {
+        if (ex.videoUrl === undefined) ex.videoUrl = null
+      })
     })
 
     // 'populate' fires exactly once — when the database is first created on

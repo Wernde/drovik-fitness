@@ -13,6 +13,7 @@ import { db, now } from '../db/db'
 import type { WorkoutSession, SessionExercise, LoggedSet, DayExercise, Exercise } from '../db/db'
 import ExercisePicker from './ExercisePicker'
 import MuscleIcon from './MuscleIcon'
+import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -391,6 +392,28 @@ export default function WorkoutLogger({ session }: Props) {
                       </p>
                     )}
                   </div>
+
+                  {/* YouTube thumbnail — opens video in browser */}
+                  {exercise.videoUrl && (() => {
+                    const vid   = getYouTubeId(exercise.videoUrl)
+                    const thumb = vid ? getYouTubeThumbnail(vid) : null
+                    return thumb ? (
+                      <a
+                        href={exercise.videoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-none relative rounded overflow-hidden w-14 h-10"
+                        aria-label={`Watch ${exercise.name} demo`}
+                      >
+                        <img src={thumb} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-5 h-5 drop-shadow">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </a>
+                    ) : null
+                  })()}
                   <button
                     onClick={() => removeExercise(se.id)}
                     className="flex-none text-gray-300 dark:text-gray-600 hover:text-red-400 p-1"

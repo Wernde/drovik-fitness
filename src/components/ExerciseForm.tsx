@@ -7,6 +7,7 @@
 
 import { useState } from 'react'
 import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
+import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
 const CATEGORIES: { value: ExerciseCategory; label: string }[] = [
   { value: 'barbell',    label: 'Barbell' },
@@ -47,8 +48,12 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
   const [name, setName]               = useState(exercise?.name ?? '')
   const [category, setCategory]       = useState<ExerciseCategory>(exercise?.category ?? 'barbell')
   const [muscleGroup, setMuscleGroup] = useState(exercise?.muscleGroup ?? '')
+  const [videoUrl, setVideoUrl]       = useState(exercise?.videoUrl ?? '')
   const [saving, setSaving]           = useState(false)
   const [error, setError]             = useState('')
+
+  const videoId        = videoUrl.trim() ? getYouTubeId(videoUrl.trim()) : null
+  const thumbnailUrl   = videoId ? getYouTubeThumbnail(videoId) : null
 
   async function handleSave() {
     const trimmed = name.trim()
@@ -61,27 +66,29 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
     try {
       const timestamp = now()
 
+      const cleanVideoUrl = videoUrl.trim() || null
+
       if (exercise) {
-        // Edit existing exercise.
         await db.exercises.update(exercise.id, {
           name: trimmed,
           category,
           muscleGroup,
+          videoUrl:  cleanVideoUrl,
           updatedAt: timestamp,
-          syncedAt: null,   // mark as needing re-sync
+          syncedAt:  null,
         })
       } else {
-        // Add new custom exercise.
         await db.exercises.add({
-          id: crypto.randomUUID(),
-          name: trimmed,
+          id:         crypto.randomUUID(),
+          name:       trimmed,
           category,
           muscleGroup,
-          isCustom: true,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          syncedAt: null,
-          deleted: false,
+          videoUrl:   cleanVideoUrl,
+          isCustom:   true,
+          createdAt:  timestamp,
+          updatedAt:  timestamp,
+          syncedAt:   null,
+          deleted:    false,
         })
       }
 
@@ -164,6 +171,37 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
                 <option key={g} value={g}>{g}</option>
               ))}
             </select>
+          </div>
+
+          {/* Video URL */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              YouTube URL <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="url"
+              value={videoUrl}
+              onChange={(e) => setVideoUrl(e.target.value)}
+              placeholder="https://www.youtube.com/watch?v=…"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            />
+            {/* Live thumbnail preview */}
+            {thumbnailUrl && (
+              <a href={videoUrl.trim()} target="_blank" rel="noopener noreferrer" className="block mt-2 rounded-lg overflow-hidden relative">
+                <img src={thumbnailUrl} alt="Video preview" className="w-full object-cover" />
+                {/* Play overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6 ml-1">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            )}
+            {videoUrl.trim() && !videoId && (
+              <p className="text-xs text-amber-500 mt-1">Paste a youtube.com or youtu.be link to see a preview.</p>
+            )}
           </div>
 
           {/* Validation error */}

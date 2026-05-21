@@ -78,12 +78,14 @@ const TABLES: SyncTable[] = [
       category:     r.category,
       muscle_group: r.muscleGroup,
       is_custom:    r.isCustom,
+      video_url:    r.videoUrl ?? null,
     }),
     toLocal: (r) => baseToLocal(r, {
       name:        r.name,
       category:    r.category,
       muscleGroup: r.muscle_group,
       isCustom:    r.is_custom,
+      videoUrl:    r.video_url ?? null,
     }),
   },
   {
