@@ -4,6 +4,36 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Phase 7 — JSON Export / Import + Settings
+
+### Added
+- Settings screen (`/settings`): Account section (email + sign out), Data section (export/import), About
+- Export: one-tap backup of all 8 tables to a timestamped `drovik-backup-YYYY-MM-DD.json` file
+- Import: reads a JSON backup and merges with `bulkPut` — safe to run on a device that already has data
+- Sign out moved from the nav bar into Settings
+- Settings tab added to the bottom nav; sync status dot displayed on this tab
+
+## Phase 6 — Progress Charts + Personal Records
+
+### Added
+- Progress screen with three tabs: Lifts, Body Weight, PRs
+- Lifts tab: search any exercise, see estimated 1RM (Epley formula) charted over time
+- Body Weight tab: log today's weight, view trend chart, see recent entries
+- PRs tab: best estimated 1RM and heaviest set per exercise across all sessions
+- Recharts installed for charts; lazy-loaded via React.lazy so it only downloads when Progress is opened
+- Main bundle reduced from 941 KB to 437 KB with Rollup `manualChunks`
+
+## Phase 5 — Workout Logging + History
+
+### Added
+- Log screen: start a workout from active program days (pre-populated with template exercises) or ad-hoc; auto-detects and resumes any unfinished session
+- WorkoutLogger: active session view with live elapsed timer, exercise cards, set logging, and Finish button
+- SetEntryForm: inline reps × weight entry per exercise; warmup toggle (W); optional RPE (1–10) and RIR (0–5)
+- Targets from the program day template shown as a guide while logging
+- History screen: month calendar with dots on workout days, session list for the viewed month
+- SessionDetail: read-only session recap with sets table, duration, and total working volume
+- Routes added: `/history/:sessionId`
+
 ## Phase 4 — Program Builder
 
 ### Added
