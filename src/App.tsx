@@ -4,6 +4,8 @@ import Layout from './components/Layout'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Programs from './pages/Programs'
+import ProgramDetail from './pages/ProgramDetail'
+import DayDetail from './pages/DayDetail'
 import Log from './pages/Log'
 import History from './pages/History'
 import Progress from './pages/Progress'
@@ -30,7 +32,9 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="programs"  element={<Programs />} />
+        <Route path="programs"                          element={<Programs />} />
+        <Route path="programs/:programId"              element={<ProgramDetail />} />
+        <Route path="programs/:programId/days/:dayId"  element={<DayDetail />} />
         <Route path="log"       element={<Log />} />
         <Route path="history"   element={<History />} />
         <Route path="progress"  element={<Progress />} />
