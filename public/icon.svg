@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Sky-500 background circle -->
+  <circle cx="50" cy="50" r="50" fill="#0ea5e9"/>
+  <!-- Dumbbell bar -->
+  <rect x="22" y="45" width="56" height="10" rx="3" fill="white"/>
+  <!-- Left inner plate -->
+  <rect x="14" y="37" width="14" height="26" rx="3" fill="white"/>
+  <!-- Left outer plate -->
+  <rect x="6" y="41" width="10" height="18" rx="2" fill="white"/>
+  <!-- Right inner plate -->
+  <rect x="72" y="37" width="14" height="26" rx="3" fill="white"/>
+  <!-- Right outer plate -->
+  <rect x="84" y="41" width="10" height="18" rx="2" fill="white"/>
+</svg>
