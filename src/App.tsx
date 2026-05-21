@@ -1,4 +1,5 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Suspense, lazy } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -9,8 +10,10 @@ import DayDetail from './pages/DayDetail'
 import Log from './pages/Log'
 import History from './pages/History'
 import SessionDetail from './pages/SessionDetail'
-import Progress from './pages/Progress'
 import Exercises from './pages/Exercises'
+
+// Progress is lazy-loaded so Recharts (~360 KB) is only fetched when the tab is first opened.
+const Progress = lazy(() => import('./pages/Progress'))
 
 // ── Route guard ───────────────────────────────────────────────────────────────
 
@@ -39,7 +42,7 @@ function AppRoutes() {
         <Route path="log"       element={<Log />} />
         <Route path="history"             element={<History />} />
         <Route path="history/:sessionId"  element={<SessionDetail />} />
-        <Route path="progress"  element={<Progress />} />
+        <Route path="progress"  element={<Suspense fallback={<div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>}><Progress /></Suspense>} />
         <Route path="exercises" element={<Exercises />} />
         <Route path="*"         element={<Navigate to="/" replace />} />
       </Route>

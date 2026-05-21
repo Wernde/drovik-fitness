@@ -35,4 +35,15 @@ export default defineConfig({
       },
     }),
   ],
+
+  build: {
+    rollupOptions: {
+      output: {
+        // Split recharts into its own chunk so it loads lazily (only when Progress tab opens).
+        manualChunks: {
+          recharts: ['recharts'],
+        },
+      },
+    },
+  },
 })
