@@ -7,13 +7,14 @@
  * Tap "Finish" to close the session.
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { WorkoutSession, SessionExercise, LoggedSet, DayExercise, Exercise } from '../db/db'
 import ExercisePicker from './ExercisePicker'
 import MuscleIcon from './MuscleIcon'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
+import { useToast } from '../contexts/ToastContext'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -49,6 +50,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
   const [showRpe,  setShowRpe]  = useState(false)
   const [rpe,      setRpe]      = useState(lastSet?.rpe != null ? String(lastSet.rpe) : '')
   const [rir,      setRir]      = useState(lastSet?.rir != null ? String(lastSet.rir) : '')
+  const [notes,    setNotes]    = useState(lastSet?.notes ?? '')
   const [saving,   setSaving]   = useState(false)
   const [error,    setError]    = useState('')
 
@@ -75,7 +77,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         weight:              weightNum,
         rpe:                 rpeNum,
         rir:                 rirNum,
-        notes:               '',
+        notes:               notes.trim(),
         isWarmup,
         createdAt:           timestamp,
         updatedAt:           timestamp,
@@ -181,6 +183,15 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         </div>
       )}
 
+      {/* Optional set note */}
+      <input
+        type="text"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        placeholder="Note (optional)"
+        className="w-full mt-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500"
+      />
+
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   )
@@ -189,30 +200,64 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
 // ── Logged set row ─────────────────────────────────────────────────────────────
 
 function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
+  const [offsetX, setOffsetX] = useState(0)
+  const startX = useRef(0)
+  const THRESHOLD = 70
+
   return (
-    <div className="flex items-center gap-2 py-1">
-      <span className={[
-        'w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-none',
-        set.isWarmup
-          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-          : 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
-      ].join(' ')}>
-        {set.isWarmup ? 'W' : set.setNumber}
-      </span>
-      <span className="flex-1 text-sm">
-        {set.reps} × {set.weight} kg
-        {set.rpe != null && <span className="text-gray-400 text-xs ml-1">RPE {set.rpe}</span>}
-        {set.rir != null && <span className="text-gray-400 text-xs ml-1">RIR {set.rir}</span>}
-      </span>
-      <button
-        onClick={onDelete}
-        className="flex-none text-gray-300 dark:text-gray-600 hover:text-red-400 p-0.5"
-        aria-label="Delete set"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-          <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+    <div className="relative overflow-hidden">
+      {/* Red delete zone revealed as content slides left */}
+      <div className="absolute inset-y-0 right-0 w-16 flex items-center justify-center bg-red-500 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+          <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
         </svg>
-      </button>
+      </div>
+
+      {/* Swipeable row content */}
+      <div
+        className="flex items-center gap-2 py-1 bg-gray-50 dark:bg-gray-800/60"
+        style={{
+          transform:  `translateX(${offsetX}px)`,
+          transition: offsetX === 0 ? 'transform 0.25s ease' : 'none',
+        }}
+        onTouchStart={(e) => { startX.current = e.touches[0].clientX }}
+        onTouchMove={(e) => {
+          const dx = e.touches[0].clientX - startX.current
+          if (dx < 0) setOffsetX(Math.max(dx, -THRESHOLD - 10))
+        }}
+        onTouchEnd={() => {
+          if (offsetX <= -THRESHOLD) onDelete()
+          else setOffsetX(0)
+        }}
+      >
+        <span className={[
+          'w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-none',
+          set.isWarmup
+            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
+            : 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+        ].join(' ')}>
+          {set.isWarmup ? 'W' : set.setNumber}
+        </span>
+        <span className="flex-1 text-sm min-w-0">
+          <span className="block">
+            {set.reps} × {set.weight} kg
+            {set.rpe != null && <span className="text-gray-400 text-xs ml-1">RPE {set.rpe}</span>}
+            {set.rir != null && <span className="text-gray-400 text-xs ml-1">RIR {set.rir}</span>}
+          </span>
+          {set.notes && (
+            <span className="block text-xs text-gray-400 dark:text-gray-500 truncate">{set.notes}</span>
+          )}
+        </span>
+        <button
+          onClick={onDelete}
+          className="flex-none text-gray-300 dark:text-gray-600 hover:text-red-400 p-0.5"
+          aria-label="Delete set"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+          </svg>
+        </button>
+      </div>
     </div>
   )
 }
@@ -228,9 +273,12 @@ type SessionData = {
   exerciseMap:      Map<string, Exercise>
   setsMap:          Map<string, LoggedSet[]>   // keyed by sessionExerciseId
   dayExerciseMap:   Map<string, DayExercise>   // keyed by exerciseId
+  dayName:          string | null
 }
 
 export default function WorkoutLogger({ session }: Props) {
+  const { showToast } = useToast()
+
   const [activeSeId, setActiveSeId]   = useState<string | null>(null)
   const [showPicker, setShowPicker]   = useState(false)
   const [finishing,  setFinishing]    = useState(false)
@@ -267,11 +315,14 @@ export default function WorkoutLogger({ session }: Props) {
       : []
 
     let dayExercises: DayExercise[] = []
+    let dayName: string | null = null
     if (session.workoutDayId) {
       dayExercises = await db.dayExercises
         .where('workoutDayId').equals(session.workoutDayId)
         .filter((de) => !de.deleted)
         .toArray()
+      const day = await db.workoutDays.get(session.workoutDayId)
+      dayName = day?.name ?? null
     }
 
     const setsMap = new Map<string, LoggedSet[]>()
@@ -290,6 +341,7 @@ export default function WorkoutLogger({ session }: Props) {
       exerciseMap:      new Map(exercises.map((e) => [e.id, e])),
       setsMap,
       dayExerciseMap:   new Map(dayExercises.map((de) => [de.exerciseId, de])),
+      dayName,
     }
   }, [session.id, session.workoutDayId])
 
@@ -300,44 +352,61 @@ export default function WorkoutLogger({ session }: Props) {
 
   async function addExercise(exercise: Exercise) {
     setShowPicker(false)
-    const timestamp = now()
-    const nextOrder = (data?.sessionExercises.length ?? 0)
-    await db.sessionExercises.add({
-      id:               crypto.randomUUID(),
-      workoutSessionId: session.id,
-      exerciseId:       exercise.id,
-      order:            nextOrder,
-      notes:            '',
-      createdAt:        timestamp,
-      updatedAt:        timestamp,
-      syncedAt:         null,
-      deleted:          false,
-    })
+    try {
+      const timestamp = now()
+      const nextOrder = (data?.sessionExercises.length ?? 0)
+      await db.sessionExercises.add({
+        id:               crypto.randomUUID(),
+        workoutSessionId: session.id,
+        exerciseId:       exercise.id,
+        order:            nextOrder,
+        notes:            '',
+        createdAt:        timestamp,
+        updatedAt:        timestamp,
+        syncedAt:         null,
+        deleted:          false,
+      })
+    } catch {
+      showToast('Failed to add exercise. Please try again.')
+    }
   }
 
   async function deleteSet(setId: string) {
-    await db.sets.update(setId, { deleted: true, updatedAt: now(), syncedAt: null })
+    try {
+      await db.sets.update(setId, { deleted: true, updatedAt: now(), syncedAt: null })
+    } catch {
+      showToast('Failed to delete set.')
+    }
   }
 
   async function removeExercise(seId: string) {
-    await db.sessionExercises.update(seId, { deleted: true, updatedAt: now(), syncedAt: null })
-    if (activeSeId === seId) setActiveSeId(null)
+    try {
+      await db.sessionExercises.update(seId, { deleted: true, updatedAt: now(), syncedAt: null })
+      if (activeSeId === seId) setActiveSeId(null)
+    } catch {
+      showToast('Failed to remove exercise.')
+    }
   }
 
   async function finishWorkout() {
     setFinishing(true)
-    await db.workoutSessions.update(session.id, {
-      finishedAt: now(),
-      updatedAt:  now(),
-      syncedAt:   null,
-    })
+    try {
+      await db.workoutSessions.update(session.id, {
+        finishedAt: now(),
+        updatedAt:  now(),
+        syncedAt:   null,
+      })
+    } catch {
+      showToast('Failed to finish workout. Please try again.')
+      setFinishing(false)
+    }
   }
 
   if (!data) {
     return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
   }
 
-  const { sessionExercises, exerciseMap, setsMap, dayExerciseMap } = data
+  const { sessionExercises, exerciseMap, setsMap, dayExerciseMap, dayName } = data
 
   return (
     <div className="p-4">
@@ -345,9 +414,7 @@ export default function WorkoutLogger({ session }: Props) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-xl font-bold truncate">
-            {session.workoutDayId
-              ? (exerciseMap.size > 0 ? Array.from(exerciseMap.values())[0]?.name ? '' : '' : '')
-              : 'Workout'}
+            {dayName ?? 'Workout'}
           </h1>
           <p className="text-xs text-gray-400 dark:text-gray-500 font-mono">{formatElapsed(elapsed)}</p>
         </div>

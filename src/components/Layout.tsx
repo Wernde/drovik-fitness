@@ -1,5 +1,8 @@
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
+
+const PULL_THRESHOLD = 72 // px needed to trigger a sync
 
 const navItems: { to: string; label: string; icon: JSX.Element }[] = [
   {
@@ -85,11 +88,108 @@ function SyncIndicator({ status }: { status: 'idle' | 'syncing' | 'error' }) {
 // ── Layout ────────────────────────────────────────────────────────────────────
 
 export default function Layout() {
-  const { status } = useSyncStatus()
+  const { status, runSync } = useSyncStatus()
+
+  // ── Offline detection ──────────────────────────────────────────────────────
+  const [isOnline, setIsOnline] = useState(() => navigator.onLine)
+  useEffect(() => {
+    const onOnline  = () => setIsOnline(true)
+    const onOffline = () => setIsOnline(false)
+    window.addEventListener('online',  onOnline)
+    window.addEventListener('offline', onOffline)
+    return () => {
+      window.removeEventListener('online',  onOnline)
+      window.removeEventListener('offline', onOffline)
+    }
+  }, [])
+
+  // ── Pull-to-refresh ────────────────────────────────────────────────────────
+  const mainRef        = useRef<HTMLElement>(null)
+  const startYRef      = useRef(0)
+  const pullingRef     = useRef(false)
+  const pullDistRef    = useRef(0)
+  const [pullDist,     setPullDist]     = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const triggerRefresh = useCallback(async () => {
+    setIsRefreshing(true)
+    await runSync()
+    setIsRefreshing(false)
+  }, [runSync])
+
+  useEffect(() => {
+    const el = mainRef.current
+    if (!el) return
+
+    function onStart(e: TouchEvent) {
+      if (window.scrollY > 0) return
+      startYRef.current  = e.touches[0].clientY
+      pullingRef.current = true
+    }
+
+    function onMove(e: TouchEvent) {
+      if (!pullingRef.current) return
+      const dy = e.touches[0].clientY - startYRef.current
+      if (dy > 0 && window.scrollY === 0) {
+        e.preventDefault()
+        const dist = Math.min(dy * 0.5, PULL_THRESHOLD + 24)
+        pullDistRef.current = dist
+        setPullDist(dist)
+      } else {
+        // Scrolled up or horizontal drag — cancel the pull
+        pullingRef.current  = false
+        pullDistRef.current = 0
+        setPullDist(0)
+      }
+    }
+
+    function onEnd() {
+      if (!pullingRef.current) return
+      pullingRef.current = false
+      const dist = pullDistRef.current
+      pullDistRef.current = 0
+      setPullDist(0)
+      if (dist >= PULL_THRESHOLD) triggerRefresh()
+    }
+
+    el.addEventListener('touchstart', onStart, { passive: true })
+    el.addEventListener('touchmove',  onMove,  { passive: false }) // non-passive so preventDefault works
+    el.addEventListener('touchend',   onEnd,   { passive: true })
+    return () => {
+      el.removeEventListener('touchstart', onStart)
+      el.removeEventListener('touchmove',  onMove)
+      el.removeEventListener('touchend',   onEnd)
+    }
+  }, [triggerRefresh])
+
+  const indicatorHeight  = isRefreshing ? 44 : pullDist
+  const spinnerOpacity   = Math.min(pullDist / PULL_THRESHOLD, 1)
 
   return (
     <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
+
+      {/* Offline banner — in-flow, pushes content down naturally */}
+      {!isOnline && (
+        <div className="flex-none bg-gray-700 text-white text-xs font-medium text-center py-2">
+          You're offline — changes save locally
+        </div>
+      )}
+
+      <main ref={mainRef} className="flex-1">
+        {/* Pull-to-refresh indicator */}
+        <div
+          aria-hidden
+          className="flex items-center justify-center overflow-hidden"
+          style={{ height: indicatorHeight }}
+        >
+          {(pullDist > 8 || isRefreshing) && (
+            <div
+              className={`w-5 h-5 rounded-full border-2 border-sky-500 border-t-transparent ${isRefreshing ? 'animate-spin' : ''}`}
+              style={{ opacity: isRefreshing ? 1 : spinnerOpacity }}
+            />
+          )}
+        </div>
+
         <Outlet />
       </main>
 

@@ -28,7 +28,7 @@ export function useSyncStatus() {
   // Run once on login / session restore.
   useEffect(() => {
     if (session) runSync()
-  }, [session]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [session, runSync])
 
   // Re-sync whenever the device comes back online.
   useEffect(() => {

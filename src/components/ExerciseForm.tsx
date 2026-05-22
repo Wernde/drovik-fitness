@@ -93,7 +93,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
       }
 
       onClose()
-    } catch (e) {
+    } catch {
       setError('Something went wrong. Please try again.')
       setSaving(false)
     }

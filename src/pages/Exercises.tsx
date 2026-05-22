@@ -10,7 +10,7 @@
 
 import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db, type Exercise, type ExerciseCategory } from '../db/db'
+import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
 import ExerciseForm from '../components/ExerciseForm'
 import MuscleIcon from '../components/MuscleIcon'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
@@ -99,7 +99,7 @@ export default function Exercises() {
     // The sync layer (Phase 3) will push this deletion to Supabase.
     await db.exercises.update(id, {
       deleted: true,
-      updatedAt: new Date().toISOString(),
+      updatedAt: now(),
       syncedAt: null,
     })
     setConfirmDelete(null)

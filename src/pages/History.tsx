@@ -10,18 +10,12 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
+import { formatDuration } from '../lib/utils'
 
 // ── Calendar helpers ───────────────────────────────────────────────────────────
 
 function isoDate(d: Date) {
   return d.toISOString().slice(0, 10)
-}
-
-function formatDuration(startedAt: string, finishedAt: string | null) {
-  if (!finishedAt) return 'In progress'
-  const mins = Math.round((new Date(finishedAt).getTime() - new Date(startedAt).getTime()) / 60000)
-  if (mins < 60) return `${mins} min`
-  return `${Math.floor(mins / 60)}h ${mins % 60}m`
 }
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']

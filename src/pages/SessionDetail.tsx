@@ -5,18 +5,12 @@
  * (date, duration, program / day name).
  */
 
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../db/db'
+import { db, type LoggedSet } from '../db/db'
 import MuscleIcon from '../components/MuscleIcon'
-
-function formatDuration(startedAt: string, finishedAt: string | null) {
-  if (!finishedAt) return 'In progress'
-  const mins = Math.round((new Date(finishedAt).getTime() - new Date(startedAt).getTime()) / 60000)
-  if (mins < 60) return `${mins} min`
-  return `${Math.floor(mins / 60)}h ${mins % 60}m`
-}
+import { formatDuration } from '../lib/utils'
 
 export default function SessionDetail() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -62,7 +56,7 @@ export default function SessionDetail() {
       dayName = day?.name ?? null
     }
 
-    const setsMap = new Map<string, typeof sets>()
+    const setsMap = new Map<string, LoggedSet[]>()
     for (const s of sets) {
       const list = setsMap.get(s.sessionExerciseId) ?? []
       list.push(s)
@@ -159,23 +153,29 @@ export default function SessionDetail() {
                     <span className="text-center">RPE/RIR</span>
                   </div>
                   {sets.map((s) => (
-                    <div
-                      key={s.id}
-                      className={[
-                        'grid grid-cols-4 text-sm py-1 px-1 rounded',
-                        s.isWarmup ? 'text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-200',
-                      ].join(' ')}
-                    >
-                      <span className="font-medium">
-                        {s.isWarmup ? 'W' : s.setNumber}
-                      </span>
-                      <span className="text-center">{s.reps}</span>
-                      <span className="text-center">{s.weight} kg</span>
-                      <span className="text-center text-xs text-gray-400">
-                        {s.rpe != null ? `${s.rpe}` : '—'}
-                        {s.rir != null ? `/${s.rir}` : ''}
-                      </span>
-                    </div>
+                    <Fragment key={s.id}>
+                      <div
+                        className={[
+                          'grid grid-cols-4 text-sm py-1 px-1 rounded',
+                          s.isWarmup ? 'text-gray-400 dark:text-gray-500' : 'text-gray-800 dark:text-gray-200',
+                        ].join(' ')}
+                      >
+                        <span className="font-medium">
+                          {s.isWarmup ? 'W' : s.setNumber}
+                        </span>
+                        <span className="text-center">{s.reps}</span>
+                        <span className="text-center">{s.weight} kg</span>
+                        <span className="text-center text-xs text-gray-400">
+                          {s.rpe != null ? `${s.rpe}` : '—'}
+                          {s.rir != null ? `/${s.rir}` : ''}
+                        </span>
+                      </div>
+                      {s.notes && (
+                        <p className="text-xs text-gray-400 dark:text-gray-500 px-1 -mt-0.5 pb-0.5 col-span-4">
+                          {s.notes}
+                        </p>
+                      )}
+                    </Fragment>
                   ))}
                 </div>
               ) : (

@@ -63,10 +63,10 @@ async function exportData(): Promise<void> {
 
 async function importData(file: File): Promise<string> {
   const text = await file.text()
-  let payload: any
+  let payload: Record<string, unknown>
 
   try {
-    payload = JSON.parse(text)
+    payload = JSON.parse(text) as Record<string, unknown>
   } catch {
     return 'Invalid file — could not parse JSON.'
   }
@@ -78,6 +78,8 @@ async function importData(file: File): Promise<string> {
   // bulkPut: insert rows that don't exist, overwrite rows that do.
   // This is safe to run on a device that already has data — it merges rather than replaces.
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const p = payload as Record<string, any[]>
     await db.transaction('rw', [
       db.exercises,
       db.programs,
@@ -88,18 +90,18 @@ async function importData(file: File): Promise<string> {
       db.sets,
       db.bodyWeightLogs,
     ], async () => {
-      if (payload.exercises)        await db.exercises.bulkPut(payload.exercises)
-      if (payload.programs)         await db.programs.bulkPut(payload.programs)
-      if (payload.workoutDays)      await db.workoutDays.bulkPut(payload.workoutDays)
-      if (payload.dayExercises)     await db.dayExercises.bulkPut(payload.dayExercises)
-      if (payload.workoutSessions)  await db.workoutSessions.bulkPut(payload.workoutSessions)
-      if (payload.sessionExercises) await db.sessionExercises.bulkPut(payload.sessionExercises)
-      if (payload.sets)             await db.sets.bulkPut(payload.sets)
-      if (payload.bodyWeightLogs)   await db.bodyWeightLogs.bulkPut(payload.bodyWeightLogs)
+      if (p.exercises)        await db.exercises.bulkPut(p.exercises)
+      if (p.programs)         await db.programs.bulkPut(p.programs)
+      if (p.workoutDays)      await db.workoutDays.bulkPut(p.workoutDays)
+      if (p.dayExercises)     await db.dayExercises.bulkPut(p.dayExercises)
+      if (p.workoutSessions)  await db.workoutSessions.bulkPut(p.workoutSessions)
+      if (p.sessionExercises) await db.sessionExercises.bulkPut(p.sessionExercises)
+      if (p.sets)             await db.sets.bulkPut(p.sets)
+      if (p.bodyWeightLogs)   await db.bodyWeightLogs.bulkPut(p.bodyWeightLogs)
     })
     return ''  // empty string = success
-  } catch (e: any) {
-    return `Import failed: ${e?.message ?? 'unknown error'}`
+  } catch (err: unknown) {
+    return `Import failed: ${err instanceof Error ? err.message : 'unknown error'}`
   }
 }
 

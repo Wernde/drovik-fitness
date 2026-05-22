@@ -4,6 +4,32 @@ All notable changes are documented here, newest first.
 
 ---
 
+## UX Improvements
+
+### Added
+- **Error toasts** — `ToastContext` provides a global `showToast(message, type?)` hook; DB write failures in `WorkoutLogger` now surface a red toast instead of silently failing; `finishWorkout` also resets the disabled state if it errors
+- **Offline banner** — a thin banner appears at the top of every screen when the device loses connectivity; disappears automatically when back online; uses in-flow layout so it naturally pushes content down
+- **Set notes** — a "Note (optional)" text field in the set-entry form; notes are saved to the DB and displayed under each set row in both the active logger and the session history view
+- **Swipe-to-delete sets** — swipe left on any set row in the active logger to reveal a red delete zone; release past 70 px to confirm delete; taps the X button still works as before for desktop/accessibility
+- **Pull-to-refresh** — pull down from the top of any screen to trigger a manual sync; a sky-500 spinner appears as you pull, spins while syncing, then disappears; implemented with a non-passive `touchmove` listener on the `<main>` element so it doesn't conflict with page scroll
+
+---
+
+## Bug Fixes & Code Quality
+
+### Fixed
+- `WorkoutLogger`: header title always rendered blank for program-based workouts — now fetches and displays the workout day name
+- `useSyncStatus`: `runSync` was missing from the `useEffect` dependency array, suppressed with `eslint-disable`; removed the suppress comment and added the dependency
+- `ExerciseForm`: unused `e` variable in catch clause removed
+- `Exercises`: `handleDelete` used `new Date().toISOString()` directly instead of the `now()` helper used everywhere else
+- `Settings`: `importData` used `any` for parsed JSON; changed to `Record<string, unknown>` and `err instanceof Error` error handling
+- `SessionDetail`: `setsMap` typed as `Map<string, typeof sets>` (opaque inference); now explicitly `Map<string, LoggedSet[]>`
+
+### Refactored
+- Extracted `formatDuration` from both `History.tsx` and `SessionDetail.tsx` into a shared `src/lib/utils.ts`
+
+---
+
 ## Phase 7 — JSON Export / Import + Settings
 
 ### Added
