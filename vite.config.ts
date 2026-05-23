@@ -32,6 +32,9 @@ export default defineConfig({
       workbox: {
         // Cache all these file types so the app works fully offline.
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Take control of all open tabs immediately after the new SW activates,
+        // which triggers the controllerchange event in main.tsx → page reloads.
+        clientsClaim: true,
       },
     }),
   ],

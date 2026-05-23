@@ -7,6 +7,14 @@ import App from './App'
 import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
+// When a new service worker takes control (after autoUpdate + clientsClaim),
+// reload the page so the user gets the latest version immediately.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    window.location.reload()
+  })
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
