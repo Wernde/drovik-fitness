@@ -102,7 +102,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search exercises…"
-          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
         />
       </div>
 
@@ -115,7 +115,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
             <li key={e.id}>
               <button
                 onClick={() => { setSelectedId(e.id); setSearch('') }}
-                className="w-full text-left rounded-lg px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-sky-50 dark:active:bg-sky-900/20"
+                className="w-full text-left rounded-lg px-3 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 active:bg-lime-950 dark:active:bg-lime-900/20"
               >
                 {e.name}
                 <span className="ml-2 text-xs text-gray-400">{e.muscleGroup}</span>
@@ -134,7 +134,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
             </p>
             <button
               onClick={() => setSelectedId('')}
-              className="text-xs text-sky-500 hover:text-sky-600"
+              className="text-xs text-lime-400 hover:text-lime-500"
             >
               Change
             </button>
@@ -159,9 +159,9 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
                   <Line
                     type="monotone"
                     dataKey="e1rm"
-                    stroke="#0ea5e9"
+                    stroke="#a3e635"
                     strokeWidth={2}
-                    dot={{ r: 3, fill: '#0ea5e9' }}
+                    dot={{ r: 3, fill: '#a3e635' }}
                     activeDot={{ r: 5 }}
                   />
                 </LineChart>
@@ -249,13 +249,13 @@ function BodyWeightTab() {
             placeholder="Today's weight (kg)"
             min={0}
             step={0.1}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
         </div>
         <button
           onClick={handleLog}
           disabled={saving}
-          className="flex-none rounded-lg bg-sky-500 text-white px-4 py-2 text-sm font-semibold active:bg-sky-600 disabled:opacity-60"
+          className="flex-none rounded-lg bg-lime-400 text-gray-900 px-4 py-2 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
         >
           {saving ? 'Saving…' : 'Log'}
         </button>
@@ -282,9 +282,9 @@ function BodyWeightTab() {
               <Line
                 type="monotone"
                 dataKey="weight"
-                stroke="#0ea5e9"
+                stroke="#a3e635"
                 strokeWidth={2}
-                dot={{ r: 3, fill: '#0ea5e9' }}
+                dot={{ r: 3, fill: '#a3e635' }}
                 activeDot={{ r: 5 }}
               />
             </LineChart>
@@ -376,7 +376,7 @@ function PRsTab({ exercises }: { exercises: Exercise[] }) {
             <p className="text-xs text-gray-400 dark:text-gray-500">{exercise!.muscleGroup}</p>
           </div>
           <div className="text-right flex-none">
-            <p className="text-sm font-semibold text-sky-500">{e1rm} kg e1RM</p>
+            <p className="text-sm font-semibold text-lime-400">{e1rm} kg e1RM</p>
             <p className="text-xs text-gray-400">{weight} kg × {reps}</p>
           </div>
         </li>

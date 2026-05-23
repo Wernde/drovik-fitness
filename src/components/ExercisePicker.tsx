@@ -77,7 +77,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search exercises…"
             autoFocus
-            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             className={[
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
               filter === value
-                ? 'bg-sky-500 text-white'
+                ? 'bg-lime-400 text-gray-900'
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
             ].join(' ')}
           >
@@ -120,7 +120,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
                       'w-full flex items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors',
                       alreadyAdded
                         ? 'bg-gray-50 dark:bg-gray-800/40 opacity-50'
-                        : 'bg-gray-50 dark:bg-gray-800/60 active:bg-sky-50 dark:active:bg-sky-900/20',
+                        : 'bg-gray-50 dark:bg-gray-800/60 active:bg-lime-950 dark:active:bg-lime-900/20',
                     ].join(' ')}
                   >
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />

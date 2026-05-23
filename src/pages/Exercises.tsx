@@ -34,7 +34,7 @@ const FILTERS: { value: FilterCategory; label: string }[] = [
 // Colour coding so you can tell categories apart at a glance.
 const CATEGORY_COLOURS: Record<ExerciseCategory, string> = {
   barbell:    'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
-  dumbbell:   'bg-sky-100 text-sky-800 dark:bg-sky-900/40 dark:text-sky-300',
+  dumbbell:   'bg-lime-950 text-lime-900 dark:bg-lime-900/40 dark:text-lime-300',
   machine:    'bg-violet-100 text-violet-800 dark:bg-violet-900/40 dark:text-violet-300',
   cable:      'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
   bodyweight: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300',
@@ -112,7 +112,7 @@ export default function Exercises() {
         <h1 className="text-2xl font-bold">Exercises</h1>
         <button
           onClick={openAdd}
-          className="flex items-center gap-1 rounded-lg bg-sky-500 text-white px-3 py-1.5 text-sm font-semibold active:bg-sky-600"
+          className="flex items-center gap-1 rounded-lg bg-lime-400 text-gray-900 px-3 py-1.5 text-sm font-semibold active:bg-lime-500"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -132,7 +132,7 @@ export default function Exercises() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search exercises…"
-          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          className="w-full rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 pl-9 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
         />
       </div>
 
@@ -145,7 +145,7 @@ export default function Exercises() {
             className={[
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-colors',
               filter === value
-                ? 'bg-sky-500 text-white'
+                ? 'bg-lime-400 text-gray-900'
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400',
             ].join(' ')}
           >
@@ -211,7 +211,7 @@ export default function Exercises() {
                   {/* Edit button */}
                   <button
                     onClick={() => openEdit(exercise)}
-                    className="flex-none text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 p-1"
+                    className="flex-none text-gray-400 hover:text-lime-400 dark:hover:text-lime-300 p-1"
                     aria-label={`Edit ${exercise.name}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">

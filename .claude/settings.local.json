@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git remote *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(npx tsc *)",
+      "Bash(git commit *)",
+      "Bash(claude mcp *)",
+      "WebSearch",
+      "Bash(Get-Content \"C:\\\\Users\\\\Owner\\\\.claude\\\\projects\\\\C--Users-Owner-Documents-Projects-drovik-fitness\\\\c7cec3aa-273b-47be-8a3b-8c90ea55b52d.jsonl\" -Tail 100)",
+      "Bash(Select-String '\"role\"|\"content\"')",
+      "Bash(Select-Object -Last 50)",
+      "Bash(Get-ChildItem *)",
+      "Bash(gh run *)",
+      "Bash(where gh *)",
+      "Bash(xargs sed -i -e 's/sky-900\\\\/40/lime-900\\\\/40/g' -e 's/sky-900\\\\/20/lime-900\\\\/20/g' -e s/sky-800/lime-900/g -e s/sky-700/lime-700/g -e s/sky-600/lime-500/g -e s/sky-500/lime-400/g -e s/sky-400/lime-300/g -e s/sky-300/lime-300/g -e 's/sky-200/lime-900\\\\/30/g' -e s/sky-100/lime-950/g -e s/sky-50/lime-950/g -e 's/bg-lime-400 text-white/bg-lime-400 text-gray-900/g')"
+    ]
+  }
+}

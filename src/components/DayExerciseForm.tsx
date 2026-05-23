@@ -114,7 +114,7 @@ export default function DayExerciseForm(props: Props) {
                 value={targetSets}
                 onChange={(e) => setTargetSets(e.target.value)}
                 min={1}
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
               />
             </div>
             <div className="flex-1">
@@ -124,7 +124,7 @@ export default function DayExerciseForm(props: Props) {
                 value={targetReps}
                 onChange={(e) => setTargetReps(e.target.value)}
                 placeholder="e.g. 8–12 or AMRAP"
-                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
               />
             </div>
           </div>
@@ -141,7 +141,7 @@ export default function DayExerciseForm(props: Props) {
               placeholder="e.g. 80"
               min={0}
               step={0.5}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -154,7 +154,7 @@ export default function DayExerciseForm(props: Props) {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Pause at bottom"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -163,7 +163,7 @@ export default function DayExerciseForm(props: Props) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-lg bg-sky-500 text-white py-3 font-semibold text-sm disabled:opacity-60 active:bg-sky-600"
+            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
             {saving ? 'Saving…' : props.mode === 'edit' ? 'Save Changes' : 'Add Exercise'}
           </button>

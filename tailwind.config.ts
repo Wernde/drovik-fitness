@@ -4,17 +4,16 @@ const config: Config = {
   // Tell Tailwind where to look for class names so it only ships the CSS you actually use.
   content: ['./index.html', './src/**/*.{ts,tsx}'],
 
-  // 'media' means dark mode follows the OS setting (light/dark toggle on the phone).
-  darkMode: 'media',
+  // 'class' means dark mode is controlled by a 'dark' class on the <html> element.
+  // index.html always sets class="dark" so the app is permanently dark-themed.
+  darkMode: 'class',
 
   theme: {
     extend: {
-      // The electric-blue accent used throughout the app.
-      // We extend rather than override so all default Tailwind colours remain available.
       colors: {
         accent: {
-          DEFAULT: '#0ea5e9', // sky-500
-          light: '#38bdf8',   // sky-400 — slightly brighter for dark backgrounds
+          DEFAULT: '#a3e635', // lime-400 — primary action colour
+          light: '#bef264',   // lime-300 — lighter variant
         },
       },
     },

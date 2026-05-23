@@ -79,7 +79,7 @@ export default function DayForm({ programId, day, nextOrder, onClose }: Props) {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Push, Pull, Legs A"
               autoFocus
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -88,7 +88,7 @@ export default function DayForm({ programId, day, nextOrder, onClose }: Props) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-lg bg-sky-500 text-white py-3 font-semibold text-sm disabled:opacity-60 active:bg-sky-600"
+            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
             {saving ? 'Saving…' : day ? 'Save' : 'Add Day'}
           </button>

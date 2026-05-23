@@ -80,7 +80,7 @@ export default function ProgramForm({ program, onClose }: Props) {
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Push Pull Legs"
               autoFocus
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -93,7 +93,7 @@ export default function ProgramForm({ program, onClose }: Props) {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="e.g. 6-day PPL, 2 days on 1 day off"
               rows={2}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500 resize-none"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"
             />
           </div>
 
@@ -102,7 +102,7 @@ export default function ProgramForm({ program, onClose }: Props) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-lg bg-sky-500 text-white py-3 font-semibold text-sm disabled:opacity-60 active:bg-sky-600"
+            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
             {saving ? 'Saving…' : program ? 'Save Changes' : 'Create Program'}
           </button>

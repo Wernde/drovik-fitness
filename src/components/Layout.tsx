@@ -70,7 +70,7 @@ function SyncIndicator({ status }: { status: 'idle' | 'syncing' | 'error' }) {
     return (
       <div
         title="Syncing…"
-        className="w-2 h-2 rounded-full bg-sky-400 animate-pulse"
+        className="w-2 h-2 rounded-full bg-lime-300 animate-pulse"
       />
     )
   }
@@ -184,7 +184,7 @@ export default function Layout() {
         >
           {(pullDist > 8 || isRefreshing) && (
             <div
-              className={`w-5 h-5 rounded-full border-2 border-sky-500 border-t-transparent ${isRefreshing ? 'animate-spin' : ''}`}
+              className={`w-5 h-5 rounded-full border-2 border-lime-400 border-t-transparent ${isRefreshing ? 'animate-spin' : ''}`}
               style={{ opacity: isRefreshing ? 1 : spinnerOpacity }}
             />
           )}
@@ -207,7 +207,7 @@ export default function Layout() {
                 [
                   'relative flex flex-col items-center gap-0.5 px-3 py-1 text-xs font-medium transition-colors',
                   isActive
-                    ? 'text-sky-500'
+                    ? 'text-lime-400'
                     : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300',
                 ].join(' ')
               }

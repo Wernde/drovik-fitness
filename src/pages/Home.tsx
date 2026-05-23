@@ -47,7 +47,7 @@ export default function Home() {
       {/* Start Workout CTA */}
       <Link
         to="/log"
-        className="rounded-xl bg-sky-500 text-white p-5 active:bg-sky-600"
+        className="rounded-xl bg-lime-400 text-gray-900 p-5 active:bg-lime-500"
       >
         <p className="text-xs font-medium opacity-70 mb-1">
           {activeProgram ? activeProgram.name : 'Ad-hoc'}

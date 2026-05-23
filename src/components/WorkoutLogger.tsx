@@ -92,7 +92,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
   }
 
   return (
-    <div className="mt-2 p-3 rounded-xl bg-white dark:bg-gray-900 border border-sky-200 dark:border-sky-800">
+    <div className="mt-2 p-3 rounded-xl bg-white dark:bg-gray-900 border border-lime-900/30 dark:border-lime-900">
       {/* Reps × Weight row */}
       <div className="flex items-center gap-2 mb-2">
         {/* Warmup toggle */}
@@ -117,7 +117,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             onChange={(e) => setReps(e.target.value)}
             placeholder="Reps"
             min={1}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
           <span className="text-gray-400 text-sm flex-none">×</span>
           <input
@@ -128,7 +128,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             placeholder="kg"
             min={0}
             step={0.5}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
           <span className="text-gray-400 text-xs flex-none">kg</span>
         </div>
@@ -137,7 +137,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-none w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center active:bg-sky-600 disabled:opacity-50"
+          className="flex-none w-8 h-8 rounded-lg bg-lime-400 text-gray-900 flex items-center justify-center active:bg-lime-500 disabled:opacity-50"
           aria-label="Save set"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -150,7 +150,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
       {!showRpe ? (
         <button
           onClick={() => setShowRpe(true)}
-          className="text-xs text-gray-400 hover:text-sky-500"
+          className="text-xs text-gray-400 hover:text-lime-400"
         >
           + Add RPE / RIR
         </button>
@@ -165,7 +165,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRpe(e.target.value)}
               placeholder="1–10"
               min={1} max={10} step={0.5}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
           <div className="flex items-center gap-1 flex-1">
@@ -177,7 +177,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRir(e.target.value)}
               placeholder="0–5"
               min={0} max={5}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
         </div>
@@ -189,7 +189,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         placeholder="Note (optional)"
-        className="w-full mt-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-sky-500"
+        className="w-full mt-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-lime-400"
       />
 
       {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
@@ -234,7 +234,7 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
           'w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-none',
           set.isWarmup
             ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-            : 'bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300',
+            : 'bg-lime-950 text-lime-700 dark:bg-lime-900/40 dark:text-lime-300',
         ].join(' ')}>
           {set.isWarmup ? 'W' : set.setNumber}
         </span>
@@ -518,7 +518,7 @@ export default function WorkoutLogger({ session }: Props) {
                 ) : (
                   <button
                     onClick={() => setActiveSeId(se.id)}
-                    className="w-full rounded-lg border border-dashed border-sky-300 dark:border-sky-700 text-sky-500 dark:text-sky-400 text-xs font-semibold py-2 active:bg-sky-50 dark:active:bg-sky-900/20"
+                    className="w-full rounded-lg border border-dashed border-lime-300 dark:border-lime-700 text-lime-400 dark:text-lime-300 text-xs font-semibold py-2 active:bg-lime-950 dark:active:bg-lime-900/20"
                   >
                     + Log Set
                   </button>

@@ -141,10 +141,10 @@ export default function Log() {
                 key={day.id}
                 onClick={() => startFromDay(day, activeProgram)}
                 disabled={starting}
-                className="w-full rounded-xl bg-sky-500 text-white px-4 py-4 text-left font-semibold text-sm active:bg-sky-600 disabled:opacity-60"
+                className="w-full rounded-xl bg-lime-400 text-gray-900 px-4 py-4 text-left font-semibold text-sm active:bg-lime-500 disabled:opacity-60"
               >
                 <span className="block">{day.name}</span>
-                <span className="text-sky-200 text-xs font-normal">Start this day</span>
+                <span className="text-lime-900/30 text-xs font-normal">Start this day</span>
               </button>
             ))}
           </div>

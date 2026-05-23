@@ -113,7 +113,7 @@ export default function DayDetail() {
         </div>
         <button
           onClick={() => setShowPicker(true)}
-          className="flex items-center gap-1 rounded-lg bg-sky-500 text-white px-3 py-1.5 text-sm font-semibold active:bg-sky-600 flex-none"
+          className="flex items-center gap-1 rounded-lg bg-lime-400 text-gray-900 px-3 py-1.5 text-sm font-semibold active:bg-lime-500 flex-none"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -182,7 +182,7 @@ export default function DayDetail() {
                     {/* Edit targets */}
                     <button
                       onClick={() => setEditingDE(de)}
-                      className="flex-none text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 p-1"
+                      className="flex-none text-gray-400 hover:text-lime-400 dark:hover:text-lime-300 p-1"
                       aria-label={`Edit ${exercise.name} targets`}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">

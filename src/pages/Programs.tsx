@@ -83,7 +83,7 @@ export default function Programs() {
         <h1 className="text-2xl font-bold">Programs</h1>
         <button
           onClick={openAdd}
-          className="flex items-center gap-1 rounded-lg bg-sky-500 text-white px-3 py-1.5 text-sm font-semibold active:bg-sky-600"
+          className="flex items-center gap-1 rounded-lg bg-lime-400 text-gray-900 px-3 py-1.5 text-sm font-semibold active:bg-lime-500"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -106,7 +106,7 @@ export default function Programs() {
                   className={[
                     'rounded-xl border px-4 py-3',
                     program.isActive
-                      ? 'border-sky-400 bg-sky-50 dark:bg-sky-900/20'
+                      ? 'border-lime-300 bg-lime-950 dark:bg-lime-900/20'
                       : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60',
                   ].join(' ')}
                 >
@@ -119,7 +119,7 @@ export default function Programs() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-sm">{program.name}</span>
                         {program.isActive && (
-                          <span className="text-xs font-semibold text-sky-600 dark:text-sky-400 bg-sky-100 dark:bg-sky-900/40 rounded-full px-2 py-0.5">
+                          <span className="text-xs font-semibold text-lime-500 dark:text-lime-300 bg-lime-950 dark:bg-lime-900/40 rounded-full px-2 py-0.5">
                             Active
                           </span>
                         )}
@@ -136,7 +136,7 @@ export default function Programs() {
                     {!program.isActive && (
                       <button
                         onClick={() => setActive(program)}
-                        className="flex-none text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 p-1"
+                        className="flex-none text-gray-400 hover:text-lime-400 dark:hover:text-lime-300 p-1"
                         aria-label={`Set ${program.name} as active`}
                         title="Set as active"
                       >
@@ -149,7 +149,7 @@ export default function Programs() {
                     {/* Edit */}
                     <button
                       onClick={() => openEdit(program)}
-                      className="flex-none text-gray-400 hover:text-sky-500 dark:hover:text-sky-400 p-1"
+                      className="flex-none text-gray-400 hover:text-lime-400 dark:hover:text-lime-300 p-1"
                       aria-label={`Edit ${program.name}`}
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">

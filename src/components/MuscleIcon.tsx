@@ -70,7 +70,7 @@ const REGIONS: Record<string, Region[]> = {
 
 // ── Colours (come from CSS variables set in index.css) ─────────────────────────
 
-const HI   = 'var(--muscle-hi)'    // highlighted muscle — sky-500 / sky-400 in dark
+const HI   = 'var(--muscle-hi)'    // highlighted muscle — lime-400 / lime-300 in dark
 const BODY = 'var(--muscle-body)'  // rest of silhouette — gray-200 / gray-600 in dark
 
 // ── Component ──────────────────────────────────────────────────────────────────

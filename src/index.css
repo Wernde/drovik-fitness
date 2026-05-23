@@ -6,15 +6,10 @@
   CSS variables used by MuscleIcon.tsx.
   The media query overrides them automatically when the device is in dark mode.
 */
+/* App is permanently dark — no light-mode variables needed. */
 :root {
-  --muscle-body: #e5e7eb;  /* gray-200 — body silhouette, light mode */
-  --muscle-hi:   #0ea5e9;  /* sky-500  — highlighted muscle, light mode */
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --muscle-body: #4b5563;  /* gray-600 — body silhouette, dark mode */
-    --muscle-hi:   #38bdf8;  /* sky-400  — highlighted muscle, dark mode */
-  }
+  --muscle-body: #4b5563;  /* gray-600 — body silhouette */
+  --muscle-hi:   #a3e635;  /* lime-400 — highlighted muscle */
 }
 
 /*
@@ -31,7 +26,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    @apply bg-gray-950 text-gray-100;
 
     /*
       Push content above the fixed bottom nav (64 px) plus the iOS home-bar

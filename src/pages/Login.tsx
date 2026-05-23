@@ -57,7 +57,7 @@ export default function Login() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               autoComplete="email"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -71,7 +71,7 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="current-password"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
 
@@ -82,7 +82,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-sky-500 text-white py-3 font-semibold text-sm disabled:opacity-60 active:bg-sky-600 mt-2"
+            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500 mt-2"
           >
             {loading ? 'Signing in…' : 'Sign In'}
           </button>

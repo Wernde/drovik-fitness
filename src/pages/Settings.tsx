@@ -182,7 +182,7 @@ export default function Settings() {
             <button
               onClick={handleExport}
               disabled={exporting}
-              className="rounded-lg bg-sky-500 text-white px-4 py-2 text-sm font-semibold active:bg-sky-600 disabled:opacity-60"
+              className="rounded-lg bg-lime-400 text-gray-900 px-4 py-2 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
             >
               {exporting ? 'Exporting…' : 'Export JSON'}
             </button>

@@ -135,7 +135,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Incline Dumbbell Press"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
               autoFocus
             />
           </div>
@@ -148,7 +148,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ExerciseCategory)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             >
               {CATEGORIES.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -164,7 +164,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={muscleGroup}
               onChange={(e) => setMuscleGroup(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             >
               <option value="">Select muscle group…</option>
               {MUSCLE_GROUPS.map((g) => (
@@ -183,7 +183,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=…"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
             {/* Live thumbnail preview */}
             {thumbnailUrl && (
@@ -213,7 +213,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-lg bg-sky-500 text-white py-3 font-semibold text-sm disabled:opacity-60 active:bg-sky-600"
+            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
             {saving ? 'Saving…' : exercise ? 'Save Changes' : 'Add Exercise'}
           </button>

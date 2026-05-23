@@ -149,13 +149,13 @@ export default function History() {
                 <span className={[
                   'w-7 h-7 flex items-center justify-center rounded-full text-xs',
                   isToday
-                    ? 'bg-sky-500 text-white font-bold'
+                    ? 'bg-lime-400 text-gray-900 font-bold'
                     : 'text-gray-700 dark:text-gray-300',
                 ].join(' ')}>
                   {date.getDate()}
                 </span>
                 {hasSession && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400 mt-0.5" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-lime-300 mt-0.5" />
                 )}
               </div>
             )
