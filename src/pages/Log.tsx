@@ -14,9 +14,6 @@ import WorkoutLogger from '../components/WorkoutLogger'
 export default function Log() {
   const [starting, setStarting] = useState(false)
 
-  // Single compound query so we have one unambiguous loading state.
-  // useLiveQuery returns undefined while loading; once resolved, each field
-  // may be undefined (no match) or the actual record — that's intentional.
   const data = useLiveQuery(async () => {
     const activeSession = await db.workoutSessions
       .filter((s) => !s.deleted && s.finishedAt === null)
@@ -43,13 +40,9 @@ export default function Log() {
 
   const { activeSession, activeProgram, programDays } = data
 
-  // ── Active workout ───────────────────────────────────────────────────────────
-
   if (activeSession) {
     return <WorkoutLogger session={activeSession} />
   }
-
-  // ── Start workout ────────────────────────────────────────────────────────────
 
   async function startFromDay(day: WorkoutDay, program: Program) {
     setStarting(true)
@@ -71,7 +64,6 @@ export default function Log() {
         deleted:       false,
       })
 
-      // Pre-populate exercises from the day template.
       const dayExercises = await db.dayExercises
         .where('workoutDayId').equals(day.id)
         .filter((de) => !de.deleted)
@@ -94,7 +86,6 @@ export default function Log() {
           }))
         )
       }
-      // useLiveQuery will pick up the new session and re-render automatically.
     } catch {
       setStarting(false)
     }
@@ -122,49 +113,80 @@ export default function Log() {
     }
   }
 
-  return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-1">Log Workout</h1>
-      <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-        {new Date().toLocaleDateString('en-AU', { weekday: 'long', day: 'numeric', month: 'long' })}
-      </p>
+  const dateLabel = new Date().toLocaleDateString('en-AU', {
+    weekday: 'long', day: 'numeric', month: 'long',
+  })
 
-      {/* Active program days */}
+  return (
+    <div className="px-4 pt-6 pb-4">
+      {/* ── Header ── */}
+      <h1 className="text-2xl font-bold text-white mb-1">Log Workout</h1>
+      <p className="text-gray-400 text-sm mb-6">{dateLabel}</p>
+
+      {/* ── Active program days ── */}
       {activeProgram && programDays && programDays.length > 0 && (
         <div className="mb-6">
-          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-            {activeProgram.name}
-          </p>
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              {activeProgram.name}
+            </span>
+            <span className="text-xs font-semibold text-lime-400 bg-lime-400/10 rounded-full px-2 py-0.5">
+              Active
+            </span>
+          </div>
+
           <div className="flex flex-col gap-2">
             {programDays.map((day) => (
               <button
                 key={day.id}
                 onClick={() => startFromDay(day, activeProgram)}
                 disabled={starting}
-                className="w-full rounded-xl bg-lime-400 text-gray-900 px-4 py-4 text-left font-semibold text-sm active:bg-lime-500 disabled:opacity-60"
+                className="w-full flex items-center gap-4 rounded-2xl bg-gray-800/60 px-4 py-4 text-left active:bg-gray-800 disabled:opacity-60"
               >
-                <span className="block">{day.name}</span>
-                <span className="text-lime-900/30 text-xs font-normal">Start this day</span>
+                <div className="flex-none w-10 h-10 rounded-xl bg-lime-400/10 flex items-center justify-center text-lime-400">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-white truncate">{day.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Tap to start</p>
+                </div>
+
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-600 flex-none">
+                  <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                </svg>
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {/* No active program nudge */}
+      {/* ── No active program nudge ── */}
       {!activeProgram && (
-        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/40 p-4 mb-6 text-sm text-gray-500 dark:text-gray-400">
-          No active program. Go to <strong>Programs</strong> to create one and mark it active, or start an empty workout below.
+        <div className="rounded-2xl border border-gray-700 bg-gray-800/40 p-4 mb-6">
+          <p className="text-sm text-gray-400">
+            No active program. Go to <strong className="text-gray-200">Programs</strong> to create one and mark it active, or start an empty workout below.
+          </p>
         </div>
       )}
 
-      {/* Empty / ad-hoc workout */}
+      {/* ── Ad-hoc / empty workout ── */}
       <button
         onClick={startEmpty}
         disabled={starting}
-        className="w-full rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 px-4 py-4 text-sm font-medium active:bg-gray-50 dark:active:bg-gray-800/40 disabled:opacity-60"
+        className="w-full flex items-center gap-4 rounded-2xl border-2 border-dashed border-gray-700 px-4 py-4 text-left active:border-gray-600 disabled:opacity-60"
       >
-        Start Empty Workout
+        <div className="flex-none w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-gray-500">
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm text-white">Start Empty Workout</p>
+          <p className="text-xs text-gray-500 mt-0.5">Ad-hoc session, no program</p>
+        </div>
       </button>
     </div>
   )
