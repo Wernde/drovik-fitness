@@ -4,6 +4,14 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Exercise Library Expansion
+
+### Added
+- **618 pre-seeded exercises** — up from 395. Added ~223 new exercises sourced from the open-source [free-exercise-db](https://github.com/yuhonas/free-exercise-db) project, covering new barbell Olympic lifting variations (Split Jerk, Snatch from Blocks, Hang Snatch, etc.), dumbbell shoulder/arm movements, additional Smith Machine and leverage machine exercises, cable variations, ~50 new bodyweight movements (Dead Bug, Russian Twist, Flutter Kicks, Incline Push-Up variants, etc.), new kettlebell flows (Seesaw Press, Pirate Ships, TGU variants), and band additions
+- **Dexie DB version 4** — upgrade runs automatically on next open, seeding the new exercises on existing devices without disturbing any logged workout data
+
+---
+
 ## UX Improvements
 
 ### Added

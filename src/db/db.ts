@@ -179,6 +179,23 @@ class DrovikDB extends Dexie {
       })
     })
 
+    // Version 4 — expanded exercise library from free-exercise-db (~200 new exercises).
+    // Same re-seed pattern as v2: adds any seed exercises missing on this device.
+    this.version(4).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      workoutDays:      'id, programId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
+      const missing  = seedExercises.filter((e) => !existing.has(e.id))
+      if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
     // 'populate' fires exactly once — when the database is first created on
     // this device. We use it to pre-load the exercise library.
     this.on('populate', async () => {
