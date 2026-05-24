@@ -44,15 +44,16 @@ interface SetEntryProps {
 }
 
 function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, targetReps, onSaved }: SetEntryProps) {
-  const [reps,     setReps]     = useState(lastSet ? String(lastSet.reps) : (targetReps ? parseFirstRep(targetReps) : ''))
-  const [weight,   setWeight]   = useState(lastSet ? String(lastSet.weight) : (targetWeight != null ? String(targetWeight) : ''))
-  const [isWarmup, setIsWarmup] = useState(false)
-  const [showRpe,  setShowRpe]  = useState(false)
-  const [rpe,      setRpe]      = useState(lastSet?.rpe != null ? String(lastSet.rpe) : '')
-  const [rir,      setRir]      = useState(lastSet?.rir != null ? String(lastSet.rir) : '')
-  const [notes,    setNotes]    = useState(lastSet?.notes ?? '')
-  const [saving,   setSaving]   = useState(false)
-  const [error,    setError]    = useState('')
+  const [reps,           setReps]           = useState(lastSet ? String(lastSet.reps) : (targetReps ? parseFirstRep(targetReps) : ''))
+  const [weight,         setWeight]         = useState(lastSet ? String(lastSet.weight) : (targetWeight != null ? String(targetWeight) : ''))
+  const [isWarmup,       setIsWarmup]       = useState(false)
+  const [showRpe,        setShowRpe]        = useState(false)
+  const [rpe,            setRpe]            = useState(lastSet?.rpe != null ? String(lastSet.rpe) : '')
+  const [rir,            setRir]            = useState(lastSet?.rir != null ? String(lastSet.rir) : '')
+  const [notes,          setNotes]          = useState(lastSet?.notes ?? '')
+  const [machineSetting, setMachineSetting] = useState(lastSet?.machineSetting ?? '')
+  const [saving,         setSaving]         = useState(false)
+  const [error,          setError]          = useState('')
 
   async function handleSave() {
     const repsNum   = parseInt(reps, 10)
@@ -78,6 +79,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         rpe:                 rpeNum,
         rir:                 rirNum,
         notes:               notes.trim(),
+        machineSetting:      machineSetting.trim(),
         isWarmup,
         createdAt:           timestamp,
         updatedAt:           timestamp,
@@ -192,6 +194,15 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         className="w-full mt-2 rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-lime-400"
       />
 
+      {/* Machine setting */}
+      <input
+        type="text"
+        value={machineSetting}
+        onChange={(e) => setMachineSetting(e.target.value)}
+        placeholder="Machine setting (optional) e.g. seat 3, pin 8"
+        className="w-full mt-1 rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-lime-400"
+      />
+
       {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
     </div>
   )
@@ -246,6 +257,9 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
           </span>
           {set.notes && (
             <span className="block text-xs text-gray-500 truncate">{set.notes}</span>
+          )}
+          {set.machineSetting && (
+            <span className="block text-xs text-gray-600 truncate">⚙ {set.machineSetting}</span>
           )}
         </span>
         <button

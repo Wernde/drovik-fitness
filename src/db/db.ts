@@ -105,6 +105,7 @@ export interface LoggedSet extends BaseRecord {
   rir: number | null        // Reps In Reserve 0–5
   notes: string
   isWarmup: boolean
+  machineSetting: string    // e.g. "seat 3, pin 8" — empty string if not set
 }
 
 // ── Body weight ───────────────────────────────────────────────────────────────
@@ -196,6 +197,22 @@ class DrovikDB extends Dexie {
       const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
       const missing  = seedExercises.filter((e) => !existing.has(e.id))
       if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
+    // Version 6 — adds machineSetting to logged sets.
+    this.version(6).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      workoutDays:      'id, programId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      await tx.table('sets').toCollection().modify((s) => {
+        if (s.machineSetting === undefined) s.machineSetting = ''
+      })
     })
 
     // Version 5 — adds instructions to exercises and restSecs to dayExercises.
