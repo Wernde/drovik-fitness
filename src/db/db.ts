@@ -125,6 +125,18 @@ export interface BodyWeightLog extends BaseRecord {
   notes: string
 }
 
+// ── Nutrition ─────────────────────────────────────────────────────────────────
+
+export interface NutritionLog extends BaseRecord {
+  date: string              // YYYY-MM-DD — one entry per day (upsert)
+  calories: number | null
+  proteinG: number | null   // grams
+  carbsG:   number | null   // grams
+  fatG:     number | null   // grams
+  waterMl:  number | null   // millilitres
+  notes: string
+}
+
 // ── Database class ────────────────────────────────────────────────────────────
 
 class DrovikDB extends Dexie {
@@ -137,6 +149,7 @@ class DrovikDB extends Dexie {
   sessionExercises!: Table<SessionExercise>
   sets!: Table<LoggedSet>
   bodyWeightLogs!: Table<BodyWeightLog>
+  nutritionLogs!: Table<NutritionLog>
 
   constructor() {
     super('drovik-fitness')
@@ -207,6 +220,20 @@ class DrovikDB extends Dexie {
       const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
       const missing  = seedExercises.filter((e) => !existing.has(e.id))
       if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
+    // Version 8 — adds nutrition logging table.
+    this.version(8).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      programPhases:    'id, programId',
+      workoutDays:      'id, programId, phaseId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+      nutritionLogs:    'id, date',
     })
 
     // Version 7 — adds program phases and phaseId to workout days.

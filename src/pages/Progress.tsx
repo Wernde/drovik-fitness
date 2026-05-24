@@ -16,7 +16,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { db, now, today } from '../db/db'
-import type { Exercise } from '../db/db'
+import type { Exercise, NutritionLog } from '../db/db'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -340,14 +340,208 @@ function PRsTab({ exercises }: { exercises: Exercise[] }) {
   )
 }
 
+// ── Nutrition tab ─────────────────────────────────────────────────────────────
+
+function num(s: string) { const n = parseFloat(s); return isNaN(n) || n < 0 ? null : n }
+
+function MacroBadge({ label, value, unit, color }: { label: string; value: number | null; unit: string; color: string }) {
+  if (value == null) return null
+  return (
+    <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${color}`}>
+      {label} {value}{unit}
+    </span>
+  )
+}
+
+function NutritionTab() {
+  const logs = useLiveQuery(
+    () => db.nutritionLogs
+      .filter((l) => !l.deleted)
+      .toArray()
+      .then((list) => list.sort((a, b) => b.date.localeCompare(a.date))),
+    [],
+  )
+
+  const todayStr  = today()
+  const todayLog  = logs?.find((l) => l.date === todayStr)
+
+  const [calories, setCalories] = useState('')
+  const [protein,  setProtein]  = useState('')
+  const [carbs,    setCarbs]    = useState('')
+  const [fat,      setFat]      = useState('')
+  const [water,    setWater]    = useState('')
+  const [saving,   setSaving]   = useState(false)
+  const [error,    setError]    = useState('')
+  const [prefilled, setPrefilled] = useState(false)
+
+  // Pre-fill form when today's log loads
+  if (todayLog && !prefilled) {
+    setCalories(todayLog.calories != null ? String(todayLog.calories) : '')
+    setProtein(todayLog.proteinG  != null ? String(todayLog.proteinG)  : '')
+    setCarbs(todayLog.carbsG      != null ? String(todayLog.carbsG)    : '')
+    setFat(todayLog.fatG          != null ? String(todayLog.fatG)      : '')
+    setWater(todayLog.waterMl     != null ? String(todayLog.waterMl)   : '')
+    setPrefilled(true)
+  }
+
+  async function handleSave() {
+    const cal  = num(calories)
+    const prot = num(protein)
+    const crb  = num(carbs)
+    const ft   = num(fat)
+    const wtr  = num(water)
+
+    if (cal == null && prot == null && crb == null && ft == null && wtr == null) {
+      setError('Enter at least one value.')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    try {
+      const timestamp = now()
+      const payload = {
+        calories: cal, proteinG: prot, carbsG: crb, fatG: ft, waterMl: wtr,
+        notes: '', updatedAt: timestamp, syncedAt: null,
+      }
+      if (todayLog) {
+        await db.nutritionLogs.update(todayLog.id, payload)
+      } else {
+        await db.nutritionLogs.add({
+          id: crypto.randomUUID(), date: todayStr,
+          ...payload,
+          createdAt: timestamp, deleted: false,
+        })
+      }
+    } catch {
+      setError('Something went wrong.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const chartData = (logs ?? [])
+    .filter((l) => l.calories != null)
+    .map((l) => ({ date: shortDate(l.date), calories: l.calories }))
+    .reverse()
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Entry form */}
+      <div className="rounded-2xl bg-gray-800/60 p-4 flex flex-col gap-3">
+        <p className="text-sm font-semibold text-white">Today</p>
+
+        {/* Calories */}
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Calories (kcal)</label>
+          <input
+            type="number" inputMode="decimal" value={calories}
+            onChange={(e) => setCalories(e.target.value)}
+            placeholder="e.g. 2400" min={0}
+            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400"
+          />
+        </div>
+
+        {/* Macros row */}
+        <div className="flex gap-2">
+          {[
+            { label: 'Protein (g)', value: protein, set: setProtein, placeholder: '180' },
+            { label: 'Carbs (g)',   value: carbs,   set: setCarbs,   placeholder: '250' },
+            { label: 'Fat (g)',     value: fat,      set: setFat,     placeholder: '80'  },
+          ].map(({ label, value, set, placeholder }) => (
+            <div key={label} className="flex-1">
+              <label className="block text-xs text-gray-400 mb-1">{label}</label>
+              <input
+                type="number" inputMode="decimal" value={value}
+                onChange={(e) => set(e.target.value)}
+                placeholder={placeholder} min={0}
+                className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400"
+              />
+            </div>
+          ))}
+        </div>
+
+        {/* Water */}
+        <div>
+          <label className="block text-xs text-gray-400 mb-1">Water (ml)</label>
+          <input
+            type="number" inputMode="decimal" value={water}
+            onChange={(e) => setWater(e.target.value)}
+            placeholder="e.g. 2500" min={0}
+            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lime-400"
+          />
+        </div>
+
+        {error && <p className="text-xs text-red-400">{error}</p>}
+
+        <button
+          onClick={handleSave} disabled={saving}
+          className="w-full rounded-2xl bg-lime-400 text-gray-900 py-2.5 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
+        >
+          {saving ? 'Saving…' : todayLog ? 'Update Today' : 'Log Today'}
+        </button>
+      </div>
+
+      {/* Calorie chart */}
+      {chartData.length > 1 && (
+        <div className="rounded-2xl bg-gray-800/60 p-4">
+          <p className="text-xs text-gray-400 mb-3">Calories over time</p>
+          <ResponsiveContainer width="100%" height={160}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+              <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9ca3af' }} />
+              <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} domain={['auto', 'auto']} />
+              <Tooltip
+                formatter={(val: number) => [`${val} kcal`, 'Calories']}
+                contentStyle={chartTooltipStyle}
+              />
+              <Line type="monotone" dataKey="calories" stroke="#a3e635" strokeWidth={2}
+                dot={{ r: 3, fill: '#a3e635' }} activeDot={{ r: 5 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+
+      {/* Recent entries */}
+      {logs && logs.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {logs.slice(0, 14).map((l) => (
+            <li key={l.id} className="rounded-2xl bg-gray-800/60 px-4 py-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-semibold text-white">{shortDate(l.date)}</span>
+                {l.calories != null && (
+                  <span className="text-sm font-bold text-lime-400">{l.calories} kcal</span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <MacroBadge label="P" value={l.proteinG} unit="g" color="bg-blue-900/40 text-blue-300" />
+                <MacroBadge label="C" value={l.carbsG}   unit="g" color="bg-amber-900/40 text-amber-300" />
+                <MacroBadge label="F" value={l.fatG}     unit="g" color="bg-orange-900/40 text-orange-300" />
+                <MacroBadge label="💧" value={l.waterMl != null ? Math.round(l.waterMl / 100) / 10 : null} unit="L" color="bg-cyan-900/40 text-cyan-300" />
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {logs?.length === 0 && (
+        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 text-sm">
+          No entries yet. Log today's nutrition above.
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Main Progress page ────────────────────────────────────────────────────────
 
-type Tab = 'lifts' | 'bodyweight' | 'prs'
+type Tab = 'lifts' | 'bodyweight' | 'prs' | 'nutrition'
 
 const TABS: { value: Tab; label: string }[] = [
   { value: 'lifts',      label: 'Lifts' },
-  { value: 'bodyweight', label: 'Body Weight' },
+  { value: 'bodyweight', label: 'Weight' },
   { value: 'prs',        label: 'PRs' },
+  { value: 'nutrition',  label: 'Nutrition' },
 ]
 
 export default function Progress() {
