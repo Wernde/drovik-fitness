@@ -56,9 +56,18 @@ export interface Program extends BaseRecord {
   isActive: boolean
 }
 
+// ProgramPhase: an optional training block within a program (e.g. "Hypertrophy — 4 weeks").
+export interface ProgramPhase extends BaseRecord {
+  programId: string
+  name: string
+  weeks: number | null  // planned duration; null if open-ended
+  order: number
+}
+
 // WorkoutDay: a named day inside a program (e.g. "Push", "Pull", "Legs A").
 export interface WorkoutDay extends BaseRecord {
   programId: string
+  phaseId: string | null  // null = unassigned (no phase)
   name: string
   order: number
 }
@@ -121,6 +130,7 @@ export interface BodyWeightLog extends BaseRecord {
 class DrovikDB extends Dexie {
   exercises!: Table<Exercise>
   programs!: Table<Program>
+  programPhases!: Table<ProgramPhase>
   workoutDays!: Table<WorkoutDay>
   dayExercises!: Table<DayExercise>
   workoutSessions!: Table<WorkoutSession>
@@ -197,6 +207,23 @@ class DrovikDB extends Dexie {
       const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
       const missing  = seedExercises.filter((e) => !existing.has(e.id))
       if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
+    // Version 7 — adds program phases and phaseId to workout days.
+    this.version(7).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      programPhases:    'id, programId',
+      workoutDays:      'id, programId, phaseId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      await tx.table('workoutDays').toCollection().modify((d) => {
+        if (d.phaseId === undefined) d.phaseId = null
+      })
     })
 
     // Version 6 — adds machineSetting to logged sets.

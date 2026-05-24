@@ -1,39 +1,43 @@
-/**
- * DayForm — slide-up modal for creating or renaming a workout day.
- */
-
 import { useState } from 'react'
 import { db, now } from '../db/db'
-import type { WorkoutDay } from '../db/db'
+import type { ProgramPhase } from '../db/db'
 
 interface Props {
   programId: string
-  phaseId?:  string | null
-  day?:      WorkoutDay
+  phase?: ProgramPhase
   nextOrder: number
-  onClose:   () => void
+  onClose: () => void
 }
 
-export default function DayForm({ programId, phaseId = null, day, nextOrder, onClose }: Props) {
-  const [name,   setName]   = useState(day?.name ?? '')
+export default function PhaseForm({ programId, phase, nextOrder, onClose }: Props) {
+  const [name,   setName]   = useState(phase?.name ?? '')
+  const [weeks,  setWeeks]  = useState(phase?.weeks != null ? String(phase.weeks) : '')
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState('')
 
   async function handleSave() {
     const trimmed = name.trim()
-    if (!trimmed) { setError('Day name is required.'); return }
+    if (!trimmed) { setError('Phase name is required.'); return }
+
+    const weeksNum = weeks.trim() ? parseInt(weeks, 10) : null
+    if (weeks.trim() && (isNaN(weeksNum!) || weeksNum! < 1)) {
+      setError('Weeks must be a positive whole number.')
+      return
+    }
 
     setSaving(true)
     setError('')
 
     try {
       const timestamp = now()
-      if (day) {
-        await db.workoutDays.update(day.id, { name: trimmed, updatedAt: timestamp, syncedAt: null })
+      if (phase) {
+        await db.programPhases.update(phase.id, {
+          name: trimmed, weeks: weeksNum, updatedAt: timestamp, syncedAt: null,
+        })
       } else {
-        await db.workoutDays.add({
-          id: crypto.randomUUID(), programId, phaseId, name: trimmed, order: nextOrder,
-          createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
+        await db.programPhases.add({
+          id: crypto.randomUUID(), programId, name: trimmed, weeks: weeksNum,
+          order: nextOrder, createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
         })
       }
       onClose()
@@ -48,7 +52,7 @@ export default function DayForm({ programId, phaseId = null, day, nextOrder, onC
       <div className="w-full bg-gray-900 rounded-t-2xl shadow-xl p-6 pb-10">
 
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-white">{day ? 'Rename Day' : 'Add Day'}</h2>
+          <h2 className="text-lg font-bold text-white">{phase ? 'Edit Phase' : 'Add Phase'}</h2>
           <button onClick={onClose} className="text-gray-500 active:text-gray-300 p-1" aria-label="Close">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
               <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
@@ -58,13 +62,28 @@ export default function DayForm({ programId, phaseId = null, day, nextOrder, onC
 
         <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Day name</label>
+            <label className="block text-sm font-medium text-gray-300 mb-1">Phase name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Push, Pull, Legs A"
+              placeholder="e.g. Hypertrophy, Strength, Deload"
               autoFocus
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Duration <span className="text-gray-500 font-normal">(weeks, optional)</span>
+            </label>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={weeks}
+              onChange={(e) => setWeeks(e.target.value)}
+              placeholder="e.g. 4"
+              min={1}
               className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
@@ -76,7 +95,7 @@ export default function DayForm({ programId, phaseId = null, day, nextOrder, onC
             disabled={saving}
             className="w-full rounded-2xl bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
-            {saving ? 'Saving…' : day ? 'Save' : 'Add Day'}
+            {saving ? 'Saving…' : phase ? 'Save Changes' : 'Add Phase'}
           </button>
         </div>
       </div>
