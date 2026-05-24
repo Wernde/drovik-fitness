@@ -45,12 +45,13 @@ interface Props {
 }
 
 export default function ExerciseForm({ exercise, onClose }: Props) {
-  const [name, setName]               = useState(exercise?.name ?? '')
-  const [category, setCategory]       = useState<ExerciseCategory>(exercise?.category ?? 'barbell')
-  const [muscleGroup, setMuscleGroup] = useState(exercise?.muscleGroup ?? '')
-  const [videoUrl, setVideoUrl]       = useState(exercise?.videoUrl ?? '')
-  const [saving, setSaving]           = useState(false)
-  const [error, setError]             = useState('')
+  const [name,         setName]         = useState(exercise?.name ?? '')
+  const [category,     setCategory]     = useState<ExerciseCategory>(exercise?.category ?? 'barbell')
+  const [muscleGroup,  setMuscleGroup]  = useState(exercise?.muscleGroup ?? '')
+  const [videoUrl,     setVideoUrl]     = useState(exercise?.videoUrl ?? '')
+  const [instructions, setInstructions] = useState(exercise?.instructions ?? '')
+  const [saving, setSaving]             = useState(false)
+  const [error, setError]               = useState('')
 
   const videoId        = videoUrl.trim() ? getYouTubeId(videoUrl.trim()) : null
   const thumbnailUrl   = videoId ? getYouTubeThumbnail(videoId) : null
@@ -73,22 +74,24 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
           name: trimmed,
           category,
           muscleGroup,
-          videoUrl:  cleanVideoUrl,
-          updatedAt: timestamp,
-          syncedAt:  null,
+          videoUrl:     cleanVideoUrl,
+          instructions: instructions.trim(),
+          updatedAt:    timestamp,
+          syncedAt:     null,
         })
       } else {
         await db.exercises.add({
-          id:         crypto.randomUUID(),
-          name:       trimmed,
+          id:           crypto.randomUUID(),
+          name:         trimmed,
           category,
           muscleGroup,
-          videoUrl:   cleanVideoUrl,
-          isCustom:   true,
-          createdAt:  timestamp,
-          updatedAt:  timestamp,
-          syncedAt:   null,
-          deleted:    false,
+          videoUrl:     cleanVideoUrl,
+          instructions: instructions.trim(),
+          isCustom:     true,
+          createdAt:    timestamp,
+          updatedAt:    timestamp,
+          syncedAt:     null,
+          deleted:      false,
         })
       }
 
@@ -202,6 +205,20 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             {videoUrl.trim() && !videoId && (
               <p className="text-xs text-amber-500 mt-1">Paste a youtube.com or youtu.be link to see a preview.</p>
             )}
+          </div>
+
+          {/* Instructions */}
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Instructions <span className="text-gray-500 font-normal">(optional)</span>
+            </label>
+            <textarea
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
+              placeholder="e.g. Keep chest up, drive knees out, full depth"
+              rows={3}
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400 resize-none"
+            />
           </div>
 
           {/* Validation error */}

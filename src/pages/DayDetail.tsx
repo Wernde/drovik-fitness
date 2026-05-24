@@ -146,6 +146,7 @@ export default function DayDetail() {
                       <p className="text-xs text-gray-400">
                         {de.targetSets} × {de.targetReps}
                         {de.targetWeight != null ? ` @ ${de.targetWeight} kg` : ''}
+                        {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
                       </p>
                       {de.notes ? (
                         <p className="text-xs text-gray-500 truncate">{de.notes}</p>

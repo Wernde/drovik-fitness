@@ -31,6 +31,7 @@ export default function DayExerciseForm(props: Props) {
   const [targetSets,   setTargetSets]   = useState(String(existing?.targetSets ?? 3))
   const [targetReps,   setTargetReps]   = useState(existing?.targetReps ?? '8–12')
   const [targetWeight, setTargetWeight] = useState(existing?.targetWeight != null ? String(existing.targetWeight) : '')
+  const [restSecs,     setRestSecs]     = useState(existing?.restSecs != null ? String(existing.restSecs) : '')
   const [notes,        setNotes]        = useState(existing?.notes ?? '')
   const [saving,       setSaving]       = useState(false)
   const [error,        setError]        = useState('')
@@ -43,6 +44,9 @@ export default function DayExerciseForm(props: Props) {
     const weight = targetWeight.trim() === '' ? null : parseFloat(targetWeight)
     if (targetWeight.trim() !== '' && isNaN(weight!)) { setError('Target weight must be a number.'); return }
 
+    const rest = restSecs.trim() === '' ? null : parseInt(restSecs, 10)
+    if (restSecs.trim() !== '' && (isNaN(rest!) || rest! < 1)) { setError('Rest time must be a whole number of seconds.'); return }
+
     setSaving(true)
     setError('')
 
@@ -51,13 +55,13 @@ export default function DayExerciseForm(props: Props) {
       if (props.mode === 'edit') {
         await db.dayExercises.update(props.dayExercise.id, {
           targetSets: sets, targetReps: targetReps.trim(), targetWeight: weight,
-          notes: notes.trim(), updatedAt: timestamp, syncedAt: null,
+          restSecs: rest, notes: notes.trim(), updatedAt: timestamp, syncedAt: null,
         })
       } else {
         await db.dayExercises.add({
           id: crypto.randomUUID(), workoutDayId: props.dayId, exerciseId: props.exerciseId,
           order: props.nextOrder, targetSets: sets, targetReps: targetReps.trim(),
-          targetWeight: weight, notes: notes.trim(), createdAt: timestamp,
+          targetWeight: weight, restSecs: rest, notes: notes.trim(), createdAt: timestamp,
           updatedAt: timestamp, syncedAt: null, deleted: false,
         })
       }
@@ -120,6 +124,21 @@ export default function DayExerciseForm(props: Props) {
               placeholder="e.g. 80"
               min={0}
               step={0.5}
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              Rest between sets <span className="text-gray-500 font-normal">(seconds, optional)</span>
+            </label>
+            <input
+              type="number"
+              inputMode="numeric"
+              value={restSecs}
+              onChange={(e) => setRestSecs(e.target.value)}
+              placeholder="e.g. 90"
+              min={1}
               className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>

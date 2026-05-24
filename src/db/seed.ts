@@ -25,6 +25,7 @@ function seed(
     muscleGroup,
     isCustom: false,
     videoUrl: null,
+    instructions: '',
     createdAt: SEED_DATE,
     updatedAt: SEED_DATE,
     syncedAt: null,

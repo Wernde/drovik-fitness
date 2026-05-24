@@ -456,9 +456,15 @@ export default function WorkoutLogger({ session }: Props) {
                       <p className="text-xs text-gray-400">
                         Target: {dayEx.targetSets} × {dayEx.targetReps}
                         {dayEx.targetWeight != null ? ` @ ${dayEx.targetWeight} kg` : ''}
+                        {dayEx.restSecs != null ? ` · ${dayEx.restSecs}s rest` : ''}
                       </p>
                     )}
                   </div>
+
+                  {/* Instructions hint */}
+                  {exercise.instructions && (
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">{exercise.instructions}</p>
+                  )}
 
                   {/* YouTube thumbnail — opens video in browser */}
                   {exercise.videoUrl && (() => {

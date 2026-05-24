@@ -45,6 +45,7 @@ export interface Exercise extends BaseRecord {
   muscleGroup: string
   isCustom: boolean   // true = user-created, false = pre-seeded
   videoUrl: string | null
+  instructions: string
 }
 
 // ── Programs ──────────────────────────────────────────────────────────────────
@@ -70,6 +71,7 @@ export interface DayExercise extends BaseRecord {
   targetSets: number
   targetReps: string        // flexible string — e.g. "5", "8–12", "AMRAP"
   targetWeight: number | null  // kg — optional guideline
+  restSecs: number | null   // target rest between sets in seconds
   notes: string
 }
 
@@ -194,6 +196,25 @@ class DrovikDB extends Dexie {
       const existing = new Set(await tx.table('exercises').toCollection().primaryKeys())
       const missing  = seedExercises.filter((e) => !existing.has(e.id))
       if (missing.length > 0) await tx.table('exercises').bulkAdd(missing)
+    })
+
+    // Version 5 — adds instructions to exercises and restSecs to dayExercises.
+    this.version(5).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      workoutDays:      'id, programId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+    }).upgrade(async (tx) => {
+      await tx.table('exercises').toCollection().modify((ex) => {
+        if (ex.instructions === undefined) ex.instructions = ''
+      })
+      await tx.table('dayExercises').toCollection().modify((de) => {
+        if (de.restSecs === undefined) de.restSecs = null
+      })
     })
 
     // 'populate' fires exactly once — when the database is first created on
