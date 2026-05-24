@@ -92,17 +92,17 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
   }
 
   return (
-    <div className="mt-2 p-3 rounded-xl bg-white dark:bg-gray-900 border border-lime-900/30 dark:border-lime-900">
+    <div className="mt-2 p-3 rounded-2xl bg-gray-900 border border-gray-700">
       {/* Reps × Weight row */}
       <div className="flex items-center gap-2 mb-2">
         {/* Warmup toggle */}
         <button
           onClick={() => setIsWarmup((v) => !v)}
           className={[
-            'flex-none w-8 h-8 rounded-lg text-xs font-bold transition-colors',
+            'flex-none w-8 h-8 rounded-xl text-xs font-bold',
             isWarmup
-              ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-              : 'bg-gray-100 dark:bg-gray-800 text-gray-400',
+              ? 'bg-amber-900/40 text-amber-400'
+              : 'bg-gray-800 text-gray-400',
           ].join(' ')}
           title="Warmup set"
         >
@@ -117,7 +117,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             onChange={(e) => setReps(e.target.value)}
             placeholder="Reps"
             min={1}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
+            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
           <span className="text-gray-400 text-sm flex-none">×</span>
           <input
@@ -128,7 +128,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             placeholder="kg"
             min={0}
             step={0.5}
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
+            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
           />
           <span className="text-gray-400 text-xs flex-none">kg</span>
         </div>
@@ -137,7 +137,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-none w-8 h-8 rounded-lg bg-lime-400 text-gray-900 flex items-center justify-center active:bg-lime-500 disabled:opacity-50"
+          className="flex-none w-8 h-8 rounded-xl bg-lime-400 text-gray-900 flex items-center justify-center active:bg-lime-500 disabled:opacity-50"
           aria-label="Save set"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -150,7 +150,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
       {!showRpe ? (
         <button
           onClick={() => setShowRpe(true)}
-          className="text-xs text-gray-400 hover:text-lime-400"
+          className="text-xs text-gray-500 active:text-lime-400"
         >
           + Add RPE / RIR
         </button>
@@ -165,7 +165,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRpe(e.target.value)}
               placeholder="1–10"
               min={1} max={10} step={0.5}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
           <div className="flex items-center gap-1 flex-1">
@@ -177,7 +177,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRir(e.target.value)}
               placeholder="0–5"
               min={0} max={5}
-              className="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
           </div>
         </div>
@@ -189,10 +189,10 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         placeholder="Note (optional)"
-        className="w-full mt-2 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-2 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-lime-400"
+        className="w-full mt-2 rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-lime-400"
       />
 
-      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
     </div>
   )
 }
@@ -207,7 +207,7 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
   return (
     <div className="relative overflow-hidden">
       {/* Red delete zone revealed as content slides left */}
-      <div className="absolute inset-y-0 right-0 w-16 flex items-center justify-center bg-red-500 text-white">
+      <div className="absolute inset-y-0 right-0 w-16 flex items-center justify-center bg-red-500 text-white rounded-r-xl">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
           <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
         </svg>
@@ -215,7 +215,7 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
 
       {/* Swipeable row content */}
       <div
-        className="flex items-center gap-2 py-1 bg-gray-50 dark:bg-gray-800/60"
+        className="flex items-center gap-2 py-1.5 bg-gray-800/40 rounded-xl px-1"
         style={{
           transform:  `translateX(${offsetX}px)`,
           transition: offsetX === 0 ? 'transform 0.25s ease' : 'none',
@@ -231,26 +231,26 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
         }}
       >
         <span className={[
-          'w-6 h-6 rounded flex items-center justify-center text-xs font-bold flex-none',
+          'w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold flex-none',
           set.isWarmup
-            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400'
-            : 'bg-lime-950 text-lime-700 dark:bg-lime-900/40 dark:text-lime-300',
+            ? 'bg-amber-900/40 text-amber-400'
+            : 'bg-lime-900/40 text-lime-300',
         ].join(' ')}>
           {set.isWarmup ? 'W' : set.setNumber}
         </span>
-        <span className="flex-1 text-sm min-w-0">
+        <span className="flex-1 text-sm min-w-0 text-white">
           <span className="block">
             {set.reps} × {set.weight} kg
-            {set.rpe != null && <span className="text-gray-400 text-xs ml-1">RPE {set.rpe}</span>}
-            {set.rir != null && <span className="text-gray-400 text-xs ml-1">RIR {set.rir}</span>}
+            {set.rpe != null && <span className="text-gray-500 text-xs ml-1">RPE {set.rpe}</span>}
+            {set.rir != null && <span className="text-gray-500 text-xs ml-1">RIR {set.rir}</span>}
           </span>
           {set.notes && (
-            <span className="block text-xs text-gray-400 dark:text-gray-500 truncate">{set.notes}</span>
+            <span className="block text-xs text-gray-500 truncate">{set.notes}</span>
           )}
         </span>
         <button
           onClick={onDelete}
-          className="flex-none text-gray-300 dark:text-gray-600 hover:text-red-400 p-0.5"
+          className="flex-none text-gray-600 active:text-red-400 p-0.5"
           aria-label="Delete set"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -409,28 +409,28 @@ export default function WorkoutLogger({ session }: Props) {
   const { sessionExercises, exerciseMap, setsMap, dayExerciseMap, dayName } = data
 
   return (
-    <div className="p-4">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="px-4 pt-6 pb-4">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between mb-5">
         <div>
-          <h1 className="text-xl font-bold truncate">
+          <h1 className="text-2xl font-bold text-white truncate">
             {dayName ?? 'Workout'}
           </h1>
-          <p className="text-xs text-gray-400 dark:text-gray-500 font-mono">{formatElapsed(elapsed)}</p>
+          <p className="text-xs text-gray-400 font-mono mt-0.5">{formatElapsed(elapsed)}</p>
         </div>
         <button
           onClick={finishWorkout}
           disabled={finishing}
-          className="rounded-lg bg-emerald-500 text-white px-4 py-2 text-sm font-semibold active:bg-emerald-600 disabled:opacity-60"
+          className="rounded-2xl bg-lime-400 text-gray-900 px-5 py-2.5 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
         >
           {finishing ? 'Finishing…' : 'Finish'}
         </button>
       </div>
 
-      {/* Exercise list */}
+      {/* ── Exercise list ── */}
       {sessionExercises.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 p-8 text-center text-gray-400 mb-4">
-          Tap <strong>Add Exercise</strong> to get started.
+        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 mb-4">
+          Tap <strong className="text-gray-300">Add Exercise</strong> to get started.
         </div>
       ) : (
         <ul className="flex flex-col gap-3 mb-4">
@@ -446,14 +446,14 @@ export default function WorkoutLogger({ session }: Props) {
             if (!exercise) return null
 
             return (
-              <li key={se.id} className="rounded-xl bg-gray-50 dark:bg-gray-800/60 px-3 py-3">
+              <li key={se.id} className="rounded-2xl bg-gray-800/60 px-3 py-3">
                 {/* Exercise header */}
                 <div className="flex items-center gap-2 mb-2">
                   <MuscleIcon muscleGroup={exercise.muscleGroup} width={28} height={42} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm truncate">{exercise.name}</p>
+                    <p className="font-semibold text-sm text-white truncate">{exercise.name}</p>
                     {dayEx && (
-                      <p className="text-xs text-gray-400 dark:text-gray-500">
+                      <p className="text-xs text-gray-400">
                         Target: {dayEx.targetSets} × {dayEx.targetReps}
                         {dayEx.targetWeight != null ? ` @ ${dayEx.targetWeight} kg` : ''}
                       </p>
@@ -469,7 +469,7 @@ export default function WorkoutLogger({ session }: Props) {
                         href={exercise.videoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex-none relative rounded overflow-hidden w-14 h-10"
+                        className="flex-none relative rounded-xl overflow-hidden w-14 h-10"
                         aria-label={`Watch ${exercise.name} demo`}
                       >
                         <img src={thumb} alt="" className="w-full h-full object-cover" />
@@ -483,7 +483,7 @@ export default function WorkoutLogger({ session }: Props) {
                   })()}
                   <button
                     onClick={() => removeExercise(se.id)}
-                    className="flex-none text-gray-300 dark:text-gray-600 hover:text-red-400 p-1"
+                    className="flex-none text-gray-600 active:text-red-400 p-1"
                     aria-label={`Remove ${exercise.name}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -494,7 +494,7 @@ export default function WorkoutLogger({ session }: Props) {
 
                 {/* Logged sets */}
                 {sets.length > 0 && (
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mb-2">
+                  <div className="border-t border-gray-700 pt-2 mb-2">
                     {sets.map((s) => (
                       <SetRow key={s.id} set={s} onDelete={() => deleteSet(s.id)} />
                     ))}
@@ -510,7 +510,6 @@ export default function WorkoutLogger({ session }: Props) {
                     targetWeight={dayEx?.targetWeight}
                     targetReps={dayEx?.targetReps}
                     onSaved={() => {
-                      // Keep form open for next set — just reset via key change
                       setActiveSeId(null)
                       requestAnimationFrame(() => setActiveSeId(se.id))
                     }}
@@ -518,7 +517,7 @@ export default function WorkoutLogger({ session }: Props) {
                 ) : (
                   <button
                     onClick={() => setActiveSeId(se.id)}
-                    className="w-full rounded-lg border border-dashed border-lime-300 dark:border-lime-700 text-lime-400 dark:text-lime-300 text-xs font-semibold py-2 active:bg-lime-950 dark:active:bg-lime-900/20"
+                    className="w-full rounded-xl border border-dashed border-lime-700 text-lime-400 text-xs font-semibold py-2 active:bg-lime-900/20"
                   >
                     + Log Set
                   </button>
@@ -532,7 +531,7 @@ export default function WorkoutLogger({ session }: Props) {
       {/* Add exercise */}
       <button
         onClick={() => setShowPicker(true)}
-        className="w-full rounded-xl border-2 border-dashed border-gray-200 dark:border-gray-700 text-gray-400 text-sm font-medium py-4 active:bg-gray-50 dark:active:bg-gray-800/40"
+        className="w-full rounded-2xl border-2 border-dashed border-gray-700 text-gray-400 text-sm font-medium py-4 active:border-gray-600"
       >
         + Add Exercise
       </button>

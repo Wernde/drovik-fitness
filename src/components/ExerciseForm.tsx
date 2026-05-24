@@ -106,16 +106,16 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       {/* Slide-up panel */}
-      <div className="w-full bg-white dark:bg-gray-900 rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-gray-900 rounded-t-2xl shadow-xl p-6 pb-10">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold">
+          <h2 className="text-lg font-bold text-white">
             {exercise ? 'Edit Exercise' : 'Add Exercise'}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1"
+            className="text-gray-500 active:text-gray-300 p-1"
             aria-label="Close"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -127,7 +127,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
         <div className="flex flex-col gap-4">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Name
             </label>
             <input
@@ -135,20 +135,20 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Incline Dumbbell Press"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
               autoFocus
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Category
             </label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ExerciseCategory)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
             >
               {CATEGORIES.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -158,13 +158,13 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
 
           {/* Muscle group */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label className="block text-sm font-medium text-gray-300 mb-1">
               Muscle Group
             </label>
             <select
               value={muscleGroup}
               onChange={(e) => setMuscleGroup(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
             >
               <option value="">Select muscle group…</option>
               {MUSCLE_GROUPS.map((g) => (
@@ -175,15 +175,15 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
 
           {/* Video URL */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              YouTube URL <span className="text-gray-400 font-normal">(optional)</span>
+            <label className="block text-sm font-medium text-gray-300 mb-1">
+              YouTube URL <span className="text-gray-500 font-normal">(optional)</span>
             </label>
             <input
               type="url"
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=…"
-              className="w-full rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
             />
             {/* Live thumbnail preview */}
             {thumbnailUrl && (
@@ -206,14 +206,14 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
 
           {/* Validation error */}
           {error && (
-            <p className="text-sm text-red-500">{error}</p>
+            <p className="text-sm text-red-400">{error}</p>
           )}
 
           {/* Save button */}
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-lg bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
+            className="w-full rounded-2xl bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
           >
             {saving ? 'Saving…' : exercise ? 'Save Changes' : 'Add Exercise'}
           </button>
