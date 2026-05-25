@@ -125,6 +125,24 @@ export interface BodyWeightLog extends BaseRecord {
   notes: string
 }
 
+// ── Body measurements ─────────────────────────────────────────────────────────
+
+export interface BodyMeasurementLog extends BaseRecord {
+  date:         string         // YYYY-MM-DD — one entry per day (upsert)
+  neckCm:       number | null
+  shouldersCm:  number | null
+  chestCm:      number | null
+  waistCm:      number | null
+  hipsCm:       number | null
+  leftArmCm:    number | null
+  rightArmCm:   number | null
+  leftThighCm:  number | null
+  rightThighCm: number | null
+  leftCalfCm:   number | null
+  rightCalfCm:  number | null
+  notes:        string
+}
+
 // ── Nutrition ─────────────────────────────────────────────────────────────────
 
 export interface NutritionLog extends BaseRecord {
@@ -165,6 +183,7 @@ class DrovikDB extends Dexie {
   nutritionLogs!: Table<NutritionLog>
   habits!: Table<Habit>
   habitCompletions!: Table<HabitCompletion>
+  bodyMeasurementLogs!: Table<BodyMeasurementLog>
 
   constructor() {
     super('drovik-fitness')
@@ -265,6 +284,23 @@ class DrovikDB extends Dexie {
       nutritionLogs:    'id, date',
       habits:           'id',
       habitCompletions: 'id, habitId, date',
+    })
+
+    // Version 10 — adds body measurement logging table.
+    this.version(10).stores({
+      exercises:            'id, category, muscleGroup, name',
+      programs:             'id',
+      programPhases:        'id, programId',
+      workoutDays:          'id, programId, phaseId',
+      dayExercises:         'id, workoutDayId, exerciseId',
+      workoutSessions:      'id, date, workoutDayId',
+      sessionExercises:     'id, workoutSessionId, exerciseId',
+      sets:                 'id, sessionExerciseId',
+      bodyWeightLogs:       'id, date',
+      nutritionLogs:        'id, date',
+      habits:               'id',
+      habitCompletions:     'id, habitId, date',
+      bodyMeasurementLogs:  'id, date',
     })
 
     // Version 7 — adds program phases and phaseId to workout days.

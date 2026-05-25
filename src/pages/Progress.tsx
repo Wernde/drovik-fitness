@@ -16,7 +16,7 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 import { db, now, today } from '../db/db'
-import type { Exercise, NutritionLog } from '../db/db'
+import type { Exercise, NutritionLog, BodyMeasurementLog } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -166,9 +166,9 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
   )
 }
 
-// ── Body weight tab ───────────────────────────────────────────────────────────
+// ── Body weight section ────────────────────────────────────────────────────────
 
-function BodyWeightTab() {
+function BodyWeightSection() {
   const [weight, setWeight] = useState('')
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState('')
@@ -186,14 +186,12 @@ function BodyWeightTab() {
   async function handleLog() {
     const val = parseFloat(weight)
     if (isNaN(val) || val <= 0) { setError('Enter a valid weight in kg.'); return }
-
     setSaving(true)
     setError('')
     try {
       const timestamp = now()
       const todayStr  = today()
       const existing  = await db.bodyWeightLogs.filter((l) => l.date === todayStr && !l.deleted).first()
-
       if (existing) {
         await db.bodyWeightLogs.update(existing.id, { weight: val, updatedAt: timestamp, syncedAt: null })
       } else {
@@ -212,28 +210,21 @@ function BodyWeightTab() {
 
   return (
     <div>
-      {/* Log today */}
       <div className="flex gap-2 mb-3">
         <input
-          type="number"
-          inputMode="decimal"
-          value={weight}
+          type="number" inputMode="decimal" value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          placeholder="Today's weight (kg)"
-          min={0}
-          step={0.1}
+          placeholder="Today's weight (kg)" min={0} step={0.1}
           className="flex-1 rounded-2xl border border-gray-700 bg-gray-800 text-white placeholder-gray-500 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
         />
         <button
-          onClick={handleLog}
-          disabled={saving}
+          onClick={handleLog} disabled={saving}
           className="flex-none rounded-2xl bg-lime-400 text-gray-900 px-4 py-2 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
         >
           {saving ? 'Saving…' : 'Log'}
         </button>
       </div>
       {error && <p className="text-sm text-red-400 mb-3">{error}</p>}
-
       {!logs ? null : logs.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 text-sm">
           No entries yet. Log your weight above.
@@ -246,15 +237,11 @@ function BodyWeightTab() {
               <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9ca3af' }} />
               <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} domain={['auto', 'auto']} />
-              <Tooltip
-                formatter={(val: number) => [`${val} kg`, 'Weight']}
-                contentStyle={chartTooltipStyle}
-              />
+              <Tooltip formatter={(val: number) => [`${val} kg`, 'Weight']} contentStyle={chartTooltipStyle} />
               <Line type="monotone" dataKey="weight" stroke="#a3e635" strokeWidth={2}
                 dot={{ r: 3, fill: '#a3e635' }} activeDot={{ r: 5 }} />
             </LineChart>
           </ResponsiveContainer>
-
           <div className="mt-3 border-t border-gray-700 pt-3">
             <ul className="flex flex-col gap-1">
               {[...logs].reverse().slice(0, 10).map((l) => (
@@ -267,6 +254,189 @@ function BodyWeightTab() {
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+// ── Measurements section ───────────────────────────────────────────────────────
+
+type MeasFields = Omit<BodyMeasurementLog, keyof import('../db/db').BaseRecord | 'date' | 'notes'>
+
+const MEAS_FIELDS: Array<{ key: keyof MeasFields; label: string; primary: boolean }> = [
+  { key: 'chestCm',      label: 'Chest',      primary: true  },
+  { key: 'waistCm',      label: 'Waist',      primary: true  },
+  { key: 'hipsCm',       label: 'Hips',       primary: true  },
+  { key: 'leftArmCm',    label: 'L. Arm',     primary: true  },
+  { key: 'rightArmCm',   label: 'R. Arm',     primary: true  },
+  { key: 'neckCm',       label: 'Neck',       primary: false },
+  { key: 'shouldersCm',  label: 'Shoulders',  primary: false },
+  { key: 'leftThighCm',  label: 'L. Thigh',   primary: false },
+  { key: 'rightThighCm', label: 'R. Thigh',   primary: false },
+  { key: 'leftCalfCm',   label: 'L. Calf',    primary: false },
+  { key: 'rightCalfCm',  label: 'R. Calf',    primary: false },
+]
+
+function MeasurementsSection() {
+  const [vals,     setVals]     = useState<Record<string, string>>({})
+  const [showMore, setShowMore] = useState(false)
+  const [saving,   setSaving]   = useState(false)
+  const [error,    setError]    = useState('')
+
+  const logs = useLiveQuery(
+    () => db.bodyMeasurementLogs
+      .filter((l) => !l.deleted)
+      .toArray()
+      .then((list) => list.sort((a, b) => b.date.localeCompare(a.date))),
+    [],
+  )
+
+  // Pre-fill from today's existing entry
+  const todayStr = today()
+  const todayLog = logs?.find((l) => l.date === todayStr)
+
+  function fieldVal(key: string) {
+    if (key in vals) return vals[key]
+    const v = todayLog?.[key as keyof BodyMeasurementLog]
+    return v != null ? String(v) : ''
+  }
+
+  function set(key: string, s: string) {
+    setVals((prev) => ({ ...prev, [key]: s }))
+  }
+
+  async function handleSave() {
+    const parsed: Partial<Record<keyof MeasFields, number | null>> = {}
+    for (const { key } of MEAS_FIELDS) {
+      const s = fieldVal(key)
+      if (s.trim() === '') { parsed[key] = null; continue }
+      const n = parseFloat(s)
+      if (isNaN(n) || n <= 0) { setError(`Invalid value for ${key}.`); return }
+      parsed[key] = n
+    }
+
+    setSaving(true)
+    setError('')
+    try {
+      const timestamp = now()
+      const base = {
+        neckCm: null, shouldersCm: null, chestCm: null, waistCm: null,
+        hipsCm: null, leftArmCm: null, rightArmCm: null,
+        leftThighCm: null, rightThighCm: null, leftCalfCm: null, rightCalfCm: null,
+        ...parsed,
+        notes: '',
+      }
+      if (todayLog) {
+        await db.bodyMeasurementLogs.update(todayLog.id, { ...base, updatedAt: timestamp, syncedAt: null })
+      } else {
+        await db.bodyMeasurementLogs.add({
+          id: crypto.randomUUID(), date: todayStr, ...base,
+          createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
+        })
+      }
+      setVals({})
+    } catch {
+      setError('Something went wrong.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const visible = MEAS_FIELDS.filter((f) => showMore || f.primary)
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Entry form */}
+      <div className="rounded-2xl bg-gray-800/60 p-4 flex flex-col gap-3">
+        <p className="text-xs text-gray-400">Log measurements (cm) — one entry per day</p>
+
+        <div className="grid grid-cols-3 gap-2">
+          {visible.map(({ key, label }) => (
+            <div key={key}>
+              <label className="block text-xs text-gray-500 mb-1">{label}</label>
+              <input
+                type="number" inputMode="decimal" min={0} step={0.1}
+                value={fieldVal(key)}
+                onChange={(e) => set(key, e.target.value)}
+                placeholder="cm"
+                className="w-full rounded-xl border border-gray-700 bg-gray-900 text-white px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-lime-400"
+              />
+            </div>
+          ))}
+        </div>
+
+        <button
+          onClick={() => setShowMore((v) => !v)}
+          className="text-xs text-gray-500 active:text-lime-400 text-left"
+        >
+          {showMore ? '− Less' : '+ More measurements'}
+        </button>
+
+        {error && <p className="text-xs text-red-400">{error}</p>}
+
+        <button
+          onClick={handleSave} disabled={saving}
+          className="w-full rounded-2xl bg-lime-400 text-gray-900 py-2.5 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
+        >
+          {saving ? 'Saving…' : todayLog ? 'Update Today' : 'Log Today'}
+        </button>
+      </div>
+
+      {/* Recent entries */}
+      {logs && logs.length > 0 && (
+        <ul className="flex flex-col gap-2">
+          {logs.slice(0, 10).map((l) => {
+            const filled = MEAS_FIELDS.filter(({ key }) => l[key as keyof BodyMeasurementLog] != null)
+            return (
+              <li key={l.id} className="rounded-2xl bg-gray-800/60 px-4 py-3">
+                <p className="text-sm font-semibold text-white mb-2">{shortDate(l.date)}</p>
+                <div className="grid grid-cols-3 gap-x-4 gap-y-1">
+                  {filled.map(({ key, label }) => (
+                    <div key={key} className="flex justify-between gap-1">
+                      <span className="text-xs text-gray-500">{label}</span>
+                      <span className="text-xs text-white font-medium">
+                        {l[key as keyof BodyMeasurementLog]} cm
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+
+      {logs?.length === 0 && (
+        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 text-sm">
+          No measurements yet. Log today's above.
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Body tab (weight + measurements) ─────────────────────────────────────────
+
+function BodyTab() {
+  const [sub, setSub] = useState<'weight' | 'measure'>('weight')
+
+  return (
+    <div>
+      <div className="flex gap-1 bg-gray-800 rounded-xl p-1 mb-4">
+        {(['weight', 'measure'] as const).map((s) => (
+          <button
+            key={s}
+            onClick={() => setSub(s)}
+            className={[
+              'flex-1 rounded-lg py-1.5 text-xs font-semibold',
+              sub === s ? 'bg-lime-400 text-gray-900' : 'text-gray-400',
+            ].join(' ')}
+          >
+            {s === 'weight' ? 'Weight' : 'Measurements'}
+          </button>
+        ))}
+      </div>
+      {sub === 'weight'  && <BodyWeightSection />}
+      {sub === 'measure' && <MeasurementsSection />}
     </div>
   )
 }
@@ -581,7 +751,7 @@ export default function Progress() {
       </div>
 
       {tab === 'lifts'      && <LiftChartTab exercises={exercises} />}
-      {tab === 'bodyweight' && <BodyWeightTab />}
+      {tab === 'bodyweight' && <BodyTab />}
       {tab === 'prs'        && <PRsTab exercises={exercises} />}
       {tab === 'nutrition'  && <NutritionTab />}
       {tab === 'habits'     && <HabitsTab />}
