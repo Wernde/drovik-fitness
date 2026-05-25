@@ -76,6 +76,25 @@ function IconSearch() {
   )
 }
 
+function IconCalculator() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
+      strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+      <rect x="4" y="2" width="16" height="20" rx="2" />
+      <line x1="8" y1="6" x2="16" y2="6" />
+      <line x1="8" y1="10" x2="8" y2="10" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="12" y1="10" x2="12" y2="10" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="16" y1="10" x2="16" y2="10" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="8" y1="14" x2="8" y2="14" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="12" y1="14" x2="12" y2="14" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="16" y1="14" x2="16" y2="14" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="8" y1="18" x2="8" y2="18" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="12" y1="18" x2="12" y2="18" strokeWidth={2.5} strokeLinecap="round" />
+      <line x1="16" y1="18" x2="16" y2="18" strokeWidth={2.5} strokeLinecap="round" />
+    </svg>
+  )
+}
+
 function IconSettings() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}
@@ -98,11 +117,12 @@ function IconArrow() {
 // ── Quick-access pills data ───────────────────────────────────────────────────
 
 const PILLS = [
-  { to: '/log',       label: 'Log',       Icon: IconPlay },
-  { to: '/programs',  label: 'Programs',  Icon: IconGrid },
-  { to: '/history',   label: 'History',   Icon: IconCalendar },
-  { to: '/progress',  label: 'Progress',  Icon: IconChart },
-  { to: '/exercises', label: 'Exercises', Icon: IconSearch },
+  { to: '/log',        label: 'Log',        Icon: IconPlay },
+  { to: '/programs',   label: 'Programs',   Icon: IconGrid },
+  { to: '/history',    label: 'History',    Icon: IconCalendar },
+  { to: '/progress',   label: 'Progress',   Icon: IconChart },
+  { to: '/exercises',  label: 'Exercises',  Icon: IconSearch },
+  { to: '/calculator', label: 'Calculator', Icon: IconCalculator },
 ]
 
 // ── Component ─────────────────────────────────────────────────────────────────
