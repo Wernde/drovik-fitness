@@ -335,6 +335,112 @@ function WarmupRamp() {
   )
 }
 
+// ── 1RM Calculator section ────────────────────────────────────────────────────
+// Uses the Epley formula: e1RM = weight × (1 + reps / 30)
+
+const PERCENTAGES = [100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50]
+
+function epley1rm(weight: number, reps: number): number {
+  return weight * (1 + reps / 30)
+}
+
+// Reps at a given fraction derived by inverting Epley (min 1)
+function repsAtPct(pct: number): number {
+  return Math.max(1, Math.round(30 * (100 / pct - 1)))
+}
+
+function OneRepMaxCalc() {
+  const [weightStr, setWeightStr] = useState('')
+  const [repsStr,   setRepsStr]   = useState('')
+
+  const weight = parseFloat(weightStr)
+  const reps   = parseInt(repsStr, 10)
+  const valid  = !isNaN(weight) && weight > 0 && !isNaN(reps) && reps >= 1 && reps <= 30
+
+  const e1rm = valid ? epley1rm(weight, reps) : null
+
+  return (
+    <div className="rounded-2xl bg-gray-800/60 p-4 flex flex-col gap-4">
+      <h2 className="text-base font-bold text-white">1RM Estimator</h2>
+
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <label className="block text-xs text-gray-400 mb-1">Weight lifted (kg)</label>
+          <input
+            type="number"
+            inputMode="decimal"
+            value={weightStr}
+            onChange={(e) => setWeightStr(e.target.value)}
+            placeholder="e.g. 100"
+            min={0}
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+          />
+        </div>
+        <div className="w-24">
+          <label className="block text-xs text-gray-400 mb-1">Reps done</label>
+          <input
+            type="number"
+            inputMode="numeric"
+            value={repsStr}
+            onChange={(e) => setRepsStr(e.target.value)}
+            placeholder="e.g. 5"
+            min={1}
+            max={30}
+            className="w-full rounded-xl border border-gray-700 bg-gray-900 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+          />
+        </div>
+      </div>
+
+      {e1rm && (
+        <>
+          <div className="flex items-baseline gap-2">
+            <span className="text-3xl font-bold text-lime-400 tabular-nums">
+              {Math.round(e1rm * 10) / 10} kg
+            </span>
+            <span className="text-sm text-gray-400">estimated 1RM</span>
+          </div>
+
+          {/* Percentage table */}
+          <div className="flex flex-col gap-1">
+            <div className="grid grid-cols-3 text-xs text-gray-500 font-medium px-1 mb-0.5">
+              <span>%</span>
+              <span className="text-center">Weight</span>
+              <span className="text-right">~Reps</span>
+            </div>
+            {PERCENTAGES.map((pct) => {
+              const w    = Math.round(e1rm! * (pct / 100) * 4) / 4  // nearest 0.25 kg
+              const r    = repsAtPct(pct)
+              const isWorkSet = pct === 100
+              return (
+                <div
+                  key={pct}
+                  className={[
+                    'grid grid-cols-3 px-3 py-1.5 rounded-xl text-sm',
+                    isWorkSet
+                      ? 'bg-lime-400/10 border border-lime-400/20'
+                      : 'bg-gray-900',
+                  ].join(' ')}
+                >
+                  <span className={isWorkSet ? 'font-semibold text-lime-400' : 'text-gray-400'}>
+                    {pct}%
+                  </span>
+                  <span className={`text-center font-bold tabular-nums ${isWorkSet ? 'text-lime-400' : 'text-white'}`}>
+                    {w.toFixed(w % 1 === 0 ? 0 : 1)} kg
+                  </span>
+                  <span className={`text-right tabular-nums ${isWorkSet ? 'text-lime-400' : 'text-gray-400'}`}>
+                    {r === 1 ? '1' : `~${r}`}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+          <p className="text-xs text-gray-600 text-center">Epley formula · best for 2–10 rep sets</p>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ── Page ───────────────────────────────────────────────────────────────────────
 
 export default function Calculator() {
@@ -343,6 +449,7 @@ export default function Calculator() {
       <h1 className="text-2xl font-bold text-white">Calculator</h1>
       <PlateCalculator />
       <WarmupRamp />
+      <OneRepMaxCalc />
     </div>
   )
 }
