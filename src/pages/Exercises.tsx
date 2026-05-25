@@ -56,6 +56,7 @@ const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
 export default function Exercises() {
   const [search,        setSearch]        = useState('')
   const [filter,        setFilter]        = useState<FilterCategory>('all')
+  const [muscleFilter,  setMuscleFilter]  = useState('all')
   const [formOpen,      setFormOpen]      = useState(false)
   const [editing,       setEditing]       = useState<Exercise | undefined>(undefined)
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
@@ -68,8 +69,17 @@ export default function Exercises() {
     return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
   }
 
-  const filtered = exercises
-    .filter((e) => filter === 'all' || e.category === filter)
+  // Unique muscle groups derived from the currently-category-filtered set
+  const categoryFiltered = exercises.filter((e) => filter === 'all' || e.category === filter)
+  const muscleGroups = ['all', ...Array.from(
+    new Set(categoryFiltered.map((e) => e.muscleGroup))
+  ).sort()]
+
+  // Reset muscle filter when it's no longer valid for the new category
+  const activeMuscle = muscleGroups.includes(muscleFilter) ? muscleFilter : 'all'
+
+  const filtered = categoryFiltered
+    .filter((e) => activeMuscle === 'all' || e.muscleGroup === activeMuscle)
     .filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -113,11 +123,11 @@ export default function Exercises() {
       </div>
 
       {/* ── Category filter pills ── */}
-      <div className="flex gap-2 overflow-x-auto pb-1 mb-4 scrollbar-hide -mx-4 px-4">
+      <div className="flex gap-2 overflow-x-auto pb-1 mb-2 scrollbar-hide -mx-4 px-4">
         {FILTERS.map(({ value, label }) => (
           <button
             key={value}
-            onClick={() => setFilter(value)}
+            onClick={() => { setFilter(value); setMuscleFilter('all') }}
             className={[
               'flex-none rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap',
               filter === value
@@ -129,6 +139,26 @@ export default function Exercises() {
           </button>
         ))}
       </div>
+
+      {/* ── Muscle group filter pills ── */}
+      {muscleGroups.length > 2 && (
+        <div className="flex gap-2 overflow-x-auto pb-1 mb-4 scrollbar-hide -mx-4 px-4">
+          {muscleGroups.map((mg) => (
+            <button
+              key={mg}
+              onClick={() => setMuscleFilter(mg)}
+              className={[
+                'flex-none rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap',
+                activeMuscle === mg
+                  ? 'bg-gray-200 text-gray-900'
+                  : 'bg-gray-800/80 text-gray-500',
+              ].join(' ')}
+            >
+              {mg === 'all' ? 'All muscles' : mg}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* ── Count ── */}
       <p className="text-xs text-gray-500 mb-3">
