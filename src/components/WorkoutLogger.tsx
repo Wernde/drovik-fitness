@@ -14,6 +14,7 @@ import type { WorkoutSession, SessionExercise, LoggedSet, DayExercise, Exercise 
 import ExercisePicker from './ExercisePicker'
 import MuscleIcon from './MuscleIcon'
 import RestTimer from './RestTimer'
+import WorkoutSummary from './WorkoutSummary'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { useToast } from '../contexts/ToastContext'
 
@@ -294,11 +295,12 @@ type SessionData = {
 export default function WorkoutLogger({ session }: Props) {
   const { showToast } = useToast()
 
-  const [activeSeId, setActiveSeId]   = useState<string | null>(null)
-  const [showPicker, setShowPicker]   = useState(false)
-  const [finishing,  setFinishing]    = useState(false)
-  const [elapsed,    setElapsed]      = useState(0)
-  const [restTimer,  setRestTimer]    = useState<{ secs: number; exerciseName: string } | null>(null)
+  const [activeSeId,   setActiveSeId]   = useState<string | null>(null)
+  const [showPicker,   setShowPicker]   = useState(false)
+  const [showSummary,  setShowSummary]  = useState(false)
+  const [finishing,    setFinishing]    = useState(false)
+  const [elapsed,      setElapsed]      = useState(0)
+  const [restTimer,    setRestTimer]    = useState<{ secs: number; exerciseName: string } | null>(null)
 
   // Elapsed timer — ticks every second.
   useEffect(() => {
@@ -435,7 +437,7 @@ export default function WorkoutLogger({ session }: Props) {
           <p className="text-xs text-gray-400 font-mono mt-0.5">{formatElapsed(elapsed)}</p>
         </div>
         <button
-          onClick={finishWorkout}
+          onClick={() => setShowSummary(true)}
           disabled={finishing}
           className="rounded-2xl bg-lime-400 text-gray-900 px-5 py-2.5 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
         >
@@ -572,6 +574,14 @@ export default function WorkoutLogger({ session }: Props) {
           defaultSecs={restTimer.secs}
           exerciseName={restTimer.exerciseName}
           onDismiss={() => setRestTimer(null)}
+        />
+      )}
+
+      {showSummary && (
+        <WorkoutSummary
+          session={session}
+          onFinish={() => { setShowSummary(false); finishWorkout() }}
+          onBack={() => setShowSummary(false)}
         />
       )}
     </div>
