@@ -17,6 +17,7 @@ import {
 } from 'recharts'
 import { db, now, today } from '../db/db'
 import type { Exercise, NutritionLog } from '../db/db'
+import HabitsTab from '../components/HabitsTab'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -535,13 +536,14 @@ function NutritionTab() {
 
 // ── Main Progress page ────────────────────────────────────────────────────────
 
-type Tab = 'lifts' | 'bodyweight' | 'prs' | 'nutrition'
+type Tab = 'lifts' | 'bodyweight' | 'prs' | 'nutrition' | 'habits'
 
 const TABS: { value: Tab; label: string }[] = [
   { value: 'lifts',      label: 'Lifts' },
   { value: 'bodyweight', label: 'Weight' },
   { value: 'prs',        label: 'PRs' },
   { value: 'nutrition',  label: 'Nutrition' },
+  { value: 'habits',     label: 'Habits' },
 ]
 
 export default function Progress() {
@@ -581,6 +583,8 @@ export default function Progress() {
       {tab === 'lifts'      && <LiftChartTab exercises={exercises} />}
       {tab === 'bodyweight' && <BodyWeightTab />}
       {tab === 'prs'        && <PRsTab exercises={exercises} />}
+      {tab === 'nutrition'  && <NutritionTab />}
+      {tab === 'habits'     && <HabitsTab />}
     </div>
   )
 }

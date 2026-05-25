@@ -137,6 +137,19 @@ export interface NutritionLog extends BaseRecord {
   notes: string
 }
 
+// ── Habits ────────────────────────────────────────────────────────────────────
+
+export interface Habit extends BaseRecord {
+  name: string
+  color: string    // preset key: 'lime' | 'blue' | 'amber' | 'rose' | 'purple' | 'cyan'
+  archived: boolean
+}
+
+export interface HabitCompletion extends BaseRecord {
+  habitId: string
+  date: string     // YYYY-MM-DD
+}
+
 // ── Database class ────────────────────────────────────────────────────────────
 
 class DrovikDB extends Dexie {
@@ -150,6 +163,8 @@ class DrovikDB extends Dexie {
   sets!: Table<LoggedSet>
   bodyWeightLogs!: Table<BodyWeightLog>
   nutritionLogs!: Table<NutritionLog>
+  habits!: Table<Habit>
+  habitCompletions!: Table<HabitCompletion>
 
   constructor() {
     super('drovik-fitness')
@@ -234,6 +249,22 @@ class DrovikDB extends Dexie {
       sets:             'id, sessionExerciseId',
       bodyWeightLogs:   'id, date',
       nutritionLogs:    'id, date',
+    })
+
+    // Version 9 — adds habit tracking tables.
+    this.version(9).stores({
+      exercises:        'id, category, muscleGroup, name',
+      programs:         'id',
+      programPhases:    'id, programId',
+      workoutDays:      'id, programId, phaseId',
+      dayExercises:     'id, workoutDayId, exerciseId',
+      workoutSessions:  'id, date, workoutDayId',
+      sessionExercises: 'id, workoutSessionId, exerciseId',
+      sets:             'id, sessionExerciseId',
+      bodyWeightLogs:   'id, date',
+      nutritionLogs:    'id, date',
+      habits:           'id',
+      habitCompletions: 'id, habitId, date',
     })
 
     // Version 7 — adds program phases and phaseId to workout days.
