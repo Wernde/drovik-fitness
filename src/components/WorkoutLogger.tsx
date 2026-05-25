@@ -13,6 +13,7 @@ import { db, now } from '../db/db'
 import type { WorkoutSession, SessionExercise, LoggedSet, DayExercise, Exercise } from '../db/db'
 import ExercisePicker from './ExercisePicker'
 import MuscleIcon from './MuscleIcon'
+import RestTimer from './RestTimer'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { useToast } from '../contexts/ToastContext'
 
@@ -297,6 +298,7 @@ export default function WorkoutLogger({ session }: Props) {
   const [showPicker, setShowPicker]   = useState(false)
   const [finishing,  setFinishing]    = useState(false)
   const [elapsed,    setElapsed]      = useState(0)
+  const [restTimer,  setRestTimer]    = useState<{ secs: number; exerciseName: string } | null>(null)
 
   // Elapsed timer — ticks every second.
   useEffect(() => {
@@ -530,6 +532,7 @@ export default function WorkoutLogger({ session }: Props) {
                     targetWeight={dayEx?.targetWeight}
                     targetReps={dayEx?.targetReps}
                     onSaved={() => {
+                      setRestTimer({ secs: dayEx?.restSecs ?? 90, exerciseName: exercise.name })
                       setActiveSeId(null)
                       requestAnimationFrame(() => setActiveSeId(se.id))
                     }}
@@ -561,6 +564,14 @@ export default function WorkoutLogger({ session }: Props) {
           onSelect={addExercise}
           onClose={() => setShowPicker(false)}
           existingIds={existingExerciseIds}
+        />
+      )}
+
+      {restTimer && (
+        <RestTimer
+          defaultSecs={restTimer.secs}
+          exerciseName={restTimer.exerciseName}
+          onDismiss={() => setRestTimer(null)}
         />
       )}
     </div>
