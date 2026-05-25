@@ -4,6 +4,29 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Phase 8 — Training Tools & Progress Depth
+
+### Added
+- **Post-workout summary modal** — tapping Finish shows a summary before locking the session: session duration, working set count, total volume (auto-scales to tonnes), a bar chart of sets per muscle group (top 5), and highlighted PRs broken during the session (new estimated 1RM per exercise)
+- **Rest timer** — appears automatically after every logged set as a fixed panel above the nav bar; uses the exercise's configured rest target or 90 s by default; includes −30 s / +30 s adjust buttons, a draining progress bar, a Web Audio API beep + haptic vibration at zero, and a Skip button; auto-dismisses 2.5 s after completion
+- **Plate calculator** — new Calculator page (linked from Home) shows which plates to load on each side of the bar for any target weight; supports 20/15/10 kg barbell presets or custom; coloured plate chips (red=25 kg, blue=20 kg, yellow=15 kg, green=10 kg, etc.) plus a mini bar graphic; warns when exact weight is not achievable with standard plates
+- **Warm-up ramp** — on the same Calculator page; enter a working weight and get 40/60/80% warm-up sets rounded to nearest 2.5 kg, with the plate breakdown for each set
+- **Body measurements** — new Measurements sub-tab inside Progress → Body; log chest, waist, hips, L/R arm (always visible), plus neck, shoulders, L/R thigh, L/R calf (expandable); one entry per day upsert; recent entries shown as a grid below the form; DB version 10
+- **Nutrition logging** — Progress → Nutrition tab; daily entry for calories, protein, carbs, fat, and water (all optional); calorie line chart; recent entries with coloured macro badges; DB version 8
+- **Habit tracking** — Progress → Habits tab; add daily habits with 6 colour presets; tap to toggle today's completion; shows current streak (🔥), 7-day progress bar, and best streak; slide-up form with confirm-delete; DB version 9
+- **Year training heatmap** — History page now opens with a 52-week GitHub-style contribution grid; lime squares for workout days, session count and longest consecutive-day streak shown in the header
+- **Program phases** — program builder supports optional training phases (e.g. Hypertrophy, Strength, Deload); each phase has a name and optional week count; days can be assigned to phases; deleting a phase moves its days to unassigned rather than deleting them; DB version 7
+- **Machine setting on logged sets** — `machineSetting` text field on each set entry (e.g. "seat 3, pin 8"); shown in the set row and session history; DB upgrade backfills existing rows
+- **Rest seconds on day exercises** — `restSecs` field in the program's exercise config; shown in the workout logger header and used as the rest timer's default for that exercise
+- **Exercise instructions** — `instructions` field on exercises; shown as a hint in the workout logger; editable in the exercise form
+- **YouTube demo links** — `videoUrl` on exercises; shown as a tappable thumbnail in the workout logger that opens the video in-browser
+
+### Fixed
+- Deployment: deleted two conflicting GitHub Actions workflows (`static.yml`, `jekyll-gh-pages.yml`) that were serving raw source files instead of the compiled build — the app was never deploying correctly to GitHub Pages before this fix
+- Progress → Nutrition tab was wired into the tab list but its render line was missing; fixed alongside the Habits tab addition
+
+---
+
 ## Exercise Library Expansion
 
 ### Added

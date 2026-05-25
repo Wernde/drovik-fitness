@@ -12,6 +12,106 @@ function isoDate(d: Date) { return d.toISOString().slice(0, 10) }
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
+// ── Year heatmap ──────────────────────────────────────────────────────────────
+
+function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
+  // Start from the Monday 51 full weeks before the current week's Monday
+  const today = new Date()
+  today.setHours(12, 0, 0, 0)
+  const dow        = today.getDay()                        // 0=Sun … 6=Sat
+  const toMonday   = dow === 0 ? 6 : dow - 1              // days since last Monday
+  const weekStart  = new Date(today)
+  weekStart.setDate(today.getDate() - toMonday - 51 * 7)  // Monday 52 weeks ago
+
+  // Build 52 weeks × 7 days
+  const weeks: string[][] = Array.from({ length: 52 }, (_, w) =>
+    Array.from({ length: 7 }, (_, d) => {
+      const date = new Date(weekStart)
+      date.setDate(weekStart.getDate() + w * 7 + d)
+      return date.toISOString().slice(0, 10)
+    })
+  )
+
+  // Month labels: one per week when the month changes
+  const monthLabels = new Map<number, string>()
+  let lastMonth = -1
+  for (let w = 0; w < 52; w++) {
+    const m = new Date(weeks[w][0]).getMonth()
+    if (m !== lastMonth) {
+      monthLabels.set(w, new Date(weeks[w][0]).toLocaleDateString('en-AU', { month: 'short' }))
+      lastMonth = m
+    }
+  }
+
+  const todayStr   = isoDate(today)
+  const allDays    = weeks.flat()
+  const totalInRange = allDays.filter((d) => sessionDates.has(d)).length
+
+  // Longest streak in the visible range
+  let longest = 0, run = 0
+  for (const d of allDays) {
+    if (sessionDates.has(d)) { run++; if (run > longest) longest = run }
+    else run = 0
+  }
+
+  return (
+    <div className="rounded-2xl bg-gray-800/60 p-4 mb-5">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs text-gray-400">Last 52 weeks</p>
+        <div className="flex gap-3">
+          <span className="text-xs text-lime-400 font-semibold">{totalInRange} sessions</span>
+          {longest > 1 && (
+            <span className="text-xs text-amber-400 font-semibold">🔥 {longest}-day streak</span>
+          )}
+        </div>
+      </div>
+
+      {/* Scrollable grid */}
+      <div className="overflow-x-auto -mx-1 px-1">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {/* Month labels row */}
+          <div style={{ display: 'flex', gap: 2 }}>
+            {weeks.map((_, wi) => (
+              <div key={wi} style={{ width: 12, flexShrink: 0 }}>
+                {monthLabels.has(wi) && (
+                  <span style={{ fontSize: 8, color: '#6b7280', whiteSpace: 'nowrap',
+                    display: 'block', transform: 'translateX(-2px)' }}>
+                    {monthLabels.get(wi)}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* 7 day rows */}
+          {Array.from({ length: 7 }, (_, d) => (
+            <div key={d} style={{ display: 'flex', gap: 2 }}>
+              {weeks.map((week, wi) => {
+                const day        = week[d]
+                const hasSession = sessionDates.has(day)
+                const isToday    = day === todayStr
+                const isFuture   = day > todayStr
+                return (
+                  <div
+                    key={wi}
+                    style={{ width: 12, height: 12, borderRadius: 2, flexShrink: 0 }}
+                    className={
+                      isFuture ? 'bg-gray-800'
+                      : isToday ? 'bg-lime-400 ring-1 ring-lime-300 ring-offset-0'
+                      : hasSession ? 'bg-lime-500'
+                      : 'bg-gray-700'
+                    }
+                  />
+                )
+              })}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function buildCalendarDays(year: number, month: number) {
   const firstDay = new Date(year, month, 1)
   const lastDay  = new Date(year, month + 1, 0)
@@ -67,6 +167,9 @@ export default function History() {
   return (
     <div className="px-4 pt-6 pb-4">
       <h1 className="text-2xl font-bold text-white mb-5">History</h1>
+
+      {/* ── Year heatmap ── */}
+      <YearHeatmap sessionDates={sessionDates} />
 
       {/* ── Calendar ── */}
       <div className="rounded-2xl bg-gray-800/60 p-4 mb-5">
