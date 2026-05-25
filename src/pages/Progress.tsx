@@ -42,9 +42,12 @@ const chartTooltipStyle = {
 
 // ── Lift chart tab ────────────────────────────────────────────────────────────
 
+type ChartMode = 'e1rm' | 'volume'
+
 function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
   const [selectedId, setSelectedId] = useState<string>('')
   const [search,     setSearch]     = useState('')
+  const [chartMode,  setChartMode]  = useState<ChartMode>('e1rm')
 
   const filteredEx = exercises
     .filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()))
@@ -76,19 +79,34 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
     const sessionDateMap = new Map(sessions.map((s) => [s.id, s.date]))
     const seSessionMap   = new Map(sessionExercises.map((se) => [se.id, se.workoutSessionId]))
 
-    const byDate = new Map<string, number>()
+    const byDate = new Map<string, { e1rm: number; volume: number }>()
     for (const s of sets) {
       const sessionId = seSessionMap.get(s.sessionExerciseId)
       const date      = sessionId ? sessionDateMap.get(sessionId) : undefined
       if (!date) continue
       const e1rm = epley(s.weight, s.reps)
-      if (!byDate.has(date) || byDate.get(date)! < e1rm) byDate.set(date, e1rm)
+      const vol  = s.weight * s.reps
+      const cur  = byDate.get(date)
+      byDate.set(date, {
+        e1rm:   cur ? Math.max(cur.e1rm, e1rm) : e1rm,
+        volume: cur ? cur.volume + vol : vol,
+      })
     }
 
     return [...byDate.entries()]
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, e1rm]) => ({ date: shortDate(date), e1rm }))
+      .map(([date, { e1rm, volume }]) => ({
+        date: shortDate(date),
+        e1rm,
+        volume: Math.round(volume),
+      }))
   }, [selectedId])
+
+  const isE1rm   = chartMode === 'e1rm'
+  const dataKey  = isE1rm ? 'e1rm' : 'volume'
+  const label    = isE1rm ? 'Est. 1RM' : 'Volume'
+  const unit     = isE1rm ? 'kg' : 'kg'
+  const chartLabel = isE1rm ? 'Estimated 1RM (kg) per session' : 'Total volume (kg) per session'
 
   return (
     <div>
@@ -138,23 +156,39 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
             </button>
           </div>
 
+          {/* Mode toggle */}
+          <div className="flex gap-1 bg-gray-800 rounded-xl p-1 mb-3">
+            {(['e1rm', 'volume'] as ChartMode[]).map((m) => (
+              <button
+                key={m}
+                onClick={() => setChartMode(m)}
+                className={[
+                  'flex-1 rounded-lg py-1.5 text-xs font-semibold',
+                  chartMode === m ? 'bg-lime-400 text-gray-900' : 'text-gray-400',
+                ].join(' ')}
+              >
+                {m === 'e1rm' ? 'Est. 1RM' : 'Volume'}
+              </button>
+            ))}
+          </div>
+
           {!chartData || chartData.length === 0 ? (
             <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 text-sm">
               No data yet. Log some sets to see your progress.
             </div>
           ) : (
             <div className="rounded-2xl bg-gray-800/60 p-4">
-              <p className="text-xs text-gray-400 mb-3">Estimated 1RM (kg) over time</p>
+              <p className="text-xs text-gray-400 mb-3">{chartLabel}</p>
               <ResponsiveContainer width="100%" height={180}>
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#9ca3af' }} />
                   <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} domain={['auto', 'auto']} />
                   <Tooltip
-                    formatter={(val: number) => [`${val} kg`, 'Est. 1RM']}
+                    formatter={(val: number) => [`${val} ${unit}`, label]}
                     contentStyle={chartTooltipStyle}
                   />
-                  <Line type="monotone" dataKey="e1rm" stroke="#a3e635" strokeWidth={2}
+                  <Line type="monotone" dataKey={dataKey} stroke="#a3e635" strokeWidth={2}
                     dot={{ r: 3, fill: '#a3e635' }} activeDot={{ r: 5 }} />
                 </LineChart>
               </ResponsiveContainer>

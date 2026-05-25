@@ -301,6 +301,8 @@ export default function WorkoutLogger({ session }: Props) {
   const [finishing,    setFinishing]    = useState(false)
   const [elapsed,      setElapsed]      = useState(0)
   const [restTimer,    setRestTimer]    = useState<{ secs: number; exerciseName: string } | null>(null)
+  const [sessionNotes, setSessionNotes] = useState(session.notes)
+  const [showNotes,    setShowNotes]    = useState(!!session.notes)
 
   // Elapsed timer — ticks every second.
   useEffect(() => {
@@ -420,6 +422,12 @@ export default function WorkoutLogger({ session }: Props) {
     }
   }
 
+  async function saveNotes(value: string) {
+    try {
+      await db.workoutSessions.update(session.id, { notes: value.trim(), updatedAt: now(), syncedAt: null })
+    } catch { /* best-effort */ }
+  }
+
   if (!data) {
     return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
   }
@@ -429,7 +437,7 @@ export default function WorkoutLogger({ session }: Props) {
   return (
     <div className="px-4 pt-6 pb-4">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-3">
         <div>
           <h1 className="text-2xl font-bold text-white truncate">
             {dayName ?? 'Workout'}
@@ -444,6 +452,25 @@ export default function WorkoutLogger({ session }: Props) {
           {finishing ? 'Finishing…' : 'Finish'}
         </button>
       </div>
+
+      {/* ── Session notes ── */}
+      {showNotes ? (
+        <textarea
+          value={sessionNotes}
+          onChange={(e) => setSessionNotes(e.target.value)}
+          onBlur={(e) => saveNotes(e.target.value)}
+          placeholder="Session notes… (sleep, energy, anything notable)"
+          rows={2}
+          className="w-full mb-4 rounded-2xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-lime-400"
+        />
+      ) : (
+        <button
+          onClick={() => setShowNotes(true)}
+          className="text-xs text-gray-600 active:text-gray-400 mb-4"
+        >
+          + Add session notes
+        </button>
+      )}
 
       {/* ── Exercise list ── */}
       {sessionExercises.length === 0 ? (

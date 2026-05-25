@@ -102,6 +102,13 @@ export default function SessionDetail() {
         </div>
       </div>
 
+      {/* ── Session notes ── */}
+      {session.notes && (
+        <p className="text-sm text-gray-400 bg-gray-800/60 rounded-2xl px-4 py-3 mb-4 whitespace-pre-wrap">
+          {session.notes}
+        </p>
+      )}
+
       {/* ── Summary chips ── */}
       <div className="flex gap-2 mb-5 flex-wrap">
         <span className="rounded-full bg-gray-800 text-gray-300 text-xs font-medium px-3 py-1">
