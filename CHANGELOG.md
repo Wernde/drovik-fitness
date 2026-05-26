@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Home screen — next workout & weekly stats
+
+### Added
+- **Next recommended day** — the lime "Start Workout" card on the Home screen now shows the next program day in sequence by name (e.g. "Push A") and starts it directly on tap, skipping the Log screen picker. After finishing a session the card automatically advances to the following day; it cycles back to day 1 after the last day. Defaults to day 1 if no sessions have been logged for the active program yet.
+- **Resume Workout card** — if there is already an unfinished session in progress, the card switches to "Resume Workout" and links straight to the active logger.
+- **Weekly stats strip** — two tiles between the quick-access pills and the Start card show the number of finished sessions and total working volume (weight × reps, warmup sets excluded) for the current Mon–Sun week. Volume auto-scales from kg to tonnes.
+- No active program — card falls back to the previous generic "Start Workout" link to the Log screen.
+
+---
+
 ## Phase 8 — Training Tools & Progress Depth
 
 ### Added

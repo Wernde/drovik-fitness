@@ -4,13 +4,17 @@
  * Layout inspired by the Fitness App UI Kit:
  *   – Bold greeting header + settings shortcut
  *   – Horizontal quick-access icon pills
- *   – Featured "Start Workout" lime card
+ *   – Weekly stats strip (sessions + volume this Mon–Sun)
+ *   – Featured "Start Workout" lime card — shows next recommended program day
+ *     and starts it directly on tap (no detour via the Log screen)
  *   – Recent sessions list
  */
 
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../db/db'
+import { db, now, today } from '../db/db'
+import type { WorkoutDay } from '../db/db'
 import { formatDuration } from '../lib/utils'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -19,6 +23,22 @@ function dayLabel(dateStr: string) {
   return new Date(dateStr + 'T12:00:00').toLocaleDateString('en-AU', {
     weekday: 'short', day: 'numeric', month: 'short',
   })
+}
+
+function getWeekBounds(): { from: string; to: string } {
+  const d   = new Date()
+  const mon = new Date(d)
+  mon.setDate(d.getDate() - ((d.getDay() + 6) % 7))
+  mon.setHours(0, 0, 0, 0)
+  const sun = new Date(mon)
+  sun.setDate(mon.getDate() + 6)
+  const fmt = (dt: Date) => dt.toISOString().slice(0, 10)
+  return { from: fmt(mon), to: fmt(sun) }
+}
+
+function formatVolume(kg: number): string {
+  if (kg >= 1000) return `${+(kg / 1000).toFixed(1)} t`
+  return `${Math.round(kg)} kg`
 }
 
 // ── Icon components ───────────────────────────────────────────────────────────
@@ -128,17 +148,23 @@ const PILLS = [
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function Home() {
+  const navigate  = useNavigate()
+  const [starting, setStarting] = useState(false)
+
   const data = useLiveQuery(async () => {
     const activeProgram = await db.programs
       .filter((p) => p.isActive && !p.deleted)
+      .first()
+
+    const activeSession = await db.workoutSessions
+      .filter((s) => !s.deleted && s.finishedAt === null)
       .first()
 
     const allSessions = await db.workoutSessions
       .filter((s) => !s.deleted && s.finishedAt !== null)
       .toArray()
 
-    const sorted = allSessions.sort((a, b) => b.startedAt.localeCompare(a.startedAt))
-    const lastSession    = sorted[0] ?? null
+    const sorted         = allSessions.sort((a, b) => b.startedAt.localeCompare(a.startedAt))
     const recentSessions = sorted.slice(0, 4)
 
     const dayNames = await Promise.all(
@@ -149,14 +175,117 @@ export default function Home() {
       })
     )
 
-    return { activeProgram, lastSession, recentSessions, dayNames }
+    // ── Next recommended day ──────────────────────────────────────────────────
+    let nextDay: WorkoutDay | null = null
+    if (activeProgram) {
+      const programDays = await db.workoutDays
+        .where('programId').equals(activeProgram.id)
+        .filter((d) => !d.deleted)
+        .toArray()
+        .then((list) => list.sort((a, b) => a.order - b.order))
+
+      if (programDays.length > 0) {
+        const lastProgramSession = sorted.find(
+          (s) => s.programId === activeProgram.id && s.workoutDayId != null
+        )
+        if (lastProgramSession) {
+          const idx = programDays.findIndex((d) => d.id === lastProgramSession.workoutDayId)
+          nextDay = programDays[(idx + 1) % programDays.length]
+        } else {
+          nextDay = programDays[0]
+        }
+      }
+    }
+
+    // ── Weekly stats (Mon–Sun of current week) ────────────────────────────────
+    const { from, to } = getWeekBounds()
+    const weekSessions  = allSessions.filter((s) => s.date >= from && s.date <= to)
+    let weekVolume = 0
+    if (weekSessions.length > 0) {
+      const weekSessionIdSet = new Set(weekSessions.map((s) => s.id))
+      const weekSEs = await db.sessionExercises
+        .filter((se) => !se.deleted && weekSessionIdSet.has(se.workoutSessionId))
+        .toArray()
+      if (weekSEs.length > 0) {
+        const seIdSet  = new Set(weekSEs.map((se) => se.id))
+        const weekSets = await db.sets
+          .filter((s) =>
+            !s.deleted && !s.isWarmup &&
+            s.weight > 0 && s.reps > 0 &&
+            seIdSet.has(s.sessionExerciseId)
+          )
+          .toArray()
+        weekVolume = weekSets.reduce((sum, s) => sum + s.weight * s.reps, 0)
+      }
+    }
+
+    return {
+      activeProgram,
+      activeSession,
+      recentSessions,
+      dayNames,
+      nextDay,
+      weekStats: { sessions: weekSessions.length, volumeKg: weekVolume },
+    }
   }, [])
+
+  // ── Start next day directly ───────────────────────────────────────────────
+
+  async function startNextDay(day: WorkoutDay, programId: string) {
+    if (starting) return
+    setStarting(true)
+    try {
+      const timestamp = now()
+      const sessionId = crypto.randomUUID()
+
+      await db.workoutSessions.add({
+        id:           sessionId,
+        workoutDayId: day.id,
+        programId,
+        date:         today(),
+        startedAt:    timestamp,
+        finishedAt:   null,
+        notes:        '',
+        createdAt:    timestamp,
+        updatedAt:    timestamp,
+        syncedAt:     null,
+        deleted:      false,
+      })
+
+      const dayExercises = await db.dayExercises
+        .where('workoutDayId').equals(day.id)
+        .filter((de) => !de.deleted)
+        .toArray()
+
+      dayExercises.sort((a, b) => a.order - b.order)
+
+      if (dayExercises.length > 0) {
+        await db.sessionExercises.bulkAdd(
+          dayExercises.map((de, idx) => ({
+            id:               crypto.randomUUID(),
+            workoutSessionId: sessionId,
+            exerciseId:       de.exerciseId,
+            order:            idx,
+            notes:            '',
+            createdAt:        timestamp,
+            updatedAt:        timestamp,
+            syncedAt:         null,
+            deleted:          false,
+          }))
+        )
+      }
+
+      navigate('/log')
+    } catch {
+      setStarting(false)
+    }
+  }
+
+  // ── Render ────────────────────────────────────────────────────────────────
 
   const todayLabel = new Date().toLocaleDateString('en-AU', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
-
-  const lastWorkoutLabel = data?.lastSession ? dayLabel(data.lastSession.date) : null
 
   return (
     <div className="flex flex-col gap-6 px-4 pt-6 pb-4">
@@ -167,9 +296,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-white leading-tight">
             Hi there <span className="text-lime-400">👋</span>
           </h1>
-          <p className="text-gray-400 text-sm mt-0.5">
-            It's time to push your limits.
-          </p>
+          <p className="text-gray-400 text-sm mt-0.5">{todayLabel}</p>
         </div>
         <Link
           to="/settings"
@@ -192,28 +319,78 @@ export default function Home() {
         ))}
       </div>
 
-      {/* ── Start Workout card ─────────────────────────────────────── */}
-      <Link
-        to="/log"
-        className="relative rounded-2xl bg-lime-400 px-5 py-6 active:bg-lime-500 overflow-hidden"
-      >
-        {/* Decorative circle */}
-        <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-lime-300/40 pointer-events-none" />
-        <div className="absolute -right-2 -bottom-8 w-24 h-24 rounded-full bg-lime-300/30 pointer-events-none" />
-
-        <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1 relative">
-          {data?.activeProgram ? data.activeProgram.name : 'Ad-hoc workout'}
-        </p>
-        <p className="text-2xl font-bold text-gray-900 relative">Start Workout</p>
-        <p className="text-sm text-gray-700 mt-1 relative">
-          {lastWorkoutLabel
-            ? `Last session: ${lastWorkoutLabel}`
-            : "No sessions yet — let's go!"}
-        </p>
-        <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-800">
-          <IconArrow />
+      {/* ── Weekly stats strip ─────────────────────────────────────── */}
+      {data && (
+        <div className="flex gap-3">
+          <div className="flex-1 rounded-2xl bg-gray-800/60 px-4 py-3 text-center">
+            <p className="text-xl font-bold text-white">{data.weekStats.sessions}</p>
+            <p className="text-xs text-gray-400 mt-0.5">sessions this week</p>
+          </div>
+          <div className="flex-1 rounded-2xl bg-gray-800/60 px-4 py-3 text-center">
+            <p className="text-xl font-bold text-white">
+              {data.weekStats.volumeKg > 0 ? formatVolume(data.weekStats.volumeKg) : '—'}
+            </p>
+            <p className="text-xs text-gray-400 mt-0.5">volume this week</p>
+          </div>
         </div>
-      </Link>
+      )}
+
+      {/* ── Start Workout card ─────────────────────────────────────── */}
+      {data?.activeSession ? (
+        /* Resume in-progress session */
+        <Link
+          to="/log"
+          className="relative rounded-2xl bg-lime-400 px-5 py-6 active:bg-lime-500 overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-lime-300/40 pointer-events-none" />
+          <div className="absolute -right-2 -bottom-8 w-24 h-24 rounded-full bg-lime-300/30 pointer-events-none" />
+          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1 relative">
+            In progress
+          </p>
+          <p className="text-2xl font-bold text-gray-900 relative">Resume Workout</p>
+          <p className="text-sm text-gray-700 mt-1 relative">You have an unfinished session</p>
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-800">
+            <IconArrow />
+          </div>
+        </Link>
+      ) : data?.nextDay && data?.activeProgram ? (
+        /* Start next recommended day directly */
+        <button
+          onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
+          disabled={starting}
+          className="relative rounded-2xl bg-lime-400 px-5 py-6 active:bg-lime-500 overflow-hidden text-left w-full disabled:opacity-70"
+        >
+          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-lime-300/40 pointer-events-none" />
+          <div className="absolute -right-2 -bottom-8 w-24 h-24 rounded-full bg-lime-300/30 pointer-events-none" />
+          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1 relative">
+            {data.activeProgram.name} · Next up
+          </p>
+          <p className="text-2xl font-bold text-gray-900 relative">
+            {starting ? 'Starting…' : data.nextDay.name}
+          </p>
+          <p className="text-sm text-gray-700 mt-1 relative">Tap to start this session</p>
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-800">
+            <IconArrow />
+          </div>
+        </button>
+      ) : (
+        /* No active program — generic link to Log */
+        <Link
+          to="/log"
+          className="relative rounded-2xl bg-lime-400 px-5 py-6 active:bg-lime-500 overflow-hidden"
+        >
+          <div className="absolute -right-6 -top-6 w-32 h-32 rounded-full bg-lime-300/40 pointer-events-none" />
+          <div className="absolute -right-2 -bottom-8 w-24 h-24 rounded-full bg-lime-300/30 pointer-events-none" />
+          <p className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1 relative">
+            Ad-hoc workout
+          </p>
+          <p className="text-2xl font-bold text-gray-900 relative">Start Workout</p>
+          <p className="text-sm text-gray-700 mt-1 relative">No active program — go to Programs to set one</p>
+          <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-800">
+            <IconArrow />
+          </div>
+        </Link>
+      )}
 
       {/* ── Recent Sessions ────────────────────────────────────────── */}
       {data?.recentSessions && data.recentSessions.length > 0 && (
@@ -239,19 +416,16 @@ export default function Home() {
                   to={`/history/${session.id}`}
                   className="flex items-center gap-4 bg-gray-800/60 rounded-2xl px-4 py-3 active:bg-gray-800"
                 >
-                  {/* Date bubble */}
                   <div className="flex-none w-12 h-12 rounded-xl bg-lime-400/10 flex flex-col items-center justify-center">
                     <span className="text-lime-400 text-lg font-bold leading-none">{dayNum}</span>
                     <span className="text-lime-400/70 text-xs">{month}</span>
                   </div>
 
-                  {/* Name + date */}
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-sm text-white truncate">{name}</p>
                     <p className="text-xs text-gray-400 mt-0.5">{date}</p>
                   </div>
 
-                  {/* Duration */}
                   <div className="flex-none text-right">
                     <p className="text-sm font-semibold text-white">{duration}</p>
                     <p className="text-xs text-gray-500">duration</p>
@@ -263,7 +437,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Empty state when no sessions yet */}
       {data?.recentSessions?.length === 0 && (
         <div className="rounded-2xl bg-gray-800/40 px-5 py-8 text-center">
           <p className="text-gray-400 text-sm">No sessions logged yet.</p>
