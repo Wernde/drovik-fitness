@@ -6,12 +6,12 @@ import type { Habit } from '../db/db'
 // ── Color palette ──────────────────────────────────────────────────────────────
 
 const COLORS: Record<string, { bg: string; dot: string }> = {
-  lime:   { bg: 'bg-lime-400',   dot: 'bg-lime-400' },
-  blue:   { bg: 'bg-blue-400',   dot: 'bg-blue-400' },
-  amber:  { bg: 'bg-amber-400',  dot: 'bg-amber-400' },
-  rose:   { bg: 'bg-rose-400',   dot: 'bg-rose-400' },
-  purple: { bg: 'bg-purple-400', dot: 'bg-purple-400' },
-  cyan:   { bg: 'bg-cyan-400',   dot: 'bg-cyan-400' },
+  lime:   { bg: 'bg-accent',       dot: 'bg-accent' },
+  blue:   { bg: 'bg-blue-400',     dot: 'bg-blue-400' },
+  amber:  { bg: 'bg-amber-400',    dot: 'bg-amber-400' },
+  rose:   { bg: 'bg-rose-400',     dot: 'bg-rose-400' },
+  purple: { bg: 'bg-purple-400',   dot: 'bg-purple-400' },
+  cyan:   { bg: 'bg-cyan-400',     dot: 'bg-cyan-400' },
 }
 
 // ── Streak helpers ─────────────────────────────────────────────────────────────
@@ -97,10 +97,10 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
       className="fixed inset-0 z-50 flex items-end"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full bg-gray-900 rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-white">{habit ? 'Edit Habit' : 'New Habit'}</h2>
-          <button onClick={onClose} className="text-gray-500 active:text-gray-300 p-1" aria-label="Close">
+          <h2 className="text-lg font-bold text-app-text">{habit ? 'Edit Habit' : 'New Habit'}</h2>
+          <button onClick={onClose} className="text-app-muted active:text-app-text p-1" aria-label="Close">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
               <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
             </svg>
@@ -109,19 +109,19 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
 
         <div className="flex flex-col gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Habit name</label>
+            <label className="block text-sm font-medium text-app-text mb-1">Habit name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Morning stretch, Drink water"
               autoFocus
-              className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">Colour</label>
+            <label className="block text-sm font-medium text-app-text mb-2">Colour</label>
             <div className="flex gap-3">
               {Object.keys(COLORS).map((c) => (
                 <button
@@ -130,7 +130,7 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
                   className={[
                     'w-9 h-9 rounded-full transition-transform',
                     COLORS[c].dot,
-                    color === c ? 'ring-2 ring-offset-2 ring-offset-gray-900 ring-white scale-110' : '',
+                    color === c ? 'ring-2 ring-offset-2 ring-offset-app-card ring-accent scale-110' : '',
                   ].join(' ')}
                   aria-label={c}
                 />
@@ -138,12 +138,12 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full rounded-2xl bg-lime-400 text-gray-900 py-3 font-semibold text-sm disabled:opacity-60 active:bg-lime-500"
+            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
           >
             {saving ? 'Saving…' : habit ? 'Save' : 'Add Habit'}
           </button>
@@ -151,25 +151,25 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
           {habit && !confirm && (
             <button
               onClick={() => setConfirm(true)}
-              className="w-full rounded-2xl border border-red-900 text-red-400 py-2.5 text-sm active:bg-red-950"
+              className="w-full rounded-2xl border border-red-200 text-red-500 py-2.5 text-sm active:bg-red-50"
             >
               Delete Habit
             </button>
           )}
 
           {habit && confirm && (
-            <div className="rounded-2xl bg-red-950 p-4 flex flex-col gap-3">
-              <p className="text-sm text-red-300 text-center">Delete this habit and all its history?</p>
+            <div className="rounded-2xl bg-red-50 p-4 flex flex-col gap-3">
+              <p className="text-sm text-red-700 text-center">Delete this habit and all its history?</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setConfirm(false)}
-                  className="flex-1 rounded-xl border border-gray-700 text-gray-400 py-2 text-sm"
+                  className="flex-1 rounded-xl border border-app-border text-app-muted py-2 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="flex-1 rounded-xl bg-red-600 text-white py-2 text-sm font-semibold"
+                  className="flex-1 rounded-xl bg-red-500 text-white py-2 text-sm font-semibold"
                 >
                   Delete
                 </button>
@@ -200,7 +200,7 @@ export default function HabitsTab() {
   )
 
   if (!habits || !completions) {
-    return <div className="flex items-center justify-center h-20 text-gray-400 text-sm">Loading…</div>
+    return <div className="flex items-center justify-center h-20 text-app-muted text-sm">Loading…</div>
   }
 
   // Build map: habitId → Set<date>  (all completions for streak calc)
@@ -229,7 +229,7 @@ export default function HabitsTab() {
   return (
     <div className="flex flex-col gap-3">
       {habits.length === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 text-sm">
+        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted text-sm">
           No habits yet. Add one below to start tracking daily streaks.
         </div>
       )}
@@ -242,7 +242,7 @@ export default function HabitsTab() {
         const colorCfg  = COLORS[habit.color] ?? COLORS.lime
 
         return (
-          <div key={habit.id} className="bg-gray-800/60 rounded-2xl px-4 py-3">
+          <div key={habit.id} className="bg-app-card border border-app-border rounded-2xl px-4 py-3">
             <div className="flex items-center gap-3">
               {/* Colour dot — tappable to edit */}
               <button onClick={() => setFormTarget(habit)} aria-label="Edit habit">
@@ -252,14 +252,14 @@ export default function HabitsTab() {
               {/* Name */}
               <button
                 onClick={() => setFormTarget(habit)}
-                className="flex-1 text-left text-white text-sm font-medium"
+                className="flex-1 text-left text-app-text text-sm font-medium"
               >
                 {habit.name}
               </button>
 
               {/* Streak badge */}
               {streak > 0 && (
-                <span className="text-xs text-amber-400 font-semibold tabular-nums">
+                <span className="text-xs text-amber-600 font-semibold tabular-nums">
                   🔥 {streak}
                 </span>
               )}
@@ -269,12 +269,12 @@ export default function HabitsTab() {
                 onClick={() => toggleToday(habit)}
                 className={[
                   'w-8 h-8 rounded-full flex items-center justify-center transition-colors',
-                  doneToday ? colorCfg.bg : 'border-2 border-gray-600',
+                  doneToday ? colorCfg.bg : 'border-2 border-app-border',
                 ].join(' ')}
                 aria-label={doneToday ? 'Mark incomplete' : 'Mark complete'}
               >
                 {doneToday && (
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-gray-900">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-app-text">
                     <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clipRule="evenodd" />
                   </svg>
                 )}
@@ -291,8 +291,8 @@ export default function HabitsTab() {
                     dates.has(d)
                       ? colorCfg.dot
                       : d === todayStr
-                      ? 'bg-gray-600'
-                      : 'bg-gray-700',
+                      ? 'bg-app-border'
+                      : 'bg-app-border/60',
                   ].join(' ')}
                 />
               ))}
@@ -300,7 +300,7 @@ export default function HabitsTab() {
 
             {/* Best streak — shown only if it differs from current */}
             {best > 0 && best !== streak && (
-              <p className="text-xs text-gray-500 mt-1.5 pl-6">Best: {best} days</p>
+              <p className="text-xs text-app-muted mt-1.5 pl-6">Best: {best} days</p>
             )}
           </div>
         )
@@ -308,7 +308,7 @@ export default function HabitsTab() {
 
       <button
         onClick={() => setFormTarget(null)}
-        className="w-full rounded-2xl border border-gray-700 text-gray-300 py-3 text-sm font-medium active:bg-gray-800"
+        className="w-full rounded-2xl border border-app-border text-app-muted py-3 text-sm font-medium active:bg-app-bg"
       >
         + Add Habit
       </button>

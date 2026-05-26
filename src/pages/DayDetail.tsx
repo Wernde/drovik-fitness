@@ -47,7 +47,7 @@ export default function DayDetail() {
   )
 
   if (!day || !program || !dayExercises || !allExercises) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
   const nextOrder = dayExercises.length > 0 ? Math.max(...dayExercises.map((de) => de.order)) + 1 : 0
@@ -75,7 +75,7 @@ export default function DayDetail() {
       <div className="flex items-center gap-3 mb-1">
         <button
           onClick={() => navigate(`/programs/${programId}`)}
-          className="flex-none text-gray-500 active:text-white p-1 -ml-1"
+          className="flex-none text-app-muted active:text-app-text p-1 -ml-1"
           aria-label="Back"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -83,12 +83,12 @@ export default function DayDetail() {
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <p className="text-xs text-gray-400">{program.name}</p>
-          <h1 className="text-2xl font-bold text-white truncate">{day.name}</h1>
+          <p className="text-xs text-app-muted">{program.name}</p>
+          <h1 className="text-2xl font-extrabold text-app-text truncate">{day.name}</h1>
         </div>
         <button
           onClick={() => setShowPicker(true)}
-          className="flex items-center gap-1 rounded-2xl bg-lime-400 text-gray-900 px-3 py-1.5 text-sm font-semibold active:bg-lime-500 flex-none"
+          className="flex items-center gap-1 rounded-2xl bg-accent text-app-text px-3 py-1.5 text-sm font-bold active:bg-accent-dark flex-none"
         >
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -97,13 +97,13 @@ export default function DayDetail() {
         </button>
       </div>
 
-      <p className="text-xs text-gray-500 mb-5 ml-8">
+      <p className="text-xs text-app-muted mb-5 ml-8">
         {dayExercises.length} {dayExercises.length === 1 ? 'exercise' : 'exercises'}
       </p>
 
       {dayExercises.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500">
-          No exercises yet. Tap <strong className="text-gray-300">Add</strong> to build this day.
+        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+          No exercises yet. Tap <strong className="text-app-text">Add</strong> to build this day.
         </div>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -114,13 +114,13 @@ export default function DayDetail() {
             return (
               <li key={de.id}>
                 {confirmDelete !== de.id ? (
-                  <div className="flex items-center gap-2 rounded-2xl bg-gray-800/60 px-3 py-3">
+                  <div className="flex items-center gap-2 rounded-2xl bg-app-card border border-app-border px-3 py-3">
                     {/* Reorder */}
                     <div className="flex flex-col gap-0.5">
                       <button
                         onClick={() => moveExercise(de, 'up')}
                         disabled={idx === 0}
-                        className="text-gray-600 disabled:opacity-30 active:text-gray-300 p-0.5"
+                        className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
                         aria-label="Move up"
                       >
                         <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -130,7 +130,7 @@ export default function DayDetail() {
                       <button
                         onClick={() => moveExercise(de, 'down')}
                         disabled={idx === dayExercises.length - 1}
-                        className="text-gray-600 disabled:opacity-30 active:text-gray-300 p-0.5"
+                        className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
                         aria-label="Move down"
                       >
                         <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -142,21 +142,21 @@ export default function DayDetail() {
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-white truncate">{exercise.name}</p>
-                      <p className="text-xs text-gray-400">
+                      <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
+                      <p className="text-xs text-app-muted">
                         {de.targetSets} × {de.targetReps}
                         {de.targetWeight != null ? ` @ ${de.targetWeight} kg` : ''}
                         {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
                       </p>
                       {de.notes ? (
-                        <p className="text-xs text-gray-500 truncate">{de.notes}</p>
+                        <p className="text-xs text-app-faint truncate">{de.notes}</p>
                       ) : null}
                     </div>
 
                     {/* Edit targets */}
                     <button
                       onClick={() => setEditingDE(de)}
-                      className="flex-none text-gray-600 active:text-lime-400 p-1"
+                      className="flex-none text-app-faint active:text-accent-dark p-1"
                       aria-label={`Edit ${exercise.name} targets`}
                     >
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -168,7 +168,7 @@ export default function DayDetail() {
                     {/* Delete */}
                     <button
                       onClick={() => setConfirmDelete(de.id)}
-                      className="flex-none text-gray-600 active:text-red-400 p-1"
+                      className="flex-none text-app-faint active:text-red-500 p-1"
                       aria-label={`Remove ${exercise.name}`}
                     >
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -177,10 +177,10 @@ export default function DayDetail() {
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 rounded-2xl border border-red-800 bg-red-900/20 px-4 py-3">
-                    <p className="flex-1 text-sm text-red-300">Remove <strong>{exercise.name}</strong>?</p>
-                    <button onClick={() => setConfirmDelete(null)} className="text-xs text-gray-400 px-2 py-1">Cancel</button>
-                    <button onClick={() => handleDelete(de.id)} className="text-xs font-semibold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Remove</button>
+                  <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+                    <p className="flex-1 text-sm text-red-700">Remove <strong>{exercise.name}</strong>?</p>
+                    <button onClick={() => setConfirmDelete(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
+                    <button onClick={() => handleDelete(de.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Remove</button>
                   </div>
                 )}
               </li>

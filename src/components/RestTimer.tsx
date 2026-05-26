@@ -73,18 +73,18 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Prop
       <div
         className={[
           'rounded-2xl shadow-2xl px-4 py-3 pointer-events-auto transition-colors',
-          done ? 'bg-lime-400' : 'bg-gray-900 border border-gray-700',
+          done ? 'bg-accent' : 'bg-app-card border border-app-border',
         ].join(' ')}
       >
         {/* Top row: label + skip */}
         <div className="flex items-center justify-between mb-2">
-          <p className={`text-xs truncate flex-1 mr-2 ${done ? 'text-gray-900 font-semibold' : 'text-gray-400'}`}>
+          <p className={`text-xs truncate flex-1 mr-2 ${done ? 'text-app-text font-semibold' : 'text-app-muted'}`}>
             {done ? 'Rest complete!' : `Rest — ${exerciseName}`}
           </p>
           {!done && (
             <button
               onClick={onDismiss}
-              className="text-xs text-gray-500 active:text-gray-300 flex-none"
+              className="text-xs text-app-muted active:text-app-text flex-none"
             >
               Skip
             </button>
@@ -96,14 +96,14 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Prop
           <button
             onClick={() => adjust(-30)}
             disabled={done}
-            className="w-12 h-8 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold active:bg-gray-700 disabled:opacity-0"
+            className="w-12 h-8 rounded-xl bg-app-bg border border-app-border text-app-muted text-xs font-semibold active:bg-app-border disabled:opacity-0"
           >
             −30s
           </button>
 
           <span className={[
             'flex-1 text-center text-3xl font-bold tabular-nums leading-none',
-            done ? 'text-gray-900' : 'text-white',
+            done ? 'text-app-text' : 'text-app-text',
           ].join(' ')}>
             {mins}:{String(secs).padStart(2, '0')}
           </span>
@@ -111,16 +111,16 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Prop
           <button
             onClick={() => adjust(30)}
             disabled={done}
-            className="w-12 h-8 rounded-xl bg-gray-800 text-gray-300 text-xs font-semibold active:bg-gray-700 disabled:opacity-0"
+            className="w-12 h-8 rounded-xl bg-app-bg border border-app-border text-app-muted text-xs font-semibold active:bg-app-border disabled:opacity-0"
           >
             +30s
           </button>
         </div>
 
         {/* Progress bar — fills as time elapses */}
-        <div className="h-1 rounded-full mt-3 overflow-hidden bg-gray-700">
+        <div className="h-1 rounded-full mt-3 overflow-hidden bg-app-border">
           <div
-            className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${done ? 'bg-gray-900/30' : 'bg-lime-400'}`}
+            className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${done ? 'bg-app-text/20' : 'bg-accent'}`}
             style={{ width: `${progress * 100}%` }}
           />
         </div>

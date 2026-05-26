@@ -23,10 +23,9 @@ const FILTERS: { value: FilterCategory; label: string }[] = [
   { value: 'cardio',     label: 'Cardio' },
 ]
 
-// Left-border accent colour per category.
 const ACCENT: Record<ExerciseCategory, string> = {
   barbell:    'border-amber-400',
-  dumbbell:   'border-lime-400',
+  dumbbell:   'border-accent',
   machine:    'border-violet-400',
   cable:      'border-emerald-400',
   bodyweight: 'border-orange-400',
@@ -35,16 +34,15 @@ const ACCENT: Record<ExerciseCategory, string> = {
   cardio:     'border-red-400',
 }
 
-// Small category badge colours.
 const BADGE: Record<ExerciseCategory, string> = {
-  barbell:    'bg-amber-400/10 text-amber-300',
-  dumbbell:   'bg-lime-400/10 text-lime-300',
-  machine:    'bg-violet-400/10 text-violet-300',
-  cable:      'bg-emerald-400/10 text-emerald-300',
-  bodyweight: 'bg-orange-400/10 text-orange-300',
-  kettlebell: 'bg-teal-400/10 text-teal-300',
-  band:       'bg-pink-400/10 text-pink-300',
-  cardio:     'bg-red-400/10 text-red-300',
+  barbell:    'bg-amber-50 text-amber-700',
+  dumbbell:   'bg-accent-light text-accent-dark',
+  machine:    'bg-violet-50 text-violet-700',
+  cable:      'bg-emerald-50 text-emerald-700',
+  bodyweight: 'bg-orange-50 text-orange-700',
+  kettlebell: 'bg-teal-50 text-teal-700',
+  band:       'bg-pink-50 text-pink-700',
+  cardio:     'bg-red-50 text-red-700',
 }
 
 const CATEGORY_LABELS: Record<ExerciseCategory, string> = {
@@ -66,16 +64,14 @@ export default function Exercises() {
   )
 
   if (!exercises) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
-  // Unique muscle groups derived from the currently-category-filtered set
   const categoryFiltered = exercises.filter((e) => filter === 'all' || e.category === filter)
   const muscleGroups = ['all', ...Array.from(
     new Set(categoryFiltered.map((e) => e.muscleGroup))
   ).sort()]
 
-  // Reset muscle filter when it's no longer valid for the new category
   const activeMuscle = muscleGroups.includes(muscleFilter) ? muscleFilter : 'all'
 
   const filtered = categoryFiltered
@@ -95,10 +91,10 @@ export default function Exercises() {
     <div className="px-4 pt-6 pb-4">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-2xl font-bold text-white">Exercises</h1>
+        <h1 className="text-2xl font-extrabold text-app-text">Exercises</h1>
         <button
           onClick={openAdd}
-          className="flex items-center gap-1.5 rounded-2xl bg-lime-400 text-gray-900 px-4 py-2 text-sm font-semibold active:bg-lime-500"
+          className="flex items-center gap-1.5 rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
         >
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -110,7 +106,7 @@ export default function Exercises() {
       {/* ── Search ── */}
       <div className="relative mb-4">
         <svg viewBox="0 0 20 20" fill="currentColor"
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none">
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-app-faint pointer-events-none">
           <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
         </svg>
         <input
@@ -118,7 +114,7 @@ export default function Exercises() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search exercises…"
-          className="w-full rounded-2xl bg-gray-800 text-white placeholder-gray-500 pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-lime-400"
+          className="w-full rounded-2xl border border-app-border bg-app-card text-app-text placeholder-app-faint pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-accent"
         />
       </div>
 
@@ -131,8 +127,8 @@ export default function Exercises() {
             className={[
               'flex-none rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap',
               filter === value
-                ? 'bg-lime-400 text-gray-900'
-                : 'bg-gray-800 text-gray-400',
+                ? 'bg-accent text-app-text'
+                : 'bg-app-card border border-app-border text-app-muted',
             ].join(' ')}
           >
             {label}
@@ -150,8 +146,8 @@ export default function Exercises() {
               className={[
                 'flex-none rounded-full px-3 py-1 text-xs font-medium whitespace-nowrap',
                 activeMuscle === mg
-                  ? 'bg-gray-200 text-gray-900'
-                  : 'bg-gray-800/80 text-gray-500',
+                  ? 'bg-app-border text-app-text'
+                  : 'bg-app-card border border-app-border text-app-faint',
               ].join(' ')}
             >
               {mg === 'all' ? 'All muscles' : mg}
@@ -161,13 +157,13 @@ export default function Exercises() {
       )}
 
       {/* ── Count ── */}
-      <p className="text-xs text-gray-500 mb-3">
+      <p className="text-xs text-app-muted mb-3">
         {filtered.length} {filtered.length === 1 ? 'exercise' : 'exercises'}
       </p>
 
       {/* ── List ── */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500">
+        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
           {search ? `No results for "${search}"` : 'No exercises in this category.'}
         </div>
       ) : (
@@ -175,7 +171,7 @@ export default function Exercises() {
           {filtered.map((exercise) => (
             <li key={exercise.id}>
               {confirmDelete !== exercise.id ? (
-                <div className={`flex items-center gap-3 rounded-2xl bg-gray-800/60 pl-0 pr-3 py-0 overflow-hidden border-l-4 ${ACCENT[exercise.category]}`}>
+                <div className={`flex items-center gap-3 rounded-2xl bg-app-card pl-0 pr-3 py-0 overflow-hidden border border-app-border border-l-4 ${ACCENT[exercise.category]}`}>
                   {/* Muscle icon */}
                   <div className="flex-none flex items-center justify-center w-12 py-2 pl-3">
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={28} height={42} />
@@ -183,7 +179,7 @@ export default function Exercises() {
 
                   {/* Name + badge */}
                   <div className="flex-1 min-w-0 py-3">
-                    <p className="font-semibold text-sm text-white truncate">{exercise.name}</p>
+                    <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
                     <span className={`inline-block text-xs font-medium rounded-full px-2 py-0.5 mt-0.5 ${BADGE[exercise.category]}`}>
                       {CATEGORY_LABELS[exercise.category]} · {exercise.muscleGroup}
                     </span>
@@ -215,7 +211,7 @@ export default function Exercises() {
                   {/* Edit */}
                   <button
                     onClick={() => openEdit(exercise)}
-                    className="flex-none text-gray-500 active:text-lime-400 p-1.5"
+                    className="flex-none text-app-faint active:text-accent-dark p-1.5"
                     aria-label={`Edit ${exercise.name}`}
                   >
                     <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -227,7 +223,7 @@ export default function Exercises() {
                   {/* Delete */}
                   <button
                     onClick={() => setConfirmDelete(exercise.id)}
-                    className="flex-none text-gray-500 active:text-red-400 p-1.5"
+                    className="flex-none text-app-faint active:text-red-500 p-1.5"
                     aria-label={`Delete ${exercise.name}`}
                   >
                     <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -236,12 +232,12 @@ export default function Exercises() {
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-3 rounded-2xl border border-red-800 bg-red-900/20 px-4 py-3">
-                  <p className="flex-1 text-sm text-red-300">
+                <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+                  <p className="flex-1 text-sm text-red-700">
                     Delete <strong>{exercise.name}</strong>?
                   </p>
-                  <button onClick={() => setConfirmDelete(null)} className="text-xs text-gray-400 px-2 py-1">Cancel</button>
-                  <button onClick={() => handleDelete(exercise.id)} className="text-xs font-semibold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
+                  <button onClick={() => setConfirmDelete(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
+                  <button onClick={() => handleDelete(exercise.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
                 </div>
               )}
             </li>

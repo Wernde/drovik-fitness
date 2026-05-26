@@ -36,23 +36,23 @@ function DayRow({
 
   if (confirmingDelete) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-red-800 bg-red-900/20 px-4 py-3">
-        <p className="flex-1 text-sm text-red-300">Delete <strong>{day.name}</strong>?</p>
-        <button onClick={onCancelDelete} className="text-xs text-gray-400 px-2 py-1">Cancel</button>
-        <button onClick={onConfirmDelete} className="text-xs font-semibold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
+      <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
+        <p className="flex-1 text-sm text-red-700">Delete <strong>{day.name}</strong>?</p>
+        <button onClick={onCancelDelete} className="text-xs text-app-muted px-2 py-1">Cancel</button>
+        <button onClick={onConfirmDelete} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-2 rounded-2xl bg-gray-800/60 px-3 py-3">
+    <div className="flex items-center gap-2 rounded-2xl bg-app-card border border-app-border px-3 py-3">
       <div className="flex flex-col gap-0.5">
-        <button onClick={onMoveUp} disabled={idx === 0} className="text-gray-600 disabled:opacity-30 active:text-gray-300 p-0.5" aria-label="Move up">
+        <button onClick={onMoveUp} disabled={idx === 0} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move up">
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
             <path fillRule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clipRule="evenodd" />
           </svg>
         </button>
-        <button onClick={onMoveDown} disabled={idx === totalInGroup - 1} className="text-gray-600 disabled:opacity-30 active:text-gray-300 p-0.5" aria-label="Move down">
+        <button onClick={onMoveDown} disabled={idx === totalInGroup - 1} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move down">
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
             <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
           </svg>
@@ -60,17 +60,17 @@ function DayRow({
       </div>
 
       <button onClick={() => navigate(`/programs/${programId}/days/${day.id}`)} className="flex-1 text-left min-w-0">
-        <p className="font-semibold text-sm text-white truncate">{day.name}</p>
-        <p className="text-xs text-gray-400">{exerciseCount} {exerciseCount === 1 ? 'exercise' : 'exercises'}</p>
+        <p className="font-semibold text-sm text-app-text truncate">{day.name}</p>
+        <p className="text-xs text-app-muted">{exerciseCount} {exerciseCount === 1 ? 'exercise' : 'exercises'}</p>
       </button>
 
-      <button onClick={onEdit} className="flex-none text-gray-600 active:text-lime-400 p-1" aria-label={`Rename ${day.name}`}>
+      <button onClick={onEdit} className="flex-none text-app-faint active:text-accent-dark p-1" aria-label={`Rename ${day.name}`}>
         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
           <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
           <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
         </svg>
       </button>
-      <button onClick={onDelete} className="flex-none text-gray-600 active:text-red-400 p-1" aria-label={`Delete ${day.name}`}>
+      <button onClick={onDelete} className="flex-none text-app-faint active:text-red-500 p-1" aria-label={`Delete ${day.name}`}>
         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
           <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
         </svg>
@@ -85,12 +85,11 @@ export default function ProgramDetail() {
   const { programId } = useParams<{ programId: string }>()
   const navigate       = useNavigate()
 
-  // Which modal is open and what it's operating on
   const [dayForm,       setDayForm]       = useState<{ phaseId: string | null } | null>(null)
   const [editingDay,    setEditingDay]    = useState<WorkoutDay | undefined>(undefined)
   const [phaseForm,     setPhaseForm]     = useState(false)
   const [editingPhase,  setEditingPhase]  = useState<ProgramPhase | undefined>(undefined)
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)  // day id
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
   const [confirmDeletePhase, setConfirmDeletePhase] = useState<string | null>(null)
 
   const program = useLiveQuery(() => (programId ? db.programs.get(programId) : undefined), [programId])
@@ -120,7 +119,7 @@ export default function ProgramDetail() {
   const exerciseCounts = useLiveQuery(() => db.dayExercises.filter((de) => !de.deleted).toArray(), [])
 
   if (!program || !phases || !days || !exerciseCounts) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
   if (program.deleted) {
@@ -133,10 +132,9 @@ export default function ProgramDetail() {
     return acc
   }, {})
 
-  const nextDayOrder  = days.length > 0 ? Math.max(...days.map((d) => d.order)) + 1 : 0
+  const nextDayOrder   = days.length > 0 ? Math.max(...days.map((d) => d.order)) + 1 : 0
   const nextPhaseOrder = phases.length > 0 ? Math.max(...phases.map((p) => p.order)) + 1 : 0
 
-  // Group days: phase buckets + unassigned
   const daysByPhase = new Map<string, WorkoutDay[]>()
   const unassigned: WorkoutDay[] = []
   for (const day of days) {
@@ -168,7 +166,6 @@ export default function ProgramDetail() {
 
   async function handleDeletePhase(phaseId: string) {
     const timestamp = now()
-    // Unassign days in this phase rather than deleting them
     const phaseDays = daysByPhase.get(phaseId) ?? []
     await Promise.all(phaseDays.map((d) =>
       db.workoutDays.update(d.id, { phaseId: null, updatedAt: timestamp, syncedAt: null })
@@ -213,32 +210,32 @@ export default function ProgramDetail() {
     <div className="px-4 pt-6 pb-4">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-1">
-        <button onClick={() => navigate('/programs')} className="flex-none text-gray-500 active:text-white p-1 -ml-1" aria-label="Back">
+        <button onClick={() => navigate('/programs')} className="flex-none text-app-muted active:text-app-text p-1 -ml-1" aria-label="Back">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-bold text-white truncate">{program.name}</h1>
-          {program.description ? <p className="text-xs text-gray-400 mt-0.5">{program.description}</p> : null}
+          <h1 className="text-2xl font-extrabold text-app-text truncate">{program.name}</h1>
+          {program.description ? <p className="text-xs text-app-muted mt-0.5">{program.description}</p> : null}
         </div>
         <div className="flex gap-2 flex-none">
           <button
             onClick={() => { setEditingPhase(undefined); setPhaseForm(true) }}
-            className="flex items-center gap-1 rounded-2xl border border-gray-600 text-gray-300 px-3 py-1.5 text-sm font-semibold active:bg-gray-800 flex-none"
+            className="flex items-center gap-1 rounded-2xl border border-app-border text-app-muted px-3 py-1.5 text-sm font-semibold active:bg-app-border flex-none"
           >
             + Phase
           </button>
           <button
             onClick={() => openDayForm(null)}
-            className="flex items-center gap-1 rounded-2xl bg-lime-400 text-gray-900 px-3 py-1.5 text-sm font-semibold active:bg-lime-500 flex-none"
+            className="flex items-center gap-1 rounded-2xl bg-accent text-app-text px-3 py-1.5 text-sm font-bold active:bg-accent-dark flex-none"
           >
             + Day
           </button>
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 mb-5 ml-8">
+      <p className="text-xs text-app-muted mb-5 ml-8">
         {hasPhases ? `${phases.length} ${phases.length === 1 ? 'phase' : 'phases'} · ` : ''}
         {days.length} {days.length === 1 ? 'day' : 'days'}
       </p>
@@ -246,9 +243,9 @@ export default function ProgramDetail() {
       {/* ── No phases: flat list ── */}
       {!hasPhases && (
         days.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500">
-            No days yet. Tap <strong className="text-gray-300">+ Day</strong> to get started,
-            or <strong className="text-gray-300">+ Phase</strong> to add a training block first.
+          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+            No days yet. Tap <strong className="text-app-text">+ Day</strong> to get started,
+            or <strong className="text-app-text">+ Phase</strong> to add a training block first.
           </div>
         ) : renderDayList(days)
       )}
@@ -256,7 +253,6 @@ export default function ProgramDetail() {
       {/* ── With phases: grouped sections ── */}
       {hasPhases && (
         <div className="flex flex-col gap-5">
-
           {phases.map((phase) => {
             const phaseDays = daysByPhase.get(phase.id) ?? []
             const isDeleting = confirmDeletePhase === phase.id
@@ -265,29 +261,29 @@ export default function ProgramDetail() {
               <div key={phase.id}>
                 {/* Phase header */}
                 {isDeleting ? (
-                  <div className="flex items-center gap-3 rounded-2xl border border-red-800 bg-red-900/20 px-4 py-3 mb-2">
-                    <p className="flex-1 text-sm text-red-300">
+                  <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 mb-2">
+                    <p className="flex-1 text-sm text-red-700">
                       Delete <strong>{phase.name}</strong>? Its days will become unassigned.
                     </p>
-                    <button onClick={() => setConfirmDeletePhase(null)} className="text-xs text-gray-400 px-2 py-1">Cancel</button>
-                    <button onClick={() => handleDeletePhase(phase.id)} className="text-xs font-semibold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
+                    <button onClick={() => setConfirmDeletePhase(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
+                    <button onClick={() => handleDeletePhase(phase.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 mb-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h2 className="text-sm font-bold text-white uppercase tracking-wide truncate">{phase.name}</h2>
+                        <h2 className="text-sm font-bold text-app-text uppercase tracking-wide truncate">{phase.name}</h2>
                         {phase.weeks != null && (
-                          <span className="flex-none text-xs font-medium text-lime-400 bg-lime-400/10 rounded-full px-2 py-0.5">
+                          <span className="flex-none text-xs font-medium text-accent-dark bg-accent-light rounded-full px-2 py-0.5">
                             {phase.weeks}w
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">{phaseDays.length} {phaseDays.length === 1 ? 'day' : 'days'}</p>
+                      <p className="text-xs text-app-muted">{phaseDays.length} {phaseDays.length === 1 ? 'day' : 'days'}</p>
                     </div>
                     <button
                       onClick={() => { setEditingPhase(phase); setPhaseForm(true) }}
-                      className="flex-none text-gray-600 active:text-lime-400 p-1"
+                      className="flex-none text-app-faint active:text-accent-dark p-1"
                       aria-label={`Edit ${phase.name}`}
                     >
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -297,7 +293,7 @@ export default function ProgramDetail() {
                     </button>
                     <button
                       onClick={() => setConfirmDeletePhase(phase.id)}
-                      className="flex-none text-gray-600 active:text-red-400 p-1"
+                      className="flex-none text-app-faint active:text-red-500 p-1"
                       aria-label={`Delete ${phase.name}`}
                     >
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -307,13 +303,11 @@ export default function ProgramDetail() {
                   </div>
                 )}
 
-                {/* Days in this phase */}
                 {phaseDays.length > 0 && renderDayList(phaseDays)}
 
-                {/* Add day to this phase */}
                 <button
                   onClick={() => openDayForm(phase.id)}
-                  className="w-full mt-2 rounded-xl border border-dashed border-gray-700 text-gray-500 text-xs py-2 active:border-gray-500 active:text-gray-300"
+                  className="w-full mt-2 rounded-xl border border-dashed border-app-border text-app-faint text-xs py-2 active:border-accent active:text-accent-dark"
                 >
                   + Add day to {phase.name}
                 </button>
@@ -321,10 +315,9 @@ export default function ProgramDetail() {
             )
           })}
 
-          {/* Unassigned days */}
           {unassigned.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-2">Unassigned</h2>
+              <h2 className="text-sm font-bold text-app-muted uppercase tracking-wide mb-2">Unassigned</h2>
               {renderDayList(unassigned)}
             </div>
           )}

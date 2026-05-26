@@ -1,10 +1,5 @@
 /**
  * WorkoutLogger — the active workout screen.
- *
- * Shows every exercise in the session with its logged sets.
- * Tap "Log Set" on any exercise to enter reps / weight / RPE / RIR.
- * The form stays open after each save so you can log multiple sets quickly.
- * Tap "Finish" to close the session.
  */
 
 import { useState, useMemo, useEffect, useRef } from 'react'
@@ -28,7 +23,6 @@ function formatElapsed(seconds: number) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-// Tries to extract the first number from a reps string like "8–12" or "AMRAP".
 function parseFirstRep(targetReps: string): string {
   const match = targetReps.match(/\d+/)
   return match ? match[0] : ''
@@ -61,7 +55,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
     const repsNum   = parseInt(reps, 10)
     const weightNum = parseFloat(weight)
 
-    if (isNaN(repsNum) || repsNum < 1)  { setError('Enter reps.'); return }
+    if (isNaN(repsNum) || repsNum < 1)     { setError('Enter reps.'); return }
     if (isNaN(weightNum) || weightNum < 0) { setError('Enter weight (use 0 for bodyweight).'); return }
 
     const rpeNum = rpe.trim() ? parseFloat(rpe) : null
@@ -96,7 +90,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
   }
 
   return (
-    <div className="mt-2 p-3 rounded-2xl bg-gray-900 border border-gray-700">
+    <div className="mt-2 p-3 rounded-2xl bg-app-bg border border-app-border">
       {/* Reps × Weight row */}
       <div className="flex items-center gap-2 mb-2">
         {/* Warmup toggle */}
@@ -105,8 +99,8 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
           className={[
             'flex-none w-8 h-8 rounded-xl text-xs font-bold',
             isWarmup
-              ? 'bg-amber-900/40 text-amber-400'
-              : 'bg-gray-800 text-gray-400',
+              ? 'bg-amber-50 text-amber-600'
+              : 'bg-app-card border border-app-border text-app-muted',
           ].join(' ')}
           title="Warmup set"
         >
@@ -121,9 +115,9 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             onChange={(e) => setReps(e.target.value)}
             placeholder="Reps"
             min={1}
-            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
+            className="w-full rounded-xl border border-app-border bg-app-card text-app-text px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-accent"
           />
-          <span className="text-gray-400 text-sm flex-none">×</span>
+          <span className="text-app-muted text-sm flex-none">×</span>
           <input
             type="number"
             inputMode="decimal"
@@ -132,16 +126,16 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
             placeholder="kg"
             min={0}
             step={0.5}
-            className="w-full rounded-xl border border-gray-700 bg-gray-800 text-white px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-lime-400"
+            className="w-full rounded-xl border border-app-border bg-app-card text-app-text px-2 py-1.5 text-center focus:outline-none focus:ring-2 focus:ring-accent"
           />
-          <span className="text-gray-400 text-xs flex-none">kg</span>
+          <span className="text-app-muted text-xs flex-none">kg</span>
         </div>
 
         {/* Save */}
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-none w-8 h-8 rounded-xl bg-lime-400 text-gray-900 flex items-center justify-center active:bg-lime-500 disabled:opacity-50"
+          className="flex-none w-8 h-8 rounded-xl bg-accent text-app-text flex items-center justify-center active:bg-accent-dark disabled:opacity-50"
           aria-label="Save set"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -154,14 +148,14 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
       {!showRpe ? (
         <button
           onClick={() => setShowRpe(true)}
-          className="text-xs text-gray-500 active:text-lime-400"
+          className="text-xs text-app-faint active:text-accent-dark"
         >
           + Add RPE / RIR
         </button>
       ) : (
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 flex-1">
-            <span className="text-xs text-gray-500 flex-none">RPE</span>
+            <span className="text-xs text-app-muted flex-none">RPE</span>
             <input
               type="number"
               inputMode="decimal"
@@ -169,11 +163,11 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRpe(e.target.value)}
               placeholder="1–10"
               min={1} max={10} step={0.5}
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-lg border border-app-border bg-app-card text-app-text px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
           <div className="flex items-center gap-1 flex-1">
-            <span className="text-xs text-gray-500 flex-none">RIR</span>
+            <span className="text-xs text-app-muted flex-none">RIR</span>
             <input
               type="number"
               inputMode="numeric"
@@ -181,7 +175,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
               onChange={(e) => setRir(e.target.value)}
               placeholder="0–5"
               min={0} max={5}
-              className="w-full rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-lime-400"
+              className="w-full rounded-lg border border-app-border bg-app-card text-app-text px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-accent"
             />
           </div>
         </div>
@@ -193,7 +187,7 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
         placeholder="Note (optional)"
-        className="w-full mt-2 rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-lime-400"
+        className="w-full mt-2 rounded-lg border border-app-border bg-app-card text-app-text px-2 py-1 text-xs placeholder-app-faint focus:outline-none focus:ring-1 focus:ring-accent"
       />
 
       {/* Machine setting */}
@@ -202,10 +196,10 @@ function SetEntryForm({ sessionExercise, nextSetNumber, lastSet, targetWeight, t
         value={machineSetting}
         onChange={(e) => setMachineSetting(e.target.value)}
         placeholder="Machine setting (optional) e.g. seat 3, pin 8"
-        className="w-full mt-1 rounded-lg border border-gray-700 bg-gray-800 text-white px-2 py-1 text-xs placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-lime-400"
+        className="w-full mt-1 rounded-lg border border-app-border bg-app-card text-app-text px-2 py-1 text-xs placeholder-app-faint focus:outline-none focus:ring-1 focus:ring-accent"
       />
 
-      {error && <p className="text-xs text-red-400 mt-1">{error}</p>}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   )
 }
@@ -228,7 +222,7 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
 
       {/* Swipeable row content */}
       <div
-        className="flex items-center gap-2 py-1.5 bg-gray-800/40 rounded-xl px-1"
+        className="flex items-center gap-2 py-1.5 bg-app-bg rounded-xl px-1"
         style={{
           transform:  `translateX(${offsetX}px)`,
           transition: offsetX === 0 ? 'transform 0.25s ease' : 'none',
@@ -246,27 +240,27 @@ function SetRow({ set, onDelete }: { set: LoggedSet; onDelete: () => void }) {
         <span className={[
           'w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold flex-none',
           set.isWarmup
-            ? 'bg-amber-900/40 text-amber-400'
-            : 'bg-lime-900/40 text-lime-300',
+            ? 'bg-amber-50 text-amber-600'
+            : 'bg-accent-light text-accent-dark',
         ].join(' ')}>
           {set.isWarmup ? 'W' : set.setNumber}
         </span>
-        <span className="flex-1 text-sm min-w-0 text-white">
+        <span className="flex-1 text-sm min-w-0 text-app-text">
           <span className="block">
             {set.reps} × {set.weight} kg
-            {set.rpe != null && <span className="text-gray-500 text-xs ml-1">RPE {set.rpe}</span>}
-            {set.rir != null && <span className="text-gray-500 text-xs ml-1">RIR {set.rir}</span>}
+            {set.rpe != null && <span className="text-app-faint text-xs ml-1">RPE {set.rpe}</span>}
+            {set.rir != null && <span className="text-app-faint text-xs ml-1">RIR {set.rir}</span>}
           </span>
           {set.notes && (
-            <span className="block text-xs text-gray-500 truncate">{set.notes}</span>
+            <span className="block text-xs text-app-muted truncate">{set.notes}</span>
           )}
           {set.machineSetting && (
-            <span className="block text-xs text-gray-600 truncate">⚙ {set.machineSetting}</span>
+            <span className="block text-xs text-app-faint truncate">⚙ {set.machineSetting}</span>
           )}
         </span>
         <button
           onClick={onDelete}
-          className="flex-none text-gray-600 active:text-red-400 p-0.5"
+          className="flex-none text-app-faint active:text-red-500 p-0.5"
           aria-label="Delete set"
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -287,8 +281,8 @@ interface Props {
 type SessionData = {
   sessionExercises: SessionExercise[]
   exerciseMap:      Map<string, Exercise>
-  setsMap:          Map<string, LoggedSet[]>   // keyed by sessionExerciseId
-  dayExerciseMap:   Map<string, DayExercise>   // keyed by exerciseId
+  setsMap:          Map<string, LoggedSet[]>
+  dayExerciseMap:   Map<string, DayExercise>
   dayName:          string | null
 }
 
@@ -304,7 +298,6 @@ export default function WorkoutLogger({ session }: Props) {
   const [sessionNotes, setSessionNotes] = useState(session.notes)
   const [showNotes,    setShowNotes]    = useState(!!session.notes)
 
-  // Elapsed timer — ticks every second.
   useEffect(() => {
     const start = new Date(session.startedAt).getTime()
     const tick  = () => setElapsed(Math.floor((Date.now() - start) / 1000))
@@ -313,7 +306,6 @@ export default function WorkoutLogger({ session }: Props) {
     return () => clearInterval(id)
   }, [session.startedAt])
 
-  // One compound query to get everything we need to render the active workout.
   const data = useLiveQuery<SessionData>(async () => {
     const ses = await db.sessionExercises
       .where('workoutSessionId').equals(session.id)
@@ -429,7 +421,7 @@ export default function WorkoutLogger({ session }: Props) {
   }
 
   if (!data) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
   const { sessionExercises, exerciseMap, setsMap, dayExerciseMap, dayName } = data
@@ -439,15 +431,15 @@ export default function WorkoutLogger({ session }: Props) {
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-3">
         <div>
-          <h1 className="text-2xl font-bold text-white truncate">
+          <h1 className="text-2xl font-extrabold text-app-text truncate">
             {dayName ?? 'Workout'}
           </h1>
-          <p className="text-xs text-gray-400 font-mono mt-0.5">{formatElapsed(elapsed)}</p>
+          <p className="text-xs text-app-muted font-mono mt-0.5">{formatElapsed(elapsed)}</p>
         </div>
         <button
           onClick={() => setShowSummary(true)}
           disabled={finishing}
-          className="rounded-2xl bg-lime-400 text-gray-900 px-5 py-2.5 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
+          className="rounded-2xl bg-accent text-app-text px-5 py-2.5 text-sm font-bold active:bg-accent-dark disabled:opacity-60"
         >
           {finishing ? 'Finishing…' : 'Finish'}
         </button>
@@ -461,12 +453,12 @@ export default function WorkoutLogger({ session }: Props) {
           onBlur={(e) => saveNotes(e.target.value)}
           placeholder="Session notes… (sleep, energy, anything notable)"
           rows={2}
-          className="w-full mb-4 rounded-2xl border border-gray-700 bg-gray-800 text-white placeholder-gray-600 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-lime-400"
+          className="w-full mb-4 rounded-2xl border border-app-border bg-app-card text-app-text placeholder-app-faint px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-accent"
         />
       ) : (
         <button
           onClick={() => setShowNotes(true)}
-          className="text-xs text-gray-600 active:text-gray-400 mb-4"
+          className="text-xs text-app-faint active:text-app-muted mb-4"
         >
           + Add session notes
         </button>
@@ -474,8 +466,8 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Exercise list ── */}
       {sessionExercises.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500 mb-4">
-          Tap <strong className="text-gray-300">Add Exercise</strong> to get started.
+        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted mb-4">
+          Tap <strong className="text-app-text">Add Exercise</strong> to get started.
         </div>
       ) : (
         <ul className="flex flex-col gap-3 mb-4">
@@ -491,14 +483,14 @@ export default function WorkoutLogger({ session }: Props) {
             if (!exercise) return null
 
             return (
-              <li key={se.id} className="rounded-2xl bg-gray-800/60 px-3 py-3">
+              <li key={se.id} className="rounded-2xl bg-app-card border border-app-border px-3 py-3">
                 {/* Exercise header */}
                 <div className="flex items-center gap-2 mb-2">
                   <MuscleIcon muscleGroup={exercise.muscleGroup} width={28} height={42} />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-white truncate">{exercise.name}</p>
+                    <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
                     {dayEx && (
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-app-muted">
                         Target: {dayEx.targetSets} × {dayEx.targetReps}
                         {dayEx.targetWeight != null ? ` @ ${dayEx.targetWeight} kg` : ''}
                         {dayEx.restSecs != null ? ` · ${dayEx.restSecs}s rest` : ''}
@@ -506,12 +498,10 @@ export default function WorkoutLogger({ session }: Props) {
                     )}
                   </div>
 
-                  {/* Instructions hint */}
                   {exercise.instructions && (
-                    <p className="text-xs text-gray-500 mt-0.5 truncate">{exercise.instructions}</p>
+                    <p className="text-xs text-app-faint mt-0.5 truncate">{exercise.instructions}</p>
                   )}
 
-                  {/* YouTube thumbnail — opens video in browser */}
                   {exercise.videoUrl && (() => {
                     const vid   = getYouTubeId(exercise.videoUrl)
                     const thumb = vid ? getYouTubeThumbnail(vid) : null
@@ -534,7 +524,7 @@ export default function WorkoutLogger({ session }: Props) {
                   })()}
                   <button
                     onClick={() => removeExercise(se.id)}
-                    className="flex-none text-gray-600 active:text-red-400 p-1"
+                    className="flex-none text-app-faint active:text-red-500 p-1"
                     aria-label={`Remove ${exercise.name}`}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -545,7 +535,7 @@ export default function WorkoutLogger({ session }: Props) {
 
                 {/* Logged sets */}
                 {sets.length > 0 && (
-                  <div className="border-t border-gray-700 pt-2 mb-2">
+                  <div className="border-t border-app-border pt-2 mb-2">
                     {sets.map((s) => (
                       <SetRow key={s.id} set={s} onDelete={() => deleteSet(s.id)} />
                     ))}
@@ -569,7 +559,7 @@ export default function WorkoutLogger({ session }: Props) {
                 ) : (
                   <button
                     onClick={() => setActiveSeId(se.id)}
-                    className="w-full rounded-xl border border-dashed border-lime-700 text-lime-400 text-xs font-semibold py-2 active:bg-lime-900/20"
+                    className="w-full rounded-xl border border-dashed border-accent text-accent-dark text-xs font-semibold py-2 active:bg-accent-light"
                   >
                     + Log Set
                   </button>
@@ -583,7 +573,7 @@ export default function WorkoutLogger({ session }: Props) {
       {/* Add exercise */}
       <button
         onClick={() => setShowPicker(true)}
-        className="w-full rounded-2xl border-2 border-dashed border-gray-700 text-gray-400 text-sm font-medium py-4 active:border-gray-600"
+        className="w-full rounded-2xl border-2 border-dashed border-app-border text-app-muted text-sm font-medium py-4 active:border-accent"
       >
         + Add Exercise
       </button>

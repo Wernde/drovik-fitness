@@ -1,11 +1,5 @@
 /**
  * Settings — app settings and data management.
- *
- * Export: dumps the entire Dexie database to a JSON file and triggers a download.
- * Import: reads a JSON file produced by Export and merges it into the local database
- *         using bulkPut (last-write-wins by updatedAt, same as the sync layer).
- *
- * This is the safety-net backup described in CLAUDE.md Phase 7.
  */
 
 import { useState, useRef } from 'react'
@@ -75,8 +69,6 @@ async function importData(file: File): Promise<string> {
     return 'Invalid backup file — missing required fields.'
   }
 
-  // bulkPut: insert rows that don't exist, overwrite rows that do.
-  // This is safe to run on a device that already has data — it merges rather than replaces.
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const p = payload as Record<string, any[]>
@@ -99,7 +91,7 @@ async function importData(file: File): Promise<string> {
       if (p.sets)             await db.sets.bulkPut(p.sets)
       if (p.bodyWeightLogs)   await db.bodyWeightLogs.bulkPut(p.bodyWeightLogs)
     })
-    return ''  // empty string = success
+    return ''
   } catch (err: unknown) {
     return `Import failed: ${err instanceof Error ? err.message : 'unknown error'}`
   }
@@ -143,25 +135,24 @@ export default function Settings() {
     }
 
     setImportLoading(false)
-    // Reset the file input so the same file can be re-imported if needed.
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (
     <div className="px-4 pt-6 pb-4">
-      <h1 className="text-2xl font-bold text-white mb-6">Settings</h1>
+      <h1 className="text-2xl font-extrabold text-app-text mb-6">Settings</h1>
 
       {/* ── Account ── */}
       <section className="mb-5">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Account</h2>
-        <div className="rounded-2xl bg-gray-800/60 px-4 py-4 flex items-center justify-between">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Account</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4 flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-white">{session?.user.email}</p>
-            <p className="text-xs text-gray-400 mt-0.5">Signed in</p>
+            <p className="text-sm font-semibold text-app-text">{session?.user.email}</p>
+            <p className="text-xs text-app-muted mt-0.5">Signed in</p>
           </div>
           <button
             onClick={signOut}
-            className="text-sm text-red-400 font-semibold active:text-red-300"
+            className="text-sm text-red-500 font-semibold active:text-red-600"
           >
             Sign out
           </button>
@@ -170,28 +161,28 @@ export default function Settings() {
 
       {/* ── Data ── */}
       <section className="mb-5">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Data</h2>
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Data</h2>
         <div className="flex flex-col gap-2">
 
           {/* Export */}
-          <div className="rounded-2xl bg-gray-800/60 px-4 py-4">
-            <p className="text-sm font-semibold text-white mb-0.5">Export backup</p>
-            <p className="text-xs text-gray-400 mb-3">
+          <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+            <p className="text-sm font-semibold text-app-text mb-0.5">Export backup</p>
+            <p className="text-xs text-app-muted mb-3">
               Downloads a JSON file with all exercises, programs, and workout history.
             </p>
             <button
               onClick={handleExport}
               disabled={exporting}
-              className="rounded-2xl bg-lime-400 text-gray-900 px-4 py-2 text-sm font-semibold active:bg-lime-500 disabled:opacity-60"
+              className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark disabled:opacity-60"
             >
               {exporting ? 'Exporting…' : 'Export JSON'}
             </button>
           </div>
 
           {/* Import */}
-          <div className="rounded-2xl bg-gray-800/60 px-4 py-4">
-            <p className="text-sm font-semibold text-white mb-0.5">Import backup</p>
-            <p className="text-xs text-gray-400 mb-3">
+          <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+            <p className="text-sm font-semibold text-app-text mb-0.5">Import backup</p>
+            <p className="text-xs text-app-muted mb-3">
               Merges a previously exported JSON file. Existing records are overwritten if the imported version is newer.
             </p>
 
@@ -205,16 +196,16 @@ export default function Settings() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={importLoading}
-              className="rounded-2xl border border-gray-600 text-gray-300 bg-gray-800 px-4 py-2 text-sm font-semibold active:bg-gray-700 disabled:opacity-60"
+              className="rounded-2xl border border-app-border text-app-muted bg-app-bg px-4 py-2 text-sm font-bold active:bg-app-border disabled:opacity-60"
             >
               {importLoading ? 'Importing…' : 'Import JSON'}
             </button>
 
             {importStatus === 'success' && (
-              <p className="text-sm text-lime-400 mt-2">Import successful — data merged.</p>
+              <p className="text-sm text-green-600 mt-2">Import successful — data merged.</p>
             )}
             {importStatus === 'error' && (
-              <p className="text-sm text-red-400 mt-2">{importError}</p>
+              <p className="text-sm text-red-500 mt-2">{importError}</p>
             )}
           </div>
         </div>
@@ -222,10 +213,10 @@ export default function Settings() {
 
       {/* ── About ── */}
       <section>
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">About</h2>
-        <div className="rounded-2xl bg-gray-800/60 px-4 py-4">
-          <p className="text-sm font-semibold text-white mb-1">Drovik Fitness</p>
-          <p className="text-xs text-gray-400">Local-first personal workout tracker. All data stored on your device and synced to Supabase when online.</p>
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">About</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+          <p className="text-sm font-semibold text-app-text mb-1">Drovik Fitness</p>
+          <p className="text-xs text-app-muted">Local-first personal workout tracker. All data stored on your device and synced to Supabase when online.</p>
         </div>
       </section>
     </div>

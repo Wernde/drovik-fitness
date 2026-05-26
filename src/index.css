@@ -2,20 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-  CSS variables used by MuscleIcon.tsx.
-  The media query overrides them automatically when the device is in dark mode.
-*/
-/* App is permanently dark — no light-mode variables needed. */
 :root {
-  --muscle-body: #4b5563;  /* gray-600 — body silhouette */
-  --muscle-hi:   #a3e635;  /* lime-400 — highlighted muscle */
+  --muscle-body: #c8c8c8;
+  --muscle-hi:   #FFCA10;
 }
 
-/*
-  Hide scrollbars on overflow containers while keeping them scrollable.
-  Used on the category filter pill row in Exercises.tsx.
-*/
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -26,30 +17,12 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-gray-100;
-
-    /*
-      Push content above the fixed bottom nav (64 px) plus the iOS home-bar
-      safe area. env(safe-area-inset-bottom) is 0 on Android and ~34 px on
-      iPhone with a home indicator.
-    */
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px));
-
-    /*
-      Prevent any element from making the page wider than the screen.
-      Without this, a single overflowing element causes the whole
-      viewport to zoom out on mobile.
-    */
+    @apply bg-app-bg text-app-text;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
     overflow-x: hidden;
   }
 
-  /*
-    iOS Safari zooms the page when the user taps an input whose font-size
-    is less than 16 px. Setting 16 px here prevents that zoom globally.
-    We place this in @layer base so component styles (text-sm, etc.) still
-    override it when used on non-interactive elements — but we explicitly
-    remove text-sm from all <input> and <select> elements in our components.
-  */
   input,
   select,
   textarea {

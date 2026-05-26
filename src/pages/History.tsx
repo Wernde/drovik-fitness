@@ -15,15 +15,13 @@ const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 // ── Year heatmap ──────────────────────────────────────────────────────────────
 
 function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
-  // Start from the Monday 51 full weeks before the current week's Monday
   const today = new Date()
   today.setHours(12, 0, 0, 0)
-  const dow        = today.getDay()                        // 0=Sun … 6=Sat
-  const toMonday   = dow === 0 ? 6 : dow - 1              // days since last Monday
+  const dow        = today.getDay()
+  const toMonday   = dow === 0 ? 6 : dow - 1
   const weekStart  = new Date(today)
-  weekStart.setDate(today.getDate() - toMonday - 51 * 7)  // Monday 52 weeks ago
+  weekStart.setDate(today.getDate() - toMonday - 51 * 7)
 
-  // Build 52 weeks × 7 days
   const weeks: string[][] = Array.from({ length: 52 }, (_, w) =>
     Array.from({ length: 7 }, (_, d) => {
       const date = new Date(weekStart)
@@ -32,7 +30,6 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
     })
   )
 
-  // Month labels: one per week when the month changes
   const monthLabels = new Map<number, string>()
   let lastMonth = -1
   for (let w = 0; w < 52; w++) {
@@ -47,7 +44,6 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
   const allDays    = weeks.flat()
   const totalInRange = allDays.filter((d) => sessionDates.has(d)).length
 
-  // Longest streak in the visible range
   let longest = 0, run = 0
   for (const d of allDays) {
     if (sessionDates.has(d)) { run++; if (run > longest) longest = run }
@@ -55,13 +51,13 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
   }
 
   return (
-    <div className="rounded-2xl bg-gray-800/60 p-4 mb-5">
+    <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs text-gray-400">Last 52 weeks</p>
+        <p className="text-xs text-app-muted">Last 52 weeks</p>
         <div className="flex gap-3">
-          <span className="text-xs text-lime-400 font-semibold">{totalInRange} sessions</span>
+          <span className="text-xs text-accent-dark font-semibold">{totalInRange} sessions</span>
           {longest > 1 && (
-            <span className="text-xs text-amber-400 font-semibold">🔥 {longest}-day streak</span>
+            <span className="text-xs text-amber-600 font-semibold">🔥 {longest}-day streak</span>
           )}
         </div>
       </div>
@@ -74,7 +70,7 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
             {weeks.map((_, wi) => (
               <div key={wi} style={{ width: 12, flexShrink: 0 }}>
                 {monthLabels.has(wi) && (
-                  <span style={{ fontSize: 8, color: '#6b7280', whiteSpace: 'nowrap',
+                  <span style={{ fontSize: 8, color: '#7A7980', whiteSpace: 'nowrap',
                     display: 'block', transform: 'translateX(-2px)' }}>
                     {monthLabels.get(wi)}
                   </span>
@@ -96,10 +92,10 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
                     key={wi}
                     style={{ width: 12, height: 12, borderRadius: 2, flexShrink: 0 }}
                     className={
-                      isFuture ? 'bg-gray-800'
-                      : isToday ? 'bg-lime-400 ring-1 ring-lime-300 ring-offset-0'
-                      : hasSession ? 'bg-lime-500'
-                      : 'bg-gray-700'
+                      isFuture ? 'bg-app-border'
+                      : isToday ? 'bg-accent ring-1 ring-accent-dark ring-offset-0'
+                      : hasSession ? 'bg-accent-dark'
+                      : 'bg-app-border/60'
                     }
                   />
                 )
@@ -142,7 +138,7 @@ export default function History() {
   const days     = useLiveQuery(() => db.workoutDays.toArray(), [])
 
   if (!sessions || !programs || !days) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
   const dayMap        = new Map(days.map((d) => [d.id, d.name]))
@@ -166,28 +162,28 @@ export default function History() {
 
   return (
     <div className="px-4 pt-6 pb-4">
-      <h1 className="text-2xl font-bold text-white mb-5">History</h1>
+      <h1 className="text-2xl font-extrabold text-app-text mb-5">History</h1>
 
       {/* ── Year heatmap ── */}
       <YearHeatmap sessionDates={sessionDates} />
 
       {/* ── Calendar ── */}
-      <div className="rounded-2xl bg-gray-800/60 p-4 mb-5">
+      <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={prevMonth}
-            className="p-2 rounded-xl bg-gray-700/60 text-gray-300 active:bg-gray-700"
+            className="p-2 rounded-xl bg-app-bg border border-app-border text-app-muted active:bg-app-border"
             aria-label="Previous month"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
               <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
             </svg>
           </button>
-          <span className="text-sm font-bold text-white">{monthLabel}</span>
+          <span className="text-sm font-bold text-app-text">{monthLabel}</span>
           <button
             onClick={nextMonth}
-            className="p-2 rounded-xl bg-gray-700/60 text-gray-300 active:bg-gray-700"
+            className="p-2 rounded-xl bg-app-bg border border-app-border text-app-muted active:bg-app-border"
             aria-label="Next month"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -199,7 +195,7 @@ export default function History() {
         {/* Day headers */}
         <div className="grid grid-cols-7 mb-2">
           {DAY_LABELS.map((d) => (
-            <div key={d} className="text-center text-xs text-gray-500 font-medium py-1">{d}</div>
+            <div key={d} className="text-center text-xs text-app-faint font-medium py-1">{d}</div>
           ))}
         </div>
 
@@ -215,15 +211,15 @@ export default function History() {
                 <span className={[
                   'w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium',
                   isToday
-                    ? 'bg-lime-400 text-gray-900 font-bold'
+                    ? 'bg-accent text-app-text font-bold'
                     : hasSession
-                    ? 'text-white'
-                    : 'text-gray-400',
+                    ? 'text-app-text'
+                    : 'text-app-muted',
                 ].join(' ')}>
                   {date.getDate()}
                 </span>
                 {hasSession && !isToday && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-lime-400 mt-0.5" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-accent-dark mt-0.5" />
                 )}
               </div>
             )
@@ -233,16 +229,16 @@ export default function History() {
 
       {/* ── Session list ── */}
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-base font-bold text-white">
+        <h2 className="text-base font-bold text-app-text">
           {monthLabel}
         </h2>
-        <span className="text-xs text-gray-500">
+        <span className="text-xs text-app-muted">
           {monthSessions.length} {monthSessions.length === 1 ? 'session' : 'sessions'}
         </span>
       </div>
 
       {monthSessions.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500">
+        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
           No workouts recorded this month.
         </div>
       ) : (
@@ -260,27 +256,27 @@ export default function History() {
               <li key={session.id}>
                 <button
                   onClick={() => navigate(`/history/${session.id}`)}
-                  className="w-full flex items-center gap-4 rounded-2xl bg-gray-800/60 px-4 py-3 text-left active:bg-gray-800"
+                  className="w-full flex items-center gap-4 rounded-2xl bg-app-card border border-app-border px-4 py-3 text-left active:bg-accent-light"
                 >
                   {/* Date bubble */}
-                  <div className="flex-none w-12 h-12 rounded-xl bg-lime-400/10 flex flex-col items-center justify-center">
-                    <span className="text-lime-400 text-lg font-bold leading-none">{dayNum}</span>
-                    <span className="text-lime-400/70 text-xs">{month}</span>
+                  <div className="flex-none w-12 h-12 rounded-xl bg-accent-light flex flex-col items-center justify-center">
+                    <span className="text-accent-dark text-lg font-bold leading-none">{dayNum}</span>
+                    <span className="text-accent-dark/70 text-xs">{month}</span>
                   </div>
 
                   {/* Name + date */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-sm text-white truncate">{dayName}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{dateStr}</p>
+                    <p className="font-semibold text-sm text-app-text truncate">{dayName}</p>
+                    <p className="text-xs text-app-muted mt-0.5">{dateStr}</p>
                   </div>
 
                   {/* Duration */}
                   <div className="flex-none text-right">
-                    <p className="text-sm font-semibold text-white">{duration}</p>
-                    <p className="text-xs text-gray-500">duration</p>
+                    <p className="text-sm font-semibold text-app-text">{duration}</p>
+                    <p className="text-xs text-app-muted">duration</p>
                   </div>
 
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-600 flex-none">
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-none">
                     <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                   </svg>
                 </button>

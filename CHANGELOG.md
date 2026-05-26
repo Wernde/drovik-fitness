@@ -4,6 +4,24 @@ All notable changes are documented here, newest first.
 
 ---
 
+## UI Redesign — Light Theme
+
+### Changed
+- **Full visual redesign** from dark theme to a clean light theme matching the Drovik prototype
+- **Colour palette**: background `#F4F6F9`, white cards, yellow `#FFCA10` accent (replacing lime green), dark text `#241F20`, muted `#7A7980`
+- **Typography**: Plus Jakarta Sans via Google Fonts across the entire app
+- **Navigation**: 5-tab bottom nav — Dash | Plans | + FAB | Goals | More — replacing the previous 4-tab layout
+- **Home screen**: top bar with avatar greeting, 7-day date strip, hero workout card, weekly stats
+- **New pages**: Goals (water / body weight / calories tracking hub) and More (secondary screen links)
+- All pages and components updated to light theme tokens (`bg-app-card`, `bg-app-bg`, `text-app-text`, `text-app-muted`, `bg-accent`, `text-accent-dark`, etc.)
+- Charts (Progress page): tooltip and axes updated to light palette; line stroke `#B8900A`, dot fill `#FFCA10`
+- All modal slide-up panels use white cards; form inputs use `bg-app-bg` with `border-app-border`
+- Delete/confirm states use `bg-red-50 border-red-200 text-red-700` (replaces dark red)
+- Rest timer done-state uses accent yellow; exercise picker uses light full-screen layout
+- Habit tracker card background and form updated to light tokens
+
+---
+
 ## Home screen — next workout & weekly stats
 
 ### Added

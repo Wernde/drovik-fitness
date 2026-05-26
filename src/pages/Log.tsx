@@ -35,7 +35,7 @@ export default function Log() {
   }, [])
 
   if (data === undefined) {
-    return <div className="flex items-center justify-center h-40 text-gray-400">Loading…</div>
+    return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
   const { activeSession, activeProgram, programDays } = data
@@ -120,17 +120,17 @@ export default function Log() {
   return (
     <div className="px-4 pt-6 pb-4">
       {/* ── Header ── */}
-      <h1 className="text-2xl font-bold text-white mb-1">Log Workout</h1>
-      <p className="text-gray-400 text-sm mb-6">{dateLabel}</p>
+      <h1 className="text-2xl font-extrabold text-app-text mb-1">Log Workout</h1>
+      <p className="text-app-muted text-sm mb-6">{dateLabel}</p>
 
       {/* ── Active program days ── */}
       {activeProgram && programDays && programDays.length > 0 && (
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold text-app-muted uppercase tracking-wider">
               {activeProgram.name}
             </span>
-            <span className="text-xs font-semibold text-lime-400 bg-lime-400/10 rounded-full px-2 py-0.5">
+            <span className="text-xs font-semibold text-accent-dark bg-accent-light rounded-full px-2 py-0.5">
               Active
             </span>
           </div>
@@ -141,20 +141,20 @@ export default function Log() {
                 key={day.id}
                 onClick={() => startFromDay(day, activeProgram)}
                 disabled={starting}
-                className="w-full flex items-center gap-4 rounded-2xl bg-gray-800/60 px-4 py-4 text-left active:bg-gray-800 disabled:opacity-60"
+                className="w-full flex items-center gap-4 rounded-2xl bg-app-card border border-app-border px-4 py-4 text-left active:bg-accent-light disabled:opacity-60"
               >
-                <div className="flex-none w-10 h-10 rounded-xl bg-lime-400/10 flex items-center justify-center text-lime-400">
+                <div className="flex-none w-10 h-10 rounded-xl bg-accent-light flex items-center justify-center text-accent-dark">
                   <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm text-white truncate">{day.name}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">Tap to start</p>
+                  <p className="font-semibold text-sm text-app-text truncate">{day.name}</p>
+                  <p className="text-xs text-app-muted mt-0.5">Tap to start</p>
                 </div>
 
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-gray-600 flex-none">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-none">
                   <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
                 </svg>
               </button>
@@ -165,9 +165,9 @@ export default function Log() {
 
       {/* ── No active program nudge ── */}
       {!activeProgram && (
-        <div className="rounded-2xl border border-gray-700 bg-gray-800/40 p-4 mb-6">
-          <p className="text-sm text-gray-400">
-            No active program. Go to <strong className="text-gray-200">Programs</strong> to create one and mark it active, or start an empty workout below.
+        <div className="rounded-2xl border border-app-border bg-app-card p-4 mb-6">
+          <p className="text-sm text-app-muted">
+            No active program. Go to <strong className="text-app-text">Plans</strong> to create one and mark it active, or start an empty workout below.
           </p>
         </div>
       )}
@@ -176,16 +176,16 @@ export default function Log() {
       <button
         onClick={startEmpty}
         disabled={starting}
-        className="w-full flex items-center gap-4 rounded-2xl border-2 border-dashed border-gray-700 px-4 py-4 text-left active:border-gray-600 disabled:opacity-60"
+        className="w-full flex items-center gap-4 rounded-2xl border-2 border-dashed border-app-border px-4 py-4 text-left active:border-accent disabled:opacity-60"
       >
-        <div className="flex-none w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-gray-500">
+        <div className="flex-none w-10 h-10 rounded-xl bg-app-card border border-app-border flex items-center justify-center text-app-faint">
           <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
           </svg>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-sm text-white">Start Empty Workout</p>
-          <p className="text-xs text-gray-500 mt-0.5">Ad-hoc session, no program</p>
+          <p className="font-semibold text-sm text-app-text">Start Empty Workout</p>
+          <p className="text-xs text-app-muted mt-0.5">Ad-hoc session, no program</p>
         </div>
       </button>
     </div>

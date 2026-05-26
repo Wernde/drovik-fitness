@@ -43,27 +43,27 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
     .sort((a, b) => a.name.localeCompare(b.name))
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-gray-950">
+    <div className="fixed inset-0 z-50 flex flex-col bg-app-bg">
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-5 pb-3 border-b border-gray-800">
+      <div className="flex items-center gap-3 px-4 pt-5 pb-3 border-b border-app-border">
         <button
           onClick={onClose}
-          className="text-gray-500 active:text-white p-1 -ml-1"
+          className="text-app-muted active:text-app-text p-1 -ml-1"
           aria-label="Close"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
             <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
           </svg>
         </button>
-        <h2 className="text-lg font-bold text-white">Select Exercise</h2>
+        <h2 className="text-lg font-bold text-app-text">Select Exercise</h2>
       </div>
 
       {/* Search */}
       <div className="px-4 pt-3 pb-2">
         <div className="relative">
           <svg viewBox="0 0 20 20" fill="currentColor"
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none">
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-app-muted pointer-events-none">
             <path fillRule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clipRule="evenodd" />
           </svg>
           <input
@@ -72,7 +72,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search exercises…"
             autoFocus
-            className="w-full rounded-2xl border border-gray-700 bg-gray-800 text-white placeholder-gray-500 pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-lime-400"
+            className="w-full rounded-2xl border border-app-border bg-app-card text-app-text placeholder-app-faint pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
       </div>
@@ -86,8 +86,8 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             className={[
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap',
               filter === value
-                ? 'bg-lime-400 text-gray-900'
-                : 'bg-gray-800 text-gray-400',
+                ? 'bg-accent text-app-text'
+                : 'bg-app-card border border-app-border text-app-muted',
             ].join(' ')}
           >
             {label}
@@ -98,9 +98,9 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
       {/* Exercise list */}
       <div className="flex-1 overflow-y-auto px-4 pb-8">
         {!exercises ? (
-          <div className="flex items-center justify-center h-20 text-gray-400">Loading…</div>
+          <div className="flex items-center justify-center h-20 text-app-muted">Loading…</div>
         ) : filtered.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-gray-700 p-8 text-center text-gray-500">
+          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
             {search ? `No results for "${search}"` : 'No exercises in this category.'}
           </div>
         ) : (
@@ -114,17 +114,17 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
                     className={[
                       'w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left',
                       alreadyAdded
-                        ? 'bg-gray-800/40 opacity-50'
-                        : 'bg-gray-800/60 active:bg-lime-900/20',
+                        ? 'bg-app-card/40 opacity-50'
+                        : 'bg-app-card border border-app-border active:bg-accent-light',
                     ].join(' ')}
                   >
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-white truncate">{exercise.name}</p>
-                      <p className="text-xs text-gray-400">{exercise.muscleGroup}</p>
+                      <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
+                      <p className="text-xs text-app-muted">{exercise.muscleGroup}</p>
                     </div>
                     {alreadyAdded && (
-                      <span className="flex-none text-xs text-gray-500">Added</span>
+                      <span className="flex-none text-xs text-app-muted">Added</span>
                     )}
                   </button>
                 </li>

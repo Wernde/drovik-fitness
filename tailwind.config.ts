@@ -1,19 +1,27 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
-  // Tell Tailwind where to look for class names so it only ships the CSS you actually use.
   content: ['./index.html', './src/**/*.{ts,tsx}'],
-
-  // 'class' means dark mode is controlled by a 'dark' class on the <html> element.
-  // index.html always sets class="dark" so the app is permanently dark-themed.
   darkMode: 'class',
-
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+      },
       colors: {
         accent: {
-          DEFAULT: '#a3e635', // lime-400 — primary action colour
-          light: '#bef264',   // lime-300 — lighter variant
+          DEFAULT: '#FFCA10',
+          dark:    '#B8900A',
+          darker:  '#8A6C00',
+          light:   '#FFF9E0',
+        },
+        app: {
+          bg:     '#F4F6F9',
+          card:   '#ffffff',
+          border: '#E3E5E5',
+          text:   '#241F20',
+          muted:  '#7A7980',
+          faint:  '#C8C8C8',
         },
       },
     },
