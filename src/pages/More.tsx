@@ -3,7 +3,6 @@
  */
 
 import { useState, useRef, useEffect } from 'react'
-import { Link } from 'react-router-dom'
 
 interface Message {
   role: 'user' | 'ai'
@@ -101,22 +100,6 @@ export default function More() {
           <div className="w-2 h-2 rounded-full bg-green-500" />
           <span className="text-xs font-bold text-green-600">Live</span>
         </div>
-      </div>
-
-      {/* Quick links row */}
-      <div className="flex gap-2 px-4 py-2 overflow-x-auto scrollbar-hide flex-none border-b border-app-border">
-        {[
-          { to: '/history',    label: 'History' },
-          { to: '/progress',   label: 'Progress' },
-          { to: '/exercises',  label: 'Exercises' },
-          { to: '/calculator', label: 'Calculator' },
-          { to: '/settings',   label: 'Settings' },
-        ].map(({ to, label }) => (
-          <Link key={to} to={to}
-            className="flex-none rounded-full bg-app-card border border-app-border px-3 py-1.5 text-xs font-semibold text-app-muted active:bg-accent-light active:text-accent-dark whitespace-nowrap">
-            {label}
-          </Link>
-        ))}
       </div>
 
       {/* Messages */}

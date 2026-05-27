@@ -16,6 +16,7 @@ import Settings from './pages/Settings'
 import Calculator from './pages/Calculator'
 import Goals from './pages/Goals'
 import More from './pages/More'
+import Profile from './pages/Profile'
 
 const Progress = lazy(() => import('./pages/Progress'))
 
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="settings"                         element={<Settings />} />
         <Route path="goals"                            element={<Goals />} />
         <Route path="more"                             element={<More />} />
+        <Route path="profile"                          element={<Profile />} />
         <Route path="*"                                element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
