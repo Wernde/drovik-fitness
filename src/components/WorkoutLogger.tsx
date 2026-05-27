@@ -16,7 +16,7 @@ import { useToast } from '../contexts/ToastContext'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type DraftRow = { reps: string; kg: string }
+type DraftRow = { reps: string; kg: string; done: boolean }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -164,7 +164,7 @@ export default function WorkoutLogger({ session }: Props) {
       for (const se of data.sessionExercises) {
         if (!next.has(se.id)) {
           const n = data.dayExerciseMap.get(se.exerciseId)?.targetSets ?? 3
-          next.set(se.id, Array.from({ length: n }, () => ({ reps: '', kg: '' })))
+          next.set(se.id, Array.from({ length: n }, () => ({ reps: '', kg: '', done: false })))
         }
       }
       return next
@@ -184,10 +184,10 @@ export default function WorkoutLogger({ session }: Props) {
       existing.sort((a, b) => a.setNumber - b.setNumber)
 
       if (existing.length > 0) {
-        next.set(se.id, existing.map((s) => ({ reps: String(s.reps), kg: String(s.weight) })))
+        next.set(se.id, existing.map((s) => ({ reps: String(s.reps), kg: String(s.weight), done: false })))
       } else {
         const n = dayExMap.get(se.exerciseId)?.targetSets ?? 3
-        next.set(se.id, Array.from({ length: n }, () => ({ reps: '', kg: '' })))
+        next.set(se.id, Array.from({ length: n }, () => ({ reps: '', kg: '', done: false })))
       }
     }
     setDrafts(next)
@@ -232,7 +232,7 @@ export default function WorkoutLogger({ session }: Props) {
         // Only fill rows that are still empty
         const filled = existing.map((row, i) =>
           row.reps === '' && row.kg === '' && pd[i]
-            ? { reps: pd[i].reps, kg: pd[i].kg }
+            ? { reps: pd[i].reps, kg: pd[i].kg, done: false }
             : row
         )
         next.set(se.id, filled)
@@ -260,9 +260,24 @@ export default function WorkoutLogger({ session }: Props) {
     setDrafts((prev) => {
       const next = new Map(prev)
       const rows = next.get(seId) ?? []
-      next.set(seId, [...rows, { reps: '', kg: '' }])
+      next.set(seId, [...rows, { reps: '', kg: '', done: false }])
       return next
     })
+  }
+
+  function markDone(seId: string, rowIdx: number, restSecs: number | undefined, exerciseName: string) {
+    setDrafts((prev) => {
+      const next = new Map(prev)
+      const rows = [...(next.get(seId) ?? [])]
+      rows[rowIdx] = { ...rows[rowIdx], done: !rows[rowIdx].done }
+      next.set(seId, rows)
+      return next
+    })
+    // Auto-start rest timer when marking done (not when un-marking)
+    const currentlyDone = drafts.get(seId)?.[rowIdx]?.done ?? false
+    if (!currentlyDone && restSecs) {
+      setRestTimer({ secs: restSecs, exerciseName })
+    }
   }
 
   async function addExercise(exercise: Exercise) {
@@ -287,7 +302,7 @@ export default function WorkoutLogger({ session }: Props) {
       const n = 3
       setDrafts((prev) => {
         const next = new Map(prev)
-        next.set(seId, Array.from({ length: n }, () => ({ reps: '', kg: '' })))
+        next.set(seId, Array.from({ length: n }, () => ({ reps: '', kg: '', done: false })))
         return next
       })
     } catch {
@@ -488,14 +503,15 @@ export default function WorkoutLogger({ session }: Props) {
                 <div className="flex items-center py-2 border-b border-app-border">
                   <span className="w-8 text-xs font-semibold text-app-faint">Set</span>
                   <span className="flex-1 text-xs font-semibold text-app-faint">Previous</span>
-                  <span className="w-[68px] text-xs font-semibold text-app-faint text-center">Reps</span>
-                  <span className="w-[68px] text-xs font-semibold text-app-faint text-center">Kg</span>
+                  <span className="w-[60px] text-xs font-semibold text-app-faint text-center">Reps</span>
+                  <span className="w-[60px] text-xs font-semibold text-app-faint text-center">Kg</span>
+                  <span className="w-9" />
                 </div>
 
                 {/* Set rows */}
                 {rows.map((row, i) => (
-                  <div key={i} className="flex items-center py-2 border-b border-app-border/40">
-                    <span className="w-8 text-sm text-app-muted">{i + 1}</span>
+                  <div key={i} className={`flex items-center py-2 border-b border-app-border/40 transition-colors ${row.done ? 'bg-green-50' : ''}`}>
+                    <span className={`w-8 text-sm font-semibold ${row.done ? 'text-green-600' : 'text-app-muted'}`}>{i + 1}</span>
                     <span className="flex-1 text-xs text-app-faint">
                       {prev[i] ? `${prev[i].reps} × ${prev[i].kg} kg` : '—'}
                     </span>
@@ -504,7 +520,7 @@ export default function WorkoutLogger({ session }: Props) {
                       inputMode="numeric"
                       value={row.reps}
                       onChange={(e) => updateDraft(se.id, i, 'reps', e.target.value)}
-                      className="w-[60px] h-8 rounded-lg border border-app-border bg-white text-app-text text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:bg-blue-50 mx-1"
+                      className={`w-[56px] h-8 rounded-lg border text-app-text text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 mx-1 transition-colors ${row.done ? 'bg-green-100 border-green-200' : 'bg-white border-app-border focus:bg-blue-50'}`}
                       placeholder="—"
                     />
                     <input
@@ -513,9 +529,20 @@ export default function WorkoutLogger({ session }: Props) {
                       value={row.kg}
                       step={0.5}
                       onChange={(e) => updateDraft(se.id, i, 'kg', e.target.value)}
-                      className="w-[60px] h-8 rounded-lg border border-app-border bg-white text-app-text text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 focus:bg-blue-50 mx-1"
+                      className={`w-[56px] h-8 rounded-lg border text-app-text text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 mx-1 transition-colors ${row.done ? 'bg-green-100 border-green-200' : 'bg-white border-app-border focus:bg-blue-50'}`}
                       placeholder="—"
                     />
+                    {/* Checkmark — tap to mark set done + start rest timer */}
+                    <button
+                      onClick={() => markDone(se.id, i, dayEx?.restSecs, exercise.name)}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${row.done ? 'bg-green-500' : 'bg-app-bg border-2 border-app-border'}`}
+                    >
+                      {row.done && (
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-white">
+                          <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                    </button>
                   </div>
                 ))}
 
