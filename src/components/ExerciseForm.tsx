@@ -106,6 +106,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
     /* Darkened backdrop — tapping it closes the modal */
     <div
       className="fixed inset-0 z-50 flex items-end"
+      style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       {/* Slide-up panel */}

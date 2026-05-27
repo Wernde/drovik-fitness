@@ -48,7 +48,7 @@ export default function PhaseForm({ programId, phase, nextOrder, onClose }: Prop
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end" onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
+    <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
 
         <div className="flex items-center justify-between mb-6">

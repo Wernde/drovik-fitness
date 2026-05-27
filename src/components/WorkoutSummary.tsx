@@ -109,7 +109,7 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
   const dur = formatDur(session.startedAt)
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
       <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10 max-h-[85vh] overflow-y-auto">
 
         {/* Header */}

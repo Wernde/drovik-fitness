@@ -95,6 +95,7 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-end"
+      style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
