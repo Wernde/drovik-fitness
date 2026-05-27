@@ -11,6 +11,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { WorkoutSession, SessionExercise, DayExercise, Exercise } from '../db/db'
 import ExercisePicker from './ExercisePicker'
+import RestTimer from './RestTimer'
 import { useToast } from '../contexts/ToastContext'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -102,6 +103,7 @@ export default function WorkoutLogger({ session }: Props) {
   const [saving,      setSaving]      = useState(false)
   const [showDiscard, setShowDiscard] = useState(false)
   const [showPicker,  setShowPicker]  = useState(false)
+  const [restTimer,   setRestTimer]   = useState<{ secs: number; exerciseName: string } | null>(null)
 
   const draftsInit = useRef(false)
 
@@ -466,15 +468,17 @@ export default function WorkoutLogger({ session }: Props) {
               {dayEx?.restSecs != null && (
                 <div className="flex items-center justify-between px-4 py-2 bg-app-bg border-t border-app-border">
                   <div className="flex items-center gap-2">
-                    {/* Refresh/rest icon */}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4 text-app-muted">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
                     </svg>
                     <span className="text-xs text-app-muted">Rest between each set</span>
                   </div>
-                  <span className="rounded-full border border-blue-300 bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1">
+                  <button
+                    onClick={() => setRestTimer({ secs: dayEx.restSecs!, exerciseName: exercise.name })}
+                    className="rounded-full border border-blue-300 bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 active:bg-blue-100"
+                  >
                     {dayEx.restSecs}s
-                  </span>
+                  </button>
                 </div>
               )}
 
@@ -588,6 +592,15 @@ export default function WorkoutLogger({ session }: Props) {
           onSelect={addExercise}
           onClose={() => setShowPicker(false)}
           existingIds={existingExerciseIds}
+        />
+      )}
+
+      {/* ── Rest timer overlay ── */}
+      {restTimer && (
+        <RestTimer
+          defaultSecs={restTimer.secs}
+          exerciseName={restTimer.exerciseName}
+          onDismiss={() => setRestTimer(null)}
         />
       )}
     </div>
