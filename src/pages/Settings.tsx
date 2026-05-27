@@ -2,7 +2,7 @@
  * Settings — app settings and data management.
  */
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { db } from '../db/db'
 
@@ -108,6 +108,19 @@ export default function Settings() {
   const [importLoading,  setImportLoading]  = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  const [apiKey,      setApiKey]      = useState('')
+  const [apiKeySaved, setApiKeySaved] = useState(false)
+
+  useEffect(() => {
+    setApiKey(localStorage.getItem('drovik:apiKey') ?? '')
+  }, [])
+
+  function handleSaveApiKey() {
+    localStorage.setItem('drovik:apiKey', apiKey.trim())
+    setApiKeySaved(true)
+    setTimeout(() => setApiKeySaved(false), 2000)
+  }
+
   async function handleExport() {
     setExporting(true)
     try {
@@ -208,6 +221,30 @@ export default function Settings() {
               <p className="text-sm text-red-500 mt-2">{importError}</p>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* ── AI Coach ── */}
+      <section className="mb-5">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">AI Coach</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+          <p className="text-sm font-semibold text-app-text mb-0.5">Anthropic API key</p>
+          <p className="text-xs text-app-muted mb-3">
+            Powers the AI Coach on the More tab. Get a key at console.anthropic.com. Stored locally on this device only.
+          </p>
+          <input
+            type="password"
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
+            placeholder="sk-ant-…"
+            className="w-full rounded-xl border border-app-border bg-app-bg px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent mb-3 font-mono"
+          />
+          <button
+            onClick={handleSaveApiKey}
+            className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
+          >
+            {apiKeySaved ? 'Saved!' : 'Save key'}
+          </button>
         </div>
       </section>
 
