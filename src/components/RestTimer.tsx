@@ -23,9 +23,10 @@ interface Props {
   defaultSecs:  number
   exerciseName: string
   onDismiss:    () => void
+  bottomClass?: string   // override positioning when nav + save button stack up
 }
 
-export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Props) {
+export default function RestTimer({ defaultSecs, exerciseName, onDismiss, bottomClass = 'bottom-20' }: Props) {
   const [remaining, setRemaining] = useState(defaultSecs)
   const [done,      setDone]      = useState(false)
   // Track the ceiling so the progress bar doesn't jump when user adds time
@@ -69,7 +70,7 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Prop
   const progress = Math.min(1, (ceilRef.current - remaining) / ceilRef.current)
 
   return (
-    <div className="fixed bottom-16 left-0 right-0 z-40 px-4 pb-1 pointer-events-none">
+    <div className={`fixed ${bottomClass} left-0 right-0 z-50 px-4 pb-1 pointer-events-none`}>
       <div
         className={[
           'rounded-2xl shadow-2xl px-4 py-3 pointer-events-auto transition-colors',

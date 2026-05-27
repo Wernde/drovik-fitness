@@ -601,6 +601,7 @@ export default function WorkoutLogger({ session }: Props) {
           defaultSecs={restTimer.secs}
           exerciseName={restTimer.exerciseName}
           onDismiss={() => setRestTimer(null)}
+          bottomClass="bottom-[160px]"
         />
       )}
     </div>
