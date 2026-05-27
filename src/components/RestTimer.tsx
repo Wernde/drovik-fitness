@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-// ── Audio beep via Web Audio API (no file needed, works offline) ───────────────
-
 function beep() {
   try {
     const ctx  = new AudioContext()
@@ -17,38 +15,35 @@ function beep() {
   } catch { /* audio not supported */ }
 }
 
-// ── RestTimer ──────────────────────────────────────────────────────────────────
-
 interface Props {
   defaultSecs:  number
   exerciseName: string
   onDismiss:    () => void
-  bottomClass?: string   // override positioning when nav + save button stack up
+  bottomClass?: string  // unused, kept for API compatibility
 }
 
-export default function RestTimer({ defaultSecs, exerciseName, onDismiss, bottomClass = 'bottom-20' }: Props) {
+const RADIUS = 88
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+
+export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Props) {
   const [remaining, setRemaining] = useState(defaultSecs)
   const [done,      setDone]      = useState(false)
-  // Track the ceiling so the progress bar doesn't jump when user adds time
   const ceilRef = useRef(defaultSecs)
 
-  // Countdown tick
   useEffect(() => {
     if (done) return
     const id = setInterval(() => setRemaining((r) => Math.max(0, r - 1)), 1000)
     return () => clearInterval(id)
   }, [done])
 
-  // Detect when timer reaches 0
   useEffect(() => {
     if (remaining === 0 && !done) {
       setDone(true)
       beep()
-      try { navigator.vibrate(400) } catch { /* vibrate not supported */ }
+      try { navigator.vibrate(400) } catch { /* not supported */ }
     }
   }, [remaining, done])
 
-  // Auto-dismiss 2.5 s after completion
   useEffect(() => {
     if (!done) return
     const id = setTimeout(onDismiss, 2500)
@@ -61,71 +56,89 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss, bottom
       if (next > ceilRef.current) ceilRef.current = next
       return next
     })
-    // Reset done so the tick resumes if user adds time after expiry
     if (delta > 0) setDone(false)
   }, [])
 
-  const mins = Math.floor(remaining / 60)
-  const secs = remaining % 60
-  const progress = Math.min(1, (ceilRef.current - remaining) / ceilRef.current)
+  const mins     = Math.floor(remaining / 60)
+  const secs     = remaining % 60
+  const progress = ceilRef.current > 0 ? remaining / ceilRef.current : 0
+  const dashOffset = CIRCUMFERENCE * (1 - progress)
 
   return (
-    <div className={`fixed ${bottomClass} left-0 right-0 z-50 px-4 pb-1 pointer-events-none`}>
-      <div
-        className={[
-          'rounded-2xl shadow-2xl px-4 py-3 pointer-events-auto transition-colors',
-          done ? 'bg-accent' : 'bg-app-card border border-app-border',
-        ].join(' ')}
-      >
-        {/* Top row: label + skip */}
-        <div className="flex items-center justify-between mb-2">
-          <p className={`text-xs truncate flex-1 mr-2 ${done ? 'text-app-text font-semibold' : 'text-app-muted'}`}>
-            {done ? 'Rest complete!' : `Rest — ${exerciseName}`}
-          </p>
-          {!done && (
-            <button
-              onClick={onDismiss}
-              className="text-xs text-app-muted active:text-app-text flex-none"
-            >
-              Skip
-            </button>
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm">
+
+      {/* Title */}
+      <p className="text-white/60 text-sm font-semibold mb-1 tracking-wide uppercase">
+        {done ? 'Rest Complete!' : 'Rest Timer'}
+      </p>
+      <p className="text-white/40 text-xs mb-8 max-w-[200px] text-center truncate">
+        {exerciseName}
+      </p>
+
+      {/* Circular progress ring */}
+      <div className="relative flex items-center justify-center mb-10">
+        <svg width="220" height="220" className="-rotate-90">
+          {/* Track */}
+          <circle
+            cx="110" cy="110" r={RADIUS}
+            fill="none"
+            stroke="rgba(255,255,255,0.1)"
+            strokeWidth="10"
+          />
+          {/* Progress */}
+          <circle
+            cx="110" cy="110" r={RADIUS}
+            fill="none"
+            stroke={done ? '#FFCA10' : '#FFCA10'}
+            strokeWidth="10"
+            strokeLinecap="round"
+            strokeDasharray={CIRCUMFERENCE}
+            strokeDashoffset={dashOffset}
+            style={{ transition: 'stroke-dashoffset 1s linear' }}
+          />
+        </svg>
+
+        {/* Countdown number */}
+        <div className="absolute flex flex-col items-center">
+          <span className="text-white text-6xl font-extrabold tabular-nums leading-none">
+            {mins > 0
+              ? `${mins}:${String(secs).padStart(2, '0')}`
+              : String(secs)
+            }
+          </span>
+          {mins === 0 && (
+            <span className="text-white/40 text-sm font-semibold mt-1">sec</span>
           )}
         </div>
-
-        {/* Countdown + adjust buttons */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => adjust(-30)}
-            disabled={done}
-            className="w-12 h-8 rounded-xl bg-app-bg border border-app-border text-app-muted text-xs font-semibold active:bg-app-border disabled:opacity-0"
-          >
-            −30s
-          </button>
-
-          <span className={[
-            'flex-1 text-center text-3xl font-bold tabular-nums leading-none',
-            done ? 'text-app-text' : 'text-app-text',
-          ].join(' ')}>
-            {mins}:{String(secs).padStart(2, '0')}
-          </span>
-
-          <button
-            onClick={() => adjust(30)}
-            disabled={done}
-            className="w-12 h-8 rounded-xl bg-app-bg border border-app-border text-app-muted text-xs font-semibold active:bg-app-border disabled:opacity-0"
-          >
-            +30s
-          </button>
-        </div>
-
-        {/* Progress bar — fills as time elapses */}
-        <div className="h-1 rounded-full mt-3 overflow-hidden bg-app-border">
-          <div
-            className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${done ? 'bg-app-text/20' : 'bg-accent'}`}
-            style={{ width: `${progress * 100}%` }}
-          />
-        </div>
       </div>
+
+      {/* Adjust buttons */}
+      <div className="flex items-center gap-6 mb-10">
+        <button
+          onClick={() => adjust(-10)}
+          disabled={done}
+          className="w-16 h-12 rounded-2xl bg-white/10 text-white text-sm font-bold active:bg-white/20 disabled:opacity-0"
+        >
+          −10s
+        </button>
+        <button
+          onClick={() => adjust(10)}
+          disabled={done}
+          className="w-16 h-12 rounded-2xl bg-white/10 text-white text-sm font-bold active:bg-white/20 disabled:opacity-0"
+        >
+          +10s
+        </button>
+      </div>
+
+      {/* Skip button */}
+      {!done && (
+        <button
+          onClick={onDismiss}
+          className="px-8 py-3 rounded-2xl bg-white/10 text-white text-sm font-semibold active:bg-white/20"
+        >
+          Skip Rest
+        </button>
+      )}
     </div>
   )
 }
