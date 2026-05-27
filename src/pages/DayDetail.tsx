@@ -1,24 +1,78 @@
 /**
- * DayDetail — shows all exercises assigned to a workout day.
+ * DayDetail — workout overview page with view mode and edit mode.
+ *
+ * View mode (default): Shows the day as a readable workout card with
+ * a big circle icon, metadata rows, equipment pills, exercise list,
+ * and a "Start Now" sticky button.
+ *
+ * Edit mode: Toggled via the dots menu → "Edit Day". Shows reorder
+ * controls, edit targets, delete per exercise, and "Add Exercise".
  */
 
 import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { db, now } from '../db/db'
+import { db, now, today } from '../db/db'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
-import MuscleIcon from '../components/MuscleIcon'
+
+// ── Category icon paths ──────────────────────────────────────────────────────
+
+const CAT_ICON_PATHS: Record<string, string> = {
+  barbell:    'M6.375 7.5C6.375 5.634 7.884 4.125 9.75 4.125h4.5c1.866 0 3.375 1.509 3.375 3.375v9c0 1.866-1.509 3.375-3.375 3.375h-4.5A3.375 3.375 0 016.375 16.5v-9z',
+  dumbbell:   'M5.25 4.5a.75.75 0 00-1.5 0v15a.75.75 0 001.5 0v-15zM20.25 4.5a.75.75 0 00-1.5 0v15a.75.75 0 001.5 0v-15zM3.75 10.5A2.25 2.25 0 016 8.25h.75V15H6a2.25 2.25 0 01-2.25-2.25v-2.25zM18 8.25h.75a2.25 2.25 0 012.25 2.25v2.25A2.25 2.25 0 0118.75 15H18V8.25zM8.25 8.25H15.75v7.5H8.25V8.25z',
+  cable:      'M12 3v1.5M12 19.5V21M6.22 6.22l1.06 1.06M16.72 16.72l1.06 1.06M3 12h1.5M19.5 12H21M6.22 17.78l1.06-1.06M16.72 7.28l1.06-1.06M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z',
+  machine:    'M2.25 4.5A2.25 2.25 0 014.5 2.25h15a2.25 2.25 0 012.25 2.25v15a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25v-15zm5.25 0a.75.75 0 000 1.5h9a.75.75 0 000-1.5h-9zM6 12a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75A.75.75 0 016 12zm.75 3.75a.75.75 0 000 1.5h9a.75.75 0 000-1.5h-9z',
+  bodyweight: 'M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z',
+  kettlebell: 'M12 3a4 4 0 014 4c0 1.5-.8 2.8-2 3.5V12h2a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4a2 2 0 012-2h2v-1.5A4 4 0 0112 3z',
+  band:       'M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5z',
+  default:    'M5.25 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z',
+}
+
+function CategoryIcon({ category, size = 6 }: { category?: string; size?: number }) {
+  const key = category && CAT_ICON_PATHS[category] ? category : 'default'
+  const path = CAT_ICON_PATHS[key]
+  const isStroke = key === 'cable'
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill={isStroke ? 'none' : 'white'}
+      stroke={isStroke ? 'white' : 'none'}
+      strokeWidth={isStroke ? 1.5 : 0}
+      className={`w-${size} h-${size}`}
+    >
+      <path d={path} fillRule="evenodd" clipRule="evenodd" />
+    </svg>
+  )
+}
+
+// ── Equipment pill label map ──────────────────────────────────────────────────
+
+const EQUIPMENT_LABELS: Record<string, string> = {
+  barbell:    'Barbell',
+  dumbbell:   'Dumbbell',
+  cable:      'Cable',
+  machine:    'Machine',
+  bodyweight: 'Bodyweight',
+  kettlebell: 'Kettlebell',
+  band:       'Resistance Band',
+  cardio:     'Cardio',
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export default function DayDetail() {
   const { programId, dayId } = useParams<{ programId: string; dayId: string }>()
   const navigate              = useNavigate()
 
+  const [editMode,        setEditMode]        = useState(false)
+  const [showMenu,        setShowMenu]        = useState(false)
   const [showPicker,      setShowPicker]      = useState(false)
   const [pendingExercise, setPendingExercise] = useState<Exercise | null>(null)
   const [editingDE,       setEditingDE]       = useState<DayExercise | null>(null)
   const [confirmDelete,   setConfirmDelete]   = useState<string | null>(null)
+  const [starting,        setStarting]        = useState(false)
 
   const day     = useLiveQuery(() => (dayId     ? db.workoutDays.get(dayId)     : undefined), [dayId])
   const program = useLiveQuery(() => (programId ? db.programs.get(programId)    : undefined), [programId])
@@ -46,6 +100,29 @@ export default function DayDetail() {
     [dayExercises],
   )
 
+  // Unique equipment categories from exercises in this day
+  const equipmentList = useMemo(() => {
+    if (!dayExercises || !allExercises) return []
+    const seen = new Set<string>()
+    for (const de of dayExercises) {
+      const ex = exerciseMap.get(de.exerciseId)
+      if (ex?.category) seen.add(ex.category)
+    }
+    return [...seen]
+  }, [dayExercises, allExercises, exerciseMap])
+
+  // Estimated workout duration in minutes
+  const estMin = useMemo(() => {
+    if (!dayExercises || dayExercises.length === 0) return null
+    let totalSecs = 0
+    for (const de of dayExercises) {
+      const sets = de.targetSets ?? 3
+      const rest = de.restSecs ?? 90
+      totalSecs += sets * 40 + sets * rest
+    }
+    return Math.max(5, Math.round(totalSecs / 60 / 5) * 5)
+  }, [dayExercises])
+
   if (!day || !program || !dayExercises || !allExercises) {
     return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
@@ -69,126 +146,331 @@ export default function DayDetail() {
     setConfirmDelete(null)
   }
 
+  async function startNow() {
+    if (!dayId || !programId) return
+    setStarting(true)
+    try {
+      const ts        = now()
+      const sessionId = crypto.randomUUID()
+      await db.workoutSessions.add({
+        id:           sessionId,
+        workoutDayId: dayId,
+        programId:    programId,
+        date:         today(),
+        startedAt:    ts,
+        finishedAt:   null,
+        notes:        '',
+        createdAt:    ts,
+        updatedAt:    ts,
+        syncedAt:     null,
+        deleted:      false,
+      })
+      const des = await db.dayExercises
+        .where('workoutDayId').equals(dayId)
+        .filter((de) => !de.deleted)
+        .toArray()
+      des.sort((a, b) => a.order - b.order)
+      if (des.length > 0) {
+        await db.sessionExercises.bulkAdd(
+          des.map((de, idx) => ({
+            id:               crypto.randomUUID(),
+            workoutSessionId: sessionId,
+            exerciseId:       de.exerciseId,
+            order:            idx,
+            notes:            '',
+            createdAt:        ts,
+            updatedAt:        ts,
+            syncedAt:         null,
+            deleted:          false,
+          }))
+        )
+      }
+      navigate('/log')
+    } catch {
+      setStarting(false)
+    }
+  }
+
   return (
-    <div className="px-4 pt-6 pb-4">
-      {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-1">
+    <div style={{ paddingBottom: 'calc(88px + env(safe-area-inset-bottom, 0px))' }}>
+
+      {/* ── Fixed Header ── */}
+      <div className="sticky top-0 z-40 bg-app-card border-b border-app-border px-4 flex items-center justify-between h-14">
+        {/* Back button */}
         <button
-          onClick={() => navigate(`/programs/${programId}`)}
-          className="flex-none text-app-muted active:text-app-text p-1 -ml-1"
+          onClick={() => navigate('/programs')}
+          className="flex items-center justify-center w-9 h-9 rounded-full bg-app-bg text-app-muted active:text-app-text"
           aria-label="Back"
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
           </svg>
         </button>
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-app-muted">{program.name}</p>
-          <h1 className="text-2xl font-extrabold text-app-text truncate">{day.name}</h1>
+
+        <span className="text-sm font-semibold text-app-text truncate mx-2">{day.name}</span>
+
+        {/* Right side: calendar icon + dots menu */}
+        <div className="flex items-center gap-1">
+          <button className="w-9 h-9 flex items-center justify-center text-app-muted" aria-label="Schedule">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
+            </svg>
+          </button>
+
+          <div className="relative">
+            <button
+              onClick={() => setShowMenu((v) => !v)}
+              className="w-9 h-9 flex items-center justify-center text-app-muted"
+              aria-label="More options"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
+              </svg>
+            </button>
+
+            {showMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
+                <div className="absolute right-0 top-10 z-50 w-40 bg-app-card rounded-2xl shadow-lg border border-app-border overflow-hidden">
+                  <button
+                    onClick={() => { setShowMenu(false); setEditMode(true) }}
+                    className="w-full text-left px-4 py-3 text-sm text-app-text active:bg-app-bg"
+                  >
+                    Edit Day
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
         </div>
-        <button
-          onClick={() => setShowPicker(true)}
-          className="flex items-center gap-1 rounded-2xl bg-accent text-app-text px-3 py-1.5 text-sm font-bold active:bg-accent-dark flex-none"
-        >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-          </svg>
-          Add
-        </button>
       </div>
 
-      <p className="text-xs text-app-muted mb-5 ml-8">
-        {dayExercises.length} {dayExercises.length === 1 ? 'exercise' : 'exercises'}
-      </p>
+      {/* ── View / Edit content ── */}
+      <div className="px-5 pt-6">
 
-      {dayExercises.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
-          No exercises yet. Tap <strong className="text-app-text">Add</strong> to build this day.
+        {/* ── Edit mode header ── */}
+        {editMode && (
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-base font-extrabold text-app-text">Edit Exercises</p>
+            <button
+              onClick={() => setEditMode(false)}
+              className="flex items-center gap-1.5 text-sm font-bold text-app-text bg-app-bg border border-app-border rounded-2xl px-3 py-1.5 active:bg-gray-100"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              </svg>
+              Done
+            </button>
+          </div>
+        )}
+
+        {/* ── View mode hero ── */}
+        {!editMode && (
+          <div className="flex flex-col items-center text-center mb-6">
+            {/* Big blue-outlined circle with category icon */}
+            <div className="w-20 h-20 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 bg-blue-50">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth={1.5} className="w-9 h-9">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+
+            {/* Day name */}
+            <h1 className="text-2xl font-extrabold text-app-text leading-tight mb-4">{day.name}</h1>
+
+            {/* Metadata rows */}
+            <div className="flex flex-col gap-2 w-full max-w-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-app-bg flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4 text-app-muted">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                  </svg>
+                </div>
+                <span className="text-sm text-app-text">Regular</span>
+              </div>
+
+              {estMin != null && (
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-app-bg flex items-center justify-center flex-shrink-0">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4 text-app-muted">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <span className="text-sm text-app-text">est. {estMin}m</span>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-app-bg flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4 text-app-muted">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                </div>
+                <span className="text-sm text-app-text">{dayExercises.length} {dayExercises.length === 1 ? 'Exercise' : 'Exercises'}</span>
+              </div>
+            </div>
+
+            {/* Equipment pills */}
+            {equipmentList.length > 0 && (
+              <div className="mt-5 w-full">
+                <p className="text-xs font-semibold text-app-muted text-left mb-2">Equipment:</p>
+                <div className="flex flex-wrap gap-2">
+                  {equipmentList.map((cat) => (
+                    <div key={cat} className="flex flex-col items-center gap-1">
+                      <div className="w-12 h-12 rounded-xl bg-app-text flex items-center justify-center">
+                        <CategoryIcon category={cat} size={6} />
+                      </div>
+                      <span className="text-[11px] text-app-muted">{EQUIPMENT_LABELS[cat] ?? cat}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Exercise list ── */}
+        {dayExercises.length === 0 ? (
+          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+            No exercises yet. {editMode
+              ? <span>Tap <strong className="text-app-text">Add Exercise</strong> below.</span>
+              : <span>Tap the dots menu → Edit Day to add exercises.</span>
+            }
+          </div>
+        ) : (
+          <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
+            {dayExercises.map((de, idx) => {
+              const exercise = exerciseMap.get(de.exerciseId)
+              if (!exercise) return null
+
+              if (editMode) {
+                return (
+                  <div key={de.id}>
+                    {confirmDelete !== de.id ? (
+                      <div className="flex items-center gap-2 px-3 py-3 border-b border-app-border last:border-b-0">
+                        {/* Reorder */}
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            onClick={() => moveExercise(de, 'up')}
+                            disabled={idx === 0}
+                            className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
+                            aria-label="Move up"
+                          >
+                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                              <path fillRule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => moveExercise(de, 'down')}
+                            disabled={idx === dayExercises.length - 1}
+                            className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
+                            aria-label="Move down"
+                          >
+                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+                              <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        </div>
+
+                        {/* Icon */}
+                        <div className="w-10 h-10 rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
+                          <CategoryIcon category={exercise.category} size={5} />
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
+                          <p className="text-xs text-app-muted">
+                            {de.targetSets} × {de.targetReps}
+                            {de.targetWeight != null ? ` @ ${de.targetWeight} kg` : ''}
+                            {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => setEditingDE(de)}
+                          className="flex-none text-app-faint active:text-accent-dark p-1"
+                          aria-label={`Edit ${exercise.name} targets`}
+                        >
+                          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                            <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                            <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                          </svg>
+                        </button>
+
+                        <button
+                          onClick={() => setConfirmDelete(de.id)}
+                          className="flex-none text-app-faint active:text-red-500 p-1"
+                          aria-label={`Remove ${exercise.name}`}
+                        >
+                          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                            <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-3 px-4 py-3 bg-red-50 border-b border-red-100 last:border-b-0">
+                        <p className="flex-1 text-sm text-red-700">Remove <strong>{exercise.name}</strong>?</p>
+                        <button onClick={() => setConfirmDelete(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
+                        <button onClick={() => handleDelete(de.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Remove</button>
+                      </div>
+                    )}
+                  </div>
+                )
+              }
+
+              // View mode exercise row
+              const subtitleParts: string[] = []
+              subtitleParts.push(`${de.targetSets} sets × ${de.targetReps}`)
+              if (de.restSecs != null) subtitleParts.push(`${de.restSecs}s rest between sets`)
+
+              return (
+                <div
+                  key={de.id}
+                  className="flex items-center gap-3 px-4 py-3 border-b border-app-border last:border-b-0"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
+                    <CategoryIcon category={exercise.category} size={6} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-[15px] text-app-text truncate">{exercise.name}</p>
+                    <p className="text-xs text-app-muted mt-0.5">{subtitleParts.join(', ')}</p>
+                  </div>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
+                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Add exercise button (edit mode only) */}
+        {editMode && (
+          <button
+            onClick={() => setShowPicker(true)}
+            className="mt-4 w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-accent text-accent-dark text-sm font-bold py-4 active:bg-accent-light"
+          >
+            <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+            </svg>
+            Add Exercise
+          </button>
+        )}
+      </div>
+
+      {/* ── Sticky bottom Start Now button (view mode only) ── */}
+      {!editMode && (
+        <div className="fixed bottom-[72px] left-0 right-0 bg-app-card border-t border-app-border px-4 py-3">
+          <button
+            onClick={startNow}
+            disabled={starting || dayExercises.length === 0}
+            className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
+          >
+            {starting ? 'Starting…' : 'Start Now'}
+          </button>
         </div>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {dayExercises.map((de, idx) => {
-            const exercise = exerciseMap.get(de.exerciseId)
-            if (!exercise) return null
-
-            return (
-              <li key={de.id}>
-                {confirmDelete !== de.id ? (
-                  <div className="flex items-center gap-2 rounded-2xl bg-app-card border border-app-border px-3 py-3">
-                    {/* Reorder */}
-                    <div className="flex flex-col gap-0.5">
-                      <button
-                        onClick={() => moveExercise(de, 'up')}
-                        disabled={idx === 0}
-                        className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
-                        aria-label="Move up"
-                      >
-                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                          <path fillRule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => moveExercise(de, 'down')}
-                        disabled={idx === dayExercises.length - 1}
-                        className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5"
-                        aria-label="Move down"
-                      >
-                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                          <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-
-                    <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />
-
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
-                      <p className="text-xs text-app-muted">
-                        {de.targetSets} × {de.targetReps}
-                        {de.targetWeight != null ? ` @ ${de.targetWeight} kg` : ''}
-                        {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
-                      </p>
-                      {de.notes ? (
-                        <p className="text-xs text-app-faint truncate">{de.notes}</p>
-                      ) : null}
-                    </div>
-
-                    {/* Edit targets */}
-                    <button
-                      onClick={() => setEditingDE(de)}
-                      className="flex-none text-app-faint active:text-accent-dark p-1"
-                      aria-label={`Edit ${exercise.name} targets`}
-                    >
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                        <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
-                        <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
-                      </svg>
-                    </button>
-
-                    {/* Delete */}
-                    <button
-                      onClick={() => setConfirmDelete(de.id)}
-                      className="flex-none text-app-faint active:text-red-500 p-1"
-                      aria-label={`Remove ${exercise.name}`}
-                    >
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-                        <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
-                    <p className="flex-1 text-sm text-red-700">Remove <strong>{exercise.name}</strong>?</p>
-                    <button onClick={() => setConfirmDelete(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
-                    <button onClick={() => handleDelete(de.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Remove</button>
-                  </div>
-                )}
-              </li>
-            )
-          })}
-        </ul>
       )}
 
+      {/* ── Overlays ── */}
       {showPicker && (
         <ExercisePicker
           onSelect={(ex) => { setShowPicker(false); setPendingExercise(ex) }}

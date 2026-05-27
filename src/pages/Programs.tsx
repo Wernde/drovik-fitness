@@ -19,7 +19,7 @@ function DayIcon({ muscleGroup }: { muscleGroup?: string }) {
     ? MUSCLE_ICONS[muscleGroup]
     : MUSCLE_ICONS.default
   return (
-    <div className="w-[64px] h-[64px] rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
+    <div className="w-14 h-14 rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
       <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">{path}</svg>
     </div>
   )
@@ -58,10 +58,27 @@ export default function Programs() {
     return map
   }, [allDayExs])
 
-  // Primary muscle group per day (most common across its exercises)
+  // Estimated time per day in minutes (rounded to nearest 5)
+  // Formula: sum over exercises of (targetSets × 40s active + targetSets × restSecs)
+  const estMinMap = useMemo(() => {
+    const map: Record<string, number> = {}
+    if (!allDayExs) return map
+    for (const de of allDayExs) {
+      const sets = de.targetSets ?? 3
+      const rest = de.restSecs ?? 90
+      const totalSecs = sets * 40 + sets * rest
+      map[de.workoutDayId] = (map[de.workoutDayId] ?? 0) + totalSecs
+    }
+    // Convert to minutes, round to nearest 5
+    for (const dayId of Object.keys(map)) {
+      map[dayId] = Math.max(5, Math.round(map[dayId] / 60 / 5) * 5)
+    }
+    return map
+  }, [allDayExs])
+
+  // Primary muscle group per day — not needed currently, using default icon
   const dayMuscleMap = useMemo(() => {
     const map: Record<string, string> = {}
-    // Not needed for now — just using default icon
     return map
   }, [])
 
@@ -145,26 +162,28 @@ export default function Programs() {
         <div className="bg-app-card border-t border-b border-app-border">
           {activeDays.map((day) => {
             const exCount = exCountMap[day.id] ?? 0
+            const estMin  = estMinMap[day.id]
+            const subtitle = exCount > 0
+              ? estMin != null
+                ? `${exCount} exercise${exCount !== 1 ? 's' : ''} · est. ${estMin}m`
+                : `${exCount} exercise${exCount !== 1 ? 's' : ''}`
+              : 'No exercises yet'
+
             return (
               <button
                 key={day.id}
                 onClick={() => navigate(`/programs/${activeProgram.id}/days/${day.id}`)}
                 className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
               >
-                {/* Blue left bar */}
-                <div className="w-[3px] bg-blue-500 self-stretch flex-shrink-0" />
-
                 {/* Thumbnail */}
-                <div className="m-3">
+                <div className="m-3 ml-4">
                   <DayIcon muscleGroup={dayMuscleMap[day.id]} />
                 </div>
 
                 {/* Info */}
-                <div className="flex-1 py-4 pr-4 min-w-0">
+                <div className="flex-1 py-4 pr-2 min-w-0">
                   <p className="font-bold text-[15px] text-app-text truncate">{day.name}</p>
-                  <p className="text-[13px] text-app-muted mt-0.5">
-                    {exCount > 0 ? `${exCount} exercise${exCount !== 1 ? 's' : ''}` : 'No exercises yet'}
-                  </p>
+                  <p className="text-[13px] text-app-muted mt-0.5">{subtitle}</p>
                 </div>
 
                 {/* Chevron */}
