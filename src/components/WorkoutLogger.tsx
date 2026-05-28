@@ -12,6 +12,7 @@ import { db, now } from '../db/db'
 import type { WorkoutSession, SessionExercise, DayExercise, Exercise } from '../db/db'
 import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
+import WorkoutSummary from './WorkoutSummary'
 import { useToast } from '../contexts/ToastContext'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -101,9 +102,10 @@ export default function WorkoutLogger({ session }: Props) {
   const [autoFill,    setAutoFill]    = useState(false)
   const [elapsed,     setElapsed]     = useState(0)
   const [saving,      setSaving]      = useState(false)
-  const [showDiscard, setShowDiscard] = useState(false)
-  const [showPicker,  setShowPicker]  = useState(false)
-  const [restTimer,   setRestTimer]   = useState<{ secs: number; exerciseName: string } | null>(null)
+  const [showDiscard,  setShowDiscard]  = useState(false)
+  const [showPicker,   setShowPicker]   = useState(false)
+  const [showSummary,  setShowSummary]  = useState(false)
+  const [restTimer,    setRestTimer]    = useState<{ secs: number; exerciseName: string } | null>(null)
 
   const draftsInit = useRef(false)
 
@@ -323,7 +325,7 @@ export default function WorkoutLogger({ session }: Props) {
     }
   }
 
-  async function handleSave() {
+  async function saveSets(): Promise<boolean> {
     setSaving(true)
     try {
       const ts = now()
@@ -332,11 +334,9 @@ export default function WorkoutLogger({ session }: Props) {
           (r) => r.reps.trim() !== '' && r.kg.trim() !== '' &&
                  !isNaN(Number(r.reps)) && !isNaN(Number(r.kg)),
         )
-        // Soft-delete all existing sets for this sessionExercise
         await db.sets
           .where('sessionExerciseId').equals(seId)
           .modify({ deleted: true, updatedAt: ts, syncedAt: null })
-        // Bulk add the new sets
         if (validRows.length > 0) {
           await db.sets.bulkAdd(
             validRows.map((r, i) => ({
@@ -358,14 +358,28 @@ export default function WorkoutLogger({ session }: Props) {
           )
         }
       }
-      await db.workoutSessions.update(session.id, {
-        finishedAt: ts,
-        updatedAt:  ts,
-        syncedAt:   null,
-      })
-      navigate('/programs')
+      setSaving(false)
+      return true
     } catch {
       showToast('Failed to save workout. Please try again.')
+      setSaving(false)
+      return false
+    }
+  }
+
+  async function handleFinishPress() {
+    const ok = await saveSets()
+    if (ok) setShowSummary(true)
+  }
+
+  async function handleComplete() {
+    setSaving(true)
+    try {
+      const ts = now()
+      await db.workoutSessions.update(session.id, { finishedAt: ts, updatedAt: ts, syncedAt: null })
+      navigate('/programs')
+    } catch {
+      showToast('Failed to complete workout. Please try again.')
       setSaving(false)
     }
   }
@@ -418,11 +432,11 @@ export default function WorkoutLogger({ session }: Props) {
         </div>
 
         <button
-          onClick={handleSave}
+          onClick={handleFinishPress}
           disabled={saving}
           className="text-sm font-bold text-accent-dark w-16 text-right disabled:opacity-50"
         >
-          {saving ? '…' : 'Save'}
+          {saving ? '…' : 'Finish'}
         </button>
       </div>
 
@@ -580,11 +594,11 @@ export default function WorkoutLogger({ session }: Props) {
       {/* ── Sticky bottom Save button ── */}
       <div className="fixed bottom-[72px] left-0 right-0 bg-app-card border-t border-app-border px-4 py-3">
         <button
-          onClick={handleSave}
+          onClick={handleFinishPress}
           disabled={saving}
           className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
         >
-          {saving ? 'Saving…' : 'Save'}
+          {saving ? 'Saving…' : 'Finish Workout'}
         </button>
       </div>
 
@@ -628,6 +642,15 @@ export default function WorkoutLogger({ session }: Props) {
           defaultSecs={restTimer.secs}
           exerciseName={restTimer.exerciseName}
           onDismiss={() => setRestTimer(null)}
+        />
+      )}
+
+      {/* ── Post-workout summary ── */}
+      {showSummary && (
+        <WorkoutSummary
+          session={session}
+          onFinish={handleComplete}
+          onBack={() => setShowSummary(false)}
         />
       )}
     </div>
