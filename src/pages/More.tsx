@@ -3,21 +3,33 @@
  */
 
 import { useState, useRef, useEffect } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { db } from '../db/db'
 
 interface Message {
   role: 'user' | 'ai'
   text: string
 }
 
-const SYS = `You are an AI fitness coach in the Drovik app for Dewald Van Zyl.
-Current weight: 83kg (down from 88kg). Goal: body recomposition.
-Keep responses to 3 sentences max — practical and motivating.`
-
 export default function More() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'ai', text: "Hey Dewald! 💪 Ready to crush today's workout? Ask me about form, nutrition, recovery, or program adjustments." },
-    { role: 'ai', text: 'Ask me about form, nutrition, recovery, or program adjustments.' },
+    { role: 'ai', text: "Hey Dewald! Ready to crush today's workout? Ask me about form, nutrition, recovery, or program adjustments." },
   ])
+
+  const latestWeight = useLiveQuery(async () => {
+    const logs = await db.bodyWeightLogs
+      .filter((l) => !l.deleted)
+      .toArray()
+      .then((list) => list.sort((a, b) => b.date.localeCompare(a.date)))
+    return logs[0]?.weight ?? null
+  }, [])
+
+  const sysPrompt = [
+    'You are an AI fitness coach in the Drovik app for Dewald Van Zyl.',
+    latestWeight != null ? `Current weight: ${latestWeight}kg.` : null,
+    'Goal: body recomposition.',
+    'Keep responses to 3 sentences max — practical and motivating.',
+  ].filter(Boolean).join('\n')
   const [input,   setInput]   = useState('')
   const [loading, setLoading] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -63,7 +75,7 @@ export default function More() {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 400,
-          system: SYS,
+          system: sysPrompt,
           messages: history,
         }),
       })

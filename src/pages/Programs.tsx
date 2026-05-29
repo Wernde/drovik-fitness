@@ -32,9 +32,10 @@ export default function Programs() {
   const [showManage,  setShowManage]  = useState(false)
   const [confirmDel,  setConfirmDel]  = useState<string | null>(null)
 
-  const programs  = useLiveQuery(() => db.programs.filter((p) => !p.deleted).toArray(), [])
-  const allDays   = useLiveQuery(() => db.workoutDays.filter((d) => !d.deleted).toArray(), [])
-  const allDayExs = useLiveQuery(() => db.dayExercises.filter((de) => !de.deleted).toArray(), [])
+  const programs    = useLiveQuery(() => db.programs.filter((p) => !p.deleted).toArray(), [])
+  const allDays     = useLiveQuery(() => db.workoutDays.filter((d) => !d.deleted).toArray(), [])
+  const allDayExs   = useLiveQuery(() => db.dayExercises.filter((de) => !de.deleted).toArray(), [])
+  const allExercises = useLiveQuery(() => db.exercises.filter((e) => !e.deleted).toArray(), [])
 
   const activeProgram = useMemo(
     () => programs?.find((p) => p.isActive) ?? null,
@@ -76,13 +77,25 @@ export default function Programs() {
     return map
   }, [allDayExs])
 
-  // Primary muscle group per day — not needed currently, using default icon
+  // Primary muscle group per day — most-frequent muscle among that day's exercises
   const dayMuscleMap = useMemo(() => {
     const map: Record<string, string> = {}
+    if (!allDayExs || !allExercises) return map
+    const exerciseMap = new Map(allExercises.map((e) => [e.id, e]))
+    const tally: Record<string, Record<string, number>> = {}
+    for (const de of allDayExs) {
+      const muscle = exerciseMap.get(de.exerciseId)?.muscleGroup
+      if (!muscle) continue
+      tally[de.workoutDayId] ??= {}
+      tally[de.workoutDayId][muscle] = (tally[de.workoutDayId][muscle] ?? 0) + 1
+    }
+    for (const [dayId, counts] of Object.entries(tally)) {
+      map[dayId] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
+    }
     return map
-  }, [])
+  }, [allDayExs, allExercises])
 
-  if (!programs || !allDays || !allDayExs) {
+  if (!programs || !allDays || !allDayExs || !allExercises) {
     return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
