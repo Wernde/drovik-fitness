@@ -14,6 +14,8 @@ import {
   ACTIVITY_LABELS, DIET_PROGRAMS,
   type Sex, type ActivityLevel, type DietId, type NutritionProfile,
 } from '../lib/tdee'
+import { useUnits } from '../contexts/UnitsContext'
+import { mlToDisplay, waterLabel } from '../lib/units'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -246,7 +248,8 @@ interface DiaryTabProps {
 
 function DiaryTab({ targets }: DiaryTabProps) {
   const [addingMeal, setAddingMeal] = useState<MealSlot | null>(null)
-  const todayStr = today()
+  const todayStr  = today()
+  const { units } = useUnits()
 
   const foodLogs = useLiveQuery(
     () => db.foodLogs.where('date').equals(todayStr).filter((l) => !l.deleted).toArray(),
@@ -409,7 +412,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
           </div>
           <div className="flex-1">
             <p className="text-sm font-bold text-app-text">Water</p>
-            <p className="text-xs text-app-muted">{waterMl} ml · {Math.max(0, WATER_GOAL_ML - waterMl)} ml remaining</p>
+            <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)} · {mlToDisplay(Math.max(0, WATER_GOAL_ML - waterMl), units.water)} {waterLabel(units.water)} remaining</p>
           </div>
           <p className="text-sm font-extrabold text-blue-500">{waterPct}%</p>
         </div>
@@ -423,7 +426,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
               onClick={() => addWater(ml)}
               className="flex-1 bg-blue-50 text-blue-600 text-sm font-bold py-2 rounded-xl active:bg-blue-100"
             >
-              +{ml} ml
+              +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
             </button>
           ))}
         </div>

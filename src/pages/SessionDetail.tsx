@@ -8,10 +8,13 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, type LoggedSet } from '../db/db'
 import MuscleIcon from '../components/MuscleIcon'
 import { formatDuration } from '../lib/utils'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, weightLabel, fmtVolume } from '../lib/units'
 
 export default function SessionDetail() {
   const { sessionId } = useParams<{ sessionId: string }>()
   const navigate       = useNavigate()
+  const { units }      = useUnits()
 
   const session = useLiveQuery(
     () => (sessionId ? db.workoutSessions.get(sessionId) : undefined),
@@ -119,7 +122,7 @@ export default function SessionDetail() {
         </span>
         {totalVolume > 0 && (
           <span className="rounded-full bg-app-card border border-app-border text-app-muted text-xs font-medium px-3 py-1">
-            {totalVolume.toLocaleString('en-AU')} kg volume
+            {fmtVolume(totalVolume, units.weight)} volume
           </span>
         )}
       </div>
@@ -157,7 +160,7 @@ export default function SessionDetail() {
                       ].join(' ')}>
                         <span className="font-medium">{s.isWarmup ? 'W' : s.setNumber}</span>
                         <span className="text-center">{s.reps}</span>
-                        <span className="text-center">{s.weight} kg</span>
+                        <span className="text-center">{kgToDisplay(s.weight, units.weight)} {weightLabel(units.weight)}</span>
                         <span className="text-center text-xs text-app-muted">
                           {s.rpe != null ? `${s.rpe}` : '—'}{s.rir != null ? `/${s.rir}` : ''}
                         </span>
