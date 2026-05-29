@@ -2,21 +2,19 @@
  * Home (Dash) — main dashboard.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import type { WorkoutDay } from '../db/db'
 import { useAuth } from '../contexts/AuthContext'
+import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const WATER_GOAL_ML = 2000
-const CAL_GOAL      = 2400
-const PROTEIN_GOAL  = 150  // g
-const CARBS_GOAL    = 250  // g
-const FAT_GOAL      = 70   // g
+const WATER_GOAL_ML = 2500
+const DEFAULT_GOALS = { calories: 2400, proteinG: 150, carbsG: 250, fatG: 70 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -180,7 +178,44 @@ export default function Home() {
     return logs[0] ?? null
   }, [])
 
-  // Water helpers
+  // Today's food diary totals (from per-food logs)
+  const todayFoodTotals = useLiveQuery(async () => {
+    const logs = await db.foodLogs
+      .where('date').equals(todayIso)
+      .filter((l) => !l.deleted)
+      .toArray()
+    if (logs.length === 0) return null
+    const foodIds = [...new Set(logs.map((l) => l.foodId))]
+    const foods   = await db.foods.where('id').anyOf(foodIds).toArray()
+    const foodMap = new Map(foods.map((f) => [f.id, f]))
+    return logs.reduce(
+      (acc, log) => {
+        const food = foodMap.get(log.foodId)
+        if (!food) return acc
+        const f = log.amountG / 100
+        return {
+          calories: acc.calories + food.caloriesPer100g * f,
+          proteinG: acc.proteinG + food.proteinPer100g  * f,
+          carbsG:   acc.carbsG   + food.carbsPer100g    * f,
+          fatG:     acc.fatG     + food.fatPer100g      * f,
+        }
+      },
+      { calories: 0, proteinG: 0, carbsG: 0, fatG: 0 },
+    )
+  }, [todayIso])
+
+  // TDEE-derived macro targets (falls back to defaults if no profile set)
+  const macroTargets = useMemo(() => {
+    const profile  = loadProfile()
+    const weightKg = latestWeight?.weight
+    if (!profile || !weightKg) return DEFAULT_GOALS
+    const bmr  = calcBMR(weightKg, profile.heightCm, profile.age, profile.sex)
+    const tdee = calcTDEE(bmr, profile.activityLevel)
+    const diet = DIET_PROGRAMS.find((d) => d.id === profile.dietId) ?? DIET_PROGRAMS[0]
+    return calcMacros(weightKg, tdee, diet)
+  }, [latestWeight])
+
+  // Water helpers — prefer food diary water if logged there; fall back to nutritionLogs
   const waterMl  = todayNutrition?.waterMl ?? 0
   const waterPct = Math.min(100, Math.round((waterMl / WATER_GOAL_ML) * 100))
 
@@ -250,15 +285,15 @@ export default function Home() {
     }
   }
 
-  // Nutrition donut values
-  const cals    = todayNutrition?.calories ?? 0
-  const protein = todayNutrition?.proteinG ?? 0
-  const carbs   = todayNutrition?.carbsG   ?? 0
-  const fat     = todayNutrition?.fatG     ?? 0
-  const calPct  = Math.min(100, Math.round((cals    / CAL_GOAL)     * 100))
-  const proPct  = Math.min(100, Math.round((protein / PROTEIN_GOAL) * 100))
-  const crbPct  = Math.min(100, Math.round((carbs   / CARBS_GOAL)   * 100))
-  const fatPct  = Math.min(100, Math.round((fat     / FAT_GOAL)     * 100))
+  // Nutrition donut values — food diary takes priority over manual nutritionLog
+  const cals    = todayFoodTotals ? Math.round(todayFoodTotals.calories) : (todayNutrition?.calories ?? 0)
+  const protein = todayFoodTotals ? Math.round(todayFoodTotals.proteinG) : (todayNutrition?.proteinG ?? 0)
+  const carbs   = todayFoodTotals ? Math.round(todayFoodTotals.carbsG)   : (todayNutrition?.carbsG   ?? 0)
+  const fat     = todayFoodTotals ? Math.round(todayFoodTotals.fatG)     : (todayNutrition?.fatG     ?? 0)
+  const calPct  = Math.min(100, Math.round((cals    / macroTargets.calories) * 100))
+  const proPct  = Math.min(100, Math.round((protein / macroTargets.proteinG) * 100))
+  const crbPct  = Math.min(100, Math.round((carbs   / macroTargets.carbsG)   * 100))
+  const fatPct  = Math.min(100, Math.round((fat     / macroTargets.fatG)     * 100))
 
   const wt   = latestWeight?.weight ?? null
   const wtDate = latestWeight?.date
@@ -326,7 +361,7 @@ export default function Home() {
         <div>
           <p className="text-base font-extrabold text-app-text mb-2">Things to Do Today</p>
           <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
-            <div className="flex items-center gap-3 px-4 py-3 border-b border-app-border">
+            <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-gray-50">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
@@ -334,9 +369,12 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-app-text">Daily Nutrition</p>
-                <p className="text-xs text-app-muted">Today's intake</p>
+                <p className="text-xs text-app-muted">{todayFoodTotals ? 'From food diary' : 'Tap to log food'}</p>
               </div>
-            </div>
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
+                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+              </svg>
+            </Link>
             <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 py-4">
               {/* Calories */}
               <div className="flex items-center gap-3">
@@ -346,7 +384,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-app-text">Calories</p>
-                  <p className="text-xs text-app-muted">/ {CAL_GOAL} cal</p>
+                  <p className="text-xs text-app-muted">/ {macroTargets.calories}</p>
                 </div>
               </div>
               {/* Protein */}
@@ -357,7 +395,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-app-text">Protein</p>
-                  <p className="text-xs text-app-muted">/ {PROTEIN_GOAL}g</p>
+                  <p className="text-xs text-app-muted">/ {macroTargets.proteinG}g</p>
                 </div>
               </div>
               {/* Carbs */}
@@ -368,7 +406,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-app-text">Carbs</p>
-                  <p className="text-xs text-app-muted">/ {CARBS_GOAL}g</p>
+                  <p className="text-xs text-app-muted">/ {macroTargets.carbsG}g</p>
                 </div>
               </div>
               {/* Fat */}
@@ -379,7 +417,7 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm font-bold text-app-text">Fat</p>
-                  <p className="text-xs text-app-muted">/ {FAT_GOAL}g</p>
+                  <p className="text-xs text-app-muted">/ {macroTargets.fatG}g</p>
                 </div>
               </div>
             </div>
@@ -441,7 +479,7 @@ export default function Home() {
                 {cals > 0 ? cals.toLocaleString() : '—'}
                 <span className="text-sm font-semibold"> cal</span>
               </p>
-              <p className="text-xs text-app-muted mt-0.5">/{CAL_GOAL.toLocaleString()} goal</p>
+              <p className="text-xs text-app-muted mt-0.5">/{macroTargets.calories.toLocaleString()} goal</p>
             </div>
           </div>
         </div>
