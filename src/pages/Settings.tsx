@@ -4,6 +4,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { useUnits } from '../contexts/UnitsContext'
 import { db } from '../db/db'
 
 // ── Export ────────────────────────────────────────────────────────────────────
@@ -99,8 +100,29 @@ async function importData(file: File): Promise<string> {
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
+function UnitToggle<T extends string>({
+  value, options, onChange,
+}: { value: T; options: { id: T; label: string }[]; onChange: (v: T) => void }) {
+  return (
+    <div className="flex rounded-xl overflow-hidden border border-app-border">
+      {options.map(({ id, label }) => (
+        <button
+          key={id}
+          onClick={() => onChange(id)}
+          className={`flex-1 py-2 text-sm font-semibold transition-colors ${
+            value === id ? 'bg-accent text-app-text' : 'bg-app-bg text-app-muted'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 export default function Settings() {
   const { session, signOut } = useAuth()
+  const { units, setWeight, setMeasurement, setWater, setTemperature } = useUnits()
 
   const [exporting,      setExporting]      = useState(false)
   const [importStatus,   setImportStatus]   = useState<'idle' | 'success' | 'error'>('idle')
@@ -154,6 +176,25 @@ export default function Settings() {
   return (
     <div className="px-4 pt-6 pb-4">
       <h1 className="text-2xl font-extrabold text-app-text mb-6">Settings</h1>
+
+      {/* ── Units ── */}
+      <section className="mb-5">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Units</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+          {([
+            { label: 'Weight',       node: <UnitToggle value={units.weight}      options={[{ id: 'kg' as const, label: 'kg' }, { id: 'lbs' as const, label: 'lbs' }]}           onChange={setWeight}      /> },
+            { label: 'Measurements', node: <UnitToggle value={units.measurement} options={[{ id: 'cm' as const, label: 'cm' }, { id: 'in' as const, label: 'in' }]}            onChange={setMeasurement} /> },
+            { label: 'Water',        node: <UnitToggle value={units.water}       options={[{ id: 'ml' as const, label: 'ml' }, { id: 'fl_oz' as const, label: 'fl oz' }]}      onChange={setWater}       /> },
+            { label: 'Temperature',  node: <UnitToggle value={units.temperature} options={[{ id: 'c' as const, label: '°C' }, { id: 'f' as const, label: '°F' }]}              onChange={setTemperature} /> },
+          ] as { label: string; node: React.ReactNode }[]).map(({ label, node }) => (
+            <div key={label} className="flex items-center gap-4 px-4 py-3">
+              <span className="text-sm text-app-muted w-28 flex-shrink-0">{label}</span>
+              <div className="flex-1">{node}</div>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-app-muted mt-2 px-1">Defaults are Australian metric. Data is always stored in metric — units only affect display.</p>
+      </section>
 
       {/* ── Account ── */}
       <section className="mb-5">

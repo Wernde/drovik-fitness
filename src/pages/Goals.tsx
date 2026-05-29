@@ -6,6 +6,8 @@ import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, displayToKg, weightLabel, mlToDisplay, waterLabel } from '../lib/units'
 
 const WATER_GOAL_ML = 2000
 const CAL_GOAL      = 2400
@@ -25,6 +27,8 @@ function ProgressBar({ value, max, color }: { value: number; max: number; color:
 function BodyWeightSection() {
   const [weight, setWeight] = useState('')
   const [saving, setSaving] = useState(false)
+  const { units } = useUnits()
+  const wUnit = units.weight
 
   const logs = useLiveQuery(
     () => db.bodyWeightLogs
@@ -38,19 +42,20 @@ function BodyWeightSection() {
   const todayLog  = logs?.find((l) => l.date === todayStr)
   const latestKg  = logs?.[0]?.weight ?? null
   const startKg   = logs?.[logs.length - 1]?.weight ?? null
-  const change    = latestKg != null && startKg != null ? +(latestKg - startKg).toFixed(1) : null
+  const changeKg  = latestKg != null && startKg != null ? +(latestKg - startKg).toFixed(1) : null
 
   async function handleLog() {
     const val = parseFloat(weight)
     if (isNaN(val) || val <= 0) return
     setSaving(true)
     try {
+      const kg        = displayToKg(val, wUnit)
       const timestamp = now()
       if (todayLog) {
-        await db.bodyWeightLogs.update(todayLog.id, { weight: val, updatedAt: timestamp, syncedAt: null })
+        await db.bodyWeightLogs.update(todayLog.id, { weight: kg, updatedAt: timestamp, syncedAt: null })
       } else {
         await db.bodyWeightLogs.add({
-          id: crypto.randomUUID(), date: todayStr, weight: val, notes: '',
+          id: crypto.randomUUID(), date: todayStr, weight: kg, notes: '',
           createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
         })
       }
@@ -63,6 +68,9 @@ function BodyWeightSection() {
   const goalPct = latestKg != null
     ? Math.min(100, Math.max(0, Math.round(((88 - latestKg) / (88 - WEIGHT_GOAL)) * 100)))
     : 0
+  const latestDisplay = latestKg != null ? kgToDisplay(latestKg, wUnit) : null
+  const goalDisplay   = kgToDisplay(WEIGHT_GOAL, wUnit)
+  const toGoKg        = latestKg != null && latestKg > WEIGHT_GOAL ? +(latestKg - WEIGHT_GOAL).toFixed(1) : null
 
   return (
     <div className="flex flex-col gap-3">
@@ -76,11 +84,11 @@ function BodyWeightSection() {
             </svg>
           </div>
           <div className="flex-1">
-            <p className="text-sm font-bold text-app-text">Goal weight of {WEIGHT_GOAL} kg</p>
+            <p className="text-sm font-bold text-app-text">Goal weight of {goalDisplay} {weightLabel(wUnit)}</p>
             <ProgressBar value={goalPct} max={100} color="bg-accent" />
             <p className="text-xs text-app-muted mt-1">
-              {latestKg != null ? `${latestKg} kg current` : 'No weight logged yet'}
-              {latestKg != null && latestKg > WEIGHT_GOAL ? ` · ${(latestKg - WEIGHT_GOAL).toFixed(1)} kg to go` : ''}
+              {latestDisplay != null ? `${latestDisplay} ${weightLabel(wUnit)} current` : 'No weight logged yet'}
+              {toGoKg != null ? ` · ${kgToDisplay(toGoKg, wUnit)} ${weightLabel(wUnit)} to go` : ''}
             </p>
           </div>
         </div>
@@ -91,29 +99,29 @@ function BodyWeightSection() {
         <div className="flex gap-3">
           <div className="flex-1 bg-app-card rounded-2xl border border-app-border px-3 py-3 text-center">
             <p className="text-xs text-app-muted">Current</p>
-            <p className="text-lg font-extrabold text-accent-dark">{latestKg} kg</p>
+            <p className="text-lg font-extrabold text-accent-dark">{kgToDisplay(latestKg, wUnit)} {weightLabel(wUnit)}</p>
           </div>
           <div className="flex-1 bg-app-card rounded-2xl border border-app-border px-3 py-3 text-center">
             <p className="text-xs text-app-muted">Change</p>
-            <p className={`text-lg font-extrabold ${change != null && change < 0 ? 'text-green-600' : 'text-app-text'}`}>
-              {change != null ? `${change > 0 ? '+' : ''}${change} kg` : '—'}
+            <p className={`text-lg font-extrabold ${changeKg != null && changeKg < 0 ? 'text-green-600' : 'text-app-text'}`}>
+              {changeKg != null ? `${changeKg > 0 ? '+' : ''}${kgToDisplay(changeKg, wUnit)} ${weightLabel(wUnit)}` : '—'}
             </p>
           </div>
           <div className="flex-1 bg-app-card rounded-2xl border border-app-border px-3 py-3 text-center">
             <p className="text-xs text-app-muted">Goal</p>
-            <p className="text-lg font-extrabold text-app-text">{WEIGHT_GOAL} kg</p>
+            <p className="text-lg font-extrabold text-app-text">{goalDisplay} {weightLabel(wUnit)}</p>
           </div>
         </div>
       )}
 
       {/* Quick log */}
       <div className="bg-app-card rounded-2xl border border-app-border flex items-center gap-3 px-4 py-3">
-        <p className="text-sm font-medium text-app-muted flex-1">Log today's weight</p>
+        <p className="text-sm font-medium text-app-muted flex-1">Log today's weight ({weightLabel(wUnit)})</p>
         <input
           type="number" inputMode="decimal" value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          placeholder={todayLog ? String(todayLog.weight) : '83'}
-          step={0.1} min={0}
+          placeholder={todayLog ? String(kgToDisplay(todayLog.weight, wUnit)) : (wUnit === 'lbs' ? '183' : '83')}
+          step={wUnit === 'lbs' ? 0.5 : 0.1} min={0}
           className="w-20 bg-app-bg border border-app-border rounded-xl px-2 py-2 text-base font-bold text-center text-app-text focus:outline-none focus:ring-2 focus:ring-accent"
         />
         <button
@@ -130,7 +138,9 @@ function BodyWeightSection() {
 // ── Water section ─────────────────────────────────────────────────────────────
 
 function WaterSection() {
-  const todayStr = today()
+  const todayStr    = today()
+  const { units }   = useUnits()
+  const wUnit       = units.water
 
   const log = useLiveQuery(
     () => db.nutritionLogs.filter((l) => l.date === todayStr && !l.deleted).first(),
@@ -164,7 +174,7 @@ function WaterSection() {
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-app-text">Track Water</p>
-          <p className="text-xs text-app-muted">{currentMl} ml · {Math.max(0, WATER_GOAL_ML - currentMl)} ml remaining</p>
+          <p className="text-xs text-app-muted">{mlToDisplay(currentMl, wUnit)} {waterLabel(wUnit)} · {mlToDisplay(Math.max(0, WATER_GOAL_ML - currentMl), wUnit)} {waterLabel(wUnit)} remaining</p>
         </div>
         <p className="text-sm font-extrabold text-blue-500">{pct}%</p>
       </div>
@@ -176,7 +186,7 @@ function WaterSection() {
           <button key={ml}
             onClick={() => addWater(ml)}
             className="flex-1 bg-blue-50 text-blue-600 text-sm font-bold py-2 rounded-xl active:bg-blue-100">
-            +{ml} ml
+            +{mlToDisplay(ml, wUnit)} {waterLabel(wUnit)}
           </button>
         ))}
       </div>

@@ -14,6 +14,8 @@ import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import WorkoutSummary from './WorkoutSummary'
 import { useToast } from '../contexts/ToastContext'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -92,8 +94,9 @@ type SessionData = {
 }
 
 export default function WorkoutLogger({ session }: Props) {
-  const navigate    = useNavigate()
+  const navigate      = useNavigate()
   const { showToast } = useToast()
+  const { units }     = useUnits()
 
   // Draft rows: seId → array of { reps, kg }
   const [drafts,      setDrafts]      = useState<Map<string, DraftRow[]>>(new Map())
@@ -186,7 +189,7 @@ export default function WorkoutLogger({ session }: Props) {
       existing.sort((a, b) => a.setNumber - b.setNumber)
 
       if (existing.length > 0) {
-        next.set(se.id, existing.map((s) => ({ reps: String(s.reps), kg: String(s.weight), done: false })))
+        next.set(se.id, existing.map((s) => ({ reps: String(s.reps), kg: String(kgToDisplay(s.weight, units.weight)), done: false })))
       } else {
         const n = dayExMap.get(se.exerciseId)?.targetSets ?? 3
         next.set(se.id, Array.from({ length: n }, () => ({ reps: '', kg: '', done: false })))
@@ -217,7 +220,7 @@ export default function WorkoutLogger({ session }: Props) {
         .filter((s) => !s.deleted && !s.isWarmup)
         .toArray()
       sets.sort((a, b) => a.setNumber - b.setNumber)
-      prevMap.set(se.exerciseId, sets.map((s) => ({ reps: String(s.reps), kg: String(s.weight) })))
+      prevMap.set(se.exerciseId, sets.map((s) => ({ reps: String(s.reps), kg: String(kgToDisplay(s.weight, units.weight)) })))
     }
     setPrevData(prevMap)
   }
@@ -344,7 +347,7 @@ export default function WorkoutLogger({ session }: Props) {
               sessionExerciseId: seId,
               setNumber:         i + 1,
               reps:              parseInt(r.reps, 10),
-              weight:            parseFloat(r.kg),
+              weight:            displayToKg(parseFloat(r.kg), units.weight),
               rpe:               null,
               rir:               null,
               notes:             '',
@@ -518,7 +521,7 @@ export default function WorkoutLogger({ session }: Props) {
                   <span className="w-8 text-xs font-semibold text-app-faint">Set</span>
                   <span className="flex-1 text-xs font-semibold text-app-faint">Previous</span>
                   <span className="w-[60px] text-xs font-semibold text-app-faint text-center">Reps</span>
-                  <span className="w-[60px] text-xs font-semibold text-app-faint text-center">Kg</span>
+                  <span className="w-[60px] text-xs font-semibold text-app-faint text-center">{weightLabel(units.weight).toUpperCase()}</span>
                   <span className="w-9" />
                 </div>
 
@@ -527,7 +530,7 @@ export default function WorkoutLogger({ session }: Props) {
                   <div key={i} className={`flex items-center py-2 border-b border-app-border/40 transition-colors ${row.done ? 'bg-green-50' : ''}`}>
                     <span className={`w-8 text-sm font-semibold ${row.done ? 'text-green-600' : 'text-app-muted'}`}>{i + 1}</span>
                     <span className="flex-1 text-xs text-app-faint">
-                      {prev[i] ? `${prev[i].reps} × ${prev[i].kg} kg` : '—'}
+                      {prev[i] ? `${prev[i].reps} × ${prev[i].kg} ${weightLabel(units.weight)}` : '—'}
                     </span>
                     <input
                       type="number"
@@ -541,7 +544,7 @@ export default function WorkoutLogger({ session }: Props) {
                       type="number"
                       inputMode="decimal"
                       value={row.kg}
-                      step={0.5}
+                      step={units.weight === 'lbs' ? 1 : 0.5}
                       onChange={(e) => updateDraft(se.id, i, 'kg', e.target.value)}
                       className={`w-[56px] h-8 rounded-lg border text-app-text text-center text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 mx-1 transition-colors ${row.done ? 'bg-green-100 border-green-200' : 'bg-white border-app-border focus:bg-blue-50'}`}
                       placeholder="—"

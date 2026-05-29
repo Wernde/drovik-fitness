@@ -11,6 +11,8 @@
 
 import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, displayToKg, weightLabel, fmtWeight, cmToDisplay, displayToCm, measurementLabel } from '../lib/units'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
@@ -206,6 +208,8 @@ function BodyWeightSection() {
   const [weight, setWeight] = useState('')
   const [saving, setSaving] = useState(false)
   const [error,  setError]  = useState('')
+  const { units } = useUnits()
+  const wUnit = units.weight
 
   const logs = useLiveQuery(
     () => db.bodyWeightLogs
@@ -215,22 +219,26 @@ function BodyWeightSection() {
     [],
   )
 
-  const chartData = (logs ?? []).map((l) => ({ date: shortDate(l.date), weight: l.weight }))
+  const chartData = (logs ?? []).map((l) => ({
+    date:   shortDate(l.date),
+    weight: kgToDisplay(l.weight, wUnit),
+  }))
 
   async function handleLog() {
     const val = parseFloat(weight)
-    if (isNaN(val) || val <= 0) { setError('Enter a valid weight in kg.'); return }
+    if (isNaN(val) || val <= 0) { setError(`Enter a valid weight in ${weightLabel(wUnit)}.`); return }
     setSaving(true)
     setError('')
     try {
+      const kg        = displayToKg(val, wUnit)
       const timestamp = now()
       const todayStr  = today()
       const existing  = await db.bodyWeightLogs.filter((l) => l.date === todayStr && !l.deleted).first()
       if (existing) {
-        await db.bodyWeightLogs.update(existing.id, { weight: val, updatedAt: timestamp, syncedAt: null })
+        await db.bodyWeightLogs.update(existing.id, { weight: kg, updatedAt: timestamp, syncedAt: null })
       } else {
         await db.bodyWeightLogs.add({
-          id: crypto.randomUUID(), date: todayStr, weight: val, notes: '',
+          id: crypto.randomUUID(), date: todayStr, weight: kg, notes: '',
           createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
         })
       }
@@ -248,7 +256,8 @@ function BodyWeightSection() {
         <input
           type="number" inputMode="decimal" value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          placeholder="Today's weight (kg)" min={0} step={0.1}
+          placeholder={`Today's weight (${weightLabel(wUnit)})`} min={0}
+          step={wUnit === 'lbs' ? 0.5 : 0.1}
           className="flex-1 rounded-2xl border border-app-border bg-app-card text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
         />
         <button
@@ -265,13 +274,13 @@ function BodyWeightSection() {
         </div>
       ) : (
         <div className="rounded-2xl bg-app-card border border-app-border p-4">
-          <p className="text-xs text-app-muted mb-3">Body weight (kg)</p>
+          <p className="text-xs text-app-muted mb-3">Body weight ({weightLabel(wUnit)})</p>
           <ResponsiveContainer width="100%" height={180}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E3E5E5" />
               <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#7A7980' }} />
               <YAxis tick={{ fontSize: 10, fill: '#7A7980' }} domain={['auto', 'auto']} />
-              <Tooltip formatter={(val: number) => [`${val} kg`, 'Weight']} contentStyle={chartTooltipStyle} />
+              <Tooltip formatter={(val: number) => [`${val} ${weightLabel(wUnit)}`, 'Weight']} contentStyle={chartTooltipStyle} />
               <Line type="monotone" dataKey="weight" stroke="#B8900A" strokeWidth={2}
                 dot={{ r: 3, fill: '#FFCA10' }} activeDot={{ r: 5 }} />
             </LineChart>
@@ -281,7 +290,7 @@ function BodyWeightSection() {
               {[...logs].reverse().slice(0, 10).map((l) => (
                 <li key={l.id} className="flex justify-between text-sm">
                   <span className="text-app-muted">{shortDate(l.date)}</span>
-                  <span className="font-medium text-app-text">{l.weight} kg</span>
+                  <span className="font-medium text-app-text">{fmtWeight(l.weight, wUnit)}</span>
                 </li>
               ))}
             </ul>
@@ -315,6 +324,8 @@ function MeasurementsSection() {
   const [showMore, setShowMore] = useState(false)
   const [saving,   setSaving]   = useState(false)
   const [error,    setError]    = useState('')
+  const { units } = useUnits()
+  const mUnit = units.measurement
 
   const logs = useLiveQuery(
     () => db.bodyMeasurementLogs
@@ -330,7 +341,8 @@ function MeasurementsSection() {
   function fieldVal(key: string) {
     if (key in vals) return vals[key]
     const v = todayLog?.[key as keyof BodyMeasurementLog]
-    return v != null ? String(v) : ''
+    if (v == null) return ''
+    return String(cmToDisplay(v as number, mUnit))
   }
 
   function set(key: string, s: string) {
@@ -344,7 +356,7 @@ function MeasurementsSection() {
       if (s.trim() === '') { parsed[key] = null; continue }
       const n = parseFloat(s)
       if (isNaN(n) || n <= 0) { setError(`Invalid value for ${key}.`); return }
-      parsed[key] = n
+      parsed[key] = displayToCm(n, mUnit)
     }
 
     setSaving(true)
@@ -380,7 +392,7 @@ function MeasurementsSection() {
     <div className="flex flex-col gap-4">
       {/* Entry form */}
       <div className="rounded-2xl bg-app-card border border-app-border p-4 flex flex-col gap-3">
-        <p className="text-xs text-app-muted">Log measurements (cm) — one entry per day</p>
+        <p className="text-xs text-app-muted">Log measurements ({measurementLabel(mUnit)}) — one entry per day</p>
 
         <div className="grid grid-cols-3 gap-2">
           {visible.map(({ key, label }) => (
@@ -390,7 +402,7 @@ function MeasurementsSection() {
                 type="number" inputMode="decimal" min={0} step={0.1}
                 value={fieldVal(key)}
                 onChange={(e) => set(key, e.target.value)}
-                placeholder="cm"
+                placeholder={measurementLabel(mUnit)}
                 className="w-full rounded-xl border border-app-border bg-app-bg text-app-text px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
               />
             </div>
@@ -427,7 +439,7 @@ function MeasurementsSection() {
                     <div key={key} className="flex justify-between gap-1">
                       <span className="text-xs text-app-muted">{label}</span>
                       <span className="text-xs text-app-text font-medium">
-                        {l[key as keyof BodyMeasurementLog]} cm
+                        {cmToDisplay(l[key as keyof BodyMeasurementLog] as number, mUnit)} {measurementLabel(mUnit)}
                       </span>
                     </div>
                   ))}

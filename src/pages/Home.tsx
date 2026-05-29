@@ -10,6 +10,8 @@ import { db, now, today } from '../db/db'
 import type { WorkoutDay } from '../db/db'
 import { useAuth } from '../contexts/AuthContext'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
+import { useUnits, } from '../contexts/UnitsContext'
+import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel } from '../lib/units'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -29,10 +31,7 @@ function getWeekBounds() {
   return { from: fmt(mon), to: fmt(sun) }
 }
 
-function formatVolume(kg: number) {
-  if (kg >= 1000) return `${+(kg / 1000).toFixed(1)}t`
-  return `${Math.round(kg)} kg`
-}
+// formatVolume is handled by fmtVolume from units lib (unit-aware)
 
 function buildDateStrip() {
   const t = new Date()
@@ -75,6 +74,7 @@ function Donut({ pct, color, size = 64 }: { pct: number; color: string; size?: n
 export default function Home() {
   const { session } = useAuth()
   const navigate    = useNavigate()
+  const { units }   = useUnits()
   const [starting,    setStarting]    = useState(false)
   const [weightInput, setWeightInput] = useState('')
   const [savingWt,    setSavingWt]    = useState(false)
@@ -449,8 +449,8 @@ export default function Home() {
               </div>
               <p className="text-xs text-app-muted mb-1">Body Weight</p>
               <p className="text-2xl font-extrabold text-app-text">
-                {wt != null ? `${wt}` : '—'}
-                <span className="text-sm font-semibold"> kg</span>
+                {wt != null ? `${kgToDisplay(wt, units.weight)}` : '—'}
+                <span className="text-sm font-semibold"> {weightLabel(units.weight)}</span>
               </p>
               <p className="text-xs text-app-muted mt-0.5">{wtDate ?? 'Not logged'}</p>
             </div>
@@ -463,7 +463,7 @@ export default function Home() {
               </div>
               <p className="text-xs text-app-muted mb-1">Volume this week</p>
               <p className="text-2xl font-extrabold text-app-text">
-                {data && data.weekStats.volumeKg > 0 ? formatVolume(data.weekStats.volumeKg) : '—'}
+                {data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—'}
               </p>
               <p className="text-xs text-app-muted mt-0.5">lifted</p>
             </div>
@@ -494,7 +494,7 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Track Water</p>
-              <p className="text-xs text-app-muted">{waterMl} ml / {WATER_GOAL_ML.toLocaleString()} ml remaining</p>
+              <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)} / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)} remaining</p>
             </div>
             <p className="text-sm font-extrabold text-blue-500">{waterPct}%</p>
           </div>
@@ -505,7 +505,7 @@ export default function Home() {
             {[250, 500, 750].map((ml) => (
               <button key={ml} onClick={() => addWater(ml)}
                 className="flex-1 bg-app-bg border border-app-border text-app-text text-sm font-bold py-2.5 rounded-xl active:bg-accent-light">
-                +{ml} ml
+                +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
               </button>
             ))}
           </div>
@@ -525,7 +525,7 @@ export default function Home() {
             </div>
             {wt != null && (
               <div className="text-right">
-                <p className="text-xl font-extrabold text-app-text">{wt}<span className="text-sm font-semibold"> kg</span></p>
+                <p className="text-xl font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}<span className="text-sm font-semibold"> {weightLabel(units.weight)}</span></p>
                 <p className="text-xs text-app-muted">{wtDate}</p>
               </div>
             )}

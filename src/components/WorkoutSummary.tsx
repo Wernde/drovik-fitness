@@ -5,6 +5,8 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import type { WorkoutSession } from '../db/db'
+import { useUnits } from '../contexts/UnitsContext'
+import { fmtVolume } from '../lib/units'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -31,6 +33,7 @@ interface Props {
 }
 
 export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
+  const { units } = useUnits()
   const summary = useLiveQuery(async () => {
     const ses = await db.sessionExercises
       .where('workoutSessionId').equals(session.id)
@@ -131,9 +134,7 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
               </div>
               <div className="flex-1 rounded-2xl bg-app-bg border border-app-border px-4 py-3 text-center">
                 <p className="text-xl font-bold text-accent-dark tabular-nums">
-                  {summary.totalVolume >= 1000
-                    ? `${(summary.totalVolume / 1000).toFixed(1)}t`
-                    : `${Math.round(summary.totalVolume)} kg`}
+                  {fmtVolume(summary.totalVolume, units.weight)}
                 </p>
                 <p className="text-xs text-app-muted mt-0.5">Total volume</p>
               </div>
