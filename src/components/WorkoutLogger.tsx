@@ -106,6 +106,8 @@ export default function WorkoutLogger({ session }: Props) {
   const [expandedExNote,  setExpandedExNote]  = useState<Set<string>>(new Set())
   const [exerciseNotes,   setExerciseNotes]   = useState<Map<string, string>>(new Map())
   const [expandedSetNote, setExpandedSetNote] = useState<Set<string>>(new Set())
+  const [exerciseMenu,    setExerciseMenu]    = useState<string | null>(null)
+  const [substituteSeId,  setSubstituteSeId]  = useState<string | null>(null)
 
   const draftsInit = useRef(false)
 
@@ -253,6 +255,16 @@ export default function WorkoutLogger({ session }: Props) {
     [data],
   )
 
+  // When substituting, un-dim the exercise being replaced so it can be re-selected
+  const substituteExistingIds = useMemo(() => {
+    if (!substituteSeId || !data) return existingExerciseIds
+    const sub = data.sessionExercises.find((se) => se.id === substituteSeId)
+    if (!sub) return existingExerciseIds
+    const ids = new Set(existingExerciseIds)
+    ids.delete(sub.exerciseId)
+    return ids
+  }, [substituteSeId, data, existingExerciseIds])
+
   function updateDraft(seId: string, rowIdx: number, field: 'reps' | 'kg' | 'note', value: string) {
     setDrafts((prev) => {
       const next = new Map(prev)
@@ -297,6 +309,53 @@ export default function WorkoutLogger({ session }: Props) {
     if (!currentlyDone) {
       setRestTimer({ secs: restSecs ?? DEFAULT_REST_SECS, exerciseName })
     }
+  }
+
+  async function handleSubstitute(exercise: Exercise) {
+    if (!substituteSeId) return
+    const seId = substituteSeId
+    setSubstituteSeId(null)
+    try {
+      const ts = now()
+      await db.sessionExercises.update(seId, { exerciseId: exercise.id, updatedAt: ts, syncedAt: null })
+      // Reset drafts for the new exercise
+      setDrafts((prev) => {
+        const next = new Map(prev)
+        next.set(seId, Array.from({ length: 3 }, () => ({ reps: '', kg: '', done: false, note: '' })))
+        return next
+      })
+      await loadPreviousSingle(seId, exercise.id)
+    } catch {
+      showToast('Failed to substitute exercise.')
+    }
+  }
+
+  async function loadPreviousSingle(seId: string, exerciseId: string) {
+    const allSes = await db.sessionExercises
+      .filter((x) => x.exerciseId === exerciseId && !x.deleted && x.workoutSessionId !== session.id)
+      .toArray()
+    const sessIds = [...new Set(allSes.map((x) => x.workoutSessionId))]
+    const sessions = (await Promise.all(sessIds.map((id) => db.workoutSessions.get(id))))
+      .filter((s): s is WorkoutSession => !!s && !!s.finishedAt && !s.deleted)
+      .sort((a, b) => b.finishedAt!.localeCompare(a.finishedAt!))
+    if (sessions.length === 0) return
+    const prevSe = allSes.find((x) => x.workoutSessionId === sessions[0].id)
+    if (!prevSe) return
+    const sets = await db.sets
+      .where('sessionExerciseId').equals(prevSe.id)
+      .filter((s) => !s.deleted && !s.isWarmup)
+      .toArray()
+    sets.sort((a, b) => a.setNumber - b.setNumber)
+    setPrevData((prev) => {
+      const next = new Map(prev)
+      next.set(exerciseId, sets.map((s) => ({
+        reps: String(s.reps),
+        kg:   String(kgToDisplay(s.weight, units.weight)),
+        done: false,
+        note: '',
+      })))
+      return next
+    })
   }
 
   async function addExercise(exercise: Exercise) {
@@ -448,50 +507,48 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Fixed header ── */}
       <div className="fixed top-0 left-0 right-0 z-40 bg-white border-b border-app-border">
-        <div className="px-4 flex items-center h-14">
-          {/* Cancel */}
+        {/* Row 1 — Cancel | Workout name | Finish */}
+        <div className="px-4 flex items-center justify-between h-11 border-b border-app-border/40">
           <button
             onClick={() => setShowDiscard(true)}
             className="text-sm font-semibold text-app-muted w-16"
           >
             Cancel
           </button>
+          <span className="text-sm font-extrabold text-app-text uppercase tracking-wide">
+            {data.dayName ?? 'Workout'}
+          </span>
+          <button
+            onClick={handleFinishPress}
+            disabled={saving}
+            className="text-sm font-bold text-accent-dark w-16 text-right disabled:opacity-50"
+          >
+            {saving ? '…' : 'Finish'}
+          </button>
+        </div>
 
-          {/* Centre — day name + live timer */}
-          <div className="flex-1 flex flex-col items-center gap-0.5">
-            {data.dayName && (
-              <span className="text-[10px] font-bold text-app-muted uppercase tracking-widest leading-none">
-                {data.dayName}
-              </span>
-            )}
-            <div className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <span className="text-[15px] font-mono font-bold text-app-text tabular-nums">
-                {formatElapsed(elapsed)}
-              </span>
-            </div>
+        {/* Row 2 — Live timer (prominent) + options */}
+        <div className="px-4 flex items-center justify-center h-14 relative">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse flex-shrink-0" />
+            <span className="text-3xl font-mono font-extrabold text-app-text tabular-nums tracking-tight">
+              {formatElapsed(elapsed)}
+            </span>
           </div>
-
-          {/* Right — options + finish */}
-          <div className="flex items-center gap-2 w-16 justify-end">
-            <button onClick={() => setShowOptions(true)} className="text-app-muted p-1" aria-label="Options">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
-              </svg>
-            </button>
-            <button
-              onClick={handleFinishPress}
-              disabled={saving}
-              className="text-sm font-bold text-accent-dark disabled:opacity-50"
-            >
-              {saving ? '…' : 'Finish'}
-            </button>
-          </div>
+          <button
+            onClick={() => setShowOptions(true)}
+            className="absolute right-4 text-app-muted p-1"
+            aria-label="Options"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
+            </svg>
+          </button>
         </div>
       </div>
 
       {/* ── Exercise cards ── */}
-      <div className="mt-14 px-3 pt-3 space-y-3">
+      <div className="mt-[100px] px-3 pt-3 space-y-3">
         {sessionExercises.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted mt-4">
             Tap <strong className="text-app-text">Add Exercise</strong> to get started.
@@ -527,9 +584,9 @@ export default function WorkoutLogger({ session }: Props) {
                     )}
                   </div>
                   <button
-                    onClick={() => removeExercise(se.id)}
-                    className="text-app-faint p-2 -mr-1 active:text-red-400"
-                    aria-label={`Remove ${exercise.name}`}
+                    onClick={() => setExerciseMenu(se.id)}
+                    className="text-app-faint p-2 -mr-1 active:text-app-muted"
+                    aria-label={`Options for ${exercise.name}`}
                   >
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                       <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
@@ -878,12 +935,65 @@ export default function WorkoutLogger({ session }: Props) {
         </div>
       )}
 
-      {/* ── Exercise picker ── */}
-      {showPicker && (
+      {/* ── Exercise action sheet (substitute / remove) ── */}
+      {exerciseMenu !== null && (() => {
+        const menuSe = sessionExercises.find((se) => se.id === exerciseMenu)
+        const menuEx = menuSe ? exerciseMap.get(menuSe.exerciseId) : null
+        return (
+          <div className="fixed inset-0 z-50 flex items-end justify-center">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setExerciseMenu(null)} />
+            <div className="relative z-50 w-full max-w-sm mx-auto bg-white rounded-t-3xl px-5 pt-4 pb-8">
+              <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-4" />
+              {menuEx && (
+                <p className="text-base font-extrabold text-app-text mb-4 truncate">{menuEx.name}</p>
+              )}
+
+              {/* Substitute */}
+              <button
+                onClick={() => { setSubstituteSeId(exerciseMenu); setExerciseMenu(null) }}
+                className="w-full flex items-center gap-3 py-3.5 border-b border-app-border active:bg-app-bg rounded-xl"
+              >
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5 text-blue-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                  </svg>
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-app-text">Substitute Exercise</p>
+                  <p className="text-xs text-app-muted mt-0.5">Swap for a different exercise</p>
+                </div>
+              </button>
+
+              {/* Remove */}
+              <button
+                onClick={() => { removeExercise(exerciseMenu); setExerciseMenu(null) }}
+                className="w-full flex items-center gap-3 py-3.5 active:bg-red-50 rounded-xl"
+              >
+                <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5 text-red-500">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-red-500">Remove Exercise</p>
+              </button>
+
+              <button
+                onClick={() => setExerciseMenu(null)}
+                className="w-full mt-3 rounded-2xl bg-app-bg text-app-text py-3 font-bold text-sm active:bg-gray-100"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )
+      })()}
+
+      {/* ── Exercise picker (add or substitute) ── */}
+      {(showPicker || substituteSeId !== null) && (
         <ExercisePicker
-          onSelect={addExercise}
-          onClose={() => setShowPicker(false)}
-          existingIds={existingExerciseIds}
+          onSelect={substituteSeId ? handleSubstitute : addExercise}
+          onClose={() => { setShowPicker(false); setSubstituteSeId(null) }}
+          existingIds={substituteSeId ? substituteExistingIds : existingExerciseIds}
         />
       )}
 
