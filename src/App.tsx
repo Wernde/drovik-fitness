@@ -15,6 +15,7 @@ import Exercises from './pages/Exercises'
 import Settings from './pages/Settings'
 import Calculator from './pages/Calculator'
 import Goals from './pages/Goals'
+import Nutrition from './pages/Nutrition'
 import More from './pages/More'
 import Profile from './pages/Profile'
 
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="calculator"                       element={<Calculator />} />
         <Route path="settings"                         element={<Settings />} />
         <Route path="goals"                            element={<Goals />} />
+        <Route path="nutrition"                        element={<Nutrition />} />
         <Route path="more"                             element={<More />} />
         <Route path="profile"                          element={<Profile />} />
         <Route path="*"                                element={<Navigate to="/" replace />} />

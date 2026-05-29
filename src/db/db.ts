@@ -16,6 +16,7 @@
 
 import Dexie, { type Table } from 'dexie'
 import { seedExercises } from './seed'
+import { seedFoods } from '../data/foods'
 
 // ── Shared fields every table has ─────────────────────────────────────────────
 
@@ -155,6 +156,41 @@ export interface NutritionLog extends BaseRecord {
   notes: string
 }
 
+// ── Nutrition food database ───────────────────────────────────────────────────
+
+export type FoodCategory = 'protein' | 'dairy' | 'grain' | 'vegetable' | 'fruit' | 'fat' | 'nut' | 'legume' | 'supplement' | 'other'
+
+export interface Food extends BaseRecord {
+  name: string
+  category: FoodCategory
+  caloriesPer100g: number
+  proteinPer100g: number
+  carbsPer100g: number
+  fatPer100g: number
+  isCustom: boolean
+}
+
+export type MealSlot = 'breakfast' | 'lunch' | 'dinner' | 'snack'
+
+export interface FoodLog extends BaseRecord {
+  date: string       // YYYY-MM-DD
+  foodId: string
+  meal: MealSlot
+  amountG: number
+}
+
+export interface Recipe extends BaseRecord {
+  name: string
+  servings: number
+  notes: string
+}
+
+export interface RecipeFood extends BaseRecord {
+  recipeId: string
+  foodId: string
+  amountG: number
+}
+
 // ── Habits ────────────────────────────────────────────────────────────────────
 
 export interface Habit extends BaseRecord {
@@ -184,6 +220,10 @@ class DrovikDB extends Dexie {
   habits!: Table<Habit>
   habitCompletions!: Table<HabitCompletion>
   bodyMeasurementLogs!: Table<BodyMeasurementLog>
+  foods!: Table<Food>
+  foodLogs!: Table<FoodLog>
+  recipes!: Table<Recipe>
+  recipeFoods!: Table<RecipeFood>
 
   constructor() {
     super('drovik-fitness')
@@ -303,6 +343,31 @@ class DrovikDB extends Dexie {
       bodyMeasurementLogs:  'id, date',
     })
 
+    // Version 11 — nutrition food database, per-food logging, and recipes.
+    this.version(11).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+    }).upgrade(async (tx) => {
+      const existing = new Set(await tx.table('foods').toCollection().primaryKeys())
+      const missing  = seedFoods.filter((f: Food) => !existing.has(f.id))
+      if (missing.length > 0) await tx.table('foods').bulkAdd(missing)
+    })
+
     // Version 7 — adds program phases and phaseId to workout days.
     this.version(7).stores({
       exercises:        'id, category, muscleGroup, name',
@@ -356,9 +421,10 @@ class DrovikDB extends Dexie {
     })
 
     // 'populate' fires exactly once — when the database is first created on
-    // this device. We use it to pre-load the exercise library.
+    // this device. We use it to pre-load the exercise library and food database.
     this.on('populate', async () => {
       await this.exercises.bulkAdd(seedExercises)
+      await this.foods.bulkAdd(seedFoods)
     })
   }
 }
