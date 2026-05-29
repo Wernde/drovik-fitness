@@ -4,6 +4,23 @@ All notable changes are documented here, newest first.
 
 ---
 
+## WorkoutLogger Redesign
+
+### Changed
+- **Card layout** — exercise blocks are now white rounded cards with shadow instead of flat separator rows; spacing and visual hierarchy improved throughout
+- **Header** — workout day name shown above the live timer; timer has an animated yellow pulse dot indicating the session is running; ⋯ menu replaces the unused chat/dots icons
+- **Auto-fill moved to options sheet** — tap ⋯ to access auto-fill toggle and discard; cleans up the top bar
+- **Tap-to-fill previous** — the "Previous" column now shows a tappable pill (e.g. `10 × 80 →`) that copies those values directly into the row's reps and weight inputs in one tap — the fastest way to log when you used the same weights as last time
+- **Per-exercise notes** — a Notes chip on every exercise card opens a textarea (persisted to `sessionExercise.notes` on Finish); chip turns yellow when a note exists
+- **Per-set notes** — a small `+ note` toggle under each set row opens an inline input (saved to `set.notes`); note preview shown collapsed
+- **YouTube / Watch chip** — exercises with a `videoUrl` show a red Watch chip that opens the video in-browser
+- **Guide chip** — exercises with `instructions` show a blue Guide chip that expands the instructions inline; chip toggles to "Hide Guide" when open
+- **Rest timer always fires** — marking any set done now auto-starts a rest timer (uses the exercise's configured `restSecs`, falls back to 90 s if none set)
+- **Amber done state** — completed set rows highlight amber to match the yellow accent palette (replaces green)
+- **Done checkmark** uses accent yellow instead of green
+
+---
+
 ## UI Redesign — Light Theme
 
 ### Changed
