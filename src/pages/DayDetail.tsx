@@ -369,33 +369,13 @@ export default function DayDetail() {
               }
 
               // ── View mode row — fully tappable ──
+              const listVid = exercise.videoUrl ? getYouTubeId(exercise.videoUrl) : null
               return (
                 <button
                   key={de.id}
                   onClick={() => openDetail(de)}
                   className="w-full bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
                 >
-                  {/* Thumbnail banner */}
-                  {(() => {
-                    const vid = exercise.videoUrl ? getYouTubeId(exercise.videoUrl) : null
-                    if (!vid) return null
-                    return (
-                      <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
-                        <img
-                          src={getYouTubeThumbnail(vid)}
-                          alt={`${exercise.name} tutorial`}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                          <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-md">
-                            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4 ml-0.5">
-                              <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })()}
                   <div className="flex items-center gap-3 px-4 py-3.5">
                     <ExerciseThumb category={exercise.category} />
                     <div className="flex-1 min-w-0">
@@ -414,9 +394,28 @@ export default function DayDetail() {
                         </span>
                       )}
                     </div>
-                    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
-                      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                    </svg>
+
+                    {/* Right side: compact thumbnail (tappable) or chevron */}
+                    {listVid ? (
+                      <button
+                        onClick={e => { e.stopPropagation(); setVideoModal({ id: listVid, title: exercise.name }) }}
+                        className="relative flex-shrink-0 w-16 h-9 rounded-lg overflow-hidden active:opacity-75"
+                        aria-label={`Play ${exercise.name} tutorial`}
+                      >
+                        <img src={getYouTubeThumbnail(listVid)} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <div className="w-5 h-5 bg-red-600 rounded-full flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-2.5 h-2.5 ml-0.5">
+                              <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </button>
+                    ) : (
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
+                        <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                      </svg>
+                    )}
                   </div>
                 </button>
               )
@@ -453,9 +452,12 @@ export default function DayDetail() {
 
       {/* ── Exercise detail sheet ── */}
       {detailDE && detailExercise && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        >
           <div className="absolute inset-0 bg-black/40" onClick={closeDetail} />
-          <div className="relative z-50 w-full max-w-lg mx-auto bg-white rounded-t-3xl pb-8 max-h-[90vh] overflow-y-auto">
+          <div className="relative z-50 w-full max-w-lg mx-auto bg-white rounded-t-3xl pb-8 max-h-[80vh] overflow-y-auto">
             {/* Handle */}
             <div className="sticky top-0 bg-white pt-3 pb-2 px-5 flex items-center justify-between border-b border-app-border/50 z-10">
               <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
