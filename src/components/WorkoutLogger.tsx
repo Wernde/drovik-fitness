@@ -879,7 +879,7 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Options sheet ── */}
       {showOptions && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowOptions(false)} />
           <div className="relative z-50 w-full max-w-sm mx-auto bg-white rounded-t-3xl px-5 pt-4 pb-8">
             <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-5" />
@@ -926,7 +926,7 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Discard confirmation modal ── */}
       {showDiscard && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center">
+        <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowDiscard(false)} />
           <div className="relative z-50 w-full max-w-sm mx-auto bg-white rounded-t-3xl px-5 pt-6 pb-8">
             <h2 className="text-lg font-extrabold text-app-text mb-1">Discard workout?</h2>
@@ -954,7 +954,7 @@ export default function WorkoutLogger({ session }: Props) {
         const menuSe = sessionExercises.find((se) => se.id === exerciseMenu)
         const menuEx = menuSe ? exerciseMap.get(menuSe.exerciseId) : null
         return (
-          <div className="fixed inset-0 z-50 flex items-end justify-center">
+          <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
             <div className="absolute inset-0 bg-black/40" onClick={() => setExerciseMenu(null)} />
             <div className="relative z-50 w-full max-w-sm mx-auto bg-white rounded-t-3xl px-5 pt-4 pb-8">
               <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-4" />

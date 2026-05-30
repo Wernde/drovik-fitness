@@ -120,7 +120,7 @@ export default function Programs() {
   }
 
   return (
-    <div className="pb-4">
+    <div className="pb-24">
 
       {/* ── Active program header ──────────────────────────────── */}
       {activeProgram ? (

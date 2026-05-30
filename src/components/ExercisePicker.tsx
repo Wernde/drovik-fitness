@@ -96,7 +96,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
       </div>
 
       {/* Exercise list */}
-      <div className="flex-1 overflow-y-auto px-4 pb-8">
+      <div className="flex-1 overflow-y-auto px-4 pb-24">
         {!exercises ? (
           <div className="flex items-center justify-center h-20 text-app-muted">Loading…</div>
         ) : filtered.length === 0 ? (

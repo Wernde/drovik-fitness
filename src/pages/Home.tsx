@@ -312,7 +312,7 @@ export default function Home() {
     : null
 
   return (
-    <div className="flex flex-col pb-6 bg-app-bg">
+    <div className="flex flex-col pb-24 bg-app-bg">
 
       {/* ── Top bar ──────────────────────────────────────────────────── */}
       <div className="px-5 pt-6 pb-3 flex items-center gap-3">
