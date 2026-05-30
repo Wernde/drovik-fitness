@@ -455,6 +455,41 @@ class DrovikDB extends Dexie {
       })
     })
 
+    // Version 13 — back-fills the expanded video set (band, core, cardio, etc.)
+    // onto existing devices. Same logic as v12: only touches seeded exercises
+    // that still have a null videoUrl so user edits are never overwritten.
+    this.version(13).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+    }).upgrade(async (tx) => {
+      const videoMap = new Map(
+        seedExercises
+          .filter(e => e.videoUrl !== null)
+          .map(e => [e.id, e.videoUrl!])
+      )
+      if (videoMap.size === 0) return
+      await tx.table('exercises').toCollection().modify((ex) => {
+        if (!ex.isCustom && ex.videoUrl === null && videoMap.has(ex.id)) {
+          ex.videoUrl = videoMap.get(ex.id)
+        }
+      })
+    })
+
     // 'populate' fires exactly once — when the database is first created on
     // this device. We use it to pre-load the exercise library and food database.
     this.on('populate', async () => {
