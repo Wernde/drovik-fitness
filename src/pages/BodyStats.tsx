@@ -124,7 +124,7 @@ const CHART_OPTIONS: Array<{ value: ChartMetric; label: string }> = [
 ]
 
 const tooltipStyle = {
-  backgroundColor: '#fff', border: '1px solid #E3E5E5',
+  backgroundColor: 'var(--color-app-card)', border: '1px solid var(--color-app-border)',
   borderRadius: 12, fontSize: 12,
 }
 

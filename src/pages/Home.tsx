@@ -57,7 +57,7 @@ function Donut({ pct, color, size = 64 }: { pct: number; color: string; size?: n
   const arc = Math.min(pct / 100, 1) * c
   return (
     <svg width={size} height={size} viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r={r} fill="none" stroke="#E3E5E5" strokeWidth="5" />
+      <circle cx="24" cy="24" r={r} fill="none" stroke="var(--color-app-border)" strokeWidth="5" />
       <circle
         cx="24" cy="24" r={r} fill="none"
         stroke={color} strokeWidth="5"
@@ -440,7 +440,7 @@ export default function Home() {
           <p className="text-base font-extrabold text-app-text mb-2">My Progress</p>
           <div className="grid grid-cols-2 gap-3">
             {/* Sessions this week */}
-            <div className="bg-app-card rounded-2xl border border-app-border px-4 py-3">
+            <Link to="/history" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M6 3.75A2.75 2.75 0 018.75 1h2.5A2.75 2.75 0 0114 3.75v.443c.572.055 1.14.122 1.706.2C17.053 4.582 18 5.75 18 7.07v3.469c0 1.126-.694 2.191-1.83 2.54-1.952.599-4.024.921-6.17.921s-4.219-.322-6.17-.921C2.694 12.73 2 11.665 2 10.539V7.07c0-1.321.947-2.489 2.294-2.676A41.047 41.047 0 016 4.193V3.75zm6.5 0v.325a41.622 41.622 0 00-5 0V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25zM10 10a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1V11a1 1 0 00-1-1H10z" clipRule="evenodd" />
@@ -450,9 +450,9 @@ export default function Home() {
               <p className="text-xs text-app-muted mb-1">Sessions this week</p>
               <p className="text-2xl font-extrabold text-app-text">{data?.weekStats.sessions ?? 0}</p>
               <p className="text-xs text-app-muted mt-0.5">workouts</p>
-            </div>
+            </Link>
             {/* Body Weight */}
-            <div className="bg-app-card rounded-2xl border border-app-border px-4 py-3">
+            <Link to="/body" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-blue-500">
                   <path fillRule="evenodd" d="M10 2a.75.75 0 01.75.75v.258a33.186 33.186 0 016.668.83.75.75 0 01-.336 1.461 31.28 31.28 0 00-1.103-.232l1.702 7.545a.75.75 0 01-.505.893c-.336.095-.68.187-1.032.27a.75.75 0 11-.352-1.456c.237-.057.473-.118.706-.184L14.228 5.545A31.086 31.086 0 0010 5.261a31.08 31.08 0 00-4.228.284L4.102 11.73c.233.066.47.127.706.184a.75.75 0 11-.352 1.455 35.645 35.645 0 01-1.032-.27.75.75 0 01-.505-.893l1.702-7.545a31.28 31.28 0 00-1.103.232.75.75 0 01-.336-1.461 33.186 33.186 0 016.668-.83V2.75A.75.75 0 0110 2zM5.082 14.5a.75.75 0 01.75-.75h8.336a.75.75 0 010 1.5H5.832a.75.75 0 01-.75-.75z" clipRule="evenodd" />
@@ -464,9 +464,9 @@ export default function Home() {
                 <span className="text-sm font-semibold"> {weightLabel(units.weight)}</span>
               </p>
               <p className="text-xs text-app-muted mt-0.5">{wtDate ?? 'Not logged'}</p>
-            </div>
+            </Link>
             {/* Volume this week */}
-            <div className="bg-app-card rounded-2xl border border-app-border px-4 py-3">
+            <Link to="/progress" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-violet-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-violet-500">
                   <path d="M15.5 2A1.5 1.5 0 0014 3.5v13a1.5 1.5 0 003 0v-13A1.5 1.5 0 0015.5 2zM9.5 6A1.5 1.5 0 008 7.5v9a1.5 1.5 0 003 0v-9A1.5 1.5 0 009.5 6zM3.5 10A1.5 1.5 0 002 11.5v5a1.5 1.5 0 003 0v-5A1.5 1.5 0 003.5 10z" />
@@ -477,9 +477,9 @@ export default function Home() {
                 {data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—'}
               </p>
               <p className="text-xs text-app-muted mt-0.5">lifted</p>
-            </div>
+            </Link>
             {/* Calorie intake */}
-            <div className="bg-app-card rounded-2xl border border-app-border px-4 py-3">
+            <Link to="/nutrition" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-orange-500">
                   <path d="M11.983 1.907a.75.75 0 00-1.292-.657l-8.5 9.5A.75.75 0 002.75 12h6.572l-1.305 6.093a.75.75 0 001.292.657l8.5-9.5A.75.75 0 0017.25 8h-6.572l1.305-6.093z" />
@@ -491,7 +491,7 @@ export default function Home() {
                 <span className="text-sm font-semibold"> cal</span>
               </p>
               <p className="text-xs text-app-muted mt-0.5">/{macroTargets.calories.toLocaleString()} goal</p>
-            </div>
+            </Link>
           </div>
         </div>
 

@@ -29,7 +29,7 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
   },
   {
     to: '/nutrition',
-    label: 'Nutrition',
+    label: 'Food',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
         <path fillRule="evenodd" d="M11.484 2.17a.75.75 0 011.032 0 11.209 11.209 0 017.877 10.58 7.423 7.423 0 01-7.603 7.5c-4.114 0-7.47-3.036-7.47-7.125 0-3.6 2.488-6.7 5.91-7.765a.75.75 0 01.977.702v5.263a.75.75 0 001.5 0V4.14a.75.75 0 01.777-.746z" clipRule="evenodd" />
@@ -37,11 +37,11 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
     ),
   },
   {
-    to: '/more',
-    label: 'AI',
+    to: '/history',
+    label: 'History',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-        <path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" />
       </svg>
     ),
   },
@@ -142,6 +142,12 @@ export default function Layout() {
   // ── Quick Add items ───────────────────────────────────────────────────────
   const QA_ITEMS: QAItem[] = [
     {
+      label: 'AI Coach',
+      bg: 'bg-app-text',
+      to: '/more',
+      icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-accent"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" /></svg>,
+    },
+    {
       label: 'Workout',
       bg: 'bg-blue-500',
       to: '/programs',
@@ -172,18 +178,6 @@ export default function Layout() {
       icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-app-text"><path fillRule="evenodd" d="M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm4.5 7.5a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0v-2.25a.75.75 0 01.75-.75zm3.75-1.5a.75.75 0 00-1.5 0v4.5a.75.75 0 001.5 0V12zm2.25-3a.75.75 0 01.75.75v6.75a.75.75 0 01-1.5 0V9.75A.75.75 0 0113.5 9zm3.75-1.5a.75.75 0 00-1.5 0v9a.75.75 0 001.5 0v-9z" clipRule="evenodd" /></svg>,
     },
     {
-      label: 'Calendar',
-      bg: 'bg-violet-500',
-      to: '/history',
-      icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white"><path fillRule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z" clipRule="evenodd" /></svg>,
-    },
-    {
-      label: 'History',
-      bg: 'bg-slate-500',
-      to: '/history',
-      icon: <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white"><path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" /></svg>,
-    },
-    {
       label: 'Progress',
       bg: 'bg-emerald-500',
       to: '/progress',
@@ -210,7 +204,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-app-bg sm:bg-[#D8DBE2]">
+    <div className="min-h-screen bg-app-bg sm:bg-app-border">
     <div className="flex flex-col min-h-screen bg-app-bg sm:max-w-[430px] sm:mx-auto sm:shadow-[0_0_40px_rgba(0,0,0,0.15)]">
 
       {/* Offline banner */}
@@ -277,11 +271,6 @@ export default function Layout() {
             >
               {icon}
               <span>{label}</span>
-              {to === '/more' && (
-                <span className="absolute top-2 right-4">
-                  <SyncDot status={status} />
-                </span>
-              )}
             </NavLink>
           ))}
         </div>

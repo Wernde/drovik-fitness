@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --color-accent:        #FFCA10;
+  --color-accent-dark:   #B8900A;
+  --color-accent-darker: #8A6C00;
+  --color-accent-light:  #FFF9E0;
+
+  --color-app-bg:     #F4F6F9;
+  --color-app-card:   #ffffff;
+  --color-app-border: #E3E5E5;
+  --color-app-text:   #241F20;
+  --color-app-muted:  #7A7980;
+  --color-app-faint:  #C8C8C8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-accent-dark:   #FFD840;
+    --color-accent-darker: #FFCA10;
+    --color-accent-light:  #2A2400;
+
+    --color-app-bg:     #0F1011;
+    --color-app-card:   #1A1B1E;
+    --color-app-border: #2C2D31;
+    --color-app-text:   #F0F0F2;
+    --color-app-muted:  #8B8C91;
+    --color-app-faint:  #45464A;
+  }
+}
+
 :root {
   --muscle-body: #c8c8c8;
   --muscle-hi:   #FFCA10;

@@ -36,11 +36,11 @@ function shortDate(iso: string) {
 // ── Shared chart styles ───────────────────────────────────────────────────────
 
 const chartTooltipStyle = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #E3E5E5',
+  backgroundColor: 'var(--color-app-card)',
+  border: '1px solid var(--color-app-border)',
   borderRadius: 12,
   fontSize: 12,
-  color: '#241F20',
+  color: 'var(--color-app-text)',
 }
 
 // ── Lift chart tab ────────────────────────────────────────────────────────────
