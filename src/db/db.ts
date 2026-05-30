@@ -204,6 +204,16 @@ export interface HabitCompletion extends BaseRecord {
   date: string     // YYYY-MM-DD
 }
 
+// ── Progress photos ───────────────────────────────────────────────────────────
+
+// Stored locally only — not synced to Supabase (photos are too large for the
+// sync layer; would need Supabase Storage, which is out of scope for now).
+export interface ProgressPhoto extends BaseRecord {
+  date: string        // YYYY-MM-DD
+  photoData: string   // base64 JPEG (resized to ≤900 px before storage)
+  notes: string
+}
+
 // ── Database class ────────────────────────────────────────────────────────────
 
 class DrovikDB extends Dexie {
@@ -222,6 +232,7 @@ class DrovikDB extends Dexie {
   bodyMeasurementLogs!: Table<BodyMeasurementLog>
   foods!: Table<Food>
   foodLogs!: Table<FoodLog>
+  progressPhotos!: Table<ProgressPhoto>
   recipes!: Table<Recipe>
   recipeFoods!: Table<RecipeFood>
 
@@ -453,6 +464,28 @@ class DrovikDB extends Dexie {
           ex.videoUrl = videoMap.get(ex.id)
         }
       })
+    })
+
+    // Version 14 — adds progress photos table (local-only, not Supabase-synced).
+    this.version(14).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+      progressPhotos:      'id, date',
     })
 
     // Version 13 — back-fills the expanded video set (band, core, cardio, etc.)

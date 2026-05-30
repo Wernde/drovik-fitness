@@ -20,7 +20,8 @@ import Nutrition from './pages/Nutrition'
 import More from './pages/More'
 import Profile from './pages/Profile'
 
-const Progress = lazy(() => import('./pages/Progress'))
+const Progress  = lazy(() => import('./pages/Progress'))
+const BodyStats = lazy(() => import('./pages/BodyStats'))
 
 function AppRoutes() {
   const { session, loading } = useAuth()
@@ -53,6 +54,7 @@ function AppRoutes() {
         <Route path="nutrition"                        element={<Nutrition />} />
         <Route path="more"                             element={<More />} />
         <Route path="profile"                          element={<Profile />} />
+        <Route path="body"                             element={<Suspense fallback={<div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>}><BodyStats /></Suspense>} />
         <Route path="*"                                element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

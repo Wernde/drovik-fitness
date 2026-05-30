@@ -4,6 +4,24 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Body Stats — full page redesign
+
+### Added
+- **Dedicated `/body` route** — Body Stats is now its own full-screen page, no longer buried in the Progress tab
+- **Quick stats hero row** — three cards at the top: current weight (+ delta vs previous entry), BMI (with Normal / Overweight / etc. badge), estimated body fat % (US Navy method using logged neck + waist + hips; requires height set in Nutrition profile)
+- **Multi-metric chart** — single chart that switches between Weight, Chest, Waist, Hips, Arm, Neck, Thigh; period selector 1M / 3M / 6M / All
+- **Progress Photos** — add photos from camera or gallery; resized to ≤900 px before storage; displayed in a 2-column grid with date overlay and full-screen lightbox on tap; delete with the ✕ button; stored locally (not synced to Supabase)
+- **Unified Log Today sheet** — weight + all body measurements in one bottom sheet; pre-fills today's values if already logged; expands to show neck / shoulders / calves
+- **Measurements history** — recent entries listed below the chart, 3-column grid per date
+- **Weight history** — last 12 weight entries listed at the bottom
+- **DB v14** — new `progressPhotos` table (local-only)
+
+### Changed
+- **Progress page** — "Body Weight" tab removed; replaced with a "Body Stats →" button in the header that navigates to `/body`; Progress now has 4 tabs: Lifts · PRs · Nutrition · Habits
+- **Quick Add menu** — "Body Stats" item now links to `/body` (previously pointed to Goals)
+
+---
+
 ## In-App Video Player + Exercise Thumbnails
 
 ### Added

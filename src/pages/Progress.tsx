@@ -10,6 +10,7 @@
  */
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel, fmtWeight, cmToDisplay, displayToCm, measurementLabel } from '../lib/units'
@@ -751,17 +752,17 @@ function NutritionTab() {
 
 // ── Main Progress page ────────────────────────────────────────────────────────
 
-type Tab = 'lifts' | 'bodyweight' | 'prs' | 'nutrition' | 'habits'
+type Tab = 'lifts' | 'prs' | 'nutrition' | 'habits'
 
 const TABS: { value: Tab; label: string }[] = [
-  { value: 'lifts',      label: 'Lifts' },
-  { value: 'bodyweight', label: 'Weight' },
-  { value: 'prs',        label: 'PRs' },
-  { value: 'nutrition',  label: 'Nutrition' },
-  { value: 'habits',     label: 'Habits' },
+  { value: 'lifts',     label: 'Lifts'     },
+  { value: 'prs',       label: 'PRs'       },
+  { value: 'nutrition', label: 'Nutrition' },
+  { value: 'habits',    label: 'Habits'    },
 ]
 
 export default function Progress() {
+  const navigate   = useNavigate()
   const [tab, setTab] = useState<Tab>('lifts')
 
   const exercises = useLiveQuery(
@@ -775,7 +776,18 @@ export default function Progress() {
 
   return (
     <div className="px-4 pt-6 pb-4">
-      <h1 className="text-2xl font-extrabold text-app-text mb-5">Progress</h1>
+      <div className="flex items-center justify-between mb-5">
+        <h1 className="text-2xl font-extrabold text-app-text">Progress</h1>
+        <button
+          onClick={() => navigate('/body')}
+          className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 text-xs font-semibold text-app-text active:bg-app-border"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-accent-dark">
+            <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
+          </svg>
+          Body Stats
+        </button>
+      </div>
 
       {/* Tab bar */}
       <div className="flex gap-1 bg-app-border/30 rounded-2xl p-1 mb-5">
@@ -795,11 +807,10 @@ export default function Progress() {
         ))}
       </div>
 
-      {tab === 'lifts'      && <LiftChartTab exercises={exercises} />}
-      {tab === 'bodyweight' && <BodyTab />}
-      {tab === 'prs'        && <PRsTab exercises={exercises} />}
-      {tab === 'nutrition'  && <NutritionTab />}
-      {tab === 'habits'     && <HabitsTab />}
+      {tab === 'lifts'     && <LiftChartTab exercises={exercises} />}
+      {tab === 'prs'       && <PRsTab exercises={exercises} />}
+      {tab === 'nutrition' && <NutritionTab />}
+      {tab === 'habits'    && <HabitsTab />}
     </div>
   )
 }
