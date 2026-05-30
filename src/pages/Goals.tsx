@@ -232,7 +232,7 @@ export default function Goals() {
   const [tab, setTab] = useState<Tab>('goals')
 
   return (
-    <div className="px-4 pt-5 pb-4">
+    <div className="px-4 pt-5 pb-24">
       <div className="flex items-center gap-2 mb-1">
         <p className="text-xs text-app-muted font-medium">Your</p>
       </div>

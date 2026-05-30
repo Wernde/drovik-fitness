@@ -161,7 +161,7 @@ export default function History() {
     .toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="px-4 pt-6 pb-24">
       <h1 className="text-2xl font-extrabold text-app-text mb-5">History</h1>
 
       {/* ── Year heatmap ── */}

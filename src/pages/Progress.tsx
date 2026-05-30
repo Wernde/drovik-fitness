@@ -775,7 +775,7 @@ export default function Progress() {
   }
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="px-4 pt-6 pb-24">
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-2xl font-extrabold text-app-text">Progress</h1>
         <button

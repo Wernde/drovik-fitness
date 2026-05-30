@@ -88,7 +88,7 @@ export default function Exercises() {
   }
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="px-4 pt-6 pb-24">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-2xl font-extrabold text-app-text">Exercises</h1>

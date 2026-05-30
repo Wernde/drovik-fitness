@@ -7,6 +7,15 @@ import { useState } from 'react'
 import { db, now } from '../db/db'
 import type { DayExercise } from '../db/db'
 
+const REST_PRESETS = [
+  { label: '30s',   secs: 30  },
+  { label: '60s',   secs: 60  },
+  { label: '90s',   secs: 90  },
+  { label: '2 min', secs: 120 },
+  { label: '3 min', secs: 180 },
+  { label: '5 min', secs: 300 },
+]
+
 interface AddProps {
   mode:         'add'
   exerciseId:   string
@@ -35,6 +44,10 @@ export default function DayExerciseForm(props: Props) {
   const [notes,        setNotes]        = useState(existing?.notes ?? '')
   const [saving,       setSaving]       = useState(false)
   const [error,        setError]        = useState('')
+
+  const [customMode, setCustomMode] = useState(() =>
+    !!(existing?.restSecs && !REST_PRESETS.some(p => p.secs === existing.restSecs))
+  )
 
   async function handleSave() {
     const sets = parseInt(targetSets, 10)
@@ -129,18 +142,75 @@ export default function DayExerciseForm(props: Props) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Rest between sets <span className="text-app-muted font-normal">(seconds, optional)</span>
+            <label className="block text-sm font-medium text-app-text mb-2">
+              Rest between sets <span className="text-app-muted font-normal">(optional)</span>
             </label>
-            <input
-              type="number"
-              inputMode="numeric"
-              value={restSecs}
-              onChange={(e) => setRestSecs(e.target.value)}
-              placeholder="e.g. 90"
-              min={1}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
+
+            {/* Preset pills */}
+            <div className="flex flex-wrap gap-2 mb-2">
+              {/* None */}
+              <button
+                type="button"
+                onClick={() => { setRestSecs(''); setCustomMode(false) }}
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
+                  !restSecs.trim() && !customMode
+                    ? 'bg-accent border-accent text-app-text'
+                    : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
+                }`}
+              >
+                None
+              </button>
+
+              {REST_PRESETS.map(({ label, secs }) => (
+                <button
+                  key={secs}
+                  type="button"
+                  onClick={() => { setRestSecs(String(secs)); setCustomMode(false) }}
+                  className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
+                    !customMode && parseInt(restSecs, 10) === secs
+                      ? 'bg-accent border-accent text-app-text'
+                      : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+
+              {/* Custom */}
+              <button
+                type="button"
+                onClick={() => { setCustomMode(true); setRestSecs('') }}
+                className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
+                  customMode
+                    ? 'bg-accent border-accent text-app-text'
+                    : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
+                }`}
+              >
+                Custom
+              </button>
+            </div>
+
+            {/* Custom input — shown only when Custom pill is active */}
+            {customMode && (
+              <div className="flex items-center gap-2 mt-1">
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  value={restSecs}
+                  onChange={(e) => setRestSecs(e.target.value)}
+                  placeholder="e.g. 240"
+                  min={1}
+                  className="w-28 rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  autoFocus
+                />
+                <span className="text-sm text-app-muted">seconds</span>
+                {restSecs.trim() && parseInt(restSecs, 10) > 0 && (
+                  <span className="text-sm text-app-muted">
+                    ({Math.floor(parseInt(restSecs, 10) / 60)}:{String(parseInt(restSecs, 10) % 60).padStart(2, '0')} min)
+                  </span>
+                )}
+              </div>
+            )}
           </div>
 
           <div>

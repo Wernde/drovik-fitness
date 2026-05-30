@@ -118,7 +118,7 @@ export default function Log() {
   })
 
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="px-4 pt-6 pb-24">
       {/* ── Header ── */}
       <h1 className="text-2xl font-extrabold text-app-text mb-1">Log Workout</h1>
       <p className="text-app-muted text-sm mb-6">{dateLabel}</p>
