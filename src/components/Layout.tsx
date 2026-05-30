@@ -210,7 +210,8 @@ export default function Layout() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-app-bg">
+    <div className="min-h-screen bg-app-bg sm:bg-[#D8DBE2]">
+    <div className="flex flex-col min-h-screen bg-app-bg sm:max-w-[430px] sm:mx-auto sm:shadow-[0_0_40px_rgba(0,0,0,0.15)]">
 
       {/* Offline banner */}
       {!isOnline && (
@@ -235,7 +236,7 @@ export default function Layout() {
 
       {/* ── Bottom nav ──────────────────────────────────────────────────── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 bg-app-card border-t border-app-border z-50"
+        className="fixed bottom-0 left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] bg-app-card border-t border-app-border z-50"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <div className="h-[72px] flex items-center">
@@ -295,7 +296,7 @@ export default function Layout() {
             onClick={() => setQaOpen(false)}
           />
           {/* Sheet */}
-          <div className="fixed bottom-[72px] left-0 right-0 z-50 bg-app-card border-t border-app-border rounded-t-2xl shadow-xl"
+          <div className="fixed bottom-[72px] left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] z-50 bg-app-card border-t border-app-border rounded-t-2xl shadow-xl"
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
             <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
             <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
@@ -316,6 +317,7 @@ export default function Layout() {
           </div>
         </>
       )}
+    </div>
     </div>
   )
 }

@@ -513,7 +513,7 @@ export default function Home() {
             <div className="h-full bg-blue-500 rounded-full" style={{ width: `${waterPct}%` }} />
           </div>
           <div className="flex gap-2 px-4 pb-4">
-            {[250, 500, 750].map((ml) => (
+            {(units.water === 'fl_oz' ? [237, 473, 710] : [250, 500, 750]).map((ml) => (
               <button key={ml} onClick={() => addWater(ml)}
                 className="flex-1 bg-app-bg border border-app-border text-app-text text-sm font-bold py-2.5 rounded-xl active:bg-accent-light">
                 +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
@@ -631,7 +631,7 @@ export default function Home() {
               type="number" inputMode="decimal"
               value={weightInput}
               onChange={(e) => setWeightInput(e.target.value)}
-              placeholder="Enter weight (kg)"
+              placeholder={`Enter weight (${weightLabel(units.weight)})`}
               step={0.1} min={0}
               className="flex-1 bg-app-bg border border-app-border rounded-xl px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent"
             />
