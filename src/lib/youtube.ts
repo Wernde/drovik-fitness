@@ -9,7 +9,10 @@ export function getYouTubeId(url: string): string | null {
       return u.pathname.slice(1).split('?')[0] || null
     }
     if (u.hostname.includes('youtube.com')) {
-      return u.searchParams.get('v')
+      const v = u.searchParams.get('v')
+      if (v) return v
+      const shorts = u.pathname.match(/^\/shorts\/([^/?]+)/)
+      if (shorts) return shorts[1]
     }
     return null
   } catch {

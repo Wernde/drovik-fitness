@@ -9,6 +9,8 @@ import WorkoutSummary from './WorkoutSummary'
 import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
+import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
+import YouTubeModal from './YouTubeModal'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -108,6 +110,7 @@ export default function WorkoutLogger({ session }: Props) {
   const [expandedSetNote, setExpandedSetNote] = useState<Set<string>>(new Set())
   const [exerciseMenu,    setExerciseMenu]    = useState<string | null>(null)
   const [substituteSeId,  setSubstituteSeId]  = useState<string | null>(null)
+  const [videoModal,      setVideoModal]      = useState<{ id: string; title: string } | null>(null)
 
   const draftsInit = useRef(false)
 
@@ -563,7 +566,8 @@ export default function WorkoutLogger({ session }: Props) {
 
             const guideOpen  = expandedGuide.has(se.id)
             const exNoteOpen = expandedExNote.has(se.id)
-            const hasVideo   = !!exercise.videoUrl
+            const videoId    = exercise.videoUrl ? getYouTubeId(exercise.videoUrl) : null
+            const hasVideo   = !!videoId
             const hasGuide   = !!exercise.instructions
 
             return (
@@ -594,21 +598,8 @@ export default function WorkoutLogger({ session }: Props) {
                   </button>
                 </div>
 
-                {/* ── Action chips (Watch / Guide / Notes) ── */}
+                {/* ── Action chips (Guide / Notes) ── */}
                 <div className="flex items-center gap-2 px-4 pb-3 flex-wrap">
-                  {hasVideo && (
-                    <a
-                      href={exercise.videoUrl!}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-semibold active:bg-red-100"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0">
-                        <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
-                      </svg>
-                      Watch
-                    </a>
-                  )}
                   {hasGuide && (
                     <button
                       onClick={() => toggleGuide(se.id)}
@@ -640,6 +631,29 @@ export default function WorkoutLogger({ session }: Props) {
                     Notes
                   </button>
                 </div>
+
+                {/* ── Video thumbnail ── */}
+                {hasVideo && videoId && (
+                  <button
+                    onClick={() => setVideoModal({ id: videoId, title: exercise.name })}
+                    className="relative mx-4 mb-3 w-[calc(100%-2rem)] rounded-xl overflow-hidden active:opacity-80"
+                    style={{ aspectRatio: '16/9' }}
+                    aria-label={`Play ${exercise.name} tutorial`}
+                  >
+                    <img
+                      src={getYouTubeThumbnail(videoId)}
+                      alt={`${exercise.name} tutorial`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                        <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5 ml-0.5">
+                          <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                )}
 
                 {/* ── Guide / Instructions panel ── */}
                 {guideOpen && exercise.instructions && (
@@ -1012,6 +1026,15 @@ export default function WorkoutLogger({ session }: Props) {
           session={session}
           onFinish={handleComplete}
           onBack={() => setShowSummary(false)}
+        />
+      )}
+
+      {/* ── In-app video player ── */}
+      {videoModal && (
+        <YouTubeModal
+          videoId={videoModal.id}
+          title={videoModal.title}
+          onClose={() => setVideoModal(null)}
         />
       )}
     </div>

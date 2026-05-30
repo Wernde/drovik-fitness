@@ -4,6 +4,25 @@ All notable changes are documented here, newest first.
 
 ---
 
+## In-App Video Player + Exercise Thumbnails
+
+### Added
+- **In-app YouTube player** — tapping a video thumbnail now opens a slide-up modal with an embedded YouTube iframe instead of leaving the app; autoplay on open, dismiss by tapping the backdrop or the ✕ button
+- **Exercise thumbnails in WorkoutLogger** — every exercise card shows a 16:9 YouTube thumbnail with a red play button when a video is linked; replaces the old external Watch chip
+- **Exercise thumbnails in program/day view** — exercise cards in the day plan show a full-width thumbnail banner above the exercise name row; tapping the card still opens the detail sheet which also has an in-app player
+- **Shorts URL support** — `youtube.ts` now extracts video IDs from `/shorts/VIDEO_ID` URLs in addition to standard watch URLs
+
+### Changed
+- **Video sources updated** — Wesley Vissers (@VintageGenetics) now used for chest, back, shoulder, arm, and leg exercises:
+  - Chest/cable fly → `MQ1-gY93xYw` (Chest Workout for FULLNESS — Olympia Prep)
+  - Back rows/machine → `m3fVc1uwEAg` (Full Back Training — 3 Weeks Out)
+  - Shoulders/delt → `J3Ax8PpFzkM` (Boulder Shoulder — Olympia Prep)
+  - Biceps/triceps/arms → `r5TJ3UV4sPE` (Arm Day — Full Explanations)
+  - Leg machine work → `wVYnR1FK2lE` (Leg Day)
+  - Jeff Nippard retained for barbell compound technique (squat, deadlift, bench, OHP, RDL)
+
+---
+
 ## WorkoutLogger Redesign
 
 ### Changed

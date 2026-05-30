@@ -5,6 +5,8 @@ import { db, now, today } from '../db/db'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
+import YouTubeModal from '../components/YouTubeModal'
+import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
 // ── Category icons ────────────────────────────────────────────────────────────
 
@@ -73,6 +75,7 @@ export default function DayDetail() {
   // Detail sheet state
   const [detailDE,        setDetailDE]        = useState<DayExercise | null>(null)
   const [guideOpen,       setGuideOpen]       = useState(false)
+  const [videoModal,      setVideoModal]      = useState<{ id: string; title: string } | null>(null)
 
   const day     = useLiveQuery(() => (dayId     ? db.workoutDays.get(dayId)     : undefined), [dayId])
   const program = useLiveQuery(() => (programId ? db.programs.get(programId)    : undefined), [programId])
@@ -370,41 +373,51 @@ export default function DayDetail() {
                 <button
                   key={de.id}
                   onClick={() => openDetail(de)}
-                  className="w-full bg-white rounded-2xl border border-app-border shadow-sm flex items-center gap-3 px-4 py-3.5 active:bg-app-bg text-left"
+                  className="w-full bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
                 >
-                  <ExerciseThumb category={exercise.category} />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-[15px] text-app-text truncate">{exercise.name}</p>
-                    <p className="text-xs text-app-muted mt-0.5">
-                      {de.targetSets} sets × {de.targetReps}
-                      {de.targetWeight != null ? ` · ${de.targetWeight} kg` : ''}
-                      {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
-                    </p>
-                    {/* Chips for video / instructions */}
-                    {(exercise.videoUrl || exercise.instructions) && (
-                      <div className="flex gap-1.5 mt-1.5 flex-wrap">
-                        {exercise.videoUrl && (
-                          <span className="inline-flex items-center gap-1 bg-red-50 border border-red-200 text-red-500 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                            <svg viewBox="0 0 16 16" fill="currentColor" className="w-2.5 h-2.5">
-                              <path d="M3 3.732a1.5 1.5 0 012.305-1.265l6.706 4.267a1.5 1.5 0 010 2.53l-6.706 4.268A1.5 1.5 0 013 12.267V3.732z" />
+                  {/* Thumbnail banner */}
+                  {(() => {
+                    const vid = exercise.videoUrl ? getYouTubeId(exercise.videoUrl) : null
+                    if (!vid) return null
+                    return (
+                      <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                        <img
+                          src={getYouTubeThumbnail(vid)}
+                          alt={`${exercise.name} tutorial`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                          <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-md">
+                            <svg viewBox="0 0 24 24" fill="white" className="w-4 h-4 ml-0.5">
+                              <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
                             </svg>
-                            Video
-                          </span>
-                        )}
-                        {exercise.instructions && (
-                          <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                            <svg viewBox="0 0 16 16" fill="currentColor" className="w-2.5 h-2.5">
-                              <path fillRule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .058-.037.209-.169.371a1.677 1.677 0 01-.54.463c-.187.111-.39.203-.54.316A1.988 1.988 0 007 8.5a.75.75 0 001.5 0 .49.49 0 01.172-.365c.112-.09.274-.165.469-.287.197-.123.411-.273.581-.487C9.912 7.058 10 6.662 10 6.25c0-.655-.316-1.226-.88-1.613C8.558 4.27 7.886 4 7 4c-.636 0-1.245.16-1.72.478-.477.318-.79.747-.99 1.152a.75.75 0 001.63.455z" clipRule="evenodd" />
-                            </svg>
-                            Guide
-                          </span>
-                        )}
+                          </div>
+                        </div>
                       </div>
-                    )}
+                    )
+                  })()}
+                  <div className="flex items-center gap-3 px-4 py-3.5">
+                    <ExerciseThumb category={exercise.category} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-[15px] text-app-text truncate">{exercise.name}</p>
+                      <p className="text-xs text-app-muted mt-0.5">
+                        {de.targetSets} sets × {de.targetReps}
+                        {de.targetWeight != null ? ` · ${de.targetWeight} kg` : ''}
+                        {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
+                      </p>
+                      {exercise.instructions && (
+                        <span className="inline-flex items-center gap-1 mt-1.5 bg-blue-50 border border-blue-200 text-blue-500 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                          <svg viewBox="0 0 16 16" fill="currentColor" className="w-2.5 h-2.5">
+                            <path fillRule="evenodd" d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zM6.92 6.085c.081-.16.19-.299.34-.398.145-.097.371-.187.74-.187.28 0 .553.087.738.225A.613.613 0 019 6.25c0 .058-.037.209-.169.371a1.677 1.677 0 01-.54.463c-.187.111-.39.203-.54.316A1.988 1.988 0 007 8.5a.75.75 0 001.5 0 .49.49 0 01.172-.365c.112-.09.274-.165.469-.287.197-.123.411-.273.581-.487C9.912 7.058 10 6.662 10 6.25c0-.655-.316-1.226-.88-1.613C8.558 4.27 7.886 4 7 4c-.636 0-1.245.16-1.72.478-.477.318-.79.747-.99 1.152a.75.75 0 001.63.455z" clipRule="evenodd" />
+                          </svg>
+                          Guide
+                        </span>
+                      )}
+                    </div>
+                    <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
+                      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                    </svg>
                   </div>
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
-                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                  </svg>
                 </button>
               )
             })}
@@ -464,22 +477,36 @@ export default function DayDetail() {
                 </div>
               </div>
 
-              {/* Watch / Guide chips */}
-              {(detailExercise.videoUrl || detailExercise.instructions) && (
+              {/* Thumbnail / Watch */}
+              {detailExercise.videoUrl && (() => {
+                const vid = getYouTubeId(detailExercise.videoUrl)
+                if (!vid) return null
+                return (
+                  <button
+                    onClick={() => setVideoModal({ id: vid, title: detailExercise.name })}
+                    className="relative w-full rounded-2xl overflow-hidden mb-4 active:opacity-80"
+                    style={{ aspectRatio: '16/9' }}
+                    aria-label={`Play ${detailExercise.name} tutorial`}
+                  >
+                    <img
+                      src={getYouTubeThumbnail(vid)}
+                      alt={`${detailExercise.name} tutorial`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                      <div className="w-14 h-14 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                        <svg viewBox="0 0 24 24" fill="white" className="w-6 h-6 ml-0.5">
+                          <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
+                        </svg>
+                      </div>
+                    </div>
+                  </button>
+                )
+              })()}
+
+              {/* Guide chip */}
+              {(detailExercise.instructions) && (
                 <div className="flex gap-2 flex-wrap mb-4">
-                  {detailExercise.videoUrl && (
-                    <a
-                      href={detailExercise.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-full bg-red-50 border border-red-200 text-red-600 text-sm font-semibold active:bg-red-100"
-                    >
-                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                        <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
-                      </svg>
-                      Watch Video
-                    </a>
-                  )}
                   {detailExercise.instructions && (
                     <button
                       onClick={() => setGuideOpen((v) => !v)}
@@ -568,6 +595,14 @@ export default function DayDetail() {
           dayExercise={editingDE}
           exerciseName={exerciseMap.get(editingDE.exerciseId)?.name ?? ''}
           onClose={() => setEditingDE(null)}
+        />
+      )}
+
+      {videoModal && (
+        <YouTubeModal
+          videoId={videoModal.id}
+          title={videoModal.title}
+          onClose={() => setVideoModal(null)}
         />
       )}
     </div>
