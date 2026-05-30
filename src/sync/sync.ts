@@ -387,6 +387,42 @@ const TABLES: SyncTable[] = [
       amountG:  r.amount_g,
     }),
   },
+  {
+    dexie:    db.healthMetrics,
+    supabase: 'health_metrics',
+    toRemote: (r, uid) => baseToRemote(r, uid, {
+      date:            r.date,
+      resting_hr:      r.restingHr,
+      active_calories: r.activeCalories,
+      steps:           r.steps,
+    }),
+    toLocal: (r) => baseToLocal(r, {
+      date:           r.date,
+      restingHr:      r.resting_hr,
+      activeCalories: r.active_calories,
+      steps:          r.steps,
+    }),
+  },
+  {
+    dexie:    db.healthWorkouts,
+    supabase: 'health_workouts',
+    toRemote: (r, uid) => baseToRemote(r, uid, {
+      workout_date:    r.workoutDate,
+      workout_type:    r.workoutType,
+      duration_secs:   r.durationSecs,
+      active_calories: r.activeCalories,
+      avg_hr:          r.avgHr,
+      max_hr:          r.maxHr,
+    }),
+    toLocal: (r) => baseToLocal(r, {
+      workoutDate:    r.workout_date,
+      workoutType:    r.workout_type,
+      durationSecs:   r.duration_secs,
+      activeCalories: r.active_calories,
+      avgHr:          r.avg_hr,
+      maxHr:          r.max_hr,
+    }),
+  },
 ]
 
 // ── Push: local → Supabase ────────────────────────────────────────────────────

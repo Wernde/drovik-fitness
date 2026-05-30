@@ -5,7 +5,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { useUnits } from '../contexts/UnitsContext'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
+
+const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
+const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
@@ -120,6 +124,24 @@ function UnitToggle<T extends string>({
   )
 }
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+  function copy() {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
+  return (
+    <button
+      onClick={copy}
+      className="flex-shrink-0 text-xs font-semibold text-accent-dark bg-accent-light border border-accent/30 px-2.5 py-1 rounded-full active:bg-accent"
+    >
+      {copied ? 'Copied!' : 'Copy'}
+    </button>
+  )
+}
+
 export default function Settings() {
   const { session, signOut } = useAuth()
   const { units, setWeight, setMeasurement, setWater, setTemperature } = useUnits()
@@ -133,9 +155,18 @@ export default function Settings() {
   const [apiKey,      setApiKey]      = useState('')
   const [apiKeySaved, setApiKeySaved] = useState(false)
 
+  const latestHealth = useLiveQuery(
+    () => db.healthMetrics.filter(h => !h.deleted).toArray()
+      .then(a => a.sort((x, y) => y.date.localeCompare(x.date))[0] ?? null),
+    [],
+  )
+
   useEffect(() => {
     setApiKey(localStorage.getItem('drovik:apiKey') ?? '')
   }, [])
+
+  const userId   = session?.user.id ?? ''
+  const restUrl  = `${SUPABASE_URL}/rest/v1`
 
   function handleSaveApiKey() {
     localStorage.setItem('drovik:apiKey', apiKey.trim())
@@ -262,6 +293,80 @@ export default function Settings() {
               <p className="text-sm text-red-500 mt-2">{importError}</p>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* ── Apple Watch ── */}
+      <section className="mb-5">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Apple Watch</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+
+          {/* Status */}
+          <div className="px-4 py-3 flex items-center gap-3">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${latestHealth ? 'bg-green-500' : 'bg-app-faint'}`} />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-app-text">
+                {latestHealth ? 'Connected' : 'Not set up'}
+              </p>
+              <p className="text-xs text-app-muted">
+                {latestHealth
+                  ? `Last data: ${latestHealth.date}`
+                  : 'Follow the steps below to set up your Apple Shortcut'}
+              </p>
+            </div>
+          </div>
+
+          {/* User ID */}
+          <div className="px-4 py-3">
+            <p className="text-xs text-app-muted mb-1">Your User ID <span className="text-app-faint">(paste into Shortcut)</span></p>
+            <div className="flex items-center gap-2">
+              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{userId}</p>
+              <CopyButton text={userId} />
+            </div>
+          </div>
+
+          {/* REST URL */}
+          <div className="px-4 py-3">
+            <p className="text-xs text-app-muted mb-1">Supabase REST URL</p>
+            <div className="flex items-center gap-2">
+              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{restUrl}</p>
+              <CopyButton text={restUrl} />
+            </div>
+          </div>
+
+          {/* Anon key */}
+          <div className="px-4 py-3">
+            <p className="text-xs text-app-muted mb-1">Anon Key <span className="text-app-faint">(apikey header)</span></p>
+            <div className="flex items-center gap-2">
+              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{SUPABASE_ANON.slice(0, 24)}…</p>
+              <CopyButton text={SUPABASE_ANON} />
+            </div>
+          </div>
+
+          {/* Instructions */}
+          <div className="px-4 py-4">
+            <p className="text-sm font-semibold text-app-text mb-3">Shortcut Setup (iPhone)</p>
+            <ol className="space-y-3 text-xs text-app-muted">
+              {[
+                'Open the Shortcuts app → tap + to create a new Shortcut. Name it "Drovik Health Sync".',
+                'Add action: Get Health Sample → Resting Heart Rate → Last 24 Hours → Latest sample.',
+                'Add action: Get Health Sample → Active Energy Burned → Today → Sum.',
+                'Add action: Get Health Sample → Steps → Today → Sum.',
+                'Add action: Get Workouts → Last 7 Days.',
+                'Add action: Dictionary — add these keys:\n• user_id  →  [paste User ID above]\n• date  →  (Format Date → Current Date → "yyyy-MM-dd")\n• resting_hr  →  [result of step 2]\n• active_calories  →  [round result of step 3]\n• steps  →  [round result of step 4]\n• updated_at  →  (Format Date → Current Date → "ISO 8601")',
+                `Add action: URL → paste: ${restUrl}/health_metrics`,
+                'Add action: Get Contents of URL → Method: POST → Request Body: JSON (select Dictionary from step 6) → Add headers:\n• apikey  →  [Copy Anon Key above]\n• Content-Type  →  application/json\n• Prefer  →  resolution=merge-duplicates',
+                'For workouts: add a "Repeat with each" loop over the workouts from step 5. Inside the loop add a Dictionary (user_id, workout_date, workout_type, duration_secs, active_calories, avg_hr, max_hr) then another URL + Get Contents of URL posting to .../health_workouts with the same headers.',
+                'Add an Automation (Settings → Automation → New → Time of Day, e.g. 9 pm daily) and run this Shortcut. Your Apple Watch stats will appear in the app after the first run.',
+              ].map((step, i) => (
+                <li key={i} className="flex gap-2.5">
+                  <span className="flex-shrink-0 w-5 h-5 rounded-full bg-accent text-app-text text-[10px] font-extrabold flex items-center justify-center mt-0.5">{i + 1}</span>
+                  <span className="leading-relaxed whitespace-pre-line">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
         </div>
       </section>
 

@@ -4,6 +4,19 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Apple Watch Integration (via Apple Shortcuts)
+
+### Added
+- **DB v15** — `healthMetrics` (one row per day: resting HR, active calories, steps) and `healthWorkouts` (one row per workout: type, duration, avg/max HR, active calories) tables; fully synced via Supabase
+- **Supabase tables** — `health_metrics` and `health_workouts` created with RLS: open insert for any request with the anon key (Shortcut uses this), read/update/delete restricted to the authenticated owner
+- **Home screen — Apple Watch card** — dark card between water tracking and body stats showing today's resting HR, active calories, and steps; also shows the most recent Watch workout (type, duration, avg HR, kcal); links to Settings setup guide when no data exists
+- **Settings → Apple Watch section** — shows connection status (green dot when data received), User ID / REST URL / Anon Key with one-tap copy buttons, and a 10-step numbered Shortcut setup guide
+
+### How it works
+The PWA cannot talk to Apple Watch directly. Instead, an Apple Shortcut on the user's iPhone reads resting heart rate, active calories, steps, and recent workouts from the Health app, then POSTs them to the Supabase REST API. The app pulls the data on next sync and displays it on the dashboard. The full setup guide is in Settings → Apple Watch.
+
+---
+
 ## Body Stats — full page redesign
 
 ### Added

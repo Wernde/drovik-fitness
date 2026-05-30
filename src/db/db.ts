@@ -204,6 +204,27 @@ export interface HabitCompletion extends BaseRecord {
   date: string     // YYYY-MM-DD
 }
 
+// ── Apple Watch / Health data ─────────────────────────────────────────────────
+
+// Written by an Apple Shortcut via the Supabase REST API (anon key + user_id).
+// Pulled into the app on next sync. One row per calendar day.
+export interface HealthMetric extends BaseRecord {
+  date:           string       // YYYY-MM-DD
+  restingHr:      number | null  // bpm (resting heart rate)
+  activeCalories: number | null  // kcal burned
+  steps:          number | null
+}
+
+// One row per Apple Watch workout session.
+export interface HealthWorkout extends BaseRecord {
+  workoutDate:    string       // ISO timestamp of workout start
+  workoutType:    string       // e.g. "Traditional Strength Training", "Running"
+  durationSecs:   number | null
+  activeCalories: number | null
+  avgHr:          number | null  // average heart rate bpm
+  maxHr:          number | null  // peak heart rate bpm
+}
+
 // ── Progress photos ───────────────────────────────────────────────────────────
 
 // Stored locally only — not synced to Supabase (photos are too large for the
@@ -233,6 +254,8 @@ class DrovikDB extends Dexie {
   foods!: Table<Food>
   foodLogs!: Table<FoodLog>
   progressPhotos!: Table<ProgressPhoto>
+  healthMetrics!:  Table<HealthMetric>
+  healthWorkouts!: Table<HealthWorkout>
   recipes!: Table<Recipe>
   recipeFoods!: Table<RecipeFood>
 
@@ -464,6 +487,31 @@ class DrovikDB extends Dexie {
           ex.videoUrl = videoMap.get(ex.id)
         }
       })
+    })
+
+    // Version 15 — adds Apple Watch health tables (synced via Supabase REST API
+    // written directly by an Apple Shortcut, pulled here on next sync).
+    this.version(15).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+      progressPhotos:      'id, date',
+      healthMetrics:       'id, date',
+      healthWorkouts:      'id, workoutDate',
     })
 
     // Version 14 — adds progress photos table (local-only, not Supabase-synced).

@@ -204,6 +204,17 @@ export default function Home() {
     )
   }, [todayIso])
 
+  const todayHealth = useLiveQuery(
+    () => db.healthMetrics.filter(h => !h.deleted && h.date === todayIso).first(),
+    [todayIso],
+  )
+
+  const latestHealthWorkout = useLiveQuery(
+    () => db.healthWorkouts.filter(h => !h.deleted).toArray()
+      .then(a => a.sort((x, y) => y.workoutDate.localeCompare(x.workoutDate))[0] ?? null),
+    [],
+  )
+
   // TDEE-derived macro targets (falls back to defaults if no profile set)
   const macroTargets = useMemo(() => {
     const profile  = loadProfile()
@@ -509,6 +520,91 @@ export default function Home() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* ── Apple Watch Health ───────────────────────────────────── */}
+        <div className="rounded-2xl overflow-hidden border border-app-border" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
+          <div className="px-4 pt-4 pb-3 flex items-center gap-3">
+            {/* Apple Watch icon */}
+            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
+                <path d="M17 2H7L5.5 6h13L17 2zM7 22h10l1.5-4H5.5L7 22zM3 7a2 2 0 00-2 2v6a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2H3zm9 9a4 4 0 110-8 4 4 0 010 8zm.75-6.5v2.25l1.5 1.5-1.06 1.06-1.69-1.69V9.5h1.25z" />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-xs font-bold text-white/60 uppercase tracking-wide">Apple Watch</p>
+              <p className="text-sm font-extrabold text-white">
+                {todayHealth ? "Today's Stats" : 'Health Data'}
+              </p>
+            </div>
+            {todayHealth && (
+              <p className="text-[10px] text-white/40">Today</p>
+            )}
+          </div>
+
+          {todayHealth ? (
+            <div className="grid grid-cols-3 gap-px bg-white/10 border-t border-white/10">
+              {/* Resting HR */}
+              <div className="bg-[#1C1917] px-3 py-3 text-center">
+                <p className="text-xl font-extrabold text-white leading-none">
+                  {todayHealth.restingHr ?? '—'}
+                </p>
+                <p className="text-[10px] text-white/50 mt-0.5">BPM</p>
+                <p className="text-[10px] text-white/40">Resting HR</p>
+              </div>
+              {/* Active Cals */}
+              <div className="bg-[#1C1917] px-3 py-3 text-center">
+                <p className="text-xl font-extrabold text-accent leading-none">
+                  {todayHealth.activeCalories ?? '—'}
+                </p>
+                <p className="text-[10px] text-white/50 mt-0.5">kcal</p>
+                <p className="text-[10px] text-white/40">Active Cal</p>
+              </div>
+              {/* Steps */}
+              <div className="bg-[#1C1917] px-3 py-3 text-center">
+                <p className="text-xl font-extrabold text-white leading-none">
+                  {todayHealth.steps != null ? (todayHealth.steps >= 1000 ? `${(todayHealth.steps / 1000).toFixed(1)}k` : todayHealth.steps) : '—'}
+                </p>
+                <p className="text-[10px] text-white/50 mt-0.5">steps</p>
+                <p className="text-[10px] text-white/40">Steps</p>
+              </div>
+            </div>
+          ) : (
+            <div className="px-4 pb-4 border-t border-white/10 pt-3">
+              <p className="text-xs text-white/50 mb-2">No data yet — set up your Apple Shortcut to sync Watch stats automatically.</p>
+              <Link
+                to="/settings"
+                className="inline-flex items-center gap-1.5 bg-white/10 text-white text-xs font-bold px-3 py-2 rounded-full active:bg-white/20"
+              >
+                Set up in Settings →
+              </Link>
+            </div>
+          )}
+
+          {/* Latest workout */}
+          {latestHealthWorkout && (
+            <div className="px-4 py-3 border-t border-white/10 flex items-center gap-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-semibold text-white truncate">{latestHealthWorkout.workoutType || 'Workout'}</p>
+                <div className="flex gap-3 mt-0.5">
+                  {latestHealthWorkout.durationSecs != null && (
+                    <p className="text-[10px] text-white/50">
+                      {Math.round(latestHealthWorkout.durationSecs / 60)} min
+                    </p>
+                  )}
+                  {latestHealthWorkout.avgHr != null && (
+                    <p className="text-[10px] text-white/50">{latestHealthWorkout.avgHr} bpm avg</p>
+                  )}
+                  {latestHealthWorkout.activeCalories != null && (
+                    <p className="text-[10px] text-white/50">{latestHealthWorkout.activeCalories} kcal</p>
+                  )}
+                </div>
+              </div>
+              <p className="text-[10px] text-white/30 flex-shrink-0">
+                {new Date(latestHealthWorkout.workoutDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* ── Body Stats ────────────────────────────────────────────── */}
