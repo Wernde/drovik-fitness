@@ -204,79 +204,137 @@ export default function Layout() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-app-bg sm:bg-app-border" style={{ height: '100dvh' }}>
-    <div className="flex flex-col h-full bg-app-bg sm:max-w-[430px] sm:mx-auto sm:shadow-[0_0_40px_rgba(0,0,0,0.15)]">
+    <div className="h-screen overflow-hidden bg-app-bg" style={{ height: '100dvh' }}>
+      <div className="flex flex-col h-full">
 
-      {/* Offline banner */}
-      {!isOnline && (
-        <div className="flex-none bg-orange-400 text-white text-xs font-semibold text-center py-2">
-          You're offline — changes save locally
-        </div>
-      )}
-
-      <main ref={mainRef} className="flex-1 overflow-y-auto overscroll-contain">
-        {/* Pull-to-refresh indicator */}
-        <div aria-hidden className="flex items-center justify-center overflow-hidden"
-          style={{ height: indicatorHeight }}>
-          {(pullDist > 8 || isRefreshing) && (
-            <div
-              className={`w-5 h-5 rounded-full border-2 border-accent border-t-transparent ${isRefreshing ? 'animate-spin' : ''}`}
-              style={{ opacity: isRefreshing ? 1 : spinnerOpacity }}
-            />
-          )}
-        </div>
-        <Outlet />
-      </main>
-
-      {/* ── Bottom nav ──────────────────────────────────────────────────── */}
-      <nav
-        className="flex-none bg-app-card border-t border-app-border"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
-      >
-        <div className="h-[72px] flex items-center">
-
-          {/* Left two: Dash + Plans */}
-          {NAV.slice(0, 2).map(({ to, label, icon }) => (
-            <NavLink key={to} to={to} end={to === '/'}
-              className={({ isActive }) => [
-                'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors',
-                isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
-              ].join(' ')}
-            >
-              {icon}
-              <span>{label}</span>
-            </NavLink>
-          ))}
-
-          {/* Centre FAB */}
-          <div className="flex-1 flex items-center justify-center h-full border-t-[2.5px] border-transparent">
-            <button
-              onClick={() => setQaOpen((v) => !v)}
-              className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
-              aria-label="Quick add"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
-                <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
-              </svg>
-            </button>
+        {/* Offline banner */}
+        {!isOnline && (
+          <div className="flex-none bg-orange-400 text-white text-xs font-semibold text-center py-2">
+            You're offline — changes save locally
           </div>
+        )}
 
-          {/* Right two: Goals + More */}
-          {NAV.slice(2).map(({ to, label, icon }) => (
-            <NavLink key={to} to={to}
-              className={({ isActive }) => [
-                'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors relative',
-                isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
-              ].join(' ')}
+        {/* ── App body ─────────────────────────────────────────────────────── */}
+        <div className="flex flex-1 min-h-0">
+
+          {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
+          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
+
+            {/* Brand */}
+            <div className="flex items-center gap-2 px-5 py-5 border-b border-app-border">
+              <span className="text-base font-bold text-app-text tracking-tight">Drovik</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              <div className="ml-auto">
+                <SyncDot status={status} />
+              </div>
+            </div>
+
+            {/* Nav items */}
+            <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+              {NAV.map(({ to, label, icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={to === '/'}
+                  className={({ isActive }) => [
+                    'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+                    isActive
+                      ? 'bg-accent/20 text-app-text'
+                      : 'text-app-muted hover:bg-app-bg hover:text-app-text',
+                  ].join(' ')}
+                >
+                  {icon}
+                  <span>{label}</span>
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Quick Add button */}
+            <div className="px-3 pb-6">
+              <button
+                onClick={() => setQaOpen((v) => !v)}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold transition-colors"
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-none">
+                  <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
+                </svg>
+                Quick Add
+              </button>
+            </div>
+          </aside>
+
+          {/* ── Content + mobile bottom nav ───────────────────────────────── */}
+          <div className="flex flex-col flex-1 min-w-0">
+
+            <main ref={mainRef} className="flex-1 overflow-y-auto overscroll-contain">
+              {/* Pull-to-refresh indicator */}
+              <div
+                aria-hidden
+                className="flex items-center justify-center overflow-hidden"
+                style={{ height: indicatorHeight }}
+              >
+                {(pullDist > 8 || isRefreshing) && (
+                  <div
+                    className={`w-5 h-5 rounded-full border-2 border-accent border-t-transparent ${isRefreshing ? 'animate-spin' : ''}`}
+                    style={{ opacity: isRefreshing ? 1 : spinnerOpacity }}
+                  />
+                )}
+              </div>
+              <Outlet />
+            </main>
+
+            {/* ── Mobile bottom nav (hidden on md+) ──────────────────────── */}
+            <nav
+              className="md:hidden flex-none bg-app-card border-t border-app-border"
+              style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
-              {icon}
-              <span>{label}</span>
-            </NavLink>
-          ))}
-        </div>
-      </nav>
+              <div className="h-[72px] flex items-center">
 
-      {/* ── Quick Add sheet ──────────────────────────────────────────────── */}
+                {/* Left two: Dash + Plans */}
+                {NAV.slice(0, 2).map(({ to, label, icon }) => (
+                  <NavLink key={to} to={to} end={to === '/'}
+                    className={({ isActive }) => [
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors',
+                      isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
+                    ].join(' ')}
+                  >
+                    {icon}
+                    <span>{label}</span>
+                  </NavLink>
+                ))}
+
+                {/* Centre FAB */}
+                <div className="flex-1 flex items-center justify-center h-full border-t-[2.5px] border-transparent">
+                  <button
+                    onClick={() => setQaOpen((v) => !v)}
+                    className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
+                    aria-label="Quick add"
+                  >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
+                      <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Right two: Food + History */}
+                {NAV.slice(2).map(({ to, label, icon }) => (
+                  <NavLink key={to} to={to}
+                    className={({ isActive }) => [
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors relative',
+                      isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
+                    ].join(' ')}
+                  >
+                    {icon}
+                    <span>{label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Quick Add sheet ───────────────────────────────────────────────────── */}
       {qaOpen && (
         <>
           {/* Backdrop */}
@@ -284,10 +342,8 @@ export default function Layout() {
             className="fixed inset-0 z-40 bg-black/20"
             onClick={() => setQaOpen(false)}
           />
-          {/* Sheet */}
-          <div
-            className="fixed left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] z-50 bg-app-card border-t border-app-border rounded-t-2xl shadow-xl"
-            style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
+          {/* Sheet — qa-sheet class handles mobile vs desktop bottom offset */}
+          <div className="qa-sheet bg-app-card border-t border-app-border rounded-t-2xl shadow-xl">
             <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
             <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
             <div className="grid grid-cols-2 gap-3 px-4 pb-6">
@@ -307,7 +363,6 @@ export default function Layout() {
           </div>
         </>
       )}
-    </div>
     </div>
   )
 }
