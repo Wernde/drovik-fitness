@@ -43,20 +43,13 @@
   display: none;
 }
 
-/* Quick-add sheet: above bottom nav on mobile, flush to bottom on desktop */
+/* Quick-add sheet: mobile only, sits above the bottom nav */
 .qa-sheet {
   position: fixed;
   left: 0;
   right: 0;
   bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   z-index: 50;
-}
-@media (min-width: 768px) {
-  .qa-sheet {
-    left: 240px;
-    right: 0;
-    bottom: 0;
-  }
 }
 
 @layer base {

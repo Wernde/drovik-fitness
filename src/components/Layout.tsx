@@ -218,7 +218,7 @@ export default function Layout() {
         <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
-          <aside className={`hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border transition-opacity duration-200 ${qaOpen ? 'opacity-40 pointer-events-none' : ''}`}>
+          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
 
             {/* Brand */}
             <div className="flex items-center gap-2 px-5 py-5 border-b border-app-border">
@@ -253,7 +253,7 @@ export default function Layout() {
             <div className="px-3 pb-6">
               <button
                 onClick={() => setQaOpen((v) => !v)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold transition-colors"
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-colors ${qaOpen ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
               >
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-none">
                   <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
@@ -262,6 +262,38 @@ export default function Layout() {
               </button>
             </div>
           </aside>
+
+          {/* ── Quick Add side panel (desktop only) ──────────────────────── */}
+          {qaOpen && (
+            <div className="hidden md:flex flex-col w-56 flex-none bg-app-card border-r border-app-border">
+              <div className="flex items-center justify-between px-4 py-4 border-b border-app-border">
+                <p className="text-sm font-bold text-app-text">Quick Add</p>
+                <button
+                  onClick={() => setQaOpen(false)}
+                  className="w-6 h-6 flex items-center justify-center rounded-lg text-app-muted hover:text-app-text hover:bg-app-bg transition-colors"
+                  aria-label="Close"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                    <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
+                {QA_ITEMS.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleQA(item)}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-app-bg transition-colors text-left"
+                  >
+                    <div className={`w-8 h-8 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                      <span className="scale-75">{item.icon}</span>
+                    </div>
+                    <span className="text-sm font-semibold text-app-text">{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+            </div>
+          )}
 
           {/* ── Content + mobile bottom nav ───────────────────────────────── */}
           <div className="flex flex-col flex-1 min-w-0">
@@ -341,37 +373,34 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* ── Quick Add sheet ───────────────────────────────────────────────────── */}
+      {/* ── Quick Add sheet (mobile only) ────────────────────────────────────── */}
       {qaOpen && (
-        <>
+        <div className="md:hidden">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40 bg-black/20 md:bg-black/40"
+            className="fixed inset-0 z-40 bg-black/20"
             onClick={() => setQaOpen(false)}
           />
-          {/* Sheet — qa-sheet class handles mobile vs desktop bottom offset */}
+          {/* Sheet */}
           <div className="qa-sheet bg-app-card border-t border-app-border rounded-t-2xl shadow-xl">
-            {/* Inner wrapper: centred with max-width on desktop */}
-            <div className="md:max-w-lg md:mx-auto">
-              <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
-              <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
-              <div className="grid grid-cols-2 gap-3 px-4 pb-6">
-                {QA_ITEMS.map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => handleQA(item)}
-                    className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
-                  >
-                    <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
-                      {item.icon}
-                    </div>
-                    <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
-                  </button>
-                ))}
-              </div>
+            <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
+            <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
+            <div className="grid grid-cols-2 gap-3 px-4 pb-6">
+              {QA_ITEMS.map((item) => (
+                <button
+                  key={item.label}
+                  onClick={() => handleQA(item)}
+                  className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
+                >
+                  <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                    {item.icon}
+                  </div>
+                  <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
+                </button>
+              ))}
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   )
