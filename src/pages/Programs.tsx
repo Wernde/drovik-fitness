@@ -27,10 +27,9 @@ function DayIcon({ muscleGroup }: { muscleGroup?: string }) {
 
 export default function Programs() {
   const navigate = useNavigate()
-  const [formOpen,    setFormOpen]    = useState(false)
-  const [editing,     setEditing]     = useState<Program | undefined>(undefined)
-  const [showManage,  setShowManage]  = useState(false)
-  const [confirmDel,  setConfirmDel]  = useState<string | null>(null)
+  const [formOpen,   setFormOpen]   = useState(false)
+  const [editing,    setEditing]    = useState<Program | undefined>(undefined)
+  const [confirmDel, setConfirmDel] = useState<string | null>(null)
 
   const programs    = useLiveQuery(() => db.programs.filter((p) => !p.deleted).toArray(), [])
   const allDays     = useLiveQuery(() => db.workoutDays.filter((d) => !d.deleted).toArray(), [])
@@ -131,9 +130,9 @@ export default function Programs() {
               <h1 className="text-2xl font-extrabold text-app-text leading-tight">{activeProgram.name}</h1>
             </div>
             <button
-              onClick={() => setShowManage((v) => !v)}
+              onClick={() => navigate(`/programs/${activeProgram.id}`)}
               className="w-9 h-9 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-muted mt-1"
-              aria-label="Manage programs"
+              aria-label="Manage program"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
                 <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
@@ -234,8 +233,8 @@ export default function Programs() {
         </div>
       )}
 
-      {/* ── Manage programs (collapsible) ──────────────────────── */}
-      {(showManage || !activeProgram) && programs.length > 0 && (
+      {/* ── All Programs ───────────────────────────────────────── */}
+      {programs.length > 0 && (
         <div className="px-4 mt-4">
           <div className="flex items-center justify-between mb-2">
             <p className="text-base font-extrabold text-app-text">All Programs</p>
