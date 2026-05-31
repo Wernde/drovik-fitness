@@ -45,12 +45,12 @@
 
 /* Quick-add side panel item: fade up from below */
 @keyframes qa-item-in {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 .qa-item {
   opacity: 0;
-  animation: qa-item-in 0.18s ease-out forwards;
+  animation: qa-item-in 0.15s ease-out forwards;
 }
 
 /* Quick-add sheet: mobile only, sits above the bottom nav */
