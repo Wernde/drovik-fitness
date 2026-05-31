@@ -280,7 +280,10 @@ export default function Layout() {
                   />
                 )}
               </div>
-              <Outlet />
+              {/* Cap content width on desktop so pages don't stretch across the full viewport */}
+              <div className="md:max-w-2xl md:mx-auto">
+                <Outlet />
+              </div>
             </main>
 
             {/* ── Mobile bottom nav (hidden on md+) ──────────────────────── */}
@@ -339,7 +342,7 @@ export default function Layout() {
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40 bg-black/20"
+            className="fixed inset-0 z-40 bg-black/20 md:bg-black/40"
             onClick={() => setQaOpen(false)}
           />
           {/* Sheet — qa-sheet class handles mobile vs desktop bottom offset */}

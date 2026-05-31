@@ -57,6 +57,7 @@
   .qa-sheet {
     left: 240px;
     bottom: 0;
+    max-width: 560px;  /* prevent the sheet stretching across a wide screen */
   }
 }
 
