@@ -49,8 +49,7 @@
   body {
     @apply bg-app-bg text-app-text;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
   input,

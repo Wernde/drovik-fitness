@@ -131,7 +131,7 @@ export default function Profile() {
     .filter(Boolean).map((s) => s[0].toUpperCase()).join('') || '?'
 
   return (
-    <div className="flex flex-col min-h-screen bg-app-bg" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
+    <div className="flex flex-col min-h-screen bg-app-bg">
 
       {/* Header */}
       <div className="px-5 pt-6 pb-4 flex items-center gap-3 border-b border-app-border bg-app-card">

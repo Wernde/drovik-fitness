@@ -100,14 +100,14 @@ export default function Layout() {
     const el = mainRef.current
     if (!el) return
     function onStart(e: TouchEvent) {
-      if (window.scrollY > 0) return
+      if (el.scrollTop > 0) return
       startYRef.current  = e.touches[0].clientY
       pullingRef.current = true
     }
     function onMove(e: TouchEvent) {
       if (!pullingRef.current) return
       const dy = e.touches[0].clientY - startYRef.current
-      if (dy > 0 && window.scrollY === 0) {
+      if (dy > 0 && el.scrollTop === 0) {
         e.preventDefault()
         const dist = Math.min(dy * 0.5, PULL_THRESHOLD + 24)
         pullDistRef.current = dist
@@ -204,8 +204,8 @@ export default function Layout() {
   }
 
   return (
-    <div className="min-h-screen bg-app-bg sm:bg-app-border">
-    <div className="flex flex-col min-h-screen bg-app-bg sm:max-w-[430px] sm:mx-auto sm:shadow-[0_0_40px_rgba(0,0,0,0.15)]">
+    <div className="h-screen overflow-hidden bg-app-bg sm:bg-app-border" style={{ height: '100dvh' }}>
+    <div className="flex flex-col h-full bg-app-bg sm:max-w-[430px] sm:mx-auto sm:shadow-[0_0_40px_rgba(0,0,0,0.15)]">
 
       {/* Offline banner */}
       {!isOnline && (
@@ -214,7 +214,7 @@ export default function Layout() {
         </div>
       )}
 
-      <main ref={mainRef} className="flex-1">
+      <main ref={mainRef} className="flex-1 overflow-y-auto overscroll-contain">
         {/* Pull-to-refresh indicator */}
         <div aria-hidden className="flex items-center justify-center overflow-hidden"
           style={{ height: indicatorHeight }}>
@@ -230,7 +230,7 @@ export default function Layout() {
 
       {/* ── Bottom nav ──────────────────────────────────────────────────── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] bg-app-card border-t border-app-border z-50"
+        className="flex-none bg-app-card border-t border-app-border"
         style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
       >
         <div className="h-[72px] flex items-center">
