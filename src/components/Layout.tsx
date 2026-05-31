@@ -10,52 +10,22 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
   {
     to: '/',
     label: 'Home',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10.5z" />
-        <path d="M9 21V13h6v8" />
-      </svg>
-    ),
+    icon: <img src="/icons/nav-home.svg" alt="" className="w-7 h-7" />,
   },
   {
     to: '/programs',
     label: 'Program',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#F97316" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <rect x="5.5" y="6" width="2" height="12" rx="1" />
-        <rect x="16.5" y="6" width="2" height="12" rx="1" />
-        <rect x="2" y="9" width="3.5" height="6" rx="1" />
-        <rect x="18.5" y="9" width="3.5" height="6" rx="1" />
-        <line x1="7.5" y1="12" x2="16.5" y2="12" />
-      </svg>
-    ),
+    icon: <img src="/icons/nav-program.svg" alt="" className="w-7 h-7" />,
   },
   {
     to: '/nutrition',
     label: 'Nutrition',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
-        <line x1="7" y1="2" x2="7" y2="22" />
-        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z" />
-        <line x1="21" y1="15" x2="21" y2="22" />
-      </svg>
-    ),
+    icon: <img src="/icons/nav-nutrition.svg" alt="" className="w-7 h-7" />,
   },
   {
     to: '/history',
     label: 'History',
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-        <rect x="3" y="4" width="18" height="18" rx="2" />
-        <line x1="16" y1="2" x2="16" y2="6" />
-        <line x1="8" y1="2" x2="8" y2="6" />
-        <line x1="3" y1="10" x2="21" y2="10" />
-        <circle cx="8" cy="15" r="1" fill="#8B5CF6" stroke="none" />
-        <circle cx="12" cy="15" r="1" fill="#8B5CF6" stroke="none" />
-        <circle cx="16" cy="15" r="1" fill="#8B5CF6" stroke="none" />
-      </svg>
-    ),
+    icon: <img src="/icons/nav-history.svg" alt="" className="w-7 h-7" />,
   },
 ]
 
