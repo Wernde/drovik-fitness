@@ -6,7 +6,8 @@ import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
-import { CAT_ICON_PATHS, CategoryIcon, ExerciseThumb } from '../components/ExerciseThumb'
+import { CAT_ICON_PATHS } from '../components/ExerciseThumb'
+import MuscleIcon from '../components/MuscleIcon'
 
 const EQUIPMENT_LABELS: Record<string, string> = {
   barbell:    'Barbell',
@@ -298,7 +299,9 @@ export default function DayDetail() {
                             </svg>
                           </button>
                         </div>
-                        <ExerciseThumb category={exercise.category} />
+                        <div className="flex-none flex items-center justify-center w-10 h-10 rounded-xl bg-app-bg">
+                          <MuscleIcon muscleGroup={exercise.muscleGroup} width={24} height={36} />
+                        </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
                           <p className="text-xs text-app-muted mt-0.5">
@@ -339,7 +342,9 @@ export default function DayDetail() {
                   className="w-full bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
                 >
                   <div className="flex items-center gap-3 px-4 py-3.5">
-                    <ExerciseThumb category={exercise.category} />
+                    <div className="flex-none flex items-center justify-center w-11 h-11 rounded-xl bg-app-bg">
+                      <MuscleIcon muscleGroup={exercise.muscleGroup} width={26} height={40} />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-bold text-[15px] text-app-text truncate">{exercise.name}</p>
                       <p className="text-xs text-app-muted mt-0.5">
@@ -433,7 +438,9 @@ export default function DayDetail() {
             <div className="px-5 pt-4">
               {/* Exercise header */}
               <div className="flex items-center gap-4 mb-4">
-                <ExerciseThumb category={detailExercise.category} big />
+                <div className="flex-none flex items-center justify-center w-16 h-16 rounded-2xl bg-app-bg">
+                  <MuscleIcon muscleGroup={detailExercise.muscleGroup} width={36} height={54} />
+                </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-extrabold text-lg text-app-text leading-tight">{detailExercise.name}</p>
                   <p className="text-sm text-app-muted mt-0.5 capitalize">{detailExercise.category ?? 'Exercise'}</p>
