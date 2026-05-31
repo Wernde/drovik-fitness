@@ -19,6 +19,17 @@
 
 /* Dark mode intentionally disabled — app always uses the light theme */
 
+/* Mobile: pad the scrollable content area so nothing sits behind the
+   fixed bottom nav (72 px + iOS safe-area). Desktop: no bottom nav, no pad. */
+.main-nav-clearance {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+@media (min-width: 768px) {
+  .main-nav-clearance {
+    padding-bottom: 0;
+  }
+}
+
 :root {
   --muscle-body: #c8c8c8;
   --muscle-hi:   #FFCA10;

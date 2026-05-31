@@ -266,7 +266,7 @@ export default function Layout() {
           {/* ── Content + mobile bottom nav ───────────────────────────────── */}
           <div className="flex flex-col flex-1 min-w-0">
 
-            <main ref={mainRef} className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
+            <main ref={mainRef} className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain main-nav-clearance">
               {/* Pull-to-refresh indicator */}
               <div
                 aria-hidden
@@ -297,8 +297,10 @@ export default function Layout() {
                 {NAV.slice(0, 2).map(({ to, label, icon }) => (
                   <NavLink key={to} to={to} end={to === '/'}
                     className={({ isActive }) => [
-                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors',
-                      isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
+                      isActive
+                        ? 'border-accent text-accent-dark'
+                        : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >
                     {icon}
@@ -323,8 +325,10 @@ export default function Layout() {
                 {NAV.slice(2).map(({ to, label, icon }) => (
                   <NavLink key={to} to={to}
                     className={({ isActive }) => [
-                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-semibold uppercase tracking-wide border-t-[2.5px] transition-colors relative',
-                      isActive ? 'border-accent text-app-text' : 'border-transparent text-app-muted',
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
+                      isActive
+                        ? 'border-accent text-accent-dark'
+                        : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >
                     {icon}
