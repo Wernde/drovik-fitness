@@ -235,6 +235,18 @@ export interface ProgressPhoto extends BaseRecord {
   notes: string
 }
 
+// ── Local exercise videos (v16) ───────────────────────────────────────────────
+
+// Stored locally only. One row per exercise (keyed by exerciseId).
+// The user can upload a personal recording to replace or supplement the YouTube link.
+export interface ExerciseVideo {
+  exerciseId: string   // primary key
+  mimeType: string     // e.g. 'video/mp4'
+  data: Blob
+  createdAt: string
+  updatedAt: string
+}
+
 // ── Database class ────────────────────────────────────────────────────────────
 
 class DrovikDB extends Dexie {
@@ -258,6 +270,7 @@ class DrovikDB extends Dexie {
   healthWorkouts!: Table<HealthWorkout>
   recipes!: Table<Recipe>
   recipeFoods!: Table<RecipeFood>
+  exerciseVideos!: Table<ExerciseVideo>
 
   constructor() {
     super('drovik-fitness')
@@ -512,6 +525,32 @@ class DrovikDB extends Dexie {
       progressPhotos:      'id, date',
       healthMetrics:       'id, date',
       healthWorkouts:      'id, workoutDate',
+    })
+
+    // Version 16 — adds local exercise video storage (Blob, not synced).
+    // Users can upload their own recordings to replace or supplement YouTube links.
+    this.version(16).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+      progressPhotos:      'id, date',
+      healthMetrics:       'id, date',
+      healthWorkouts:      'id, workoutDate',
+      exerciseVideos:      'exerciseId',
     })
 
     // Version 14 — adds progress photos table (local-only, not Supabase-synced).

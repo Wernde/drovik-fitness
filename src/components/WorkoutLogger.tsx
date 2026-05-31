@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
-import type { WorkoutSession, SessionExercise, DayExercise, Exercise } from '../db/db'
+import type { WorkoutSession, SessionExercise, DayExercise, Exercise, ExerciseVideo } from '../db/db'
 import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import WorkoutSummary from './WorkoutSummary'
@@ -110,8 +110,38 @@ export default function WorkoutLogger({ session }: Props) {
   const [exerciseMenu,    setExerciseMenu]    = useState<string | null>(null)
   const [substituteSeId,  setSubstituteSeId]  = useState<string | null>(null)
   const [expandedVideos,  setExpandedVideos]  = useState<Set<string>>(new Set())
+  const [localVideoUrls,  setLocalVideoUrls]  = useState<Map<string, string>>(new Map())
 
   const draftsInit = useRef(false)
+
+  // Load local video blobs for all exercises in this session
+  useEffect(() => {
+    if (!data) return
+    const exerciseIds = data.sessionExercises.map((se) => se.exerciseId)
+    if (exerciseIds.length === 0) return
+
+    db.exerciseVideos.where('exerciseId').anyOf(exerciseIds).toArray().then((rows: ExerciseVideo[]) => {
+      if (rows.length === 0) return
+      const map = new Map<string, string>()
+      for (const row of rows) {
+        map.set(row.exerciseId, URL.createObjectURL(row.data))
+      }
+      setLocalVideoUrls((prev) => {
+        // Revoke old URLs that are being replaced
+        for (const [id, url] of prev) {
+          if (!map.has(id)) URL.revokeObjectURL(url)
+        }
+        return map
+      })
+    })
+
+    return () => {
+      setLocalVideoUrls((prev) => {
+        for (const url of prev.values()) URL.revokeObjectURL(url)
+        return new Map()
+      })
+    }
+  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Elapsed timer
   useEffect(() => {
@@ -631,13 +661,27 @@ export default function WorkoutLogger({ session }: Props) {
                   </button>
                 </div>
 
-                {/* ── Video ── */}
-                {hasVideo && videoId && (
-                  expandedVideos.has(se.id) ? (
+                {/* ── Video (local recording takes priority over YouTube) ── */}
+                {(() => {
+                  const localUrl = localVideoUrls.get(se.exerciseId)
+                  if (localUrl) {
+                    return (
+                      <div className="mx-4 mb-3 rounded-xl overflow-hidden bg-black">
+                        <video
+                          src={localUrl}
+                          controls
+                          playsInline
+                          className="w-full max-h-52 object-contain"
+                        />
+                      </div>
+                    )
+                  }
+                  if (!hasVideo || !videoId) return null
+                  return expandedVideos.has(se.id) ? (
                     <div className="mx-4 mb-3 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
                       <iframe
                         className="w-full h-full"
-                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`}
+                        src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`}
                         title={exercise.name}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
@@ -664,7 +708,7 @@ export default function WorkoutLogger({ session }: Props) {
                       </div>
                     </button>
                   )
-                )}
+                })()}
 
                 {/* ── Guide / Instructions panel ── */}
                 {guideOpen && exercise.instructions && (

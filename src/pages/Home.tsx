@@ -370,7 +370,7 @@ export default function Home() {
 
         {/* ── Things to Do Today ────────────────────────────────────── */}
         <div>
-          <p className="text-base font-extrabold text-app-text mb-2">Things to Do Today</p>
+          <p className="text-base font-extrabold text-app-text mb-2">Progress</p>
           <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
             <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-gray-50">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">

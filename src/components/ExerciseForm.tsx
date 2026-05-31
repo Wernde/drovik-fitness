@@ -5,7 +5,7 @@
  * Call `onClose()` when you want to dismiss the modal (save or cancel).
  */
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
@@ -50,11 +50,64 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
   const [muscleGroup,  setMuscleGroup]  = useState(exercise?.muscleGroup ?? '')
   const [videoUrl,     setVideoUrl]     = useState(exercise?.videoUrl ?? '')
   const [instructions, setInstructions] = useState(exercise?.instructions ?? '')
-  const [saving, setSaving]             = useState(false)
-  const [error, setError]               = useState('')
+  const [saving,       setSaving]       = useState(false)
+  const [error,        setError]        = useState('')
 
-  const videoId        = videoUrl.trim() ? getYouTubeId(videoUrl.trim()) : null
-  const thumbnailUrl   = videoId ? getYouTubeThumbnail(videoId) : null
+  // Local video state
+  const [localVideoBlob,    setLocalVideoBlob]    = useState<Blob | null>(null)
+  const [localVideoObjUrl,  setLocalVideoObjUrl]  = useState<string | null>(null)
+  const [localVideoMime,    setLocalVideoMime]    = useState<string>('video/mp4')
+  const [deletingLocalVid,  setDeletingLocalVid]  = useState(false)
+  const videoInputRef = useRef<HTMLInputElement>(null)
+
+  // Load existing local video on mount
+  useEffect(() => {
+    if (!exercise) return
+    db.exerciseVideos.get(exercise.id).then((ev) => {
+      if (!ev) return
+      const url = URL.createObjectURL(ev.data)
+      setLocalVideoBlob(ev.data)
+      setLocalVideoObjUrl(url)
+      setLocalVideoMime(ev.mimeType)
+    })
+    return () => {
+      // Revoked in the delete handler or on unmount below
+    }
+  }, [exercise])
+
+  useEffect(() => {
+    return () => {
+      if (localVideoObjUrl) URL.revokeObjectURL(localVideoObjUrl)
+    }
+  }, [localVideoObjUrl])
+
+  function handleVideoFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (localVideoObjUrl) URL.revokeObjectURL(localVideoObjUrl)
+    const url = URL.createObjectURL(file)
+    setLocalVideoBlob(file)
+    setLocalVideoObjUrl(url)
+    setLocalVideoMime(file.type || 'video/mp4')
+  }
+
+  async function removeLocalVideo() {
+    if (!exercise) {
+      setLocalVideoBlob(null)
+      if (localVideoObjUrl) URL.revokeObjectURL(localVideoObjUrl)
+      setLocalVideoObjUrl(null)
+      return
+    }
+    setDeletingLocalVid(true)
+    await db.exerciseVideos.delete(exercise.id)
+    setLocalVideoBlob(null)
+    if (localVideoObjUrl) URL.revokeObjectURL(localVideoObjUrl)
+    setLocalVideoObjUrl(null)
+    setDeletingLocalVid(false)
+  }
+
+  const videoId      = videoUrl.trim() ? getYouTubeId(videoUrl.trim()) : null
+  const thumbnailUrl = videoId ? getYouTubeThumbnail(videoId) : null
 
   async function handleSave() {
     const trimmed = name.trim()
@@ -65,33 +118,31 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
     setError('')
 
     try {
-      const timestamp = now()
-
+      const timestamp    = now()
       const cleanVideoUrl = videoUrl.trim() || null
+      let exerciseId = exercise?.id ?? ''
 
       if (exercise) {
         await db.exercises.update(exercise.id, {
-          name: trimmed,
-          category,
-          muscleGroup,
-          videoUrl:     cleanVideoUrl,
-          instructions: instructions.trim(),
-          updatedAt:    timestamp,
-          syncedAt:     null,
+          name: trimmed, category, muscleGroup,
+          videoUrl: cleanVideoUrl, instructions: instructions.trim(),
+          updatedAt: timestamp, syncedAt: null,
         })
       } else {
+        exerciseId = crypto.randomUUID()
         await db.exercises.add({
-          id:           crypto.randomUUID(),
-          name:         trimmed,
-          category,
-          muscleGroup,
-          videoUrl:     cleanVideoUrl,
-          instructions: instructions.trim(),
-          isCustom:     true,
-          createdAt:    timestamp,
-          updatedAt:    timestamp,
-          syncedAt:     null,
-          deleted:      false,
+          id: exerciseId, name: trimmed, category, muscleGroup,
+          videoUrl: cleanVideoUrl, instructions: instructions.trim(),
+          isCustom: true, createdAt: timestamp, updatedAt: timestamp,
+          syncedAt: null, deleted: false,
+        })
+      }
+
+      // Save local video blob if one was picked
+      if (localVideoBlob && exerciseId) {
+        await db.exerciseVideos.put({
+          exerciseId, mimeType: localVideoMime, data: localVideoBlob,
+          createdAt: timestamp, updatedAt: timestamp,
         })
       }
 
@@ -177,11 +228,56 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             </select>
           </div>
 
-          {/* Video URL */}
+          {/* Video — local upload OR YouTube URL */}
           <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              YouTube URL <span className="text-app-muted font-normal">(optional)</span>
+            <label className="block text-sm font-medium text-app-text mb-2">
+              Exercise Video <span className="text-app-muted font-normal">(optional)</span>
             </label>
+
+            {/* Local video upload */}
+            <div className="mb-3">
+              <p className="text-xs text-app-muted mb-1.5">Your own recording (stored on-device)</p>
+              {localVideoObjUrl ? (
+                <div className="rounded-xl overflow-hidden bg-black relative">
+                  <video
+                    src={localVideoObjUrl}
+                    controls
+                    playsInline
+                    className="w-full max-h-48 object-contain"
+                  />
+                  <button
+                    onClick={removeLocalVideo}
+                    disabled={deletingLocalVid}
+                    className="absolute top-2 right-2 bg-black/60 text-white text-xs font-bold px-2.5 py-1 rounded-full active:bg-black"
+                  >
+                    {deletingLocalVid ? '…' : 'Remove'}
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => videoInputRef.current?.click()}
+                  className="w-full border-2 border-dashed border-app-border rounded-xl py-4 text-sm text-app-muted font-semibold flex items-center justify-center gap-2 active:bg-app-bg"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                  </svg>
+                  Upload video
+                </button>
+              )}
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={handleVideoFile}
+              />
+              <p className="text-[10px] text-app-faint mt-1">MP4, MOV, WEBM — stored only on this device</p>
+            </div>
+
+            {/* YouTube URL (optional fallback) */}
+            <p className="text-xs text-app-muted mb-1.5">
+              {localVideoObjUrl ? 'YouTube URL (shown if local video removed)' : 'Or paste a YouTube URL'}
+            </p>
             <input
               type="url"
               value={videoUrl}
@@ -189,19 +285,17 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               placeholder="https://www.youtube.com/watch?v=…"
               className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
             />
-            {/* Live thumbnail preview */}
             {thumbnailUrl && (
-              <a href={videoUrl.trim()} target="_blank" rel="noopener noreferrer" className="block mt-2 rounded-lg overflow-hidden relative">
-                <img src={thumbnailUrl} alt="Video preview" className="w-full object-cover" />
-                {/* Play overlay */}
+              <div className="mt-2 rounded-lg overflow-hidden relative">
+                <img src={thumbnailUrl} alt="YouTube preview" className="w-full object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-black/60 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-6 h-6 ml-1">
+                  <div className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5 ml-0.5">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
-              </a>
+              </div>
             )}
             {videoUrl.trim() && !videoId && (
               <p className="text-xs text-amber-600 mt-1">Paste a youtube.com or youtu.be link to see a preview.</p>
