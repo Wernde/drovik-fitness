@@ -108,7 +108,7 @@ export default function Programs() {
         <div className="bg-app-bg px-5 pt-6 pb-3 border-b border-app-border">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-xs text-app-muted font-medium">{activeProgram.description || "Program"}</p>
+              {activeProgram.description && <p className="text-xs text-app-muted font-medium">{activeProgram.description}</p>}
               <h1 className="text-2xl font-extrabold text-app-text leading-tight">{activeProgram.name}</h1>
             </div>
             <button

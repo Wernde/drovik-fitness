@@ -1624,7 +1624,6 @@ export default function Nutrition() {
 
   return (
     <div className="px-4 pt-5 pb-24 overflow-x-hidden">
-      <p className="text-xs text-app-muted font-medium mb-1">Your</p>
       <h1 className="text-2xl font-extrabold text-app-text mb-4">Nutrition</h1>
 
       {/* Tab bar */}
