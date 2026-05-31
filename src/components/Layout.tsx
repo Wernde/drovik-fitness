@@ -11,9 +11,9 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
     to: '/',
     label: 'Home',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-        <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
-        <path d="M12 5.432l8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-3a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H5.625a1.875 1.875 0 01-1.875-1.875v-6.198a2.29 2.29 0 00.091-.086L12 5.43z" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V10.5z" />
+        <path d="M9 21V13h6v8" />
       </svg>
     ),
   },
@@ -21,9 +21,12 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
     to: '/programs',
     label: 'Program',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-        <path fillRule="evenodd" d="M7.502 6h7.128A3.375 3.375 0 0118 9.375v9.375a3 3 0 003-3V6.108c0-1.505-1.125-2.811-2.664-2.94a48.972 48.972 0 00-.673-.05A3 3 0 0015 1.5h-1.5a3 3 0 00-2.663 1.618c-.225.015-.45.032-.673.05C8.662 3.295 7.554 4.542 7.502 6zM13.5 3A1.5 1.5 0 0012 4.5h4.5A1.5 1.5 0 0015 3h-1.5z" clipRule="evenodd" />
-        <path fillRule="evenodd" d="M3 9.375C3 8.339 3.84 7.5 4.875 7.5h9.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V9.375zm9.586 4.594a.75.75 0 00-1.172-.938l-2.476 3.096-.908-.907a.75.75 0 00-1.06 1.06l1.5 1.5a.75.75 0 001.116-.062l3-3.75z" clipRule="evenodd" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <rect x="5.5" y="6" width="2" height="12" rx="1" />
+        <rect x="16.5" y="6" width="2" height="12" rx="1" />
+        <rect x="2" y="9" width="3.5" height="6" rx="1" />
+        <rect x="18.5" y="9" width="3.5" height="6" rx="1" />
+        <line x1="7.5" y1="12" x2="16.5" y2="12" />
       </svg>
     ),
   },
@@ -31,8 +34,11 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
     to: '/nutrition',
     label: 'Nutrition',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-        <path fillRule="evenodd" d="M11.484 2.17a.75.75 0 011.032 0 11.209 11.209 0 017.877 10.58 7.423 7.423 0 01-7.603 7.5c-4.114 0-7.47-3.036-7.47-7.125 0-3.6 2.488-6.7 5.91-7.765a.75.75 0 01.977.702v5.263a.75.75 0 001.5 0V4.14a.75.75 0 01.777-.746z" clipRule="evenodd" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+        <line x1="7" y1="2" x2="7" y2="22" />
+        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3z" />
+        <line x1="21" y1="15" x2="21" y2="22" />
       </svg>
     ),
   },
@@ -40,8 +46,14 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
     to: '/history',
     label: 'History',
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 000-1.5h-3.75V6z" clipRule="evenodd" />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+        <rect x="3" y="4" width="18" height="18" rx="2" />
+        <line x1="16" y1="2" x2="16" y2="6" />
+        <line x1="8" y1="2" x2="8" y2="6" />
+        <line x1="3" y1="10" x2="21" y2="10" />
+        <circle cx="8" cy="15" r="1" fill="currentColor" stroke="none" />
+        <circle cx="12" cy="15" r="1" fill="currentColor" stroke="none" />
+        <circle cx="16" cy="15" r="1" fill="currentColor" stroke="none" />
       </svg>
     ),
   },
@@ -274,8 +286,9 @@ export default function Layout() {
                 onClick={() => setQaOpen((v) => !v)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-colors ${qaOpen ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
               >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 flex-none">
-                  <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-5 h-5 flex-none">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
                 Quick Add
               </button>
@@ -334,8 +347,9 @@ export default function Layout() {
                     className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
                     aria-label="Quick add"
                   >
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
-                      <path d="M12 3.75a.75.75 0 01.75.75v6.75h6.75a.75.75 0 010 1.5h-6.75v6.75a.75.75 0 01-1.5 0v-6.75H4.5a.75.75 0 010-1.5h6.75V4.5a.75.75 0 01.75-.75z" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6 text-white">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
                   </button>
                 </div>
