@@ -86,8 +86,11 @@ export default function DayExerciseForm(props: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={(e) => { if (e.target === e.currentTarget) props.onClose() }}>
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center" onClick={(e) => { if (e.target === e.currentTarget) props.onClose() }}>
+      <div className="absolute inset-0 bg-black/40 md:block hidden" onClick={props.onClose} />
+      <div className="relative w-full md:max-w-md md:rounded-2xl md:shadow-2xl bg-app-card rounded-t-2xl shadow-xl p-6 pb-10 max-h-[90vh] overflow-y-auto" style={{ marginBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        onClick={(e) => e.stopPropagation()}
+      >
 
         <div className="flex items-center justify-between mb-1">
           <h2 className="text-lg font-bold text-app-text">{props.mode === 'edit' ? 'Edit Targets' : 'Set Targets'}</h2>

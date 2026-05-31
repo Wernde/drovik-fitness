@@ -4,51 +4,8 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
 import ProgramForm from '../components/ProgramForm'
+import { ExerciseThumb } from '../components/ExerciseThumb'
 
-// Muscle group → icon for dark thumbnails
-const MUSCLE_ICONS: Record<string, JSX.Element> = {
-  // Chest / pec area → heart
-  Chest: <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />,
-  // Back / pull → rotating arrows (lat spread / rows)
-  Back: <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0112.548-3.364l1.903 1.903h-3.183a.75.75 0 100 1.5h4.992a.75.75 0 00.75-.75V4.356a.75.75 0 00-1.5 0v3.18l-1.9-1.9A9 9 0 003.306 9.67a.75.75 0 101.45.388zm15.408 3.352a.75.75 0 00-.919.53 7.5 7.5 0 01-12.548 3.364l-1.902-1.903h3.183a.75.75 0 000-1.5H2.984a.75.75 0 00-.75.75v4.992a.75.75 0 001.5 0v-3.18l1.9 1.9a9 9 0 0015.059-4.035.75.75 0 00-.53-.918z" clipRule="evenodd" />,
-  // Legs / quads / hamstrings / glutes → person silhouette
-  Legs:       <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />,
-  Quads:      <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />,
-  Hamstrings: <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />,
-  Glutes:     <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />,
-  // Shoulders → sun rays (width spread)
-  Shoulders:  <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z" />,
-  // Arms / biceps / triceps → bolt (power / curl motion)
-  Arms:     <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z" clipRule="evenodd" />,
-  Biceps:   <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z" clipRule="evenodd" />,
-  Triceps:  <path fillRule="evenodd" d="M14.615 1.595a.75.75 0 01.359.852L12.982 9.75h7.268a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z" clipRule="evenodd" />,
-  // Core / abs → sparkles (centre focus)
-  Core: <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5z" clipRule="evenodd" />,
-  Abs: <path fillRule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5z" clipRule="evenodd" />,
-  // Cardio → heart
-  Cardio: <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />,
-  // default → dumbbell (fits any workout day)
-  default: (
-    <>
-      <rect x="1.5" y="9.5" width="3" height="5" rx="1.5" />
-      <rect x="4.5" y="10.5" width="2" height="3" rx="0.5" />
-      <rect x="6.5" y="11" width="11" height="2" />
-      <rect x="17.5" y="10.5" width="2" height="3" rx="0.5" />
-      <rect x="19.5" y="9.5" width="3" height="5" rx="1.5" />
-    </>
-  ),
-}
-
-function DayIcon({ muscleGroup }: { muscleGroup?: string }) {
-  const path = muscleGroup && MUSCLE_ICONS[muscleGroup]
-    ? MUSCLE_ICONS[muscleGroup]
-    : MUSCLE_ICONS.default
-  return (
-    <div className="w-14 h-14 rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
-      <svg viewBox="0 0 24 24" fill="white" className="w-7 h-7">{path}</svg>
-    </div>
-  )
-}
 
 export default function Programs() {
   const navigate = useNavigate()
@@ -101,17 +58,17 @@ export default function Programs() {
     return map
   }, [allDayExs])
 
-  // Primary muscle group per day — most-frequent muscle among that day's exercises
-  const dayMuscleMap = useMemo(() => {
+  // Primary equipment category per day — most-frequent category among that day's exercises
+  const dayEquipmentMap = useMemo(() => {
     const map: Record<string, string> = {}
     if (!allDayExs || !allExercises) return map
     const exerciseMap = new Map(allExercises.map((e) => [e.id, e]))
     const tally: Record<string, Record<string, number>> = {}
     for (const de of allDayExs) {
-      const muscle = exerciseMap.get(de.exerciseId)?.muscleGroup
-      if (!muscle) continue
+      const cat = exerciseMap.get(de.exerciseId)?.category
+      if (!cat) continue
       tally[de.workoutDayId] ??= {}
-      tally[de.workoutDayId][muscle] = (tally[de.workoutDayId][muscle] ?? 0) + 1
+      tally[de.workoutDayId][cat] = (tally[de.workoutDayId][cat] ?? 0) + 1
     }
     for (const [dayId, counts] of Object.entries(tally)) {
       map[dayId] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
@@ -214,7 +171,7 @@ export default function Programs() {
               >
                 {/* Thumbnail */}
                 <div className="m-3 ml-4">
-                  <DayIcon muscleGroup={dayMuscleMap[day.id]} />
+                  <ExerciseThumb category={dayEquipmentMap[day.id]} />
                 </div>
 
                 {/* Info */}
