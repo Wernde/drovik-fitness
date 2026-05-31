@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
 
 const PULL_THRESHOLD = 72
+const BASE = import.meta.env.BASE_URL
 
 // ── Bottom nav items (excludes FAB) ──────────────────────────────────────────
 
@@ -10,22 +11,22 @@ const NAV: { to: string; label: string; icon: JSX.Element }[] = [
   {
     to: '/',
     label: 'Home',
-    icon: <img src="/icons/nav-home.svg" alt="" className="w-7 h-7" />,
+    icon: <img src={`${BASE}icons/nav-home.svg`} alt="" className="w-7 h-7" />,
   },
   {
     to: '/programs',
     label: 'Program',
-    icon: <img src="/icons/nav-program.svg" alt="" className="w-7 h-7" />,
+    icon: <img src={`${BASE}icons/nav-program.svg`} alt="" className="w-7 h-7" />,
   },
   {
     to: '/nutrition',
     label: 'Nutrition',
-    icon: <img src="/icons/nav-nutrition.svg" alt="" className="w-7 h-7" />,
+    icon: <img src={`${BASE}icons/nav-nutrition.svg`} alt="" className="w-7 h-7" />,
   },
   {
     to: '/history',
     label: 'History',
-    icon: <img src="/icons/nav-history.svg" alt="" className="w-7 h-7" />,
+    icon: <img src={`${BASE}icons/nav-history.svg`} alt="" className="w-7 h-7" />,
   },
 ]
 
@@ -122,15 +123,15 @@ export default function Layout() {
 
   // ── Quick Add items ───────────────────────────────────────────────────────
   const QA_ITEMS: QAItem[] = [
-    { label: 'AI Coach',   icon: '/icons/ai-coach.svg',   to: '/more'       },
-    { label: 'Workout',    icon: '/icons/workout.svg',    to: '/programs'   },
-    { label: 'Cardio',     icon: '/icons/cardio.svg',     to: '/log'        },
-    { label: 'Meal',       icon: '/icons/meal.svg',       to: '/nutrition'  },
-    { label: 'Water',      icon: '/icons/water.svg',      to: '/nutrition'  },
-    { label: 'Body Stats', icon: '/icons/body-stats.svg', to: '/body'       },
-    { label: 'Progress',   icon: '/icons/progress.svg',   to: '/progress'   },
-    { label: 'Exercises',  icon: '/icons/exercises.svg',  to: '/exercises'  },
-    { label: 'Calculator', icon: '/icons/calculator.svg', to: '/calculator' },
+    { label: 'AI Coach',   icon: `${BASE}icons/ai-coach.svg`,   to: '/more'       },
+    { label: 'Workout',    icon: `${BASE}icons/workout.svg`,    to: '/programs'   },
+    { label: 'Cardio',     icon: `${BASE}icons/cardio.svg`,     to: '/log'        },
+    { label: 'Meal',       icon: `${BASE}icons/meal.svg`,       to: '/nutrition'  },
+    { label: 'Water',      icon: `${BASE}icons/water.svg`,      to: '/nutrition'  },
+    { label: 'Body Stats', icon: `${BASE}icons/body-stats.svg`, to: '/body'       },
+    { label: 'Progress',   icon: `${BASE}icons/progress.svg`,   to: '/progress'   },
+    { label: 'Exercises',  icon: `${BASE}icons/exercises.svg`,  to: '/exercises'  },
+    { label: 'Calculator', icon: `${BASE}icons/calculator.svg`, to: '/calculator' },
   ]
 
   function handleQA(item: QAItem) {
