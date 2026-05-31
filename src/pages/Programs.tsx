@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
 import ProgramForm from '../components/ProgramForm'
-import { ExerciseThumb } from '../components/ExerciseThumb'
+import MuscleIcon from '../components/MuscleIcon'
 
 
 export default function Programs() {
@@ -58,17 +58,17 @@ export default function Programs() {
     return map
   }, [allDayExs])
 
-  // Primary equipment category per day — most-frequent category among that day's exercises
-  const dayEquipmentMap = useMemo(() => {
+  // Primary muscle group per day — most-frequent muscle among that day's exercises
+  const dayMuscleMap = useMemo(() => {
     const map: Record<string, string> = {}
     if (!allDayExs || !allExercises) return map
     const exerciseMap = new Map(allExercises.map((e) => [e.id, e]))
     const tally: Record<string, Record<string, number>> = {}
     for (const de of allDayExs) {
-      const cat = exerciseMap.get(de.exerciseId)?.category
-      if (!cat) continue
+      const muscle = exerciseMap.get(de.exerciseId)?.muscleGroup
+      if (!muscle) continue
       tally[de.workoutDayId] ??= {}
-      tally[de.workoutDayId][cat] = (tally[de.workoutDayId][cat] ?? 0) + 1
+      tally[de.workoutDayId][muscle] = (tally[de.workoutDayId][muscle] ?? 0) + 1
     }
     for (const [dayId, counts] of Object.entries(tally)) {
       map[dayId] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0]
@@ -170,8 +170,8 @@ export default function Programs() {
                 className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
               >
                 {/* Thumbnail */}
-                <div className="m-3 ml-4">
-                  <ExerciseThumb category={dayEquipmentMap[day.id]} />
+                <div className="m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-xl bg-app-bg flex-shrink-0">
+                  <MuscleIcon muscleGroup={dayMuscleMap[day.id] ?? ''} width={32} height={48} />
                 </div>
 
                 {/* Info */}
