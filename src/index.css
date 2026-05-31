@@ -17,20 +17,7 @@
   --color-app-faint:  #C8C8C8;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-accent-dark:   #FFD840;
-    --color-accent-darker: #FFCA10;
-    --color-accent-light:  #2A2400;
-
-    --color-app-bg:     #1C1D20;
-    --color-app-card:   #26282C;
-    --color-app-border: #3A3C42;
-    --color-app-text:   #F2F2F4;
-    --color-app-muted:  #9E9FA6;
-    --color-app-faint:  #5C5E65;
-  }
-}
+/* Dark mode intentionally disabled — app always uses the light theme */
 
 :root {
   --muscle-body: #c8c8c8;
