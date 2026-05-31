@@ -64,14 +64,13 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
 
       {/* Scrollable grid */}
       <div className="overflow-x-auto -mx-1 px-1">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div className="flex flex-col gap-0.5">
           {/* Month labels row */}
-          <div style={{ display: 'flex', gap: 2 }}>
+          <div className="flex gap-0.5">
             {weeks.map((_, wi) => (
-              <div key={wi} style={{ width: 12, flexShrink: 0 }}>
+              <div key={wi} className="w-3 flex-shrink-0">
                 {monthLabels.has(wi) && (
-                  <span style={{ fontSize: 8, color: '#7A7980', whiteSpace: 'nowrap',
-                    display: 'block', transform: 'translateX(-2px)' }}>
+                  <span className="text-[8px] text-app-muted whitespace-nowrap block -translate-x-0.5">
                     {monthLabels.get(wi)}
                   </span>
                 )}
@@ -81,7 +80,7 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
 
           {/* 7 day rows */}
           {Array.from({ length: 7 }, (_, d) => (
-            <div key={d} style={{ display: 'flex', gap: 2 }}>
+            <div key={d} className="flex gap-0.5">
               {weeks.map((week, wi) => {
                 const day        = week[d]
                 const hasSession = sessionDates.has(day)
@@ -90,13 +89,13 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
                 return (
                   <div
                     key={wi}
-                    style={{ width: 12, height: 12, borderRadius: 2, flexShrink: 0 }}
-                    className={
+                    className={[
+                      'w-3 h-3 rounded-sm flex-shrink-0',
                       isFuture ? 'bg-app-border'
                       : isToday ? 'bg-accent ring-1 ring-accent-dark ring-offset-0'
                       : hasSession ? 'bg-accent-dark'
-                      : 'bg-app-border/60'
-                    }
+                      : 'bg-app-border/60',
+                    ].join(' ')}
                   />
                 )
               })}

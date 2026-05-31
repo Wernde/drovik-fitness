@@ -77,7 +77,7 @@ export default function RestTimer({ defaultSecs, exerciseName, onDismiss }: Prop
 
       {/* Circular progress ring */}
       <div className="relative flex items-center justify-center mb-10">
-        <svg width="220" height="220" className="-rotate-90">
+        <svg viewBox="0 0 220 220" className="w-[220px] h-[220px] -rotate-90">
           {/* Track */}
           <circle
             cx="110" cy="110" r={RADIUS}

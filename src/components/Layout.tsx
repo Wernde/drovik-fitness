@@ -252,7 +252,7 @@ export default function Layout() {
           <div className="flex-1 flex items-center justify-center h-full border-t-[2.5px] border-transparent">
             <button
               onClick={() => setQaOpen((v) => !v)}
-              className="w-[50px] h-[50px] rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
+              className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
               aria-label="Quick add"
             >
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-white">
@@ -285,8 +285,9 @@ export default function Layout() {
             onClick={() => setQaOpen(false)}
           />
           {/* Sheet */}
-          <div className="fixed bottom-[72px] left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] z-50 bg-app-card border-t border-app-border rounded-t-2xl shadow-xl"
-            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+          <div
+            className="fixed left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] z-50 bg-app-card border-t border-app-border rounded-t-2xl shadow-xl"
+            style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
             <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
             <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
             <div className="grid grid-cols-2 gap-3 px-4 pb-6">

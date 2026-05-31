@@ -209,7 +209,7 @@ export default function DayDetail() {
     <div style={{ paddingBottom: 'calc(88px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* ── Fixed header ── */}
-      <div className="sticky top-0 z-40 bg-white border-b border-app-border px-4 flex items-center justify-between h-14">
+      <div className="sticky top-0 z-40 bg-app-card border-b border-app-border px-4 flex items-center justify-between h-14">
         <button
           onClick={() => navigate('/programs')}
           className="flex items-center justify-center w-9 h-9 rounded-full bg-app-bg text-app-muted active:text-app-text"
@@ -235,7 +235,7 @@ export default function DayDetail() {
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-10 z-50 w-40 bg-white rounded-2xl shadow-lg border border-app-border overflow-hidden">
+              <div className="absolute right-0 top-10 z-50 w-40 bg-app-card rounded-2xl shadow-lg border border-app-border overflow-hidden">
                 <button
                   onClick={() => { setShowMenu(false); setEditMode(true) }}
                   className="w-full text-left px-4 py-3 text-sm text-app-text active:bg-app-bg"
@@ -272,7 +272,7 @@ export default function DayDetail() {
 
             {/* Stats chips row */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
-              <div className="flex items-center gap-1.5 bg-white border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+              <div className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5 text-app-muted">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
                 </svg>
@@ -282,7 +282,7 @@ export default function DayDetail() {
               </div>
 
               {estMin != null && (
-                <div className="flex items-center gap-1.5 bg-white border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+                <div className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5 text-app-muted">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -291,7 +291,7 @@ export default function DayDetail() {
               )}
 
               {equipmentList.slice(0, 3).map((cat) => (
-                <div key={cat} className="flex items-center gap-1.5 bg-white border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+                <div key={cat} className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                   <div className="w-3.5 h-3.5 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-app-muted">
                       <path d={CAT_ICON_PATHS[cat] ?? CAT_ICON_PATHS.default} fillRule="evenodd" clipRule="evenodd" />
@@ -321,7 +321,7 @@ export default function DayDetail() {
               // ── Edit mode row ──
               if (editMode) {
                 return (
-                  <div key={de.id} className="bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden">
+                  <div key={de.id} className="bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden">
                     {confirmDelete !== de.id ? (
                       <div className="flex items-center gap-2 px-3 py-3">
                         <div className="flex flex-col gap-0.5">
@@ -374,7 +374,7 @@ export default function DayDetail() {
                 <button
                   key={de.id}
                   onClick={() => openDetail(de)}
-                  className="w-full bg-white rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
+                  className="w-full bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
                 >
                   <div className="flex items-center gap-3 px-4 py-3.5">
                     <ExerciseThumb category={exercise.category} />
@@ -439,7 +439,10 @@ export default function DayDetail() {
 
       {/* ── Sticky Start Now button (view mode) ── */}
       {!editMode && (
-        <div className="fixed bottom-[72px] left-0 right-0 bg-white border-t border-app-border px-4 py-3">
+        <div
+          className="fixed left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] bg-app-card border-t border-app-border px-4 py-3"
+          style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        >
           <button
             onClick={startNow}
             disabled={starting || dayExercises.length === 0}
@@ -457,9 +460,9 @@ export default function DayDetail() {
           style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
         >
           <div className="absolute inset-0 bg-black/40" onClick={closeDetail} />
-          <div className="relative z-50 w-full max-w-lg mx-auto bg-white rounded-t-3xl pb-8 max-h-[80vh] overflow-y-auto">
+          <div className="relative z-50 w-full max-w-lg mx-auto bg-app-card rounded-t-3xl pb-8 max-h-[80vh] overflow-y-auto">
             {/* Handle */}
-            <div className="sticky top-0 bg-white pt-3 pb-2 px-5 flex items-center justify-between border-b border-app-border/50 z-10">
+            <div className="sticky top-0 bg-app-card pt-3 pb-2 px-5 flex items-center justify-between border-b border-app-border/50 z-10">
               <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
               <div />
               <button onClick={closeDetail} className="ml-auto text-app-muted p-1 active:text-app-text">

@@ -323,7 +323,7 @@ export default function BodyStats() {
         <div className="grid grid-cols-3 gap-2">
 
           {/* Weight */}
-          <div className="bg-white rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
+          <div className="bg-app-card rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
             <p className="text-[10px] font-bold text-app-muted uppercase tracking-wide">Weight</p>
             {latestWt ? (
               <>
@@ -343,7 +343,7 @@ export default function BodyStats() {
           </div>
 
           {/* BMI */}
-          <div className="bg-white rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
+          <div className="bg-app-card rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
             <p className="text-[10px] font-bold text-app-muted uppercase tracking-wide">BMI</p>
             {bmi != null ? (
               <>
@@ -360,7 +360,7 @@ export default function BodyStats() {
           </div>
 
           {/* Body Fat */}
-          <div className="bg-white rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
+          <div className="bg-app-card rounded-2xl border border-app-border p-3 flex flex-col gap-0.5">
             <p className="text-[10px] font-bold text-app-muted uppercase tracking-wide">Body Fat</p>
             {bodyFat != null && bodyFat > 2 ? (
               <>
@@ -381,7 +381,7 @@ export default function BodyStats() {
         </div>
 
         {/* ── Chart ── */}
-        <div className="bg-white rounded-2xl border border-app-border p-4">
+        <div className="bg-app-card rounded-2xl border border-app-border p-4">
 
           {/* Metric pills */}
           <div className="flex gap-1.5 flex-wrap mb-3">
@@ -443,7 +443,7 @@ export default function BodyStats() {
         </div>
 
         {/* ── Progress Photos ── */}
-        <div className="bg-white rounded-2xl border border-app-border p-4">
+        <div className="bg-app-card rounded-2xl border border-app-border p-4">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h2 className="font-bold text-[15px] text-app-text">Progress Photos</h2>
@@ -507,7 +507,7 @@ export default function BodyStats() {
 
         {/* ── Measurements history ── */}
         {measLogs && measLogs.length > 0 && (
-          <div className="bg-white rounded-2xl border border-app-border p-4">
+          <div className="bg-app-card rounded-2xl border border-app-border p-4">
             <h2 className="font-bold text-[15px] text-app-text mb-3">Measurements History</h2>
             <div className="space-y-3">
               {measLogs.slice(0, 8).map(l => {
@@ -535,7 +535,7 @@ export default function BodyStats() {
 
         {/* ── Weight history ── */}
         {weightLogs && weightLogs.length > 0 && (
-          <div className="bg-white rounded-2xl border border-app-border p-4">
+          <div className="bg-app-card rounded-2xl border border-app-border p-4">
             <h2 className="font-bold text-[15px] text-app-text mb-3">Weight History</h2>
             <ul className="space-y-1.5">
               {weightLogs.slice(0, 12).map(l => (
@@ -557,11 +557,11 @@ export default function BodyStats() {
         <div className="fixed inset-0 z-50 flex items-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => setLogOpen(false)} />
           <div
-            className="relative z-10 w-full bg-white rounded-t-3xl px-5 max-h-[92vh] overflow-y-auto"
+            className="relative z-10 w-full bg-app-card rounded-t-3xl px-5 max-h-[92vh] overflow-y-auto"
             style={{ paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
           >
             {/* Handle */}
-            <div className="sticky top-0 bg-white pt-3 pb-3 flex items-center justify-between border-b border-app-border/50 z-10">
+            <div className="sticky top-0 bg-app-card pt-3 pb-3 flex items-center justify-between border-b border-app-border/50 z-10">
               <div className="absolute left-1/2 -translate-x-1/2 top-2 w-10 h-1 rounded-full bg-gray-200" />
               <p className="font-bold text-app-text mt-4">Log Today</p>
               <button onClick={() => setLogOpen(false)} className="mt-4 text-app-muted p-1 active:text-app-text">
