@@ -100,6 +100,8 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
   const [query, setQuery]   = useState('')
   const [picked, setPicked] = useState<Food | null>(null)
   const [amount, setAmount] = useState('100')
+  const [pickedRecipe, setPickedRecipe] = useState<Recipe | null>(null)
+  const [servingCount, setServingCount] = useState('1')
   const [saving, setSaving] = useState(false)
 
   const todayStr = today()
@@ -113,6 +115,24 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
   const allFoods    = allFoodsRaw ?? []
   const foodsLoading = allFoodsRaw === undefined
 
+  const recipes = useLiveQuery(
+    () => db.recipes.filter((r) => !r.deleted).toArray().then((list) =>
+      list.sort((a, b) => a.name.localeCompare(b.name))
+    ),
+    [],
+  ) ?? []
+
+  const allRecipeFoods = useLiveQuery(
+    () => db.recipeFoods.filter((r) => !r.deleted).toArray(),
+    [],
+  ) ?? []
+
+  const foodMap = useMemo(() => {
+    const m = new Map<string, Food>()
+    allFoods.forEach((f) => m.set(f.id, f))
+    return m
+  }, [allFoods])
+
   const results = useMemo(() => {
     if (!query.trim()) return allFoods
     const q = query.toLowerCase()
@@ -120,6 +140,25 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
       f.name.toLowerCase().includes(q) || f.category.includes(q)
     )
   }, [allFoods, query])
+
+  const filteredRecipes = useMemo(() => {
+    if (!query.trim()) return recipes
+    const q = query.toLowerCase()
+    return recipes.filter((r) => r.name.toLowerCase().includes(q))
+  }, [recipes, query])
+
+  function getRecipeMacros(recipe: Recipe) {
+    const rfs = allRecipeFoods.filter((rf) => rf.recipeId === recipe.id)
+    const servings = recipe.servings || 1
+    let cal = 0, pro = 0
+    for (const rf of rfs) {
+      const food = foodMap.get(rf.foodId)
+      if (!food) continue
+      cal += food.caloriesPer100g * rf.amountG / 100
+      pro += food.proteinPer100g  * rf.amountG / 100
+    }
+    return { cal: cal / servings, pro: pro / servings }
+  }
 
   async function handleAdd() {
     if (!picked) return
@@ -145,6 +184,39 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
     }
   }
 
+  async function handleAddRecipe() {
+    if (!pickedRecipe) return
+    const count = parseFloat(servingCount)
+    if (isNaN(count) || count <= 0) return
+    setSaving(true)
+    try {
+      const timestamp = now()
+      const rfs = allRecipeFoods.filter((rf) => rf.recipeId === pickedRecipe.id)
+      const servings = pickedRecipe.servings || 1
+      const logs: FoodLog[] = rfs.map((rf) => ({
+        id: crypto.randomUUID(),
+        date: todayStr,
+        foodId: rf.foodId,
+        meal,
+        amountG: (rf.amountG / servings) * count,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        syncedAt: null,
+        deleted: false,
+      }))
+      if (logs.length > 0) await db.foodLogs.bulkAdd(logs)
+      onClose()
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const Chevron = () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4 text-app-faint flex-shrink-0">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+    </svg>
+  )
+
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={onClose}>
       <div
@@ -156,8 +228,64 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
           Add to {MEAL_LABELS[meal]}
         </p>
 
-        {picked ? (
-          /* Amount entry step */
+        {pickedRecipe ? (
+          /* Recipe serving step */
+          <div className="flex flex-col gap-4">
+            <div className="bg-app-bg rounded-xl border border-app-border p-3">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-accent-dark">
+                    <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-bold text-app-text">{pickedRecipe.name}</p>
+              </div>
+              {(() => { const m = getRecipeMacros(pickedRecipe); return (
+                <p className="text-xs text-app-muted">
+                  {fmtInt(m.cal)} kcal · {fmt1(m.pro)}g protein per serving
+                </p>
+              ) })()}
+            </div>
+            <div>
+              <label className="text-xs font-bold text-app-muted block mb-1">Servings</label>
+              <input
+                type="number"
+                inputMode="decimal"
+                value={servingCount}
+                onChange={(e) => setServingCount(e.target.value)}
+                min={0.25}
+                step={0.25}
+                className="w-full bg-app-bg border border-app-border rounded-xl px-3 py-2.5 text-sm text-app-text focus:outline-none focus:ring-2 focus:ring-accent"
+                autoFocus
+              />
+              {parseFloat(servingCount) > 0 && (() => {
+                const m = getRecipeMacros(pickedRecipe)
+                const s = parseFloat(servingCount)
+                return (
+                  <p className="text-xs text-app-muted mt-1.5">
+                    = {fmtInt(m.cal * s)} kcal · {fmt1(m.pro * s)}g protein
+                  </p>
+                )
+              })()}
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPickedRecipe(null)}
+                className="flex-1 bg-app-bg border border-app-border text-app-text font-bold rounded-xl py-2.5 text-sm"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleAddRecipe}
+                disabled={saving || !servingCount || parseFloat(servingCount) <= 0}
+                className="flex-1 bg-accent text-app-text font-bold rounded-xl py-2.5 text-sm active:bg-accent-dark disabled:bg-app-border disabled:text-app-muted"
+              >
+                {saving ? 'Adding…' : 'Add'}
+              </button>
+            </div>
+          </div>
+        ) : picked ? (
+          /* Food amount step */
           <div className="flex flex-col gap-4">
             <div className="bg-app-bg rounded-xl border border-app-border p-3">
               <p className="text-sm font-bold text-app-text">{picked.name}</p>
@@ -212,29 +340,65 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
             <div className="overflow-y-auto flex-1 -mx-5 px-5">
               {foodsLoading ? (
                 <p className="text-sm text-app-muted text-center py-8">Loading foods…</p>
-              ) : results.length === 0 ? (
-                <p className="text-sm text-app-muted text-center py-8">No foods found</p>
               ) : (
-                <div className="flex flex-col divide-y divide-app-border">
-                  {results.map((food) => (
-                    <button
-                      key={food.id}
-                      onClick={() => { setPicked(food); setAmount('100') }}
-                      className="py-3 flex items-center gap-3 text-left active:bg-app-bg/50 w-full"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-app-text truncate">{food.name}</p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          <CategoryBadge category={food.category} />
-                          <span className="text-xs text-app-muted">{food.caloriesPer100g} kcal/100g</span>
-                        </div>
+                <>
+                  {/* Recipes section */}
+                  {filteredRecipes.length > 0 && (
+                    <div className="mb-2">
+                      <p className="text-[11px] font-bold text-app-muted uppercase tracking-wide mb-1.5">My Recipes</p>
+                      <div className="flex flex-col divide-y divide-app-border">
+                        {filteredRecipes.map((recipe) => {
+                          const { cal, pro } = getRecipeMacros(recipe)
+                          return (
+                            <button
+                              key={recipe.id}
+                              onClick={() => { setPickedRecipe(recipe); setServingCount('1') }}
+                              className="py-2.5 flex items-center gap-3 text-left active:bg-app-bg/50 w-full"
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-accent-light flex items-center justify-center flex-shrink-0">
+                                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-accent-dark">
+                                  <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+                                </svg>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-app-text truncate">{recipe.name}</p>
+                                <p className="text-xs text-app-muted">{fmtInt(cal)} kcal · {fmt1(pro)}g protein / serving</p>
+                              </div>
+                              <Chevron />
+                            </button>
+                          )
+                        })}
                       </div>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4 text-app-faint flex-shrink-0">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                      </svg>
-                    </button>
-                  ))}
-                </div>
+                      {results.length > 0 && (
+                        <p className="text-[11px] font-bold text-app-muted uppercase tracking-wide mt-3 mb-1.5">Foods</p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Foods section */}
+                  {results.length === 0 && filteredRecipes.length === 0 ? (
+                    <p className="text-sm text-app-muted text-center py-8">No foods found</p>
+                  ) : (
+                    <div className="flex flex-col divide-y divide-app-border">
+                      {results.map((food) => (
+                        <button
+                          key={food.id}
+                          onClick={() => { setPicked(food); setAmount('100') }}
+                          className="py-3 flex items-center gap-3 text-left active:bg-app-bg/50 w-full"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-app-text truncate">{food.name}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <CategoryBadge category={food.category} />
+                              <span className="text-xs text-app-muted">{food.caloriesPer100g} kcal/100g</span>
+                            </div>
+                          </div>
+                          <Chevron />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </>
@@ -250,10 +414,49 @@ interface DiaryTabProps {
   targets: { calories: number; proteinG: number; carbsG: number; fatG: number } | null
 }
 
+// localStorage key for meal photos: drovik:meal-photo:{date}:{meal}
+function mealPhotoKey(date: string, meal: MealSlot) {
+  return `drovik:meal-photo:${date}:${meal}`
+}
+
 function DiaryTab({ targets }: DiaryTabProps) {
   const [addingMeal, setAddingMeal] = useState<MealSlot | null>(null)
   const todayStr  = today()
   const { units } = useUnits()
+
+  // Per-meal photos stored in localStorage (date-scoped so they reset each day)
+  const [mealPhotos, setMealPhotos] = useState<Partial<Record<MealSlot, string>>>(() => {
+    const out: Partial<Record<MealSlot, string>> = {}
+    for (const m of MEAL_ORDER) {
+      const stored = localStorage.getItem(mealPhotoKey(todayStr, m))
+      if (stored) out[m] = stored
+    }
+    return out
+  })
+
+  function captureMealPhoto(meal: MealSlot) {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = 'image/*'
+    input.capture = 'environment'
+    input.onchange = () => {
+      const file = input.files?.[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        const dataUrl = reader.result as string
+        localStorage.setItem(mealPhotoKey(todayStr, meal), dataUrl)
+        setMealPhotos((prev) => ({ ...prev, [meal]: dataUrl }))
+      }
+      reader.readAsDataURL(file)
+    }
+    input.click()
+  }
+
+  function clearMealPhoto(meal: MealSlot) {
+    localStorage.removeItem(mealPhotoKey(todayStr, meal))
+    setMealPhotos((prev) => { const n = { ...prev }; delete n[meal]; return n })
+  }
 
   const foodLogs = useLiveQuery(
     () => db.foodLogs.where('date').equals(todayStr).filter((l) => !l.deleted).toArray(),
@@ -353,6 +556,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
           { cal: 0, pro: 0 },
         )
 
+        const photo = mealPhotos[meal]
         return (
           <div key={meal} className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
             <div className="flex items-center justify-between px-4 pt-3 pb-2">
@@ -364,13 +568,42 @@ function DiaryTab({ targets }: DiaryTabProps) {
                   </p>
                 )}
               </div>
-              <button
-                onClick={() => setAddingMeal(meal)}
-                className="bg-accent text-app-text text-xs font-bold px-3 py-1.5 rounded-xl active:bg-accent-dark"
-              >
-                + Add
-              </button>
+              <div className="flex items-center gap-2">
+                {/* Camera button */}
+                <button
+                  onClick={() => captureMealPhoto(meal)}
+                  className="w-8 h-8 rounded-xl bg-app-bg border border-app-border flex items-center justify-center text-app-muted active:bg-gray-100"
+                  aria-label="Add meal photo"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setAddingMeal(meal)}
+                  className="bg-accent text-app-text text-xs font-bold px-3 py-1.5 rounded-xl active:bg-accent-dark"
+                >
+                  + Add
+                </button>
+              </div>
             </div>
+
+            {/* Meal photo thumbnail */}
+            {photo && (
+              <div className="relative mx-4 mb-2 rounded-xl overflow-hidden" style={{ aspectRatio: '16/7' }}>
+                <img src={photo} alt="Meal photo" className="w-full h-full object-cover" />
+                <button
+                  onClick={() => clearMealPhoto(meal)}
+                  className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 flex items-center justify-center text-white"
+                  aria-label="Remove photo"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
 
             {mealLogs.length > 0 ? (
               <div className="divide-y divide-app-border border-t border-app-border">
