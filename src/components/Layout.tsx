@@ -215,7 +215,7 @@ export default function Layout() {
         )}
 
         {/* ── App body ─────────────────────────────────────────────────────── */}
-        <div className="flex flex-1 min-h-0 relative">
+        <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
           <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
@@ -249,8 +249,27 @@ export default function Layout() {
               ))}
             </nav>
 
+            {/* Quick Add items (inside sidebar, above button) */}
+            {qaOpen && (
+              <nav className="px-3 pb-2 overflow-y-auto flex flex-col-reverse" style={{ maxHeight: 'calc(100% - 180px)' }}>
+                {QA_ITEMS.map((item, i) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleQA(item)}
+                    className="qa-item w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-app-bg transition-colors text-left"
+                    style={{ animationDelay: `${i * 35}ms` }}
+                  >
+                    <div className={`w-8 h-8 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                      <span className="scale-75">{item.icon}</span>
+                    </div>
+                    <span className="text-sm font-semibold text-app-text">{item.label}</span>
+                  </button>
+                ))}
+              </nav>
+            )}
+
             {/* Quick Add button */}
-            <div className="px-3 pb-6">
+            <div className="px-3 pb-6 flex-shrink-0">
               <button
                 onClick={() => setQaOpen((v) => !v)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-colors ${qaOpen ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
@@ -262,27 +281,6 @@ export default function Layout() {
               </button>
             </div>
           </aside>
-
-          {/* ── Quick Add side panel (desktop only, absolute so content never shifts) */}
-          {qaOpen && (
-            <div className="hidden md:flex flex-col absolute left-60 bottom-0 w-56 z-30 pb-6" style={{ top: 'auto' }}>
-              <nav className="flex flex-col-reverse px-3 space-y-0.5 space-y-reverse">
-                {QA_ITEMS.map((item, i) => (
-                  <button
-                    key={item.label}
-                    onClick={() => handleQA(item)}
-                    className="qa-item w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-left"
-                    style={{ animationDelay: `${i * 35}ms` }}
-                  >
-                    <div className={`w-8 h-8 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
-                      <span className="scale-75">{item.icon}</span>
-                    </div>
-                    <span className="text-sm font-semibold text-app-text">{item.label}</span>
-                  </button>
-                ))}
-              </nav>
-            </div>
-          )}
 
           {/* ── Content + mobile bottom nav ───────────────────────────────── */}
           <div className="flex flex-col flex-1 min-w-0">
