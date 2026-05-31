@@ -158,11 +158,9 @@ export default function Layout() {
           <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
 
             {/* Brand */}
-            <div className="relative bg-app-text border-b border-black/20 px-4 py-3 flex items-end justify-between">
-              <img src={`${BASE}drovik-logo.svg`} alt="Drovik Fitness" className="h-16" />
-              <div className="pb-0.5">
-                <SyncDot status={status} />
-              </div>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-app-border">
+              <img src={`${BASE}drovik-logo.svg`} alt="Drovik Fitness" className="h-12" />
+              <SyncDot status={status} />
             </div>
 
             {/* Nav items */}

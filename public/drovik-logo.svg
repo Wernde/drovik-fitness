@@ -1,26 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 130">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 56">
   <defs>
     <linearGradient id="dg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="0%" stop-color="#F5C842"/>
       <stop offset="100%" stop-color="#C9A227"/>
     </linearGradient>
-    <linearGradient id="lg" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#00AAFF"/>
-      <stop offset="100%" stop-color="#88CC44"/>
-    </linearGradient>
   </defs>
-  <text x="160" y="68" text-anchor="middle"
-    font-family="'Arial Black','Impact','Franklin Gothic Heavy',sans-serif"
-    font-size="76" font-weight="900" font-style="italic"
-    fill="url(#dg)" letter-spacing="-2">DROVIK</text>
-  <text x="160" y="90" text-anchor="middle"
+  <text x="120" y="38"
+    text-anchor="middle"
+    font-family="'Arial Black','Franklin Gothic Heavy','Impact',sans-serif"
+    font-size="46"
+    font-weight="900"
+    fill="url(#dg)"
+    letter-spacing="-1">DROVIK</text>
+  <text x="120" y="52"
+    text-anchor="middle"
     font-family="'Arial','Helvetica',sans-serif"
-    font-size="22" font-weight="700" letter-spacing="9"
-    fill="#C9A227">FITNESS</text>
-  <rect x="14" y="99" width="292" height="4" rx="2" fill="url(#lg)"/>
-  <rect x="14" y="106" width="292" height="2" rx="1" fill="url(#lg)" opacity="0.6"/>
-  <text x="160" y="126" text-anchor="middle"
-    font-family="'Arial','Helvetica',sans-serif"
-    font-size="13" font-weight="700" letter-spacing="3.5"
-    fill="#00AAFF">POWER YOUR PROGRESS</text>
+    font-size="11"
+    font-weight="600"
+    fill="#00AAFF"
+    letter-spacing="2.5">Power your Fitness</text>
 </svg>
