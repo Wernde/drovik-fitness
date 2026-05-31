@@ -104,12 +104,14 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
 
   const todayStr = today()
 
-  const allFoods = useLiveQuery(
+  const allFoodsRaw = useLiveQuery(
     () => db.foods.filter((f) => !f.deleted).toArray().then((list) =>
       list.sort((a, b) => a.name.localeCompare(b.name))
     ),
     [],
-  ) ?? []
+  )
+  const allFoods    = allFoodsRaw ?? []
+  const foodsLoading = allFoodsRaw === undefined
 
   const results = useMemo(() => {
     if (!query.trim()) return allFoods
@@ -190,7 +192,7 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
               <button
                 onClick={handleAdd}
                 disabled={saving || !amount || parseFloat(amount) <= 0}
-                className="flex-1 bg-accent text-app-text font-bold rounded-xl py-2.5 text-sm active:bg-accent-dark disabled:opacity-50"
+                className="flex-1 bg-accent text-app-text font-bold rounded-xl py-2.5 text-sm active:bg-accent-dark disabled:bg-app-border disabled:text-app-muted"
               >
                 {saving ? 'Adding…' : 'Add'}
               </button>
@@ -208,7 +210,9 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
               autoFocus
             />
             <div className="overflow-y-auto flex-1 -mx-5 px-5">
-              {results.length === 0 ? (
+              {foodsLoading ? (
+                <p className="text-sm text-app-muted text-center py-8">Loading foods…</p>
+              ) : results.length === 0 ? (
                 <p className="text-sm text-app-muted text-center py-8">No foods found</p>
               ) : (
                 <div className="flex flex-col divide-y divide-app-border">
@@ -861,7 +865,7 @@ function NewRecipeModal({ onClose }: { onClose: () => void }) {
           <button
             onClick={handleSave}
             disabled={saving || !name.trim()}
-            className="flex-1 bg-accent text-app-text font-bold rounded-xl py-2.5 text-sm active:bg-accent-dark disabled:opacity-50"
+            className="flex-1 bg-accent text-app-text font-bold rounded-xl py-2.5 text-sm active:bg-accent-dark disabled:bg-app-border disabled:text-app-muted"
           >
             {saving ? 'Saving…' : 'Save Recipe'}
           </button>
@@ -1386,7 +1390,7 @@ export default function Nutrition() {
   ]
 
   return (
-    <div className="px-4 pt-5 pb-24">
+    <div className="px-4 pt-5 pb-24 overflow-x-hidden">
       <p className="text-xs text-app-muted font-medium mb-1">Your</p>
       <h1 className="text-2xl font-extrabold text-app-text mb-4">Nutrition</h1>
 

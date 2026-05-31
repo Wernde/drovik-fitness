@@ -266,7 +266,7 @@ export default function Layout() {
           {/* ── Content + mobile bottom nav ───────────────────────────────── */}
           <div className="flex flex-col flex-1 min-w-0">
 
-            <main ref={mainRef} className="flex-1 overflow-y-auto overscroll-contain">
+            <main ref={mainRef} className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
               {/* Pull-to-refresh indicator */}
               <div
                 aria-hidden
@@ -285,7 +285,7 @@ export default function Layout() {
 
             {/* ── Mobile bottom nav (hidden on md+) ──────────────────────── */}
             <nav
-              className="md:hidden flex-none bg-app-card border-t border-app-border"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-app-card border-t border-app-border"
               style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
               <div className="h-[72px] flex items-center">

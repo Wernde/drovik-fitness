@@ -130,7 +130,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
 
       {/* Exercise list */}
       {!selectedId && (
-        <ul className="flex flex-col gap-1 mb-4 max-h-64 overflow-y-auto">
+        <ul className="flex flex-col gap-1 mb-4">
           {filteredEx.length === 0 ? (
             <li className="text-center text-app-muted text-sm py-4">No exercises found.</li>
           ) : filteredEx.map((e) => (

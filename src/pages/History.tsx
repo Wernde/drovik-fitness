@@ -2,7 +2,7 @@
  * History — calendar view of all past workout sessions.
  */
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
@@ -44,11 +44,23 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
   const allDays    = weeks.flat()
   const totalInRange = allDays.filter((d) => sessionDates.has(d)).length
 
-  let longest = 0, run = 0
-  for (const d of allDays) {
-    if (sessionDates.has(d)) { run++; if (run > longest) longest = run }
-    else run = 0
+  // Current streak: consecutive workout days ending today (or yesterday if rest day)
+  let currentStreak = 0
+  const streakCheck = new Date(today)
+  if (!sessionDates.has(isoDate(streakCheck))) {
+    streakCheck.setDate(streakCheck.getDate() - 1)
   }
+  while (sessionDates.has(isoDate(streakCheck))) {
+    currentStreak++
+    streakCheck.setDate(streakCheck.getDate() - 1)
+  }
+
+  const scrollRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
+    }
+  }, [])
 
   return (
     <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
@@ -56,14 +68,14 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
         <p className="text-xs text-app-muted">Last 52 weeks</p>
         <div className="flex gap-3">
           <span className="text-xs text-accent-dark font-semibold">{totalInRange} sessions</span>
-          {longest > 1 && (
-            <span className="text-xs text-amber-600 font-semibold">🔥 {longest}-day streak</span>
+          {currentStreak > 0 && (
+            <span className="text-xs text-amber-600 font-semibold">🔥 {currentStreak}-day streak</span>
           )}
         </div>
       </div>
 
-      {/* Scrollable grid */}
-      <div className="overflow-x-auto -mx-1 px-1">
+      {/* Scrollable grid — auto-scrolled to today on mount */}
+      <div ref={scrollRef} className="overflow-x-auto -mx-1 px-1">
         <div className="flex flex-col gap-0.5">
           {/* Month labels row */}
           <div className="flex gap-0.5">
