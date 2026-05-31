@@ -215,7 +215,7 @@ export default function Layout() {
         )}
 
         {/* ── App body ─────────────────────────────────────────────────────── */}
-        <div className="flex flex-1 min-h-0">
+        <div className="flex flex-1 min-h-0 relative">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
           <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
@@ -263,10 +263,10 @@ export default function Layout() {
             </div>
           </aside>
 
-          {/* ── Quick Add side panel (desktop only) ──────────────────────── */}
+          {/* ── Quick Add side panel (desktop only, absolute so content never shifts) */}
           {qaOpen && (
-            <div className="hidden md:flex flex-col w-56 flex-none bg-app-card border-r border-app-border">
-              <div className="flex items-center justify-between px-4 py-4 border-b border-app-border">
+            <div className="hidden md:flex flex-col absolute left-60 top-0 bottom-0 w-56 z-30 bg-app-card border-r border-app-border shadow-lg">
+              <div className="flex-none flex items-center justify-between px-4 py-4 border-b border-app-border">
                 <p className="text-sm font-bold text-app-text">Quick Add</p>
                 <button
                   onClick={() => setQaOpen(false)}
@@ -279,11 +279,12 @@ export default function Layout() {
                 </button>
               </div>
               <nav className="flex-1 px-3 py-3 space-y-0.5 overflow-y-auto">
-                {QA_ITEMS.map((item) => (
+                {QA_ITEMS.map((item, i) => (
                   <button
                     key={item.label}
                     onClick={() => handleQA(item)}
-                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-app-bg transition-colors text-left"
+                    className="qa-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-app-bg transition-colors text-left"
+                    style={{ animationDelay: `${i * 35}ms` }}
                   >
                     <div className={`w-8 h-8 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
                       <span className="scale-75">{item.icon}</span>
