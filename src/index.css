@@ -23,12 +23,12 @@
     --color-accent-darker: #FFCA10;
     --color-accent-light:  #2A2400;
 
-    --color-app-bg:     #0F1011;
-    --color-app-card:   #1A1B1E;
-    --color-app-border: #2C2D31;
-    --color-app-text:   #F0F0F2;
-    --color-app-muted:  #8B8C91;
-    --color-app-faint:  #45464A;
+    --color-app-bg:     #1C1D20;
+    --color-app-card:   #26282C;
+    --color-app-border: #3A3C42;
+    --color-app-text:   #F2F2F4;
+    --color-app-muted:  #9E9FA6;
+    --color-app-faint:  #5C5E65;
   }
 }
 
