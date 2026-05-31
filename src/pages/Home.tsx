@@ -437,7 +437,7 @@ export default function Home() {
 
         {/* ── My Progress ───────────────────────────────────────────── */}
         <div>
-          <p className="text-base font-extrabold text-app-text mb-2">My Progress</p>
+          <p className="text-base font-extrabold text-app-text mb-2">My Stats</p>
           <div className="grid grid-cols-2 gap-3">
             {/* Sessions this week */}
             <Link to="/history" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">

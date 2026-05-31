@@ -218,7 +218,7 @@ export default function Layout() {
         <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
-          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
+          <aside className={`hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border transition-opacity duration-200 ${qaOpen ? 'opacity-40 pointer-events-none' : ''}`}>
 
             {/* Brand */}
             <div className="flex items-center gap-2 px-5 py-5 border-b border-app-border">
