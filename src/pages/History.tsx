@@ -14,12 +14,22 @@ const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 // ── Year heatmap ──────────────────────────────────────────────────────────────
 
-function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
+// Colour scale by session count (0 = no workout, 4+ = max intensity)
+function heatColor(count: number, isToday: boolean, isFuture: boolean): string {
+  if (isFuture) return '#EEF0F3'
+  if (count === 0) return isToday ? '#D1D5DB' : '#EEF0F3'
+  if (count === 1) return '#FDE68A'  // amber-200 — light
+  if (count === 2) return '#FBBF24'  // amber-400 — medium
+  if (count === 3) return '#F59E0B'  // amber-500 — strong
+  return '#B45309'                   // amber-700 — max
+}
+
+function YearHeatmap({ sessionCountMap }: { sessionCountMap: Map<string, number> }) {
   const today = new Date()
   today.setHours(12, 0, 0, 0)
-  const dow        = today.getDay()
-  const toMonday   = dow === 0 ? 6 : dow - 1
-  const weekStart  = new Date(today)
+  const dow       = today.getDay()
+  const toMonday  = dow === 0 ? 6 : dow - 1
+  const weekStart = new Date(today)
   weekStart.setDate(today.getDate() - toMonday - 51 * 7)
 
   const weeks: string[][] = Array.from({ length: 52 }, (_, w) =>
@@ -40,33 +50,48 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
     }
   }
 
-  const todayStr   = isoDate(today)
-  const allDays    = weeks.flat()
-  const totalInRange = allDays.filter((d) => sessionDates.has(d)).length
+  const todayStr     = isoDate(today)
+  const allDays      = weeks.flat()
+  const totalInRange = allDays.filter((d) => (sessionCountMap.get(d) ?? 0) > 0).length
 
   // Current streak: consecutive workout days ending today (or yesterday if rest day)
   let currentStreak = 0
   const streakCheck = new Date(today)
-  if (!sessionDates.has(isoDate(streakCheck))) {
+  if (!sessionCountMap.has(isoDate(streakCheck))) {
     streakCheck.setDate(streakCheck.getDate() - 1)
   }
-  while (sessionDates.has(isoDate(streakCheck))) {
+  while (sessionCountMap.has(isoDate(streakCheck))) {
     currentStreak++
     streakCheck.setDate(streakCheck.getDate() - 1)
   }
 
-  const scrollRef = useRef<HTMLDivElement>(null)
+  // Responsive cell sizing — measure container, compute cell width to fit exactly
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [cellSize, setCellSize] = useState(10)
+
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = scrollRef.current.scrollWidth
+    const el = containerRef.current
+    if (!el) return
+    const GAP = 2
+    const WEEKS = 52
+    const measure = () => {
+      const w = el.clientWidth
+      setCellSize(Math.max(6, Math.floor((w - GAP * (WEEKS - 1)) / WEEKS)))
     }
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
   }, [])
+
+  const GAP = 2
 
   return (
     <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
+      {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs text-app-muted">Last 52 weeks</p>
-        <div className="flex gap-3">
+        <p className="text-xs text-app-muted font-medium">Last 52 weeks</p>
+        <div className="flex items-center gap-3">
           <span className="text-xs text-accent-dark font-semibold">{totalInRange} sessions</span>
           {currentStreak > 0 && (
             <span className="text-xs text-amber-600 font-semibold">🔥 {currentStreak}-day streak</span>
@@ -74,45 +99,59 @@ function YearHeatmap({ sessionDates }: { sessionDates: Set<string> }) {
         </div>
       </div>
 
-      {/* Scrollable grid — auto-scrolled to today on mount */}
-      <div ref={scrollRef} className="overflow-x-auto -mx-1 px-1">
-        <div className="flex flex-col gap-0.5">
-          {/* Month labels row */}
-          <div className="flex gap-0.5">
-            {weeks.map((_, wi) => (
-              <div key={wi} className="w-3 flex-shrink-0">
-                {monthLabels.has(wi) && (
-                  <span className="text-[8px] text-app-muted whitespace-nowrap block -translate-x-0.5">
-                    {monthLabels.get(wi)}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* 7 day rows */}
-          {Array.from({ length: 7 }, (_, d) => (
-            <div key={d} className="flex gap-0.5">
-              {weeks.map((week, wi) => {
-                const day        = week[d]
-                const hasSession = sessionDates.has(day)
-                const isToday    = day === todayStr
-                const isFuture   = day > todayStr
-                return (
-                  <div
-                    key={wi}
-                    className={[
-                      'w-3 h-3 rounded-sm flex-shrink-0',
-                      isFuture ? 'bg-app-border'
-                      : isToday ? 'bg-accent ring-1 ring-accent-dark ring-offset-0'
-                      : hasSession ? 'bg-accent-dark'
-                      : 'bg-app-border/60',
-                    ].join(' ')}
-                  />
-                )
-              })}
+      {/* Responsive grid — no scroll, fills container width */}
+      <div ref={containerRef}>
+        {/* Month labels */}
+        <div style={{ display: 'flex', gap: GAP, marginBottom: 4 }}>
+          {weeks.map((_, wi) => (
+            <div key={wi} style={{ width: cellSize, flexShrink: 0, overflow: 'visible' }}>
+              {monthLabels.has(wi) && (
+                <span style={{ fontSize: 9, color: '#7A7980', whiteSpace: 'nowrap', display: 'block' }}>
+                  {monthLabels.get(wi)}
+                </span>
+              )}
             </div>
           ))}
+        </div>
+
+        {/* 7 day rows */}
+        {Array.from({ length: 7 }, (_, d) => (
+          <div key={d} style={{ display: 'flex', gap: GAP, marginBottom: d < 6 ? GAP : 0 }}>
+            {weeks.map((week, wi) => {
+              const day     = week[d]
+              const count   = sessionCountMap.get(day) ?? 0
+              const isToday = day === todayStr
+              const isFuture = day > todayStr
+              const bg      = heatColor(count, isToday, isFuture)
+              return (
+                <div
+                  key={wi}
+                  title={count > 0 ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : day}
+                  style={{
+                    width:        cellSize,
+                    height:       cellSize,
+                    flexShrink:   0,
+                    borderRadius: Math.max(2, Math.floor(cellSize / 4)),
+                    backgroundColor: bg,
+                    outline:      isToday ? '2px solid #B8900A' : undefined,
+                    outlineOffset: isToday ? 1 : undefined,
+                  }}
+                />
+              )
+            })}
+          </div>
+        ))}
+
+        {/* Colour legend */}
+        <div className="flex items-center gap-1.5 mt-3">
+          <span className="text-[10px] text-app-faint">Less</span>
+          {['#EEF0F3', '#FDE68A', '#FBBF24', '#F59E0B', '#B45309'].map((c) => (
+            <div
+              key={c}
+              style={{ width: cellSize, height: cellSize, borderRadius: 2, backgroundColor: c, flexShrink: 0 }}
+            />
+          ))}
+          <span className="text-[10px] text-app-faint">More</span>
         </div>
       </div>
     </div>
@@ -152,8 +191,15 @@ export default function History() {
     return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
-  const dayMap        = new Map(days.map((d) => [d.id, d.name]))
-  const sessionDates  = new Set(sessions.map((s) => s.date))
+  const dayMap = new Map(days.map((d) => [d.id, d.name]))
+
+  // Count sessions per date for heatmap colour intensity
+  const sessionCountMap = sessions.reduce((map, s) => {
+    map.set(s.date, (map.get(s.date) ?? 0) + 1)
+    return map
+  }, new Map<string, number>())
+
+  const sessionDates = new Set(sessions.map((s) => s.date))
   const monthPrefix   = `${String(viewYear)}-${String(viewMonth + 1).padStart(2, '0')}`
   const monthSessions = sessions.filter((s) => s.date.startsWith(monthPrefix))
   const calendarDays  = buildCalendarDays(viewYear, viewMonth)
@@ -176,7 +222,7 @@ export default function History() {
       <h1 className="text-2xl font-extrabold text-app-text mb-5">History</h1>
 
       {/* ── Year heatmap ── */}
-      <YearHeatmap sessionDates={sessionDates} />
+      <YearHeatmap sessionCountMap={sessionCountMap} />
 
       {/* ── Calendar ── */}
       <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
