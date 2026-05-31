@@ -237,10 +237,10 @@ export default function Layout() {
                   to={to}
                   end={to === '/'}
                   className={({ isActive }) => [
-                    'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors',
+                    'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors',
                     isActive
-                      ? 'bg-accent/20 text-app-text'
-                      : 'text-app-muted hover:bg-app-bg hover:text-app-text',
+                      ? 'bg-accent text-app-text shadow-sm'
+                      : 'text-app-muted hover:bg-app-bg hover:text-app-text font-semibold',
                   ].join(' ')}
                 >
                   {icon}
@@ -347,21 +347,24 @@ export default function Layout() {
           />
           {/* Sheet — qa-sheet class handles mobile vs desktop bottom offset */}
           <div className="qa-sheet bg-app-card border-t border-app-border rounded-t-2xl shadow-xl">
-            <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
-            <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
-            <div className="grid grid-cols-2 gap-3 px-4 pb-6">
-              {QA_ITEMS.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => handleQA(item)}
-                  className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
-                >
-                  <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
-                    {item.icon}
-                  </div>
-                  <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
-                </button>
-              ))}
+            {/* Inner wrapper: centred with max-width on desktop */}
+            <div className="md:max-w-lg md:mx-auto">
+              <div className="w-9 h-1 bg-app-border rounded-full mx-auto mt-3 mb-4" />
+              <p className="text-center text-sm font-bold text-app-text mb-4">Quick Add</p>
+              <div className="grid grid-cols-2 gap-3 px-4 pb-6">
+                {QA_ITEMS.map((item) => (
+                  <button
+                    key={item.label}
+                    onClick={() => handleQA(item)}
+                    className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
+                  >
+                    <div className={`w-10 h-10 rounded-full ${item.bg} flex items-center justify-center flex-shrink-0`}>
+                      {item.icon}
+                    </div>
+                    <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </>
