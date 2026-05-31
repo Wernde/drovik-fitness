@@ -554,7 +554,7 @@ export default function BodyStats() {
 
       {/* ── Log sheet ── */}
       {logOpen && (
-        <div className="fixed inset-0 z-50 flex items-end">
+        <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setLogOpen(false)} />
           <div
             className="relative z-10 w-full bg-app-card rounded-t-3xl px-5 max-h-[92vh] overflow-y-auto"

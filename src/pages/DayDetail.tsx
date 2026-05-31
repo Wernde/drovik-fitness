@@ -5,7 +5,6 @@ import { db, now, today } from '../db/db'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
-import YouTubeModal from '../components/YouTubeModal'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 
 // ── Category icons ────────────────────────────────────────────────────────────
@@ -75,7 +74,7 @@ export default function DayDetail() {
   // Detail sheet state
   const [detailDE,        setDetailDE]        = useState<DayExercise | null>(null)
   const [guideOpen,       setGuideOpen]       = useState(false)
-  const [videoModal,      setVideoModal]      = useState<{ id: string; title: string } | null>(null)
+  const [detailVideoOpen, setDetailVideoOpen] = useState(false)
 
   const day     = useLiveQuery(() => (dayId     ? db.workoutDays.get(dayId)     : undefined), [dayId])
   const program = useLiveQuery(() => (programId ? db.programs.get(programId)    : undefined), [programId])
@@ -195,11 +194,13 @@ export default function DayDetail() {
   function openDetail(de: DayExercise) {
     setDetailDE(de)
     setGuideOpen(false)
+    setDetailVideoOpen(false)
   }
 
   function closeDetail() {
     setDetailDE(null)
     setGuideOpen(false)
+    setDetailVideoOpen(false)
   }
 
   // Exercise for the open detail sheet
@@ -395,13 +396,9 @@ export default function DayDetail() {
                       )}
                     </div>
 
-                    {/* Right side: compact thumbnail (tappable) or chevron */}
+                    {/* Right side: compact thumbnail preview or chevron — tap the row to open detail with inline video */}
                     {listVid ? (
-                      <button
-                        onClick={e => { e.stopPropagation(); setVideoModal({ id: listVid, title: exercise.name }) }}
-                        className="relative flex-shrink-0 w-16 h-9 rounded-lg overflow-hidden active:opacity-75"
-                        aria-label={`Play ${exercise.name} tutorial`}
-                      >
+                      <div className="relative flex-shrink-0 w-16 h-9 rounded-lg overflow-hidden pointer-events-none">
                         <img src={getYouTubeThumbnail(listVid)} alt="" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                           <div className="w-5 h-5 bg-red-600 rounded-full flex items-center justify-center">
@@ -410,7 +407,7 @@ export default function DayDetail() {
                             </svg>
                           </div>
                         </div>
-                      </button>
+                      </div>
                     ) : (
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
                         <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
@@ -486,9 +483,19 @@ export default function DayDetail() {
               {detailExercise.videoUrl && (() => {
                 const vid = getYouTubeId(detailExercise.videoUrl)
                 if (!vid) return null
-                return (
+                return detailVideoOpen ? (
+                  <div className="relative w-full rounded-2xl overflow-hidden mb-4" style={{ aspectRatio: '16/9' }}>
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&playsinline=1`}
+                      title={detailExercise.name}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                ) : (
                   <button
-                    onClick={() => setVideoModal({ id: vid, title: detailExercise.name })}
+                    onClick={() => setDetailVideoOpen(true)}
                     className="relative w-full rounded-2xl overflow-hidden mb-4 active:opacity-80"
                     style={{ aspectRatio: '16/9' }}
                     aria-label={`Play ${detailExercise.name} tutorial`}
@@ -603,13 +610,6 @@ export default function DayDetail() {
         />
       )}
 
-      {videoModal && (
-        <YouTubeModal
-          videoId={videoModal.id}
-          title={videoModal.title}
-          onClose={() => setVideoModal(null)}
-        />
-      )}
     </div>
   )
 }

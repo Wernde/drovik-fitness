@@ -144,7 +144,7 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={onClose}>
       <div
         className="w-full bg-app-card rounded-t-2xl p-5 max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
@@ -478,7 +478,7 @@ function AddCustomFoodModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={onClose}>
       <div
         className="w-full bg-app-card rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
@@ -739,7 +739,7 @@ function NewRecipeModal({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={onClose}>
       <div
         className="w-full bg-app-card rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto flex flex-col gap-3"
         onClick={(e) => e.stopPropagation()}
@@ -941,7 +941,7 @@ function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-black/40" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={onClose}>
       <div
         className="w-full bg-app-card rounded-t-2xl p-5 max-h-[85vh] overflow-y-auto flex flex-col gap-3"
         onClick={(e) => e.stopPropagation()}

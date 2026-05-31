@@ -10,7 +10,6 @@ import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
-import YouTubeModal from './YouTubeModal'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -110,7 +109,7 @@ export default function WorkoutLogger({ session }: Props) {
   const [expandedSetNote, setExpandedSetNote] = useState<Set<string>>(new Set())
   const [exerciseMenu,    setExerciseMenu]    = useState<string | null>(null)
   const [substituteSeId,  setSubstituteSeId]  = useState<string | null>(null)
-  const [videoModal,      setVideoModal]      = useState<{ id: string; title: string } | null>(null)
+  const [expandedVideos,  setExpandedVideos]  = useState<Set<string>>(new Set())
 
   const draftsInit = useRef(false)
 
@@ -632,27 +631,39 @@ export default function WorkoutLogger({ session }: Props) {
                   </button>
                 </div>
 
-                {/* ── Video thumbnail ── */}
+                {/* ── Video ── */}
                 {hasVideo && videoId && (
-                  <button
-                    onClick={() => setVideoModal({ id: videoId, title: exercise.name })}
-                    className="block relative mx-4 mb-3 rounded-xl overflow-hidden active:opacity-80"
-                    style={{ aspectRatio: '16/9' }}
-                    aria-label={`Play ${exercise.name} tutorial`}
-                  >
-                    <img
-                      src={getYouTubeThumbnail(videoId)}
-                      alt={`${exercise.name} tutorial`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
-                        <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5 ml-0.5">
-                          <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
-                        </svg>
-                      </div>
+                  expandedVideos.has(se.id) ? (
+                    <div className="mx-4 mb-3 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                      <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`}
+                        title={exercise.name}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
                     </div>
-                  </button>
+                  ) : (
+                    <button
+                      onClick={() => setExpandedVideos((prev) => { const n = new Set(prev); n.add(se.id); return n })}
+                      className="block relative mx-4 mb-3 rounded-xl overflow-hidden active:opacity-80"
+                      style={{ aspectRatio: '16/9' }}
+                      aria-label={`Play ${exercise.name} tutorial`}
+                    >
+                      <img
+                        src={getYouTubeThumbnail(videoId)}
+                        alt={`${exercise.name} tutorial`}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                        <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                          <svg viewBox="0 0 24 24" fill="white" className="w-5 h-5 ml-0.5">
+                            <path d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </button>
+                  )
                 )}
 
                 {/* ── Guide / Instructions panel ── */}
@@ -1032,14 +1043,6 @@ export default function WorkoutLogger({ session }: Props) {
         />
       )}
 
-      {/* ── In-app video player ── */}
-      {videoModal && (
-        <YouTubeModal
-          videoId={videoModal.id}
-          title={videoModal.title}
-          onClose={() => setVideoModal(null)}
-        />
-      )}
     </div>
   )
 }
