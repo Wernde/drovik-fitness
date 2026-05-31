@@ -538,7 +538,7 @@ export default function WorkoutLogger({ session }: Props) {
     <div style={{ paddingBottom: 'calc(148px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* ── Fixed header ── */}
-      <div className="fixed top-0 left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] z-40 bg-app-card border-b border-app-border">
+      <div className="fixed top-0 left-0 right-0 md:left-60 z-40 bg-app-card border-b border-app-border">
         {/* Row 1 — Cancel | Workout name | Finish */}
         <div className="px-4 flex items-center justify-between h-11 border-b border-app-border/40">
           <button
@@ -923,7 +923,7 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Sticky Finish Workout button ── */}
       <div
-        className="fixed left-0 right-0 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:w-[430px] bg-app-card/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
+        className="fixed left-0 right-0 md:left-60 bg-app-card/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
         style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
       >
         <button
