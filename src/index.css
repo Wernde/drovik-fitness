@@ -63,14 +63,17 @@
 }
 
 @layer base {
-  html {
-    overflow-x: hidden;
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    /* overflow-x: hidden on html/body suppresses child overflow-y:auto on iOS Safari.
+       The app root (fixed inset-0) handles all overflow containment. */
+    overflow: hidden;
   }
 
   body {
     @apply bg-app-bg text-app-text;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    overflow-x: hidden;
   }
 
   input,

@@ -141,7 +141,7 @@ export default function Layout() {
   }
 
   return (
-    <div className="h-screen overflow-hidden bg-app-bg" style={{ height: '100dvh' }}>
+    <div className="fixed inset-0 bg-app-bg overflow-hidden">
       <div className="flex flex-col h-full">
 
         {/* Offline banner */}
