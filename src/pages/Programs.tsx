@@ -103,112 +103,28 @@ export default function Programs() {
   return (
     <div className="pb-24">
 
-      {/* ── Active program header ──────────────────────────────── */}
-      {activeProgram ? (
-        <div className="bg-app-bg px-5 pt-6 pb-3 border-b border-app-border">
-          <div className="flex items-start justify-between">
-            <div>
-              {activeProgram.description && <p className="text-xs text-app-muted font-medium">{activeProgram.description}</p>}
-              <h1 className="text-2xl font-extrabold text-app-text leading-tight">{activeProgram.name}</h1>
-            </div>
-            <button
-              onClick={() => navigate(`/programs/${activeProgram.id}`)}
-              className="w-9 h-9 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-muted mt-1"
-              aria-label="Manage program"
-            >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                <path fillRule="evenodd" d="M4.5 12a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm6 0a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" clipRule="evenodd" />
-              </svg>
-            </button>
-          </div>
-          <p className="text-xs text-app-muted mt-1">{activeDays.length} {activeDays.length === 1 ? 'day' : 'days'}</p>
-        </div>
-      ) : (
-        <div className="px-5 pt-6 pb-3 border-b border-app-border flex items-center justify-between">
-          <h1 className="text-2xl font-extrabold text-app-text">Plans</h1>
-          <button
-            onClick={() => { setEditing(undefined); setFormOpen(true) }}
-            className="flex items-center gap-1.5 rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
-          >
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-            </svg>
-            New
-          </button>
-        </div>
-      )}
+      {/* ── Page heading (always "Program") ───────────────────── */}
+      <div className="px-5 pt-6 pb-3 border-b border-app-border flex items-center justify-between">
+        <h1 className="text-2xl font-extrabold text-app-text">Program</h1>
+        <button
+          onClick={() => { setEditing(undefined); setFormOpen(true) }}
+          className="flex items-center gap-1.5 rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+          </svg>
+          New
+        </button>
+      </div>
 
-      {/* ── Section label ──────────────────────────────────────── */}
-      {activeProgram && activeDays.length > 0 && (
-        <div className="px-5 pt-4 pb-1 flex items-center justify-between">
-          <p className="text-base font-extrabold text-app-text">This Week</p>
-          <button
-            onClick={() => navigate(`/programs/${activeProgram.id}`)}
-            className="text-xs font-bold text-accent-dark"
-          >
-            Manage
-          </button>
-        </div>
-      )}
-
-      {/* ── Workout day rows ───────────────────────────────────── */}
-      {activeProgram && activeDays.length > 0 && (
-        <div className="bg-app-card border-t border-b border-app-border">
-          {activeDays.map((day) => {
-            const exCount = exCountMap[day.id] ?? 0
-            const estMin  = estMinMap[day.id]
-            const subtitle = exCount > 0
-              ? estMin != null
-                ? `${exCount} exercise${exCount !== 1 ? 's' : ''} · est. ${estMin}m`
-                : `${exCount} exercise${exCount !== 1 ? 's' : ''}`
-              : 'No exercises yet'
-
-            return (
-              <button
-                key={day.id}
-                onClick={() => navigate(`/programs/${activeProgram.id}/days/${day.id}`)}
-                className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
-              >
-                {/* Thumbnail */}
-                <div className="m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-xl bg-app-bg flex-shrink-0">
-                  <MuscleIcon muscleGroup={dayMuscleMap[day.id] ?? ''} width={32} height={48} />
-                </div>
-
-                {/* Info */}
-                <div className="flex-1 py-4 pr-2 min-w-0">
-                  <p className="font-bold text-[15px] text-app-text truncate">{day.name}</p>
-                  <p className="text-[13px] text-app-muted mt-0.5">{subtitle}</p>
-                </div>
-
-                {/* Chevron */}
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-app-faint flex-shrink-0 mr-4">
-                  <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-                </svg>
-              </button>
-            )
-          })}
-        </div>
-      )}
-
-      {/* ── Empty state ────────────────────────────────────────── */}
-      {activeProgram && activeDays.length === 0 && (
-        <div className="mx-4 mt-4 rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
-          <p className="text-sm">No days in this program yet.</p>
-          <button
-            onClick={() => navigate(`/programs/${activeProgram.id}`)}
-            className="mt-3 text-sm font-bold text-accent-dark"
-          >
-            Build it →
-          </button>
-        </div>
-      )}
-
-      {!activeProgram && programs.length === 0 && (
+      {/* ── No programs at all ────────────────────────────────── */}
+      {programs.length === 0 && (
         <div className="mx-4 mt-4 rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
           No programs yet. Tap <strong className="text-app-text">New</strong> to create one.
         </div>
       )}
 
+      {/* ── No active program notice ──────────────────────────── */}
       {!activeProgram && programs.length > 0 && (
         <div className="mx-4 mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
           No active program. Tap ✓ on a program below to activate it.
@@ -218,18 +134,7 @@ export default function Programs() {
       {/* ── All Programs ───────────────────────────────────────── */}
       {programs.length > 0 && (
         <div className="px-4 mt-4">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-base font-extrabold text-app-text">All Programs</p>
-            <button
-              onClick={() => { setEditing(undefined); setFormOpen(true) }}
-              className="flex items-center gap-1 rounded-2xl bg-accent text-app-text px-3 py-1.5 text-xs font-bold active:bg-accent-dark"
-            >
-              <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-              </svg>
-              New
-            </button>
-          </div>
+          <p className="text-base font-extrabold text-app-text mb-2">All Programs</p>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {sorted.map((program) => {
               const days = allDays.filter((d) => d.programId === program.id).length
@@ -273,6 +178,63 @@ export default function Programs() {
               )
             })}
           </ul>
+        </div>
+      )}
+
+      {/* ── Active program: days or empty state ───────────────── */}
+      {activeProgram && activeDays.length > 0 && (
+        <>
+          <div className="px-5 pt-5 pb-1 flex items-center justify-between">
+            <p className="text-base font-extrabold text-app-text">This Week</p>
+            <button
+              onClick={() => navigate(`/programs/${activeProgram.id}`)}
+              className="text-xs font-bold text-accent-dark"
+            >
+              Manage
+            </button>
+          </div>
+          <div className="bg-app-card border-t border-b border-app-border">
+            {activeDays.map((day) => {
+              const exCount = exCountMap[day.id] ?? 0
+              const estMin  = estMinMap[day.id]
+              const subtitle = exCount > 0
+                ? estMin != null
+                  ? `${exCount} exercise${exCount !== 1 ? 's' : ''} · est. ${estMin}m`
+                  : `${exCount} exercise${exCount !== 1 ? 's' : ''}`
+                : 'No exercises yet'
+
+              return (
+                <button
+                  key={day.id}
+                  onClick={() => navigate(`/programs/${activeProgram.id}/days/${day.id}`)}
+                  className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
+                >
+                  <div className="m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-xl bg-app-bg flex-shrink-0">
+                    <MuscleIcon muscleGroup={dayMuscleMap[day.id] ?? ''} width={32} height={48} />
+                  </div>
+                  <div className="flex-1 py-4 pr-2 min-w-0">
+                    <p className="font-bold text-[15px] text-app-text truncate">{day.name}</p>
+                    <p className="text-[13px] text-app-muted mt-0.5">{subtitle}</p>
+                  </div>
+                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-app-faint flex-shrink-0 mr-4">
+                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              )
+            })}
+          </div>
+        </>
+      )}
+
+      {activeProgram && activeDays.length === 0 && (
+        <div className="mx-4 mt-4 rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+          <p className="text-sm">No days in this program yet.</p>
+          <button
+            onClick={() => navigate(`/programs/${activeProgram.id}`)}
+            className="mt-3 text-sm font-bold text-accent-dark"
+          >
+            Build it →
+          </button>
         </div>
       )}
 
