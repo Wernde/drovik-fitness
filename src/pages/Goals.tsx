@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
@@ -229,14 +230,23 @@ function CalorieGoalSection() {
 type Tab = 'goals' | 'habits'
 
 export default function Goals() {
+  const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('goals')
 
   return (
     <div className="px-4 pt-5 pb-24">
-      <div className="flex items-center gap-2 mb-1">
-        <p className="text-xs text-app-muted font-medium">Your</p>
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex-none w-9 h-9 rounded-full bg-app-bg border border-app-border flex items-center justify-center text-app-muted active:bg-app-border"
+          aria-label="Back"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+            <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+          </svg>
+        </button>
+        <h1 className="text-2xl font-extrabold text-app-text">Goals + Habits</h1>
       </div>
-      <h1 className="text-2xl font-extrabold text-app-text mb-4">Goals + Habits</h1>
 
       {/* Tab bar */}
       <div className="flex gap-1 bg-app-border/30 rounded-2xl p-1 mb-5">
