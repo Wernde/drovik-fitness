@@ -167,7 +167,7 @@ export default function Exercises() {
           {search ? `No results for "${search}"` : 'No exercises in this category.'}
         </div>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {filtered.map((exercise) => (
             <li key={exercise.id}>
               {confirmDelete !== exercise.id ? (

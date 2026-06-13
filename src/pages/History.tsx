@@ -299,7 +299,7 @@ export default function History() {
           No workouts recorded this month.
         </div>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {monthSessions.map((session) => {
             const dayName  = session.workoutDayId ? (dayMap.get(session.workoutDayId) ?? 'Ad-hoc') : 'Ad-hoc'
             const dayNum   = new Date(session.date + 'T12:00:00').getDate()

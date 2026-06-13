@@ -230,7 +230,7 @@ export default function Programs() {
               New
             </button>
           </div>
-          <ul className="flex flex-col gap-2">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {sorted.map((program) => {
               const days = allDays.filter((d) => d.programId === program.id).length
               return (

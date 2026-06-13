@@ -540,7 +540,7 @@ function PRsTab({ exercises }: { exercises: Exercise[] }) {
     .sort((a, b) => a.exercise!.name.localeCompare(b.exercise!.name))
 
   return (
-    <ul className="flex flex-col gap-2">
+    <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
       {sorted.map(({ exercise, e1rm, weight, reps }) => (
         <li key={exercise!.id} className="flex items-center gap-3 rounded-2xl bg-app-card border border-app-border px-4 py-3">
           <div className="flex-1 min-w-0">

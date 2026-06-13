@@ -447,8 +447,10 @@ export default function Calculator() {
   return (
     <div className="px-4 pt-6 pb-24 flex flex-col gap-5">
       <h1 className="text-2xl font-extrabold text-app-text">Calculator</h1>
-      <PlateCalculator />
-      <WarmupRamp />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <PlateCalculator />
+        <WarmupRamp />
+      </div>
       <OneRepMaxCalc />
     </div>
   )

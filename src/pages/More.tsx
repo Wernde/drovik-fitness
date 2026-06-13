@@ -297,7 +297,7 @@ export default function More() {
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col h-full bg-app-bg">
+    <div className="flex flex-col h-full bg-app-bg lg:max-w-3xl lg:mx-auto lg:w-full">
 
       {/* ── Header ── */}
       <div className="bg-app-bg px-5 pt-6 pb-3 flex items-center gap-3 border-b border-app-border flex-none">

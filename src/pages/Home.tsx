@@ -386,7 +386,7 @@ export default function Home() {
                 <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
               </svg>
             </Link>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-3 px-4 py-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3 px-4 py-4">
               {/* Calories */}
               <div className="flex items-center gap-3">
                 <div className="relative flex-shrink-0">
@@ -438,7 +438,7 @@ export default function Home() {
         {/* ── My Progress ───────────────────────────────────────────── */}
         <div>
           <p className="text-base font-extrabold text-app-text mb-2">My Stats</p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Sessions this week */}
             <Link to="/history" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mb-2">

@@ -478,7 +478,7 @@ export default function BodyStats() {
               <p className="text-sm text-app-muted">Tap Add Photo to start your progress timeline</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
               {photos.map(p => (
                 <div key={p.id} className="relative rounded-xl overflow-hidden bg-app-bg" style={{ aspectRatio: '3/4' }}>
                   <img
