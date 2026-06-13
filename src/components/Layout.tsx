@@ -232,8 +232,7 @@ export default function Layout() {
                   />
                 )}
               </div>
-              {/* Cap content width on large screens; tablet uses full remaining width */}
-              <div className="lg:max-w-5xl lg:mx-auto">
+              <div>
                 <Outlet />
               </div>
             </main>
