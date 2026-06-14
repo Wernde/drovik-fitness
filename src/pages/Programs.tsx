@@ -202,7 +202,7 @@ export default function Programs() {
               </button>
             </div>
             {days.length > 0 ? (
-              <div className="bg-app-card border-t border-b border-app-border">
+              <div className="bg-app-card border-t border-b border-app-border md:border md:rounded-2xl md:mx-6 md:mt-2 overflow-hidden lg:mx-8">
                 {days.map((day) => {
                   const exCount = exCountMap[day.id] ?? 0
                   const estMin  = estMinMap[day.id]
