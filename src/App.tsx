@@ -49,8 +49,8 @@ function useSplashReady() {
 
     window.addEventListener('drovik:splash-complete', markReady)
     window.addEventListener('message', onMsg)
-    // Hard fallback matches index.html 6 s timeout + 650 ms transition
-    const t = setTimeout(markReady, 7000)
+    // Hard fallback matches index.html 7 s timeout + 650 ms transition
+    const t = setTimeout(markReady, 8000)
 
     return () => {
       window.removeEventListener('drovik:splash-complete', markReady)

@@ -76,8 +76,8 @@
           if (e.data && e.data.type === 'drovik:splash-complete') dismiss();
         });
 
-        // Hard fallback: dismiss after 6 s regardless (covers any mobile WebGL failure)
-        setTimeout(dismiss, 6000);
+        // Hard fallback: dismiss after 7 s regardless (5 s animation + 2 s buffer)
+        setTimeout(dismiss, 7000);
 
         // ── Fetch and inject splash.html ─────────────────────────────────
         fetch('./splash.html')

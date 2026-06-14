@@ -311,7 +311,7 @@
     sampleStepMobile: 14,
     maxParticlesDesktop: 34000,
     maxParticlesMobile: 4000,
-    animationMs: 3500,
+    animationMs: 4600,
     settleDelayMs: 400,
     logoRevealProgress: 0.64,
     particleFadeStart: 0.72,
@@ -374,7 +374,7 @@
     logoFinal.classList.add('visible');
     loadingPanel.classList.add('visible');
     startLoadingMessageLoop();
-    setTimeout(finishSplash, 2500);
+    setTimeout(finishSplash, 5000);
     return;
   }
 
@@ -881,7 +881,7 @@
       logoFinal.classList.add('visible');
       loadingPanel.classList.add('visible');
       startLoadingMessageLoop();
-      setTimeout(finishSplash, 2500);
+      setTimeout(finishSplash, 5000);
     };
     img.src = LOGO_SRC;
   }
