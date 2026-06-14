@@ -2,13 +2,6 @@
 <html lang="en-AU">
   <head>
     <meta charset="UTF-8" />
-
-    <!--
-      width=device-width  — render at the phone's native pixel width, not a desktop width.
-      initial-scale=1.0   — don't zoom in or out on first load.
-      viewport-fit=cover  — let the app draw behind the iPhone notch / home bar so
-                            we can handle the safe-area ourselves with CSS env().
-    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- PWA / Safari home screen -->
@@ -25,9 +18,103 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Start loading splash.html early so it's ready when the script below runs -->
+    <link rel="preload" href="./splash.html" as="fetch" crossorigin="anonymous" />
   </head>
   <body>
     <div id="root"></div>
+
+    <!--
+      Splash screen — plain vanilla JS, runs before React loads.
+      Fetches splash.html, injects it directly into the main document
+      (no iframe) so WebGL, position:fixed, and touch events all work on iOS.
+      React mounts behind it while the animation plays.
+    -->
+    <script>
+      (function () {
+        var host = document.createElement('div');
+        host.style.cssText = [
+          'position:fixed', 'top:0', 'left:0', 'right:0', 'bottom:0',
+          'z-index:9999', 'background:#050505', 'overflow:hidden'
+        ].join(';');
+        document.body.appendChild(host);
+
+        var styleEl = null;
+        var done = false;
+
+        function dismiss() {
+          if (done) return;
+          done = true;
+
+          // 1. Fade a plain dark div IN over the splash (400 ms)
+          var overlay = document.createElement('div');
+          overlay.style.cssText = [
+            'position:fixed', 'top:0', 'left:0', 'right:0', 'bottom:0',
+            'z-index:10000', 'background:#050505', 'opacity:0', 'pointer-events:none'
+          ].join(';');
+          document.body.appendChild(overlay);
+
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              overlay.style.transition = 'opacity 400ms ease';
+              overlay.style.opacity = '1';
+
+              setTimeout(function () {
+                // 2. Splash is now hidden — remove its DOM + styles
+                if (host.parentNode) host.parentNode.removeChild(host);
+                if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
+
+                // 3. Fade the overlay OUT (600 ms) — React app becomes visible
+                overlay.style.transition = 'opacity 600ms ease';
+                overlay.style.opacity = '0';
+
+                setTimeout(function () {
+                  if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+                }, 600);
+              }, 400);
+            });
+          });
+        }
+
+        // Primary signal: custom event fired by splash when animation completes
+        window.addEventListener('drovik:splash-complete', dismiss);
+        // Fallback: postMessage (for any cached version of splash.html)
+        window.addEventListener('message', function (e) {
+          if (e.data && e.data.type === 'drovik:splash-complete') dismiss();
+        });
+        // Hard fallback: always dismiss after 12 s even if WebGL never starts
+        setTimeout(dismiss, 12000);
+
+        // Fetch and inject splash.html
+        fetch('./splash.html')
+          .then(function (r) { return r.text(); })
+          .then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+
+            // Inject styles into <head>
+            var css = Array.from(doc.querySelectorAll('style'))
+              .map(function (s) { return s.textContent || ''; })
+              .join('\n');
+            styleEl = document.createElement('style');
+            styleEl.textContent = css;
+            document.head.appendChild(styleEl);
+
+            // Inject HTML into the host div
+            host.innerHTML = doc.body.innerHTML;
+
+            // Re-create each <script> so the browser executes it
+            // (setting innerHTML does not run script tags)
+            Array.from(doc.querySelectorAll('script')).forEach(function (orig) {
+              var s = document.createElement('script');
+              s.textContent = orig.textContent || '';
+              host.appendChild(s);
+            });
+          })
+          .catch(dismiss);
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
