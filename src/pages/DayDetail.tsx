@@ -1,13 +1,11 @@
 import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
+import DragList from '../components/DragList'
 import { db, now, today } from '../db/db'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
-import SortableItem from '../components/SortableItem'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { CAT_ICON_PATHS } from '../components/ExerciseThumb'
 import MuscleIcon from '../components/MuscleIcon'
@@ -95,17 +93,10 @@ export default function DayDetail() {
 
   const nextOrder = dayExercises.length > 0 ? Math.max(...dayExercises.map((de) => de.order)) + 1 : 0
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor,   { activationConstraint: { delay: 200, tolerance: 5 } }),
-  )
-
-  async function handleExerciseDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-    const oldIndex = dayExercises.findIndex((de) => de.id === active.id)
-    const newIndex = dayExercises.findIndex((de) => de.id === over.id)
-    const reordered = arrayMove(dayExercises, oldIndex, newIndex)
+  async function handleExerciseReorder(from: number, to: number) {
+    const reordered = [...dayExercises]
+    const [moved] = reordered.splice(from, 1)
+    reordered.splice(to, 0, moved)
     const timestamp = now()
     await Promise.all(
       reordered.map((de, idx) =>
@@ -288,24 +279,19 @@ export default function DayDetail() {
               : <span>Tap ⋯ → Edit Day to add exercises.</span>
             }
           </div>
-        ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleExerciseDragEnd}>
-            <SortableContext items={dayExercises.map(de => de.id)} strategy={verticalListSortingStrategy}>
-          <div className="space-y-2">
-            {dayExercises.map((de) => {
-              const exercise = exerciseMap.get(de.exerciseId)
-              if (!exercise) return null
-
-              // ── Edit mode row ──
-              if (editMode) {
+        ) : editMode ? (
+            <DragList
+              items={dayExercises}
+              keyOf={(de) => de.id}
+              onReorder={handleExerciseReorder}
+              renderItem={(de, dragHandleProps) => {
+                const exercise = exerciseMap.get(de.exerciseId)
+                if (!exercise) return null
                 return (
-                  <SortableItem key={de.id} id={de.id}>
-                    {(dragHandleProps) => (
                   <div className="bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden">
                     {confirmDelete !== de.id ? (
                       <div className="flex items-center gap-2 px-3 py-3">
-                        {/* Drag handle */}
-                        <div {...dragHandleProps} className="touch-none cursor-grab active:cursor-grabbing text-app-faint p-1.5 flex-none" aria-label="Drag to reorder">
+                        <div {...dragHandleProps} className="text-app-faint p-1.5 flex-none select-none" aria-label="Drag to reorder">
                           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                             <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
                           </svg>
@@ -341,10 +327,14 @@ export default function DayDetail() {
                       </div>
                     )}
                   </div>
-                    )}
-                  </SortableItem>
                 )
-              }
+              }}
+            />
+          ) : (
+          <div className="space-y-2">
+            {dayExercises.map((de) => {
+              const exercise = exerciseMap.get(de.exerciseId)
+              if (!exercise) return null
 
               // ── View mode row — fully tappable ──
               const listVid = exercise.videoUrl ? getYouTubeId(exercise.videoUrl) : null
@@ -397,8 +387,6 @@ export default function DayDetail() {
               )
             })}
           </div>
-            </SortableContext>
-          </DndContext>
         )}
 
         {/* Add exercise (edit mode) */}

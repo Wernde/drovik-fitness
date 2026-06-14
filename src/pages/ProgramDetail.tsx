@@ -5,13 +5,11 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { db, now } from '../db/db'
 import type { WorkoutDay, ProgramPhase } from '../db/db'
 import DayForm from '../components/DayForm'
 import PhaseForm from '../components/PhaseForm'
-import SortableItem from '../components/SortableItem'
+import DragList from '../components/DragList'
 
 // ── Reusable day row ──────────────────────────────────────────────────────────
 
@@ -139,17 +137,10 @@ export default function ProgramDetail() {
     }
   }
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor,   { activationConstraint: { delay: 200, tolerance: 5 } }),
-  )
-
-  async function handleDayDragEnd(group: WorkoutDay[], event: DragEndEvent) {
-    const { active, over } = event
-    if (!over || active.id === over.id) return
-    const oldIndex  = group.findIndex((d) => d.id === active.id)
-    const newIndex  = group.findIndex((d) => d.id === over.id)
-    const reordered = arrayMove(group, oldIndex, newIndex)
+  async function handleDayReorder(group: WorkoutDay[], from: number, to: number) {
+    const reordered = [...group]
+    const [moved] = reordered.splice(from, 1)
+    reordered.splice(to, 0, moved)
     const timestamp = now()
     await Promise.all(
       reordered.map((d, idx) =>
@@ -180,31 +171,24 @@ export default function ProgramDetail() {
 
   function renderDayList(group: WorkoutDay[]) {
     return (
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDayDragEnd(group, e)}>
-        <SortableContext items={group.map(d => d.id)} strategy={verticalListSortingStrategy}>
-          <ul className="flex flex-col gap-2">
-            {group.map((day) => (
-              <li key={day.id}>
-                <SortableItem id={day.id}>
-                  {(dragHandleProps) => (
-                    <DayRow
-                      day={day}
-                      exerciseCount={exerciseCountMap[day.id] ?? 0}
-                      programId={programId!}
-                      dragHandleProps={dragHandleProps}
-                      onEdit={() => { setEditingDay(day); setDayForm({ phaseId: day.phaseId }) }}
-                      onDelete={() => setConfirmDelete(day.id)}
-                      confirmingDelete={confirmDelete === day.id}
-                      onCancelDelete={() => setConfirmDelete(null)}
-                      onConfirmDelete={() => handleDeleteDay(day.id)}
-                    />
-                  )}
-                </SortableItem>
-              </li>
-            ))}
-          </ul>
-        </SortableContext>
-      </DndContext>
+      <DragList
+        items={group}
+        keyOf={(d) => d.id}
+        onReorder={(from, to) => handleDayReorder(group, from, to)}
+        renderItem={(day, dragHandleProps) => (
+          <DayRow
+            day={day}
+            exerciseCount={exerciseCountMap[day.id] ?? 0}
+            programId={programId!}
+            dragHandleProps={dragHandleProps}
+            onEdit={() => { setEditingDay(day); setDayForm({ phaseId: day.phaseId }) }}
+            onDelete={() => setConfirmDelete(day.id)}
+            confirmingDelete={confirmDelete === day.id}
+            onCancelDelete={() => setConfirmDelete(null)}
+            onConfirmDelete={() => handleDeleteDay(day.id)}
+          />
+        )}
+      />
     )
   }
 
