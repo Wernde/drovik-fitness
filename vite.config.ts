@@ -48,10 +48,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Split recharts into its own chunk so it loads lazily (only when Progress tab opens).
-        manualChunks: {
-          recharts: ['recharts'],
-        },
+        // No manualChunks — letting Vite handle chunking automatically avoids the
+        // "Cannot access before initialization" circular-dep bug in Recharts when
+        // it is forcibly split into its own chunk.
       },
     },
   },
