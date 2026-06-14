@@ -5,21 +5,21 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { db, now } from '../db/db'
 import type { WorkoutDay, ProgramPhase } from '../db/db'
 import DayForm from '../components/DayForm'
 import PhaseForm from '../components/PhaseForm'
+import SortableItem from '../components/SortableItem'
 
 // ── Reusable day row ──────────────────────────────────────────────────────────
 
 interface DayRowProps {
   day:              WorkoutDay
-  idx:              number
-  totalInGroup:     number
   exerciseCount:    number
   programId:        string
-  onMoveUp:         () => void
-  onMoveDown:       () => void
+  dragHandleProps:  React.HTMLAttributes<HTMLElement>
   onEdit:           () => void
   onDelete:         () => void
   confirmingDelete: boolean
@@ -28,9 +28,8 @@ interface DayRowProps {
 }
 
 function DayRow({
-  day, idx, totalInGroup, exerciseCount, programId,
-  onMoveUp, onMoveDown, onEdit, onDelete,
-  confirmingDelete, onCancelDelete, onConfirmDelete,
+  day, exerciseCount, programId, dragHandleProps,
+  onEdit, onDelete, confirmingDelete, onCancelDelete, onConfirmDelete,
 }: DayRowProps) {
   const navigate = useNavigate()
 
@@ -46,17 +45,10 @@ function DayRow({
 
   return (
     <div className="flex items-center gap-2 rounded-2xl bg-app-card border border-app-border px-3 py-3">
-      <div className="flex flex-col gap-0.5">
-        <button onClick={onMoveUp} disabled={idx === 0} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move up">
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-            <path fillRule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clipRule="evenodd" />
-          </svg>
-        </button>
-        <button onClick={onMoveDown} disabled={idx === totalInGroup - 1} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move down">
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-            <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
-          </svg>
-        </button>
+      <div {...dragHandleProps} className="touch-none cursor-grab active:cursor-grabbing text-app-faint p-1.5 flex-none" aria-label="Drag to reorder">
+        <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+          <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
+        </svg>
       </div>
 
       <button onClick={() => navigate(`/programs/${programId}/days/${day.id}`)} className="flex-1 text-left min-w-0">
@@ -147,16 +139,23 @@ export default function ProgramDetail() {
     }
   }
 
-  async function moveDay(group: WorkoutDay[], day: WorkoutDay, direction: 'up' | 'down') {
-    const idx     = group.findIndex((d) => d.id === day.id)
-    const swapIdx = direction === 'up' ? idx - 1 : idx + 1
-    if (swapIdx < 0 || swapIdx >= group.length) return
-    const swap      = group[swapIdx]
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor,   { activationConstraint: { delay: 200, tolerance: 5 } }),
+  )
+
+  async function handleDayDragEnd(group: WorkoutDay[], event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex  = group.findIndex((d) => d.id === active.id)
+    const newIndex  = group.findIndex((d) => d.id === over.id)
+    const reordered = arrayMove(group, oldIndex, newIndex)
     const timestamp = now()
-    await Promise.all([
-      db.workoutDays.update(day.id,  { order: swap.order, updatedAt: timestamp, syncedAt: null }),
-      db.workoutDays.update(swap.id, { order: day.order,  updatedAt: timestamp, syncedAt: null }),
-    ])
+    await Promise.all(
+      reordered.map((d, idx) =>
+        db.workoutDays.update(d.id, { order: idx, updatedAt: timestamp, syncedAt: null })
+      )
+    )
   }
 
   async function handleDeleteDay(id: string) {
@@ -181,26 +180,31 @@ export default function ProgramDetail() {
 
   function renderDayList(group: WorkoutDay[]) {
     return (
-      <ul className="flex flex-col gap-2">
-        {group.map((day, idx) => (
-          <li key={day.id}>
-            <DayRow
-              day={day}
-              idx={idx}
-              totalInGroup={group.length}
-              exerciseCount={exerciseCountMap[day.id] ?? 0}
-              programId={programId!}
-              onMoveUp={() => moveDay(group, day, 'up')}
-              onMoveDown={() => moveDay(group, day, 'down')}
-              onEdit={() => { setEditingDay(day); setDayForm({ phaseId: day.phaseId }) }}
-              onDelete={() => setConfirmDelete(day.id)}
-              confirmingDelete={confirmDelete === day.id}
-              onCancelDelete={() => setConfirmDelete(null)}
-              onConfirmDelete={() => handleDeleteDay(day.id)}
-            />
-          </li>
-        ))}
-      </ul>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={(e) => handleDayDragEnd(group, e)}>
+        <SortableContext items={group.map(d => d.id)} strategy={verticalListSortingStrategy}>
+          <ul className="flex flex-col gap-2">
+            {group.map((day) => (
+              <li key={day.id}>
+                <SortableItem id={day.id}>
+                  {(dragHandleProps) => (
+                    <DayRow
+                      day={day}
+                      exerciseCount={exerciseCountMap[day.id] ?? 0}
+                      programId={programId!}
+                      dragHandleProps={dragHandleProps}
+                      onEdit={() => { setEditingDay(day); setDayForm({ phaseId: day.phaseId }) }}
+                      onDelete={() => setConfirmDelete(day.id)}
+                      confirmingDelete={confirmDelete === day.id}
+                      onCancelDelete={() => setConfirmDelete(null)}
+                      onConfirmDelete={() => handleDeleteDay(day.id)}
+                    />
+                  )}
+                </SortableItem>
+              </li>
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
     )
   }
 

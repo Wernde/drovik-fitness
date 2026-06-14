@@ -1,10 +1,13 @@
 import { useState, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { db, now, today } from '../db/db'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
+import SortableItem from '../components/SortableItem'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { CAT_ICON_PATHS } from '../components/ExerciseThumb'
 import MuscleIcon from '../components/MuscleIcon'
@@ -92,16 +95,23 @@ export default function DayDetail() {
 
   const nextOrder = dayExercises.length > 0 ? Math.max(...dayExercises.map((de) => de.order)) + 1 : 0
 
-  async function moveExercise(de: DayExercise, direction: 'up' | 'down') {
-    const idx     = dayExercises.findIndex((x) => x.id === de.id)
-    const swapIdx = direction === 'up' ? idx - 1 : idx + 1
-    if (swapIdx < 0 || swapIdx >= dayExercises.length) return
-    const swap      = dayExercises[swapIdx]
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor,   { activationConstraint: { delay: 200, tolerance: 5 } }),
+  )
+
+  async function handleExerciseDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = dayExercises.findIndex((de) => de.id === active.id)
+    const newIndex = dayExercises.findIndex((de) => de.id === over.id)
+    const reordered = arrayMove(dayExercises, oldIndex, newIndex)
     const timestamp = now()
-    await Promise.all([
-      db.dayExercises.update(de.id,   { order: swap.order, updatedAt: timestamp, syncedAt: null }),
-      db.dayExercises.update(swap.id, { order: de.order,   updatedAt: timestamp, syncedAt: null }),
-    ])
+    await Promise.all(
+      reordered.map((de, idx) =>
+        db.dayExercises.update(de.id, { order: idx, updatedAt: timestamp, syncedAt: null })
+      )
+    )
   }
 
   async function handleDelete(id: string) {
@@ -279,28 +289,26 @@ export default function DayDetail() {
             }
           </div>
         ) : (
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleExerciseDragEnd}>
+            <SortableContext items={dayExercises.map(de => de.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">
-            {dayExercises.map((de, idx) => {
+            {dayExercises.map((de) => {
               const exercise = exerciseMap.get(de.exerciseId)
               if (!exercise) return null
 
               // ── Edit mode row ──
               if (editMode) {
                 return (
-                  <div key={de.id} className="bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden">
+                  <SortableItem key={de.id} id={de.id}>
+                    {(dragHandleProps) => (
+                  <div className="bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden">
                     {confirmDelete !== de.id ? (
                       <div className="flex items-center gap-2 px-3 py-3">
-                        <div className="flex flex-col gap-0.5">
-                          <button onClick={() => moveExercise(de, 'up')} disabled={idx === 0} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move up">
-                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                              <path fillRule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.29 9.77a.75.75 0 01-1.08-1.04l5.25-5.5a.75.75 0 011.08 0l5.25 5.5a.75.75 0 11-1.08 1.04l-3.96-4.158V16.25A.75.75 0 0110 17z" clipRule="evenodd" />
-                            </svg>
-                          </button>
-                          <button onClick={() => moveExercise(de, 'down')} disabled={idx === dayExercises.length - 1} className="text-app-faint disabled:opacity-30 active:text-app-text p-0.5" aria-label="Move down">
-                            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
-                              <path fillRule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l3.96-4.158a.75.75 0 111.08 1.04l-5.25 5.5a.75.75 0 01-1.08 0l-5.25-5.5a.75.75 0 111.08-1.04l3.96 4.158V3.75A.75.75 0 0110 3z" clipRule="evenodd" />
-                            </svg>
-                          </button>
+                        {/* Drag handle */}
+                        <div {...dragHandleProps} className="touch-none cursor-grab active:cursor-grabbing text-app-faint p-1.5 flex-none" aria-label="Drag to reorder">
+                          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+                            <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
+                          </svg>
                         </div>
                         <div className="flex-none flex items-center justify-center w-10 h-10 rounded-xl bg-app-bg">
                           <MuscleIcon muscleGroup={exercise.muscleGroup} width={24} height={36} />
@@ -333,6 +341,8 @@ export default function DayDetail() {
                       </div>
                     )}
                   </div>
+                    )}
+                  </SortableItem>
                 )
               }
 
@@ -387,6 +397,8 @@ export default function DayDetail() {
               )
             })}
           </div>
+            </SortableContext>
+          </DndContext>
         )}
 
         {/* Add exercise (edit mode) */}
