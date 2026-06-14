@@ -1,9 +1,10 @@
+import React, { Suspense, lazy } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { UnitsProvider } from './contexts/UnitsContext'
 import Layout from './components/Layout'
+import ErrorBoundary from './components/ErrorBoundary'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Programs from './pages/Programs'
@@ -36,25 +37,27 @@ function AppRoutes() {
 
   if (!session) return <Login />
 
+  const wrap = (el: React.ReactElement) => <ErrorBoundary>{el}</ErrorBoundary>
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="programs"                         element={<Programs />} />
-        <Route path="programs/:programId"              element={<ProgramDetail />} />
-        <Route path="programs/:programId/days/:dayId"  element={<DayDetail />} />
-        <Route path="log"                              element={<Log />} />
-        <Route path="history"                          element={<History />} />
-        <Route path="history/:sessionId"               element={<SessionDetail />} />
-        <Route path="progress"                         element={<Suspense fallback={<div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>}><Progress /></Suspense>} />
-        <Route path="exercises"                        element={<Exercises />} />
-        <Route path="calculator"                       element={<Calculator />} />
-        <Route path="settings"                         element={<Settings />} />
-        <Route path="goals"                            element={<Goals />} />
-        <Route path="nutrition"                        element={<Nutrition />} />
-        <Route path="more"                             element={<More />} />
-        <Route path="profile"                          element={<Profile />} />
-        <Route path="body"                             element={<Suspense fallback={<div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>}><BodyStats /></Suspense>} />
+        <Route index                                   element={wrap(<Home />)} />
+        <Route path="programs"                         element={wrap(<Programs />)} />
+        <Route path="programs/:programId"              element={wrap(<ProgramDetail />)} />
+        <Route path="programs/:programId/days/:dayId"  element={wrap(<DayDetail />)} />
+        <Route path="log"                              element={wrap(<Log />)} />
+        <Route path="history"                          element={wrap(<History />)} />
+        <Route path="history/:sessionId"               element={wrap(<SessionDetail />)} />
+        <Route path="progress"                         element={wrap(<Suspense fallback={<div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>}><Progress /></Suspense>)} />
+        <Route path="exercises"                        element={wrap(<Exercises />)} />
+        <Route path="calculator"                       element={wrap(<Calculator />)} />
+        <Route path="settings"                         element={wrap(<Settings />)} />
+        <Route path="goals"                            element={wrap(<Goals />)} />
+        <Route path="nutrition"                        element={wrap(<Nutrition />)} />
+        <Route path="more"                             element={wrap(<More />)} />
+        <Route path="profile"                          element={wrap(<Profile />)} />
+        <Route path="body"                             element={wrap(<Suspense fallback={<div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>}><BodyStats /></Suspense>)} />
         <Route path="*"                                element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
@@ -63,14 +66,16 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <ToastProvider>
-      <UnitsProvider>
-        <AuthProvider>
-          <HashRouter>
-            <AppRoutes />
-          </HashRouter>
-        </AuthProvider>
-      </UnitsProvider>
-    </ToastProvider>
+    <ErrorBoundary>
+      <ToastProvider>
+        <UnitsProvider>
+          <AuthProvider>
+            <HashRouter>
+              <AppRoutes />
+            </HashRouter>
+          </AuthProvider>
+        </UnitsProvider>
+      </ToastProvider>
+    </ErrorBoundary>
   )
 }
