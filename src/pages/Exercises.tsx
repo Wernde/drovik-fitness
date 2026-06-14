@@ -9,6 +9,7 @@ import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
 import ExerciseForm from '../components/ExerciseForm'
 import MuscleIcon from '../components/MuscleIcon'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
+import { filterExercises } from '../lib/exerciseSearch'
 
 type FilterCategory = 'all' | ExerciseCategory
 
@@ -76,10 +77,12 @@ export default function Exercises() {
 
   const activeMuscle = muscleGroups.includes(muscleFilter) ? muscleFilter : 'all'
 
-  const filtered = categoryFiltered
+  const muscleAndCatFiltered = categoryFiltered
     .filter((e) => activeMuscle === 'all' || e.muscleGroup === activeMuscle)
-    .filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name))
+
+  const filtered = search
+    ? filterExercises(muscleAndCatFiltered, search)
+    : muscleAndCatFiltered.sort((a, b) => a.name.localeCompare(b.name))
 
   function openAdd() { setEditing(undefined); setFormOpen(true) }
   function openEdit(ex: Exercise) { setEditing(ex); setFormOpen(true) }

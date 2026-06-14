@@ -7,6 +7,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import type { Exercise, ExerciseCategory } from '../db/db'
 import MuscleIcon from './MuscleIcon'
+import { filterExercises } from '../lib/exerciseSearch'
 
 type FilterCategory = 'all' | ExerciseCategory
 
@@ -37,10 +38,12 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
     [],
   )
 
-  const filtered = (exercises ?? [])
+  const catFiltered = (exercises ?? [])
     .filter((e) => filter === 'all' || e.category === filter)
-    .filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => a.name.localeCompare(b.name))
+
+  const filtered = search
+    ? filterExercises(catFiltered, search)
+    : catFiltered.sort((a, b) => a.name.localeCompare(b.name))
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-app-bg">
