@@ -527,6 +527,38 @@ class DrovikDB extends Dexie {
       healthWorkouts:      'id, workoutDate',
     })
 
+    // Version 17 — mark seeded (non-custom) exercises as syncedAt=SEED_DATE so they
+    // are never pushed to Supabase. Previously syncedAt was null, causing 618 rows to
+    // be pushed in one batch on every new install, often failing and blocking all sync.
+    this.version(17).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+      progressPhotos:      'id, date',
+      healthMetrics:       'id, date',
+      healthWorkouts:      'id, workoutDate',
+      exerciseVideos:      'exerciseId',
+    }).upgrade(async (tx) => {
+      const SEED_DATE = '2025-01-01T00:00:00.000Z'
+      await tx.table('exercises')
+        .filter((e: any) => !e.isCustom && e.syncedAt === null)
+        .modify({ syncedAt: SEED_DATE })
+    })
+
     // Version 16 — adds local exercise video storage (Blob, not synced).
     // Users can upload their own recordings to replace or supplement YouTube links.
     this.version(16).stores({

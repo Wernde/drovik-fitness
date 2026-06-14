@@ -427,44 +427,70 @@ const TABLES: SyncTable[] = [
 
 // ── Push: local → Supabase ────────────────────────────────────────────────────
 
+const PUSH_CHUNK = 100
+
 async function pushTable(t: SyncTable, userId: string): Promise<void> {
-  // Find all rows that haven't been synced yet (syncedAt === null).
   const pending = await t.dexie.filter((row) => row.syncedAt === null).toArray()
   if (pending.length === 0) return
 
-  const remoteRows = pending.map((row) => t.toRemote(row, userId))
-
-  const { error } = await supabase.from(t.supabase).upsert(remoteRows, { onConflict: 'id' })
-  if (error) throw new Error(`Push ${t.supabase}: ${error.message}`)
-
-  // Mark rows as synced.
   const syncedAt = new Date().toISOString()
-  await Promise.all(pending.map((row) => t.dexie.update(row.id, { syncedAt })))
+
+  for (let i = 0; i < pending.length; i += PUSH_CHUNK) {
+    const chunk = pending.slice(i, i + PUSH_CHUNK)
+    const remoteRows = chunk.map((row) => t.toRemote(row, userId))
+    const { error } = await supabase.from(t.supabase).upsert(remoteRows, { onConflict: 'id' })
+    if (error) throw new Error(`Push ${t.supabase}: ${error.message}`)
+    await Promise.all(chunk.map((row) => t.dexie.update(row.id, { syncedAt })))
+  }
 }
 
-// ── Pull: Supabase → local ────────────────────────────────────────────────────
+// ── Pull cursor — stored in localStorage, independent of row-level syncedAt ───
+//
+// The old approach derived the cursor from the max syncedAt of local rows.
+// That broke cross-device sync: pushTable stamps all pending rows (including
+// previously-pulled rows) with syncedAt = now, advancing the cursor to the
+// present. The next pull then only fetches rows newer than "now", silently
+// skipping any data the other device added before that moment.
+//
+// Fix: keep a separate per-table cursor in localStorage that only advances
+// when a pull completes, not when a push runs.
+
+const PULL_CURSOR_KEY = 'drovik:sync:cursor'
+
+function getPullCursor(table: string): string | null {
+  try {
+    const map = JSON.parse(localStorage.getItem(PULL_CURSOR_KEY) ?? '{}')
+    return typeof map[table] === 'string' ? map[table] : null
+  } catch { return null }
+}
+
+function savePullCursor(table: string, ts: string) {
+  try {
+    const map = JSON.parse(localStorage.getItem(PULL_CURSOR_KEY) ?? '{}')
+    map[table] = ts
+    localStorage.setItem(PULL_CURSOR_KEY, JSON.stringify(map))
+  } catch {}
+}
 
 async function pullTable(t: SyncTable): Promise<void> {
-  // Find the most recent syncedAt in local data to use as a "since" cursor.
-  // Pull everything from Supabase that's newer than this.
-  const allLocal = await t.dexie.toArray()
-  const latestSync = allLocal.reduce<string | null>((max, row) => {
-    if (!row.syncedAt) return max
-    return max === null || row.syncedAt > max ? row.syncedAt : max
-  }, null)
+  const cursor    = getPullCursor(t.supabase)
+  const pullTime  = new Date().toISOString()
 
   let query = supabase.from(t.supabase).select('*')
-  if (latestSync) {
-    query = query.gt('updated_at', latestSync)
-  }
+  if (cursor) query = query.gt('updated_at', cursor)
 
   const { data, error } = await query
   if (error) throw new Error(`Pull ${t.supabase}: ${error.message}`)
-  if (!data || data.length === 0) return
 
-  const localRows = data.map((r) => t.toLocal(r))
-  // bulkPut inserts new rows and overwrites existing ones (last-write-wins).
-  await t.dexie.bulkPut(localRows)
+  if (data && data.length > 0) {
+    // Set syncedAt = pullTime so pulled rows are NOT treated as pending by
+    // pushTable (which skips rows where syncedAt !== null).
+    const localRows = data.map((r) => ({ ...t.toLocal(r), syncedAt: pullTime }))
+    await t.dexie.bulkPut(localRows)
+  }
+
+  // Always advance the cursor so the next pull is incremental.
+  savePullCursor(t.supabase, pullTime)
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -473,10 +499,24 @@ export type SyncStatus = 'idle' | 'syncing' | 'error'
 
 /** Push all unsynced local changes then pull anything new from Supabase. */
 export async function syncAll(userId: string): Promise<void> {
+  const errors: string[] = []
+
   for (const t of TABLES) {
-    await pushTable(t, userId)
+    try {
+      await pushTable(t, userId)
+    } catch (e) {
+      errors.push(`push:${t.supabase}: ${e instanceof Error ? e.message : e}`)
+    }
   }
   for (const t of TABLES) {
-    await pullTable(t)
+    try {
+      await pullTable(t)
+    } catch (e) {
+      errors.push(`pull:${t.supabase}: ${e instanceof Error ? e.message : e}`)
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(errors.join(' | '))
   }
 }

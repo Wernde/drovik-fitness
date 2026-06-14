@@ -28,7 +28,7 @@ function seed(
     instructions: '',
     createdAt: SEED_DATE,
     updatedAt: SEED_DATE,
-    syncedAt: null,
+    syncedAt: SEED_DATE, // pre-synced — seeded exercises are never pushed to Supabase
     deleted: false,
   }
 }
