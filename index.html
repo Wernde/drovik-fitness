@@ -52,20 +52,20 @@
 
           requestAnimationFrame(function () {
             requestAnimationFrame(function () {
-              overlay.style.transition = 'opacity 200ms ease';
+              overlay.style.transition = 'opacity 400ms ease';
               overlay.style.opacity   = '1';
 
               setTimeout(function () {
                 if (host.parentNode)   host.parentNode.removeChild(host);
                 if (styleEl && styleEl.parentNode) styleEl.parentNode.removeChild(styleEl);
 
-                overlay.style.transition = 'opacity 350ms ease';
+                overlay.style.transition = 'opacity 600ms ease';
                 overlay.style.opacity    = '0';
 
                 setTimeout(function () {
                   if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
-                }, 350);
-              }, 200);
+                }, 600);
+              }, 400);
             });
           });
         }
@@ -76,8 +76,8 @@
           if (e.data && e.data.type === 'drovik:splash-complete') dismiss();
         });
 
-        // Hard fallback: dismiss after 7 s regardless (5 s animation + 2 s buffer)
-        setTimeout(dismiss, 7000);
+        // Hard fallback: dismiss after 12 s regardless (10 s animation + 2 s buffer)
+        setTimeout(dismiss, 12000);
 
         // ── Fetch and inject splash.html ─────────────────────────────────
         fetch('./splash.html')

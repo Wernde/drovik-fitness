@@ -39,8 +39,8 @@ function useSplashReady() {
     function markReady() {
       if (doneRef.current) return
       doneRef.current = true
-      // 200ms fade-to-black + 350ms fade-from-black = 550ms; add 100ms buffer
-      setTimeout(() => setReady(true), 650)
+      // 400ms fade-to-black + 600ms fade-from-black = 1000ms; add 50ms buffer
+      setTimeout(() => setReady(true), 1050)
     }
 
     const onMsg = (e: MessageEvent) => {
@@ -49,8 +49,8 @@ function useSplashReady() {
 
     window.addEventListener('drovik:splash-complete', markReady)
     window.addEventListener('message', onMsg)
-    // Hard fallback matches index.html 7 s timeout + 650 ms transition
-    const t = setTimeout(markReady, 8000)
+    // Hard fallback matches index.html 12 s timeout + 1050 ms transition
+    const t = setTimeout(markReady, 13500)
 
     return () => {
       window.removeEventListener('drovik:splash-complete', markReady)
