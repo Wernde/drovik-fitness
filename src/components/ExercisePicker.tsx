@@ -30,16 +30,23 @@ interface Props {
 }
 
 export default function ExercisePicker({ onSelect, onClose, existingIds = new Set() }: Props) {
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState<FilterCategory>('all')
+  const [search,       setSearch]       = useState('')
+  const [filter,       setFilter]       = useState<FilterCategory>('all')
+  const [muscleFilter, setMuscleFilter] = useState('all')
 
   const exercises = useLiveQuery(
     () => db.exercises.filter((e) => !e.deleted).toArray(),
     [],
   )
 
+  // Build sorted list of muscle groups from current exercise set
+  const muscleGroups = ['all', ...Array.from(
+    new Set((exercises ?? []).map((e) => e.muscleGroup))
+  ).sort()]
+
   const catFiltered = (exercises ?? [])
     .filter((e) => filter === 'all' || e.category === filter)
+    .filter((e) => muscleFilter === 'all' || e.muscleGroup === muscleFilter)
 
   const filtered = search
     ? filterExercises(catFiltered, search)
@@ -80,8 +87,8 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
         </div>
       </div>
 
-      {/* Category filter pills */}
-      <div className="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
+      {/* Equipment filter pills */}
+      <div className="flex gap-2 overflow-x-auto px-4 pb-2 scrollbar-hide">
         {FILTERS.map(({ value, label }) => (
           <button
             key={value}
@@ -97,6 +104,31 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
           </button>
         ))}
       </div>
+
+      {/* Muscle group filter pills */}
+      <div className="flex gap-2 overflow-x-auto px-4 pb-3 scrollbar-hide">
+        {muscleGroups.map((mg) => (
+          <button
+            key={mg}
+            onClick={() => setMuscleFilter(mg)}
+            className={[
+              'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap',
+              muscleFilter === mg
+                ? 'bg-app-text text-white'
+                : 'bg-app-card border border-app-border text-app-muted',
+            ].join(' ')}
+          >
+            {mg === 'all' ? 'All Muscles' : mg}
+          </button>
+        ))}
+      </div>
+
+      {/* Result count */}
+      {exercises && (
+        <div className="px-4 pb-1">
+          <p className="text-xs text-app-muted">{filtered.length} {filtered.length === 1 ? 'exercise' : 'exercises'}</p>
+        </div>
+      )}
 
       {/* Exercise list */}
       <div className="flex-1 overflow-y-auto px-4 pb-24">
@@ -124,7 +156,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
-                      <p className="text-xs text-app-muted">{exercise.muscleGroup}</p>
+                      <p className="text-xs text-app-muted">{exercise.muscleGroup} · {exercise.category}</p>
                     </div>
                     {alreadyAdded && (
                       <span className="flex-none text-xs text-app-muted">Added</span>
