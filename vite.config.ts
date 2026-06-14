@@ -45,12 +45,21 @@ export default defineConfig({
     }),
   ],
 
+  // Pre-bundle Recharts with esbuild so it handles its own circular deps correctly.
+  optimizeDeps: {
+    include: ['recharts'],
+  },
+
   build: {
     rollupOptions: {
       output: {
-        // No manualChunks — letting Vite handle chunking automatically avoids the
-        // "Cannot access before initialization" circular-dep bug in Recharts when
-        // it is forcibly split into its own chunk.
+        // Group recharts + all its d3 peer deps into one chunk so their
+        // internal init order is preserved (avoids "Cannot access before init").
+        manualChunks(id) {
+          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-')) {
+            return 'vendor-charts'
+          }
+        },
       },
     },
   },
