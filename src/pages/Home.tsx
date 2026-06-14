@@ -76,6 +76,7 @@ export default function Home() {
   const navigate    = useNavigate()
   const { units }   = useUnits()
   const [starting,    setStarting]    = useState(false)
+  const [startError,  setStartError]  = useState<string | null>(null)
   const [weightInput, setWeightInput] = useState('')
   const [savingWt,    setSavingWt]    = useState(false)
 
@@ -268,6 +269,7 @@ export default function Home() {
   async function startNextDay(day: WorkoutDay, programId: string) {
     if (starting) return
     setStarting(true)
+    setStartError(null)
     try {
       const ts = now()
       const sessionId = crypto.randomUUID()
@@ -291,8 +293,9 @@ export default function Home() {
         )
       }
       navigate('/log')
-    } catch {
+    } catch (err) {
       setStarting(false)
+      setStartError(err instanceof Error ? err.message : 'Failed to start. Try again.')
     }
   }
 
@@ -662,7 +665,7 @@ export default function Home() {
             </Link>
           ) : data?.nextDay && data?.activeProgram ? (
             <button
-              onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
+              onClick={() => { setStartError(null); startNextDay(data.nextDay!, data.activeProgram!.id) }}
               disabled={starting}
               className="w-full rounded-2xl overflow-hidden text-left disabled:opacity-70 active:opacity-90"
               style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}
@@ -676,6 +679,9 @@ export default function Home() {
                 <p className="text-2xl font-extrabold text-white mb-3 leading-tight">
                   {starting ? 'Starting…' : data.nextDay.name}
                 </p>
+                {startError && (
+                  <p className="text-xs text-red-400 mb-2">{startError}</p>
+                )}
                 <div className="flex items-center gap-4 mb-4">
                   {data.nextDayExCount > 0 && (
                     <span className="flex items-center gap-1 text-white/60 text-xs">

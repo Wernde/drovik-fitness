@@ -33,6 +33,7 @@ export default function DayDetail() {
   const [editingDE,       setEditingDE]       = useState<DayExercise | null>(null)
   const [confirmDelete,   setConfirmDelete]   = useState<string | null>(null)
   const [starting,        setStarting]        = useState(false)
+  const [startError,      setStartError]      = useState<string | null>(null)
   // Detail sheet state
   const [detailDE,        setDetailDE]        = useState<DayExercise | null>(null)
   const [guideOpen,       setGuideOpen]       = useState(false)
@@ -111,6 +112,7 @@ export default function DayDetail() {
   async function startNow() {
     if (!dayId || !programId) return
     setStarting(true)
+    setStartError(null)
     try {
       const ts        = now()
       const sessionId = crypto.randomUUID()
@@ -148,8 +150,9 @@ export default function DayDetail() {
         )
       }
       navigate('/log')
-    } catch {
+    } catch (err) {
       setStarting(false)
+      setStartError(err instanceof Error ? err.message : 'Failed to start session. Try again.')
     }
   }
 
@@ -406,13 +409,22 @@ export default function DayDetail() {
           className="fixed left-0 right-0 md:left-60 bg-app-card border-t border-app-border px-4 py-3 z-30"
           style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
         >
-          <button
-            onClick={startNow}
-            disabled={starting || dayExercises.length === 0}
-            className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
-          >
-            {starting ? 'Starting…' : 'Start Now'}
-          </button>
+          {startError && (
+            <p className="text-xs text-red-600 text-center mb-2">{startError}</p>
+          )}
+          {dayExercises.length === 0 ? (
+            <p className="text-center text-sm text-app-muted py-2">
+              Add exercises above before starting.
+            </p>
+          ) : (
+            <button
+              onClick={startNow}
+              disabled={starting}
+              className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
+            >
+              {starting ? 'Starting…' : 'Start Now'}
+            </button>
+          )}
         </div>
       )}
 
