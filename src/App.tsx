@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, useEffect } from 'react'
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
@@ -28,35 +28,54 @@ const lazyFallback = (
   <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
 )
 
+// Splash transition phases:
+//   splash   → iframe visible, dark overlay transparent (we see the animation)
+//   covering → dark overlay fades TO opaque (400ms) — hides the iframe
+//   revealing → iframe removed, dark overlay fades TO transparent (600ms) — login/app fades in
+//   done     → everything removed
+type SplashPhase = 'splash' | 'covering' | 'revealing' | 'done'
+
 function AppRoutes() {
   const { session, loading, requiresLogin } = useAuth()
 
-  // Splash overlay state
   const [splashDone, setSplashDone] = useState(false)
-  const [splashFade, setSplashFade] = useState(false)
-  const [splashGone, setSplashGone] = useState(false)
+  const [phase, setPhase]           = useState<SplashPhase>('splash')
+  const phaseRef                    = useRef<SplashPhase>('splash')
 
-  // Hear the postMessage from the splash iframe when the animation finishes
+  function startTransition() {
+    if (phaseRef.current !== 'splash') return
+    phaseRef.current = 'covering'
+    setPhase('covering')
+    setTimeout(() => {
+      phaseRef.current = 'revealing'
+      setPhase('revealing')
+      setTimeout(() => {
+        phaseRef.current = 'done'
+        setPhase('done')
+      }, 600)
+    }, 400)
+  }
+
+  // Listen for postMessage from splash iframe; fallback after 12s in case WebGL fails on mobile
   useEffect(() => {
     function onMsg(e: MessageEvent) {
       if (e.data?.type === 'drovik:splash-complete') setSplashDone(true)
     }
     window.addEventListener('message', onMsg)
-    return () => window.removeEventListener('message', onMsg)
+    const fallback = setTimeout(() => setSplashDone(true), 12000)
+    return () => {
+      window.removeEventListener('message', onMsg)
+      clearTimeout(fallback)
+    }
   }, [])
 
-  // Once both splash and auth are ready, fade the overlay out then remove it
+  // Kick off the transition once both the splash animation and auth are ready
   useEffect(() => {
-    if (!splashDone || loading) return
-    setSplashFade(true)
-    const t = setTimeout(() => setSplashGone(true), 700)
-    return () => clearTimeout(t)
+    if (splashDone && !loading) startTransition()
   }, [splashDone, loading])
 
   const wrap = (el: React.ReactElement) => <ErrorBoundary>{el}</ErrorBoundary>
 
-  // Render the correct page behind the splash overlay.
-  // While auth is loading we render nothing (splash covers it).
   let content: React.ReactNode = null
   if (!loading) {
     if (!session || requiresLogin) {
@@ -88,20 +107,32 @@ function AppRoutes() {
     }
   }
 
+  const overlayStyle: React.CSSProperties = {
+    position: 'fixed',
+    top: 0, left: 0, right: 0, bottom: 0,
+    zIndex: 9999,
+    background: '#050505',
+    opacity: phase === 'covering' ? 1 : 0,
+    transition: phase === 'covering'
+      ? 'opacity 400ms ease'
+      : phase === 'revealing'
+        ? 'opacity 600ms ease'
+        : 'none',
+    pointerEvents: phase === 'covering' ? 'auto' : 'none',
+  }
+
   return (
     <>
       {content}
 
-      {/* Splash overlay — sits on top of everything, fades out when done */}
-      {!splashGone && (
+      {/* Splash iframe — removed as soon as the dark overlay covers it */}
+      {(phase === 'splash' || phase === 'covering') && (
         <div
           style={{
             position: 'fixed',
-            inset: 0,
-            zIndex: 9999,
-            opacity: splashFade ? 0 : 1,
-            transition: 'opacity 700ms ease',
-            pointerEvents: splashFade ? 'none' : 'auto',
+            top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 9998,
+            background: '#050505',
           }}
         >
           <iframe
@@ -111,6 +142,9 @@ function AppRoutes() {
           />
         </div>
       )}
+
+      {/* Dark overlay drives the transition — plain div so CSS transitions work on iOS */}
+      {phase !== 'done' && <div style={overlayStyle} />}
     </>
   )
 }
