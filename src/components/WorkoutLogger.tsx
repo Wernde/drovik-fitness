@@ -114,45 +114,7 @@ export default function WorkoutLogger({ session }: Props) {
 
   const draftsInit = useRef(false)
 
-  // Load local video blobs for all exercises in this session
-  useEffect(() => {
-    if (!data) return
-    const exerciseIds = data.sessionExercises.map((se) => se.exerciseId)
-    if (exerciseIds.length === 0) return
-
-    db.exerciseVideos.where('exerciseId').anyOf(exerciseIds).toArray().then((rows: ExerciseVideo[]) => {
-      if (rows.length === 0) return
-      const map = new Map<string, string>()
-      for (const row of rows) {
-        map.set(row.exerciseId, URL.createObjectURL(row.data))
-      }
-      setLocalVideoUrls((prev) => {
-        // Revoke old URLs that are being replaced
-        for (const [id, url] of prev) {
-          if (!map.has(id)) URL.revokeObjectURL(url)
-        }
-        return map
-      })
-    })
-
-    return () => {
-      setLocalVideoUrls((prev) => {
-        for (const url of prev.values()) URL.revokeObjectURL(url)
-        return new Map()
-      })
-    }
-  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Elapsed timer
-  useEffect(() => {
-    const start = new Date(session.startedAt).getTime()
-    const tick  = () => setElapsed(Math.floor((Date.now() - start) / 1000))
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [session.startedAt])
-
-  // Live data from DB
+  // Live data from DB — must be declared before any useEffect that uses it in deps
   const data = useLiveQuery<SessionData>(async () => {
     const ses = await db.sessionExercises
       .where('workoutSessionId').equals(session.id)
@@ -183,6 +145,43 @@ export default function WorkoutLogger({ session }: Props) {
       dayName,
     }
   }, [session.id, session.workoutDayId])
+
+  // Elapsed timer
+  useEffect(() => {
+    const start = new Date(session.startedAt).getTime()
+    const tick  = () => setElapsed(Math.floor((Date.now() - start) / 1000))
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [session.startedAt])
+
+  // Load local video blobs for all exercises in this session
+  useEffect(() => {
+    if (!data) return
+    const exerciseIds = data.sessionExercises.map((se) => se.exerciseId)
+    if (exerciseIds.length === 0) return
+
+    db.exerciseVideos.where('exerciseId').anyOf(exerciseIds).toArray().then((rows: ExerciseVideo[]) => {
+      if (rows.length === 0) return
+      const map = new Map<string, string>()
+      for (const row of rows) {
+        map.set(row.exerciseId, URL.createObjectURL(row.data))
+      }
+      setLocalVideoUrls((prev) => {
+        for (const [id, url] of prev) {
+          if (!map.has(id)) URL.revokeObjectURL(url)
+        }
+        return map
+      })
+    })
+
+    return () => {
+      setLocalVideoUrls((prev) => {
+        for (const url of prev.values()) URL.revokeObjectURL(url)
+        return new Map()
+      })
+    }
+  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Initialise drafts once when data arrives
   useEffect(() => {
