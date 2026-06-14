@@ -120,10 +120,6 @@ const CHART_OPTIONS: Array<{ value: ChartMetric; label: string }> = [
   { value: 'leftThighCm', label: 'Thigh'    },
 ]
 
-const tooltipStyle = {
-  backgroundColor: 'var(--color-app-card)', border: '1px solid var(--color-app-border)',
-  borderRadius: 12, fontSize: 12,
-}
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 

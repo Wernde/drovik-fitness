@@ -32,13 +32,6 @@ function shortDate(iso: string) {
 
 // ── Shared chart styles ───────────────────────────────────────────────────────
 
-const _unused = {
-  backgroundColor: 'var(--color-app-card)',
-  border: '1px solid var(--color-app-border)',
-  borderRadius: 12,
-  fontSize: 12,
-  color: 'var(--color-app-text)',
-}
 
 // ── Lift chart tab ────────────────────────────────────────────────────────────
 
