@@ -259,7 +259,11 @@
     #skip-btn { padding: 10px 13px; font-size: 10px; }
   }
 
-
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-iteration-count: 1 !important;
+    }
+  }
 </style>
 </head>
 <body>
