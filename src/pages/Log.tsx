@@ -125,7 +125,7 @@ export default function Log() {
   })
 
   return (
-    <div className="px-4 pt-6 pb-24">
+    <div className="page-x pt-6">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-1">
         <button

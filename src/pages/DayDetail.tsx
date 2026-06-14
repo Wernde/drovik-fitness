@@ -215,7 +215,7 @@ export default function DayDetail() {
         </div>
       </div>
 
-      <div className="px-4 pt-5">
+      <div className="page-x pt-5">
 
         {/* ── Edit mode header ── */}
         {editMode && (
@@ -447,7 +447,7 @@ export default function DayDetail() {
               </button>
             </div>
 
-            <div className="px-5 pt-4">
+            <div className="page-x pt-4">
               {/* Exercise header */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex-none flex items-center justify-center w-16 h-16 rounded-2xl bg-app-bg">

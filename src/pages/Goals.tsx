@@ -234,7 +234,7 @@ export default function Goals() {
   const [tab, setTab] = useState<Tab>('goals')
 
   return (
-    <div className="px-4 pt-5 pb-24">
+    <div className="page-x pt-5">
       <div className="flex items-center gap-3 mb-4">
         <button
           onClick={() => navigate(-1)}

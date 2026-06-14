@@ -233,10 +233,10 @@ export default function Profile() {
     .filter(Boolean).map((s) => s[0].toUpperCase()).join('') || '?'
 
   return (
-    <div className="flex flex-col min-h-screen bg-app-bg pb-8">
+    <div className="flex flex-col bg-app-bg">
 
       {/* Header */}
-      <div className="px-5 pt-6 pb-4 flex items-center gap-3 border-b border-app-border bg-app-card sticky top-0 z-10">
+      <div className="page-x pt-6 pb-4 flex items-center gap-3 border-b border-app-border bg-app-card sticky top-0 z-10">
         <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full bg-app-bg border border-app-border flex items-center justify-center text-app-muted active:bg-app-border flex-shrink-0">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />

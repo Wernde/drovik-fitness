@@ -101,10 +101,10 @@ export default function Programs() {
   }
 
   return (
-    <div className="pb-24">
+    <div>
 
       {/* ── Page heading (always "Program") ───────────────────── */}
-      <div className="px-5 pt-6 pb-3 border-b border-app-border flex items-center justify-between">
+      <div className="page-x pt-6 pb-3 border-b border-app-border flex items-center justify-between">
         <h1 className="text-2xl font-extrabold text-app-text">Program</h1>
         <button
           onClick={() => { setEditing(undefined); setFormOpen(true) }}
@@ -119,21 +119,25 @@ export default function Programs() {
 
       {/* ── No programs at all ────────────────────────────────── */}
       {programs.length === 0 && (
-        <div className="mx-4 mt-4 rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
-          No programs yet. Tap <strong className="text-app-text">New</strong> to create one.
+        <div className="page-x mt-4">
+          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+            No programs yet. Tap <strong className="text-app-text">New</strong> to create one.
+          </div>
         </div>
       )}
 
       {/* ── No active program notice ──────────────────────────── */}
       {activePrograms.length === 0 && programs.length > 0 && (
-        <div className="mx-4 mt-4 bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
-          No active program. Tap ✓ on a program below to activate it.
+        <div className="page-x mt-4">
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
+            No active program. Tap ✓ on a program below to activate it.
+          </div>
         </div>
       )}
 
       {/* ── All Programs ───────────────────────────────────────── */}
       {programs.length > 0 && (
-        <div className="px-4 mt-4">
+        <div className="page-x mt-4">
           <p className="text-base font-extrabold text-app-text mb-2">All Programs</p>
           <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {sorted.map((program) => {
@@ -188,7 +192,7 @@ export default function Programs() {
         const days = activeDaysByProgram.get(program.id) ?? []
         return (
           <div key={program.id}>
-            <div className="px-5 pt-5 pb-1 flex items-center justify-between">
+            <div className="page-x pt-5 pb-1 flex items-center justify-between">
               <p className="text-base font-extrabold text-app-text">{program.name}</p>
               <button
                 onClick={() => navigate(`/programs/${program.id}`)}
@@ -228,14 +232,16 @@ export default function Programs() {
                 })}
               </div>
             ) : (
-              <div className="mx-4 mt-2 rounded-2xl border-2 border-dashed border-app-border p-6 text-center text-app-muted">
-                <p className="text-sm">No days in this program yet.</p>
-                <button
-                  onClick={() => navigate(`/programs/${program.id}`)}
-                  className="mt-2 text-sm font-bold text-accent-dark"
-                >
-                  Build it →
-                </button>
+              <div className="page-x mt-2 mb-2">
+                <div className="rounded-2xl border-2 border-dashed border-app-border p-6 text-center text-app-muted">
+                  <p className="text-sm">No days in this program yet.</p>
+                  <button
+                    onClick={() => navigate(`/programs/${program.id}`)}
+                    className="mt-2 text-sm font-bold text-accent-dark"
+                  >
+                    Build it →
+                  </button>
+                </div>
               </div>
             )}
           </div>

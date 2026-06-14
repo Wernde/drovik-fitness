@@ -1623,7 +1623,7 @@ export default function Nutrition() {
   ]
 
   return (
-    <div className="px-4 pt-5 pb-24 overflow-x-hidden">
+    <div className="page-x pt-5 overflow-x-hidden">
       <h1 className="text-2xl font-extrabold text-app-text mb-4">Nutrition</h1>
 
       {/* Tab bar */}

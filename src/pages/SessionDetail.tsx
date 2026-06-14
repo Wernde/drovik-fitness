@@ -85,7 +85,7 @@ export default function SessionDetail() {
   const totalVolume = allSets.reduce((sum, s) => sum + s.reps * s.weight, 0)
 
   return (
-    <div className="px-4 pt-6 pb-24">
+    <div className="page-x pt-6">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-4">
         <button

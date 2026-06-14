@@ -15,24 +15,45 @@
   --color-app-text:   #241F20;
   --color-app-muted:  #7A7980;
   --color-app-faint:  #C8C8C8;
+
+  --muscle-body: #c8c8c8;
+  --muscle-hi:   #FFCA10;
 }
 
 /* Dark mode intentionally disabled — app always uses the light theme */
 
-/* Mobile: pad the scrollable content area so nothing sits behind the
-   fixed bottom nav (72 px + iOS safe-area). Desktop: no bottom nav, no pad. */
+/* ── Bottom-nav clearance ────────────────────────────────────────────────────
+   Applied to <main> in Layout. Pages must NOT add pb-24 on top of this —
+   that creates double padding. Use page-bottom instead if a page needs its
+   own breathing room. */
 .main-nav-clearance {
   padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
 }
 @media (min-width: 768px) {
   .main-nav-clearance {
-    padding-bottom: 0;
+    padding-bottom: 2rem; /* 32px — comfortable desktop bottom margin */
   }
 }
 
-:root {
-  --muscle-body: #c8c8c8;
-  --muscle-hi:   #FFCA10;
+/* ── Responsive page wrapper ─────────────────────────────────────────────────
+   Used by every page. Provides responsive horizontal padding that grows with
+   the viewport so content never feels cramped on mobile or too tight on
+   tablet / desktop. */
+.page-x {
+  padding-left:  1rem;    /* 16px mobile */
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .page-x {
+    padding-left:  1.25rem; /* 20px small tablet */
+    padding-right: 1.25rem;
+  }
+}
+@media (min-width: 768px) {
+  .page-x {
+    padding-left:  1.5rem;  /* 24px tablet / desktop */
+    padding-right: 1.5rem;
+  }
 }
 
 .scrollbar-hide {

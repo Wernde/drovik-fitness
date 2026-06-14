@@ -300,7 +300,7 @@ export default function More() {
     <div className="flex flex-col h-full bg-app-bg lg:max-w-3xl lg:mx-auto lg:w-full">
 
       {/* ── Header ── */}
-      <div className="bg-app-bg px-5 pt-6 pb-3 flex items-center gap-3 border-b border-app-border flex-none">
+      <div className="bg-app-bg page-x pt-6 pb-3 flex items-center gap-3 border-b border-app-border flex-none">
         <div className="w-11 h-11 rounded-full bg-app-text flex items-center justify-center flex-shrink-0">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 text-accent">
             <path d="M16.5 6.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 21a3 3 0 00.364-5.982A3 3 0 0021 12.75H3a3 3 0 002.886 2.268A3 3 0 005.25 21h13.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM9.75 12a.75.75 0 100 1.5.75.75 0 000-1.5zM14.25 12a.75.75 0 100 1.5.75.75 0 000-1.5z" />

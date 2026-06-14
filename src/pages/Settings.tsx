@@ -207,7 +207,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="px-4 pt-6 pb-24">
+    <div className="page-x pt-6">
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}

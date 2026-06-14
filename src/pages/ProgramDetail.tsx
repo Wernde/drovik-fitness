@@ -195,7 +195,7 @@ export default function ProgramDetail() {
   const hasPhases = phases.length > 0
 
   return (
-    <div className="px-4 pt-6 pb-24">
+    <div className="page-x pt-6">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-1">
         <button onClick={() => navigate('/programs')} className="flex-none text-app-muted active:text-app-text p-1 -ml-1" aria-label="Back">

@@ -447,7 +447,7 @@ function OneRepMaxCalc() {
 export default function Calculator() {
   const navigate = useNavigate()
   return (
-    <div className="px-4 pt-6 pb-24 flex flex-col gap-5">
+    <div className="page-x pt-6 flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

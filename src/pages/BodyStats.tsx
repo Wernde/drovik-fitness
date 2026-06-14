@@ -288,10 +288,10 @@ export default function BodyStats() {
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
-    <div className="bg-app-bg min-h-screen pb-24">
+    <div className="bg-app-bg">
 
       {/* ── Header ── */}
-      <div className="bg-app-bg px-4 pt-6 pb-4 flex items-center gap-3">
+      <div className="bg-app-bg page-x pt-6 pb-4 flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
           className="p-2 -ml-2 text-app-muted active:text-app-text"

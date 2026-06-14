@@ -315,10 +315,10 @@ export default function Home() {
     : null
 
   return (
-    <div className="flex flex-col pb-24 bg-app-bg">
+    <div className="flex flex-col bg-app-bg">
 
       {/* ── Top bar ──────────────────────────────────────────────────── */}
-      <div className="px-5 pt-6 pb-3 flex items-center gap-3">
+      <div className="page-x pt-6 pb-3 flex items-center gap-3">
         <Link to="/profile" className="w-11 h-11 rounded-full bg-accent flex items-center justify-center text-sm font-extrabold text-app-text flex-shrink-0 overflow-hidden active:opacity-80">
           {avatarUrl
             ? <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
@@ -337,7 +337,7 @@ export default function Home() {
       </div>
 
       {/* ── Date strip ───────────────────────────────────────────────── */}
-      <div className="px-4 pb-4">
+      <div className="page-x pb-4">
         <div className="flex items-center justify-between mb-3">
           <p className="text-base font-extrabold text-app-text">{todayLabel}</p>
           <span className="text-xs font-bold text-app-text bg-accent px-3 py-1 rounded-full">Today</span>
@@ -369,7 +369,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-4 page-x">
 
         {/* ── Things to Do Today ────────────────────────────────────── */}
         <div>

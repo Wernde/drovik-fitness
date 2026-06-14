@@ -232,7 +232,8 @@ export default function Layout() {
                   />
                 )}
               </div>
-              <div>
+              {/* Max-width container: content never stretches past 896px on wide screens */}
+              <div className="w-full max-w-4xl mx-auto">
                 <Outlet />
               </div>
             </main>
