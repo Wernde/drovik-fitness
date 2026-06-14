@@ -61,8 +61,7 @@
   #center-stack {
     position: relative;
     z-index: 4;
-    width: var(--logo-w);
-    max-width: 88vw;
+    width: clamp(260px, calc(100vw - 64px), 520px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -253,7 +252,6 @@
   }
 
   @media (max-width: 640px) {
-    :root { --logo-w: 68vw; }
     #center-stack { transform: translateY(-6px); }
     #progress-label { font-size: 12px; letter-spacing: 0.14em; }
     #skip-btn { padding: 10px 13px; font-size: 10px; }
