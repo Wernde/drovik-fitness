@@ -527,6 +527,37 @@ class DrovikDB extends Dexie {
       healthWorkouts:      'id, workoutDate',
     })
 
+    // Version 18 — re-seed any missing foods. Devices that installed the app before
+    // version 11 (foods feature) or had their IndexedDB partially wiped may have zero
+    // seeded foods. This runs the same safe check as the v11 upgrade so it's idempotent.
+    this.version(18).stores({
+      exercises:           'id, category, muscleGroup, name',
+      programs:            'id',
+      programPhases:       'id, programId',
+      workoutDays:         'id, programId, phaseId',
+      dayExercises:        'id, workoutDayId, exerciseId',
+      workoutSessions:     'id, date, workoutDayId',
+      sessionExercises:    'id, workoutSessionId, exerciseId',
+      sets:                'id, sessionExerciseId',
+      bodyWeightLogs:      'id, date',
+      nutritionLogs:       'id, date',
+      habits:              'id',
+      habitCompletions:    'id, habitId, date',
+      bodyMeasurementLogs: 'id, date',
+      foods:               'id, name, category',
+      foodLogs:            'id, date, foodId, meal',
+      recipes:             'id, name',
+      recipeFoods:         'id, recipeId, foodId',
+      progressPhotos:      'id, date',
+      healthMetrics:       'id, date',
+      healthWorkouts:      'id, workoutDate',
+      exerciseVideos:      'exerciseId',
+    }).upgrade(async (tx) => {
+      const existing = new Set(await tx.table('foods').toCollection().primaryKeys())
+      const missing  = seedFoods.filter((f: Food) => !existing.has(f.id))
+      if (missing.length > 0) await tx.table('foods').bulkAdd(missing)
+    })
+
     // Version 17 — mark seeded (non-custom) exercises as syncedAt=SEED_DATE so they
     // are never pushed to Supabase. Previously syncedAt was null, causing 618 rows to
     // be pushed in one batch on every new install, often failing and blocking all sync.
