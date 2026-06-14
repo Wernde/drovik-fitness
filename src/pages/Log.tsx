@@ -11,6 +11,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import type { WorkoutDay, Program } from '../db/db'
 import WorkoutLogger from '../components/WorkoutLogger'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 export default function Log() {
   const navigate = useNavigate()
@@ -43,7 +44,11 @@ export default function Log() {
   const { activeSession, activeProgram, programDays } = data
 
   if (activeSession) {
-    return <WorkoutLogger session={activeSession} />
+    return (
+      <ErrorBoundary>
+        <WorkoutLogger session={activeSession} />
+      </ErrorBoundary>
+    )
   }
 
   async function startFromDay(day: WorkoutDay, program: Program) {
