@@ -5,6 +5,7 @@ import { ToastProvider } from './contexts/ToastContext'
 import { UnitsProvider } from './contexts/UnitsContext'
 import Layout from './components/Layout'
 import ErrorBoundary from './components/ErrorBoundary'
+import SplashScreen from './components/SplashScreen'
 import Login from './pages/Login'
 import Home from './pages/Home'
 import Programs from './pages/Programs'
@@ -29,26 +30,26 @@ const lazyFallback = (
 )
 
 // Splash transition phases:
-//   splash   → iframe visible, dark overlay transparent (we see the animation)
-//   covering → dark overlay fades TO opaque (400ms) — hides the iframe
-//   revealing → iframe removed, dark overlay fades TO transparent (600ms) — login/app fades in
-//   done     → everything removed
-type SplashPhase = 'splash' | 'covering' | 'revealing' | 'done'
+//   showing   → splash DOM is mounted, dark overlay is transparent
+//   covering  → dark overlay fades to opaque (400ms) — covers the splash
+//   revealing → splash unmounted, dark overlay fades to transparent (600ms) — login/app appears
+//   done      → overlay removed
+type SplashPhase = 'showing' | 'covering' | 'revealing' | 'done'
 
 function AppRoutes() {
   const { session, loading, requiresLogin } = useAuth()
 
   const [splashDone, setSplashDone] = useState(false)
-  const [phase, setPhase]           = useState<SplashPhase>('splash')
-  const phaseRef                    = useRef<SplashPhase>('splash')
+  const [phase, setPhase]           = useState<SplashPhase>('showing')
+  const phaseRef                    = useRef<SplashPhase>('showing')
 
   function startTransition() {
-    if (phaseRef.current !== 'splash') return
+    if (phaseRef.current !== 'showing') return
     phaseRef.current = 'covering'
     setPhase('covering')
     setTimeout(() => {
       phaseRef.current = 'revealing'
-      setPhase('revealing')
+      setPhase('revealing')          // unmounts SplashScreen, which removes its DOM elements
       setTimeout(() => {
         phaseRef.current = 'done'
         setPhase('done')
@@ -56,20 +57,26 @@ function AppRoutes() {
     }, 400)
   }
 
-  // Listen for postMessage from splash iframe; fallback after 12s in case WebGL fails on mobile
+  // Listen for the drovik:splash-complete custom event (fired directly on window
+  // since the splash now runs in the same document, not an iframe).
+  // Also falls back via a 12-second timeout in case WebGL fails to initialise.
   useEffect(() => {
-    function onMsg(e: MessageEvent) {
+    const onDone = () => setSplashDone(true)
+    window.addEventListener('drovik:splash-complete', onDone)
+    // postMessage fallback (for any cached iframe version of splash.html)
+    const onMsg = (e: MessageEvent) => {
       if (e.data?.type === 'drovik:splash-complete') setSplashDone(true)
     }
     window.addEventListener('message', onMsg)
     const fallback = setTimeout(() => setSplashDone(true), 12000)
     return () => {
+      window.removeEventListener('drovik:splash-complete', onDone)
       window.removeEventListener('message', onMsg)
       clearTimeout(fallback)
     }
   }, [])
 
-  // Kick off the transition once both the splash animation and auth are ready
+  // Kick off the transition once both splash and auth are ready
   useEffect(() => {
     if (splashDone && !loading) startTransition()
   }, [splashDone, loading])
@@ -125,25 +132,10 @@ function AppRoutes() {
     <>
       {content}
 
-      {/* Splash iframe — removed as soon as the dark overlay covers it */}
-      {(phase === 'splash' || phase === 'covering') && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0, left: 0, right: 0, bottom: 0,
-            zIndex: 9998,
-            background: '#050505',
-          }}
-        >
-          <iframe
-            src={`${import.meta.env.BASE_URL}splash.html`}
-            style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-            title="Loading"
-          />
-        </div>
-      )}
+      {/* Splash runs directly in the main document (no iframe) — fixes WebGL + touch on iOS */}
+      {(phase === 'showing' || phase === 'covering') && <SplashScreen />}
 
-      {/* Dark overlay drives the transition — plain div so CSS transitions work on iOS */}
+      {/* Plain div overlay drives the transition — CSS transitions are reliable on all devices */}
       {phase !== 'done' && <div style={overlayStyle} />}
     </>
   )
