@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense, lazy, useState, useEffect, useRef } from 'react'
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
@@ -28,8 +28,47 @@ const lazyFallback = (
   <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
 )
 
+// Wait for the splash (in index.html) to finish before rendering any content.
+// This stops iOS from detecting the hidden login form fields and showing the
+// credential picker / Face ID prompt over the animation.
+function useSplashReady() {
+  const [ready, setReady] = useState(false)
+  const doneRef = useRef(false)
+
+  useEffect(() => {
+    function markReady() {
+      if (doneRef.current) return
+      doneRef.current = true
+      // 200ms fade-to-black + 350ms fade-from-black = 550ms; add 100ms buffer
+      setTimeout(() => setReady(true), 650)
+    }
+
+    const onMsg = (e: MessageEvent) => {
+      if (e.data?.type === 'drovik:splash-complete') markReady()
+    }
+
+    window.addEventListener('drovik:splash-complete', markReady)
+    window.addEventListener('message', onMsg)
+    // Hard fallback matches index.html 6 s timeout + 650 ms transition
+    const t = setTimeout(markReady, 7000)
+
+    return () => {
+      window.removeEventListener('drovik:splash-complete', markReady)
+      window.removeEventListener('message', onMsg)
+      clearTimeout(t)
+    }
+  }, [])
+
+  return ready
+}
+
 function AppRoutes() {
+  const splashReady = useSplashReady()
   const { session, loading, requiresLogin } = useAuth()
+
+  // Keep DOM empty (no form fields) while splash is visible — prevents iOS
+  // from activating the credential picker over the animation.
+  if (!splashReady) return null
 
   if (loading) {
     return (

@@ -259,14 +259,7 @@
     #skip-btn { padding: 10px 13px; font-size: 10px; }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      scroll-behaviour: auto !important;
-      transition-duration: 0.001ms !important;
-    }
-  }
+
 </style>
 </head>
 <body>
@@ -365,7 +358,7 @@
 
   window.addEventListener('resize', syncHeartbeatPathLength);
 
-  const gl = !prefersReducedMotion && (
+  const gl = (
     canvas.getContext('webgl', { alpha: false, antialias: true, powerPreference: 'high-performance' }) ||
     canvas.getContext('experimental-webgl', { alpha: false, antialias: true })
   );
