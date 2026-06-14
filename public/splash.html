@@ -377,6 +377,7 @@
     logoFinal.classList.add('visible');
     loadingPanel.classList.add('visible');
     startLoadingMessageLoop();
+    setTimeout(finishSplash, 2500);
     return;
   }
 
@@ -883,6 +884,7 @@
       logoFinal.classList.add('visible');
       loadingPanel.classList.add('visible');
       startLoadingMessageLoop();
+      setTimeout(finishSplash, 2500);
     };
     img.src = LOGO_SRC;
   }
