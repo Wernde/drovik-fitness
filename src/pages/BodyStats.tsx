@@ -1,10 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import {
-  ResponsiveContainer, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip,
-} from 'recharts'
+import MiniLineChart from '../components/MiniLineChart'
 import { db, now, today } from '../db/db'
 import type { BodyMeasurementLog } from '../db/db'
 import { loadProfile } from '../lib/tdee'
@@ -424,21 +421,8 @@ export default function BodyStats() {
               </p>
             </div>
           ) : (
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={chartData} margin={{ left: -10, right: 4 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E3E5E5" />
-                <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#7A7980' }} />
-                <YAxis tick={{ fontSize: 9, fill: '#7A7980' }} domain={['auto', 'auto']} width={38} />
-                <Tooltip
-                  formatter={(v: number) => [`${v} ${chartUnit}`, chartLabel]}
-                  contentStyle={tooltipStyle}
-                />
-                <Line
-                  type="monotone" dataKey="val" stroke="#B8900A" strokeWidth={2}
-                  dot={{ r: 3, fill: '#FFCA10' }} activeDot={{ r: 5 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <MiniLineChart data={chartData} dataKey="val" height={180}
+              formatY={v => `${v.toFixed(1)} ${chartUnit}`} label={chartLabel} />
           )}
         </div>
 

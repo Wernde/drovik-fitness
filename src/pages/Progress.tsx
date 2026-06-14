@@ -14,10 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel, fmtWeight, cmToDisplay, displayToCm, measurementLabel } from '../lib/units'
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer,
-} from 'recharts'
+import MiniLineChart from '../components/MiniLineChart'
 import { db, now, today } from '../db/db'
 import type { Exercise, NutritionLog, BodyMeasurementLog } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
@@ -35,7 +32,7 @@ function shortDate(iso: string) {
 
 // ── Shared chart styles ───────────────────────────────────────────────────────
 
-const chartTooltipStyle = {
+const _unused = {
   backgroundColor: 'var(--color-app-card)',
   border: '1px solid var(--color-app-border)',
   borderRadius: 12,
@@ -182,19 +179,8 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
           ) : (
             <div className="rounded-2xl bg-app-card border border-app-border p-4">
               <p className="text-xs text-app-muted mb-3">{chartLabel}</p>
-              <ResponsiveContainer width="100%" height={180}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E3E5E5" />
-                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#7A7980' }} />
-                  <YAxis tick={{ fontSize: 10, fill: '#7A7980' }} domain={['auto', 'auto']} />
-                  <Tooltip
-                    formatter={(val: number) => [`${val} ${unit}`, label]}
-                    contentStyle={chartTooltipStyle}
-                  />
-                  <Line type="monotone" dataKey={dataKey} stroke="#B8900A" strokeWidth={2}
-                    dot={{ r: 3, fill: '#FFCA10' }} activeDot={{ r: 5 }} />
-                </LineChart>
-              </ResponsiveContainer>
+              <MiniLineChart data={chartData} dataKey={dataKey} height={180}
+                formatY={v => `${v.toFixed(1)} ${unit}`} label={label} />
             </div>
           )}
         </div>
@@ -276,16 +262,8 @@ function BodyWeightSection() {
       ) : (
         <div className="rounded-2xl bg-app-card border border-app-border p-4">
           <p className="text-xs text-app-muted mb-3">Body weight ({weightLabel(wUnit)})</p>
-          <ResponsiveContainer width="100%" height={180}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E3E5E5" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#7A7980' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#7A7980' }} domain={['auto', 'auto']} />
-              <Tooltip formatter={(val: number) => [`${val} ${weightLabel(wUnit)}`, 'Weight']} contentStyle={chartTooltipStyle} />
-              <Line type="monotone" dataKey="weight" stroke="#B8900A" strokeWidth={2}
-                dot={{ r: 3, fill: '#FFCA10' }} activeDot={{ r: 5 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          <MiniLineChart data={chartData} dataKey="weight" height={180}
+            formatY={v => `${v.toFixed(1)} ${weightLabel(wUnit)}`} />
           <div className="mt-3 border-t border-app-border pt-3">
             <ul className="flex flex-col gap-1">
               {[...logs].reverse().slice(0, 10).map((l) => (
@@ -703,19 +681,8 @@ function NutritionTab() {
       {chartData.length > 1 && (
         <div className="rounded-2xl bg-app-card border border-app-border p-4">
           <p className="text-xs text-app-muted mb-3">Calories over time</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E3E5E5" />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#7A7980' }} />
-              <YAxis tick={{ fontSize: 10, fill: '#7A7980' }} domain={['auto', 'auto']} />
-              <Tooltip
-                formatter={(val: number) => [`${val} kcal`, 'Calories']}
-                contentStyle={chartTooltipStyle}
-              />
-              <Line type="monotone" dataKey="calories" stroke="#B8900A" strokeWidth={2}
-                dot={{ r: 3, fill: '#FFCA10' }} activeDot={{ r: 5 }} />
-            </LineChart>
-          </ResponsiveContainer>
+          <MiniLineChart data={chartData} dataKey="calories" height={160}
+            formatY={v => `${Math.round(v)} kcal`} />
         </div>
       )}
 
