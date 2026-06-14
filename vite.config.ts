@@ -45,7 +45,10 @@ export default defineConfig({
     }),
   ],
 
+  // Don't inject <link rel="modulepreload"> — prevents Recharts chunk from being
+  // evaluated at app startup before any chart page is visited.
   build: {
+    modulePreload: false,
     rollupOptions: {
       output: {
         manualChunks: {
