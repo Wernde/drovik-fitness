@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
+import { useSyncStatus } from '../sync/useSyncStatus'
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -148,6 +149,9 @@ export default function Settings() {
   const { session, signOut } = useAuth()
   const { units, setWeight, setMeasurement, setWater, setTemperature } = useUnits()
 
+  const { status: syncStatus, forceResync, lastSyncAt, lastError } = useSyncStatus()
+  const [forceResyncing, setForceResyncing] = useState(false)
+
   const [exporting,      setExporting]      = useState(false)
   const [importStatus,   setImportStatus]   = useState<'idle' | 'success' | 'error'>('idle')
   const [importError,    setImportError]    = useState('')
@@ -174,6 +178,11 @@ export default function Settings() {
     localStorage.setItem('drovik:apiKey', apiKey.trim())
     setApiKeySaved(true)
     setTimeout(() => setApiKeySaved(false), 2000)
+  }
+
+  async function handleForceResync() {
+    setForceResyncing(true)
+    try { await forceResync() } finally { setForceResyncing(false) }
   }
 
   async function handleExport() {
@@ -254,6 +263,58 @@ export default function Settings() {
           >
             Sign out
           </button>
+        </div>
+      </section>
+
+      {/* ── Sync ── */}
+      <section className="mb-5">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Sync</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+
+          {/* Status row */}
+          <div className="px-4 py-3 flex items-center gap-3">
+            <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+              syncStatus === 'syncing' ? 'bg-blue-500 animate-pulse' :
+              syncStatus === 'error'   ? 'bg-red-400' :
+                                        'bg-green-500'
+            }`} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-app-text">
+                {syncStatus === 'syncing' ? 'Syncing…' :
+                 syncStatus === 'error'   ? 'Sync error' :
+                                           'Synced'}
+              </p>
+              {lastSyncAt && syncStatus !== 'syncing' && (
+                <p className="text-xs text-app-muted">
+                  Last synced {new Date(lastSyncAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Error details */}
+          {lastError && (
+            <div className="px-4 py-3 bg-red-50">
+              <p className="text-xs font-bold text-red-600 mb-1">Error detail</p>
+              <p className="text-xs text-red-500 font-mono break-all">{lastError}</p>
+            </div>
+          )}
+
+          {/* Force re-sync */}
+          <div className="px-4 py-4">
+            <p className="text-sm font-semibold text-app-text mb-0.5">Force full re-sync</p>
+            <p className="text-xs text-app-muted mb-3">
+              Clears the sync cursor and re-downloads all data from Supabase. Use this if data is missing on this device.
+            </p>
+            <button
+              onClick={handleForceResync}
+              disabled={forceResyncing || syncStatus === 'syncing'}
+              className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark disabled:opacity-60"
+            >
+              {forceResyncing ? 'Re-syncing…' : 'Re-sync now'}
+            </button>
+          </div>
+
         </div>
       </section>
 

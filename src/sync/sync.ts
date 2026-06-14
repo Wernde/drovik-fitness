@@ -497,6 +497,11 @@ async function pullTable(t: SyncTable): Promise<void> {
 
 export type SyncStatus = 'idle' | 'syncing' | 'error'
 
+/** Wipe all pull cursors so the next syncAll does a full re-pull from Supabase. */
+export function clearPullCursors(): void {
+  try { localStorage.removeItem(PULL_CURSOR_KEY) } catch {}
+}
+
 /** Push all unsynced local changes then pull anything new from Supabase. */
 export async function syncAll(userId: string): Promise<void> {
   const errors: string[] = []

@@ -6,14 +6,16 @@
  */
 
 import { useEffect, useState, useCallback, useRef } from 'react'
-import { syncAll, type SyncStatus } from './sync'
+import { syncAll, clearPullCursors, type SyncStatus } from './sync'
 import { useAuth } from '../contexts/AuthContext'
 
 const SYNC_INTERVAL_MS = 30_000
 
 export function useSyncStatus() {
   const { session } = useAuth()
-  const [status, setStatus] = useState<SyncStatus>('idle')
+  const [status,      setStatus]      = useState<SyncStatus>('idle')
+  const [lastSyncAt,  setLastSyncAt]  = useState<string | null>(null)
+  const [lastError,   setLastError]   = useState<string | null>(null)
   const syncingRef = useRef(false)
 
   const runSync = useCallback(async () => {
@@ -23,13 +25,22 @@ export function useSyncStatus() {
     try {
       await syncAll(session.user.id)
       setStatus('idle')
+      setLastSyncAt(new Date().toISOString())
+      setLastError(null)
     } catch (e) {
       console.error('Sync failed:', e)
       setStatus('error')
+      setLastError(e instanceof Error ? e.message : String(e))
     } finally {
       syncingRef.current = false
     }
   }, [session])
+
+  /** Clears all pull cursors then triggers a full re-pull from Supabase. */
+  const forceResync = useCallback(async () => {
+    clearPullCursors()
+    await runSync()
+  }, [runSync])
 
   // Run once on login / session restore.
   useEffect(() => {
@@ -60,5 +71,5 @@ export function useSyncStatus() {
     return () => clearInterval(id)
   }, [session, runSync])
 
-  return { status, runSync }
+  return { status, runSync, forceResync, lastSyncAt, lastError }
 }
