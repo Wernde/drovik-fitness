@@ -242,36 +242,53 @@ export default function Settings() {
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Appearance</h2>
         <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
           <p className="text-sm font-semibold text-app-text mb-1">Colour theme</p>
-          <p className="text-xs text-app-muted mb-4">Changes take effect instantly across the whole app.</p>
+          <p className="text-xs text-app-muted mb-4">Tap any theme to switch instantly.</p>
           <div className="grid grid-cols-3 gap-3">
             {THEMES.map((theme) => {
               const isActive = activeThemeId === theme.id
-              const swatchBg = theme.dark
-                ? `linear-gradient(135deg, ${theme.appBg} 55%, ${theme.accent} 55%)`
-                : theme.accent
-              const checkColor = theme.id === 'gold' || theme.id === 'forest' ? '#1a1a1a' : '#ffffff'
               return (
                 <button
                   key={theme.id}
                   onClick={() => handleThemeChange(theme.id)}
-                  className="flex flex-col items-center gap-2 group"
+                  className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
                 >
+                  {/* Mini app preview */}
                   <div
-                    className="w-full aspect-square rounded-2xl flex items-center justify-center transition-transform active:scale-95"
+                    className="w-full rounded-2xl overflow-hidden"
                     style={{
-                      background: swatchBg,
-                      boxShadow: isActive
-                        ? `0 0 0 3px var(--color-app-bg), 0 0 0 5px ${theme.accent}`
-                        : '0 0 0 1.5px var(--color-app-border)',
+                      background: theme.appBg,
+                      outline: isActive ? `3px solid ${theme.accent}` : `1.5px solid ${theme.appBorder}`,
+                      outlineOffset: isActive ? '2px' : '0px',
                     }}
                   >
-                    {isActive && (
-                      <svg viewBox="0 0 20 20" fill={checkColor} className="w-6 h-6 drop-shadow-sm">
-                        <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                      </svg>
-                    )}
+                    {/* Fake top bar */}
+                    <div
+                      className="px-2 pt-2 pb-1.5 flex items-center gap-1"
+                      style={{ borderBottom: `1px solid ${theme.appBorder}` }}
+                    >
+                      <div className="w-3 h-3 rounded-full" style={{ background: theme.accent }} />
+                      <div className="flex-1 h-1.5 rounded-full" style={{ background: theme.appMuted + '40' }} />
+                    </div>
+                    {/* Fake card */}
+                    <div className="p-2 flex flex-col gap-1.5">
+                      <div
+                        className="rounded-xl p-2 flex flex-col gap-1"
+                        style={{ background: theme.appCard, border: `1px solid ${theme.appBorder}` }}
+                      >
+                        <div className="h-1.5 rounded-full w-10" style={{ background: theme.appText + '70' }} />
+                        <div className="h-1 rounded-full w-7" style={{ background: theme.appMuted + '60' }} />
+                      </div>
+                      {/* Fake accent button */}
+                      <div
+                        className="h-4 rounded-lg"
+                        style={{ background: theme.accent }}
+                      />
+                    </div>
                   </div>
-                  <p className={`text-[11px] font-bold text-center transition-colors ${isActive ? 'text-app-text' : 'text-app-muted'}`}>
+                  <p
+                    className="text-[11px] font-bold"
+                    style={{ color: isActive ? theme.accent : 'var(--color-app-muted)' }}
+                  >
                     {theme.name}
                   </p>
                 </button>

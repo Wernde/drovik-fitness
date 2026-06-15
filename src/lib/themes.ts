@@ -14,34 +14,48 @@ export interface Theme {
   appFaint:     string
 }
 
-const LIGHT = {
-  appBg:     '#F4F6F9',
-  appCard:   '#ffffff',
-  appBorder: '#E3E5E5',
-  appText:   '#241F20',
-  appMuted:  '#7A7980',
-  appFaint:  '#C8C8C8',
-}
-
-const DARK = {
-  appBg:     '#111317',
-  appCard:   '#1C1F26',
-  appBorder: '#2A2E3A',
-  appText:   '#F0F0F0',
-  appMuted:  '#9BA3B0',
-  appFaint:  '#4A5060',
-}
-
 export const THEMES: Theme[] = [
-  { id: 'gold',   name: 'Gold',   dark: false, accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#FFF9E0', ...LIGHT },
-  { id: 'sky',    name: 'Sky',    dark: false, accent: '#0EA5E9', accentDark: '#0369A1', accentDarker: '#024F82', accentLight: '#E0F2FE', ...LIGHT },
-  { id: 'forest', name: 'Forest', dark: false, accent: '#22C55E', accentDark: '#15803D', accentDarker: '#0F5C2E', accentLight: '#DCFCE7', ...LIGHT },
-  { id: 'coral',  name: 'Coral',  dark: false, accent: '#F97316', accentDark: '#C2540A', accentDarker: '#9A3F07', accentLight: '#FFEDD5', ...LIGHT },
-  { id: 'purple', name: 'Purple', dark: false, accent: '#A855F7', accentDark: '#7E22CE', accentDarker: '#5B1A96', accentLight: '#F3E8FF', ...LIGHT },
   {
-    id: 'dark', name: 'Dark', dark: true,
-    accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#2A2410',
-    ...DARK,
+    // Brand default — warm light grey, gold accent
+    id: 'gold', name: 'Gold', dark: false,
+    accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#FFF9E0',
+    appBg: '#F4F6F9', appCard: '#FFFFFF', appBorder: '#E3E5E5',
+    appText: '#241F20', appMuted: '#7A7980', appFaint: '#C8C8C8',
+  },
+  {
+    // Pure dark — near-black surfaces, gold accent stays
+    id: 'onyx', name: 'Onyx', dark: true,
+    accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#1E1A08',
+    appBg: '#0C0D0F', appCard: '#161819', appBorder: '#252729',
+    appText: '#F0EFE8', appMuted: '#8B8A87', appFaint: '#3E3D3A',
+  },
+  {
+    // Dark navy — deep blue surfaces, electric blue accent
+    id: 'midnight', name: 'Midnight', dark: true,
+    accent: '#4F90FF', accentDark: '#2563EB', accentDarker: '#1D4ED8', accentLight: '#0D1A3A',
+    appBg: '#080D1C', appCard: '#0E1630', appBorder: '#1A2545',
+    appText: '#EEF2FF', appMuted: '#8B9CC8', appFaint: '#2A3552',
+  },
+  {
+    // Warm dark — charcoal with electric orange, high energy
+    id: 'ember', name: 'Ember', dark: true,
+    accent: '#FF6B2C', accentDark: '#CC4F15', accentDarker: '#A33A0A', accentLight: '#1E0E05',
+    appBg: '#0F0A07', appCard: '#1A1209', appBorder: '#2E1E0E',
+    appText: '#FFF0E8', appMuted: '#A08070', appFaint: '#3D2518',
+  },
+  {
+    // Clean light — blue-white surfaces, deep indigo accent
+    id: 'arctic', name: 'Arctic', dark: false,
+    accent: '#4F46E5', accentDark: '#3730A3', accentDarker: '#2C278A', accentLight: '#EEF2FF',
+    appBg: '#F0F4FF', appCard: '#FFFFFF', appBorder: '#D8E2FF',
+    appText: '#1E1B4B', appMuted: '#6366A0', appFaint: '#C4C7D4',
+  },
+  {
+    // Earthy — warm sage backgrounds, deep forest green accent
+    id: 'sage', name: 'Sage', dark: false,
+    accent: '#16A34A', accentDark: '#15803D', accentDarker: '#0F6030', accentLight: '#DCFCE7',
+    appBg: '#F2F5F1', appCard: '#FFFFFF', appBorder: '#D0DECA',
+    appText: '#1A2C1A', appMuted: '#5D7A5D', appFaint: '#B8C8B4',
   },
 ]
 

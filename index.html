@@ -119,12 +119,12 @@
       (function () {
         try {
           var T = {
-            gold:   { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#FFF9E0', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
-            sky:    { a:'#0EA5E9',ad:'#0369A1',ax:'#024F82',al:'#E0F2FE', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
-            forest: { a:'#22C55E',ad:'#15803D',ax:'#0F5C2E',al:'#DCFCE7', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
-            coral:  { a:'#F97316',ad:'#C2540A',ax:'#9A3F07',al:'#FFEDD5', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
-            purple: { a:'#A855F7',ad:'#7E22CE',ax:'#5B1A96',al:'#F3E8FF', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
-            dark:   { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#2A2410', bg:'#111317',card:'#1C1F26',  border:'#2A2E3A',text:'#F0F0F0',muted:'#9BA3B0',faint:'#4A5060', dark:true  },
+            gold:     { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#FFF9E0', bg:'#F4F6F9',card:'#FFFFFF',border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8',dark:false },
+            onyx:     { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#1E1A08', bg:'#0C0D0F',card:'#161819',border:'#252729',text:'#F0EFE8',muted:'#8B8A87',faint:'#3E3D3A',dark:true  },
+            midnight: { a:'#4F90FF',ad:'#2563EB',ax:'#1D4ED8',al:'#0D1A3A', bg:'#080D1C',card:'#0E1630',border:'#1A2545',text:'#EEF2FF',muted:'#8B9CC8',faint:'#2A3552',dark:true  },
+            ember:    { a:'#FF6B2C',ad:'#CC4F15',ax:'#A33A0A',al:'#1E0E05', bg:'#0F0A07',card:'#1A1209',border:'#2E1E0E',text:'#FFF0E8',muted:'#A08070',faint:'#3D2518',dark:true  },
+            arctic:   { a:'#4F46E5',ad:'#3730A3',ax:'#2C278A',al:'#EEF2FF', bg:'#F0F4FF',card:'#FFFFFF',border:'#D8E2FF',text:'#1E1B4B',muted:'#6366A0',faint:'#C4C7D4',dark:false },
+            sage:     { a:'#16A34A',ad:'#15803D',ax:'#0F6030',al:'#DCFCE7', bg:'#F2F5F1',card:'#FFFFFF',border:'#D0DECA',text:'#1A2C1A',muted:'#5D7A5D',faint:'#B8C8B4',dark:false },
           };
           var id = localStorage.getItem('drovik:theme') || 'gold';
           var t  = T[id] || T.gold;
