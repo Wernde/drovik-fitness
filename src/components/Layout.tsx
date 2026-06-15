@@ -42,9 +42,51 @@ interface QAItem {
 // ── Sync dot ──────────────────────────────────────────────────────────────────
 
 function SyncDot({ status }: { status: 'idle' | 'syncing' | 'error' }) {
-  if (status === 'syncing') return <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-  if (status === 'error')   return <div className="w-2 h-2 rounded-full bg-red-400" />
+  if (status === 'syncing') return <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse flex-shrink-0" />
+  if (status === 'error')   return <div className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
   return null
+}
+
+function HeartbeatLine() {
+  const PATH = 'M0,18 L62,18 L86,18 L100,16 L112,18 L128,18 L150,18 L168,18 L182,6 L196,29 L212,9 L228,18 L278,18 L306,18 L320,16 L332,18 L350,18 L374,18 L389,8 L402,24 L418,13 L434,18 L520,18'
+  return (
+    <svg
+      viewBox="0 0 520 34"
+      preserveAspectRatio="none"
+      className="flex-1 h-5 min-w-0"
+      aria-hidden="true"
+      style={{ filter: 'drop-shadow(0 0 6px rgba(255,110,102,0.18)) drop-shadow(0 0 10px rgba(242,195,93,0.20))' }}
+    >
+      <defs>
+        <linearGradient id="hbGold" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%"   stopColor="#8a550d" />
+          <stop offset="28%"  stopColor="#ebb955" />
+          <stop offset="47%"  stopColor="#ff9a82" />
+          <stop offset="53%"  stopColor="#ff6e66" />
+          <stop offset="60%"  stopColor="#ffd5b0" />
+          <stop offset="74%"  stopColor="#fff0ae" />
+          <stop offset="100%" stopColor="#bd7f1f" />
+        </linearGradient>
+      </defs>
+      {/* Ghost base line */}
+      <path d={PATH} fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="2" />
+      {/* Animated gold trace */}
+      <path
+        className="heartbeat-live"
+        d={PATH}
+        fill="none"
+        stroke="url(#hbGold)"
+        strokeWidth="2.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{
+          strokeDasharray: 560,
+          strokeDashoffset: 560,
+          animation: 'heartbeatTrace 2.85s linear infinite',
+        }}
+      />
+    </svg>
+  )
 }
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -159,8 +201,9 @@ export default function Layout() {
 
             {/* Brand */}
             <div className="px-3 py-3 border-b border-app-border">
-              <div className="rounded-xl bg-[#0D0D0D] px-4 py-3 flex items-center justify-between">
-                <img src={`${BASE}drovik-logo-gold.png`} alt="Drovik Fitness" className="h-8 w-auto" />
+              <div className="rounded-xl bg-[#0D0D0D] px-4 py-3 flex items-center gap-3">
+                <img src={`${BASE}drovik-logo-gold.png`} alt="Drovik Fitness" className="h-7 w-auto flex-shrink-0" />
+                <HeartbeatLine />
                 <SyncDot status={status} />
               </div>
             </div>

@@ -76,6 +76,15 @@
   display: none;
 }
 
+/* Sidebar heartbeat line */
+@keyframes heartbeatTrace {
+  from { stroke-dashoffset: 560; }
+  to   { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .heartbeat-live { animation: none !important; stroke-dashoffset: 0 !important; }
+}
+
 /* Quick-add side panel item: fade up from below */
 @keyframes qa-item-in {
   from { opacity: 0; transform: translateY(8px); }
