@@ -114,6 +114,36 @@
       })();
     </script>
 
+    <!-- Restore saved colour theme before React paints (prevents flash) -->
+    <script>
+      (function () {
+        try {
+          var T = {
+            gold:   { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#FFF9E0', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
+            sky:    { a:'#0EA5E9',ad:'#0369A1',ax:'#024F82',al:'#E0F2FE', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
+            forest: { a:'#22C55E',ad:'#15803D',ax:'#0F5C2E',al:'#DCFCE7', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
+            coral:  { a:'#F97316',ad:'#C2540A',ax:'#9A3F07',al:'#FFEDD5', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
+            purple: { a:'#A855F7',ad:'#7E22CE',ax:'#5B1A96',al:'#F3E8FF', bg:'#F4F6F9',card:'#ffffff',  border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8', dark:false },
+            dark:   { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#2A2410', bg:'#111317',card:'#1C1F26',  border:'#2A2E3A',text:'#F0F0F0',muted:'#9BA3B0',faint:'#4A5060', dark:true  },
+          };
+          var id = localStorage.getItem('drovik:theme') || 'gold';
+          var t  = T[id] || T.gold;
+          var s  = document.documentElement.style;
+          s.setProperty('--color-accent',        t.a);
+          s.setProperty('--color-accent-dark',   t.ad);
+          s.setProperty('--color-accent-darker', t.ax);
+          s.setProperty('--color-accent-light',  t.al);
+          s.setProperty('--color-app-bg',        t.bg);
+          s.setProperty('--color-app-card',      t.card);
+          s.setProperty('--color-app-border',    t.border);
+          s.setProperty('--color-app-text',      t.text);
+          s.setProperty('--color-app-muted',     t.muted);
+          s.setProperty('--color-app-faint',     t.faint);
+          if (t.dark) document.documentElement.classList.add('dark-theme');
+        } catch (e) {}
+      })();
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

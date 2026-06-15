@@ -9,6 +9,7 @@ import { useUnits } from '../contexts/UnitsContext'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import { useSyncStatus } from '../sync/useSyncStatus'
+import { THEMES, saveTheme, getActiveThemeId } from '../lib/themes'
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -151,6 +152,7 @@ export default function Settings() {
 
   const { status: syncStatus, forceResync, lastSyncAt, lastError } = useSyncStatus()
   const [forceResyncing, setForceResyncing] = useState(false)
+  const [activeThemeId, setActiveThemeId] = useState(getActiveThemeId)
 
   const [exporting,      setExporting]      = useState(false)
   const [importStatus,   setImportStatus]   = useState<'idle' | 'success' | 'error'>('idle')
@@ -178,6 +180,11 @@ export default function Settings() {
     localStorage.setItem('drovik:apiKey', apiKey.trim())
     setApiKeySaved(true)
     setTimeout(() => setApiKeySaved(false), 2000)
+  }
+
+  function handleThemeChange(id: string) {
+    saveTheme(id)
+    setActiveThemeId(id)
   }
 
   async function handleForceResync() {
@@ -229,6 +236,50 @@ export default function Settings() {
         </button>
         <h1 className="text-2xl font-extrabold text-app-text">Settings</h1>
       </div>
+
+      {/* ── Appearance ── */}
+      <section className="mb-5">
+        <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Appearance</h2>
+        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+          <p className="text-sm font-semibold text-app-text mb-1">Colour theme</p>
+          <p className="text-xs text-app-muted mb-4">Changes take effect instantly across the whole app.</p>
+          <div className="grid grid-cols-3 gap-3">
+            {THEMES.map((theme) => {
+              const isActive = activeThemeId === theme.id
+              const swatchBg = theme.dark
+                ? `linear-gradient(135deg, ${theme.appBg} 55%, ${theme.accent} 55%)`
+                : theme.accent
+              const checkColor = theme.id === 'gold' || theme.id === 'forest' ? '#1a1a1a' : '#ffffff'
+              return (
+                <button
+                  key={theme.id}
+                  onClick={() => handleThemeChange(theme.id)}
+                  className="flex flex-col items-center gap-2 group"
+                >
+                  <div
+                    className="w-full aspect-square rounded-2xl flex items-center justify-center transition-transform active:scale-95"
+                    style={{
+                      background: swatchBg,
+                      boxShadow: isActive
+                        ? `0 0 0 3px var(--color-app-bg), 0 0 0 5px ${theme.accent}`
+                        : '0 0 0 1.5px var(--color-app-border)',
+                    }}
+                  >
+                    {isActive && (
+                      <svg viewBox="0 0 20 20" fill={checkColor} className="w-6 h-6 drop-shadow-sm">
+                        <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className={`text-[11px] font-bold text-center transition-colors ${isActive ? 'text-app-text' : 'text-app-muted'}`}>
+                    {theme.name}
+                  </p>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* ── Units ── */}
       <section className="mb-5">
