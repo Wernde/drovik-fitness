@@ -98,7 +98,7 @@ export default function SessionDetail() {
           </svg>
         </button>
         <div className="flex-1 min-w-0">
-          <h1 className="text-xl font-extrabold text-app-text truncate">{dayName ?? 'Ad-hoc Workout'}</h1>
+          <h1 className="text-xl font-extrabold text-app-text truncate">{dayName ?? 'Free Workout'}</h1>
           <p className="text-xs text-app-muted mt-0.5">
             {programName ? `${programName} · ` : ''}{displayDate}
           </p>

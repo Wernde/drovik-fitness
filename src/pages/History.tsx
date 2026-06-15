@@ -301,7 +301,7 @@ export default function History() {
       ) : (
         <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
           {monthSessions.map((session) => {
-            const dayName  = session.workoutDayId ? (dayMap.get(session.workoutDayId) ?? 'Ad-hoc') : 'Ad-hoc'
+            const dayName  = session.workoutDayId ? (dayMap.get(session.workoutDayId) ?? 'Free Workout') : 'Free Workout'
             const dayNum   = new Date(session.date + 'T12:00:00').getDate()
             const month    = new Date(session.date + 'T12:00:00').toLocaleDateString('en-AU', { month: 'short' })
             const dateStr  = new Date(session.date + 'T12:00:00').toLocaleDateString('en-AU', {

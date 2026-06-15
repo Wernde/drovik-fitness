@@ -10,7 +10,7 @@ import HabitsTab from '../components/HabitsTab'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel, mlToDisplay, waterLabel } from '../lib/units'
 
-const WATER_GOAL_ML = 2000
+const WATER_GOAL_ML = 2500
 const CAL_GOAL      = 2400
 const WEIGHT_GOAL   = 78
 

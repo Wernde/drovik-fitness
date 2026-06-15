@@ -1,13 +1,29 @@
 import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 
 export default function Login() {
   const { signIn } = useAuth()
-  const [email,    setEmail]    = useState('')
-  const [password, setPassword] = useState('')
-  const [showPw,   setShowPw]   = useState(false)
-  const [error,    setError]    = useState('')
-  const [loading,  setLoading]  = useState(false)
+  const [email,      setEmail]      = useState('')
+  const [password,   setPassword]   = useState('')
+  const [showPw,     setShowPw]     = useState(false)
+  const [error,      setError]      = useState('')
+  const [loading,    setLoading]    = useState(false)
+  const [resetSent,  setResetSent]  = useState(false)
+  const [resetLoading, setResetLoading] = useState(false)
+
+  async function handleForgotPassword() {
+    const addr = email.trim()
+    if (!addr) { setError('Enter your email above, then tap Forgot password.'); return }
+    setResetLoading(true)
+    setError('')
+    const { error: err } = await supabase.auth.resetPasswordForEmail(addr, {
+      redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}`,
+    })
+    setResetLoading(false)
+    if (err) { setError(err.message); return }
+    setResetSent(true)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -87,6 +103,21 @@ export default function Login() {
           >
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
+
+          {resetSent ? (
+            <p className="text-sm text-green-600 text-center font-medium pt-1">
+              Reset link sent — check your email.
+            </p>
+          ) : (
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={resetLoading}
+              className="w-full text-center text-sm text-app-muted font-medium pt-1 active:text-app-text disabled:opacity-50"
+            >
+              {resetLoading ? 'Sending…' : 'Forgot password?'}
+            </button>
+          )}
         </form>
       </div>
 

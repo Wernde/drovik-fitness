@@ -25,7 +25,7 @@ const SUGGESTED_QUESTIONS = [
   "How do I improve recovery?",
 ]
 
-const GREETING = "Hey Dewald! Ready to crush today's workout? Ask me about form, nutrition, recovery, or program adjustments."
+const GREETING = "Hey! Ready to crush today's workout? Ask me about form, nutrition, recovery, or programme adjustments."
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -98,7 +98,7 @@ export default function More() {
       .toArray()
     sessions.sort((a, b) => (b.finishedAt ?? '').localeCompare(a.finishedAt ?? ''))
     return Promise.all(sessions.slice(0, 3).map(async (s) => {
-      let dayName = 'Ad-hoc workout'
+      let dayName = 'Free Workout'
       if (s.workoutDayId) {
         const day = await db.workoutDays.get(s.workoutDayId)
         dayName = day?.name ?? dayName
@@ -146,7 +146,7 @@ export default function More() {
 
   const sysPrompt = useMemo(() => {
     const parts: string[] = [
-      'You are an AI fitness coach in the Drovik app for Dewald.',
+      'You are an AI fitness coach in the Drovik Fitness app.',
       'Goal: body recomposition. Keep responses to 3–4 sentences max — practical and motivating.',
     ]
 

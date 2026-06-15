@@ -159,7 +159,10 @@ export default function Layout() {
 
             {/* Brand */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-app-border">
-              <img src={`${BASE}drovik-logo.svg`} alt="Drovik Fitness" className="h-12" />
+              <div className="flex items-center gap-2.5">
+                <img src={`${BASE}icon-192.png`} alt="Drovik" className="w-9 h-9 rounded-xl" />
+                <span className="text-base font-extrabold text-app-text">Drovik</span>
+              </div>
               <SyncDot status={status} />
             </div>
 
@@ -204,7 +207,7 @@ export default function Layout() {
             <div className="px-3 pb-6 flex-shrink-0">
               <button
                 onClick={() => setQaOpen((v) => !v)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white text-sm font-semibold transition-colors ${qaOpen ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-app-text text-sm font-semibold transition-colors ${qaOpen ? 'bg-accent-dark' : 'bg-accent hover:bg-accent-dark'}`}
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="w-5 h-5 flex-none">
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -261,10 +264,10 @@ export default function Layout() {
                 <div className="flex-1 flex items-center justify-center h-full border-t-[2.5px] border-transparent">
                   <button
                     onClick={() => setQaOpen((v) => !v)}
-                    className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center shadow-lg active:bg-blue-600"
+                    className="w-12 h-12 rounded-full bg-accent flex items-center justify-center shadow-lg active:bg-accent-dark"
                     aria-label="Quick add"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6 text-white">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6 text-app-text">
                       <line x1="12" y1="5" x2="12" y2="19" />
                       <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>

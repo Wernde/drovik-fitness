@@ -356,7 +356,7 @@ export default function Home() {
                     : 'bg-app-card border border-app-border',
                 ].join(' ')}
               >
-                <p className={`text-[9px] font-bold uppercase mb-1 ${isToday ? 'text-white/60' : 'text-app-muted'}`}>
+                <p className={`text-[11px] font-bold uppercase mb-1 ${isToday ? 'text-white/60' : 'text-app-muted'}`}>
                   {dow}
                 </p>
                 <p className={`text-sm font-extrabold ${isToday ? 'text-white' : 'text-app-text'}`}>
@@ -373,7 +373,7 @@ export default function Home() {
 
         {/* ── Things to Do Today ────────────────────────────────────── */}
         <div>
-          <p className="text-base font-extrabold text-app-text mb-2">Progress</p>
+          <p className="text-base font-extrabold text-app-text mb-2">Today's Nutrition</p>
           <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
             <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-gray-50">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
@@ -440,7 +440,7 @@ export default function Home() {
 
         {/* ── My Progress ───────────────────────────────────────────── */}
         <div>
-          <p className="text-base font-extrabold text-app-text mb-2">My Stats</p>
+          <p className="text-base font-extrabold text-app-text mb-2">This Week</p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Sessions this week */}
             <Link to="/history" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
@@ -508,7 +508,7 @@ export default function Home() {
             </div>
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Track Water</p>
-              <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)} / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)} remaining</p>
+              <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)}</p>
             </div>
             <p className="text-sm font-extrabold text-blue-500">{waterPct}%</p>
           </div>
@@ -702,7 +702,7 @@ export default function Home() {
             <Link to="/log" className="block rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
               <div className="px-5 py-5 relative overflow-hidden">
                 <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Ad-hoc</p>
+                <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Free Workout</p>
                 <p className="text-2xl font-extrabold text-white mb-4">Start Workout</p>
                 <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-xl">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>

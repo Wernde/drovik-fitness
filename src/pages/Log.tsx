@@ -203,7 +203,7 @@ export default function Log() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-sm text-app-text">Start Empty Workout</p>
-          <p className="text-xs text-app-muted mt-0.5">Ad-hoc session, no program</p>
+          <p className="text-xs text-app-muted mt-0.5">Free workout, no programme</p>
         </div>
       </button>
     </div>
