@@ -519,7 +519,7 @@ export default function WorkoutLogger({ session }: Props) {
     try {
       await db.workoutSessions.update(session.id, { deleted: true, updatedAt: now(), syncedAt: null })
     } catch { /* best-effort */ }
-    navigate('/programs')
+    navigate(-1)
   }
 
   function toggleGuide(seId: string) {

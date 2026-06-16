@@ -6,7 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import type { WorkoutSession } from '../db/db'
 import { useUnits } from '../contexts/UnitsContext'
-import { fmtVolume } from '../lib/units'
+import { fmtVolume, kgToDisplay, weightLabel } from '../lib/units'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -176,7 +176,7 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
                   {summary.newPRs.map(({ exerciseName, e1rm }) => (
                     <li key={exerciseName} className="flex justify-between text-sm">
                       <span className="text-app-text truncate flex-1 mr-2">{exerciseName}</span>
-                      <span className="text-amber-700 font-semibold flex-none">{e1rm} kg e1RM</span>
+                      <span className="text-amber-700 font-semibold flex-none">{kgToDisplay(e1rm, units.weight)} {weightLabel(units.weight)} e1RM</span>
                     </li>
                   ))}
                 </ul>

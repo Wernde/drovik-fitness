@@ -6,6 +6,8 @@
 import { useState } from 'react'
 import { db, now } from '../db/db'
 import type { DayExercise } from '../db/db'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
 
 const REST_PRESETS = [
   { label: '30s',   secs: 30  },
@@ -35,11 +37,14 @@ interface EditProps {
 type Props = AddProps | EditProps
 
 export default function DayExerciseForm(props: Props) {
-  const existing = props.mode === 'edit' ? props.dayExercise : undefined
+  const existing      = props.mode === 'edit' ? props.dayExercise : undefined
+  const { units }     = useUnits()
 
   const [targetSets,   setTargetSets]   = useState(String(existing?.targetSets ?? 3))
   const [targetReps,   setTargetReps]   = useState(existing?.targetReps ?? '8–12')
-  const [targetWeight, setTargetWeight] = useState(existing?.targetWeight != null ? String(existing.targetWeight) : '')
+  const [targetWeight, setTargetWeight] = useState(
+    existing?.targetWeight != null ? String(kgToDisplay(existing.targetWeight, units.weight)) : '',
+  )
   const [restSecs,     setRestSecs]     = useState(existing?.restSecs != null ? String(existing.restSecs) : '')
   const [notes,        setNotes]        = useState(existing?.notes ?? '')
   const [saving,       setSaving]       = useState(false)
@@ -54,8 +59,9 @@ export default function DayExerciseForm(props: Props) {
     if (isNaN(sets) || sets < 1) { setError('Sets must be a number greater than 0.'); return }
     if (!targetReps.trim())      { setError('Reps field is required (e.g. 5, 8–12, AMRAP).'); return }
 
-    const weight = targetWeight.trim() === '' ? null : parseFloat(targetWeight)
-    if (targetWeight.trim() !== '' && isNaN(weight!)) { setError('Target weight must be a number.'); return }
+    const weightDisplay = targetWeight.trim() === '' ? null : parseFloat(targetWeight)
+    if (targetWeight.trim() !== '' && isNaN(weightDisplay!)) { setError('Target weight must be a number.'); return }
+    const weight = weightDisplay !== null ? displayToKg(weightDisplay, units.weight) : null
 
     const rest = restSecs.trim() === '' ? null : parseInt(restSecs, 10)
     if (restSecs.trim() !== '' && (isNaN(rest!) || rest! < 1)) { setError('Rest time must be a whole number of seconds.'); return }
@@ -130,7 +136,7 @@ export default function DayExerciseForm(props: Props) {
 
           <div>
             <label className="block text-sm font-medium text-app-text mb-1">
-              Target weight (kg) <span className="text-app-muted font-normal">(optional)</span>
+              Target weight ({weightLabel(units.weight)}) <span className="text-app-muted font-normal">(optional)</span>
             </label>
             <input
               type="number"
