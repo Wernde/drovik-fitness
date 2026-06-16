@@ -2,17 +2,17 @@
  * Goals — daily targets, water tracking, body weight, and habits.
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel, mlToDisplay, waterLabel } from '../lib/units'
+import { calcBMR, calcTDEE, calcMacros, loadProfile, DIET_PROGRAMS } from '../lib/tdee'
 
-const WATER_GOAL_ML = 2500
-const CAL_GOAL      = 2400
-const WEIGHT_GOAL   = 78
+const WATER_GOAL_ML  = 2500
+const WEIGHT_GOAL_KEY = 'drovik:weight-goal'
 
 function ProgressBar({ value, max, color }: { value: number; max: number; color: string }) {
   const pct = Math.min(100, Math.round((value / max) * 100))
@@ -26,8 +26,14 @@ function ProgressBar({ value, max, color }: { value: number; max: number; color:
 // ── Body weight section ───────────────────────────────────────────────────────
 
 function BodyWeightSection() {
-  const [weight, setWeight] = useState('')
-  const [saving, setSaving] = useState(false)
+  const [weight, setWeight]         = useState('')
+  const [saving, setSaving]         = useState(false)
+  const [editingGoal, setEditingGoal] = useState(false)
+  const [goalInput, setGoalInput]   = useState('')
+  const [goalKg, setGoalKg]         = useState(() => {
+    const stored = localStorage.getItem(WEIGHT_GOAL_KEY)
+    return stored ? parseFloat(stored) : 78
+  })
   const { units } = useUnits()
   const wUnit = units.weight
 
@@ -66,18 +72,75 @@ function BodyWeightSection() {
     }
   }
 
-  const goalPct = latestKg != null
-    ? Math.min(100, Math.max(0, Math.round(((88 - latestKg) / (88 - WEIGHT_GOAL)) * 100)))
+  function saveGoal() {
+    const val = parseFloat(goalInput)
+    if (isNaN(val) || val <= 0) return
+    const kg = displayToKg(val, wUnit)
+    localStorage.setItem(WEIGHT_GOAL_KEY, String(kg))
+    setGoalKg(kg)
+    setEditingGoal(false)
+    setGoalInput('')
+  }
+
+  const goalPct = latestKg != null && startKg != null
+    ? (() => {
+        const total    = goalKg - startKg
+        if (Math.abs(total) < 0.1) return 100
+        const progress = latestKg - startKg
+        return Math.min(100, Math.max(0, Math.round((progress / total) * 100)))
+      })()
     : 0
   const latestDisplay = latestKg != null ? kgToDisplay(latestKg, wUnit) : null
-  const goalDisplay   = kgToDisplay(WEIGHT_GOAL, wUnit)
-  const toGoKg        = latestKg != null && latestKg > WEIGHT_GOAL ? +(latestKg - WEIGHT_GOAL).toFixed(1) : null
+  const goalDisplay   = kgToDisplay(goalKg, wUnit)
+  const diffKg        = latestKg != null ? +(latestKg - goalKg).toFixed(1) : null
 
   return (
     <div className="flex flex-col gap-3">
       {/* Goal progress */}
       <div className="bg-app-card rounded-2xl border border-app-border p-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-3">Body Goal</p>
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs font-bold uppercase tracking-wide text-app-muted">Body Goal</p>
+          {!editingGoal && (
+            <button
+              onClick={() => { setEditingGoal(true); setGoalInput(String(kgToDisplay(goalKg, wUnit))) }}
+              className="text-xs font-semibold text-app-muted hover:text-app-text"
+              aria-label="Edit goal weight"
+            >
+              Edit
+            </button>
+          )}
+        </div>
+
+        {editingGoal && (
+          <div className="flex gap-2 mb-3">
+            <div className="flex-1">
+              <label className="text-xs font-bold text-app-muted block mb-1">Goal ({weightLabel(wUnit)})</label>
+              <input
+                type="number" inputMode="decimal" value={goalInput}
+                onChange={(e) => setGoalInput(e.target.value)}
+                step={wUnit === 'lbs' ? 0.5 : 0.1} min={0}
+                className="w-full bg-app-bg border border-app-border rounded-xl px-3 py-2 text-sm text-app-text focus:outline-none focus:ring-2 focus:ring-accent"
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2 items-end">
+              <button
+                onClick={() => setEditingGoal(false)}
+                className="bg-app-bg border border-app-border text-app-text font-bold rounded-xl px-3 py-2 text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveGoal}
+                disabled={!goalInput}
+                className="bg-accent text-app-text font-bold rounded-xl px-3 py-2 text-sm active:bg-accent-dark disabled:opacity-50"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-accent-dark">
@@ -89,7 +152,9 @@ function BodyWeightSection() {
             <ProgressBar value={goalPct} max={100} color="bg-accent" />
             <p className="text-xs text-app-muted mt-1">
               {latestDisplay != null ? `${latestDisplay} ${weightLabel(wUnit)} current` : 'No weight logged yet'}
-              {toGoKg != null ? ` · ${kgToDisplay(toGoKg, wUnit)} ${weightLabel(wUnit)} to go` : ''}
+              {diffKg != null && Math.abs(diffKg) > 0.05
+                ? ` · ${kgToDisplay(Math.abs(diffKg), wUnit)} ${weightLabel(wUnit)} to go`
+                : diffKg != null ? ' · At goal!' : ''}
             </p>
           </div>
         </div>
@@ -203,8 +268,30 @@ function CalorieGoalSection() {
     () => db.nutritionLogs.filter((l) => l.date === todayStr && !l.deleted).first(),
     [todayStr],
   )
+
+  const latestWeight = useLiveQuery(
+    () => db.bodyWeightLogs
+      .filter((l) => !l.deleted)
+      .toArray()
+      .then((list) => {
+        if (!list.length) return null
+        list.sort((a, b) => b.date.localeCompare(a.date))
+        return list[0].weight
+      }),
+    [],
+  )
+
+  const calGoal = useMemo(() => {
+    const profile = loadProfile()
+    if (!profile || latestWeight == null) return 2400
+    const bmr  = calcBMR(latestWeight, profile.heightCm, profile.age, profile.sex)
+    const tdee = calcTDEE(bmr, profile.activityLevel)
+    const diet = DIET_PROGRAMS.find((d) => d.id === profile.dietId)!
+    return calcMacros(latestWeight, tdee, diet).calories
+  }, [latestWeight])
+
   const cals = log?.calories ?? 0
-  const pct  = Math.min(100, Math.round((cals / CAL_GOAL) * 100))
+  const pct  = Math.min(100, Math.round((cals / calGoal) * 100))
 
   return (
     <div className="bg-app-card rounded-2xl border border-app-border p-4">
@@ -217,8 +304,8 @@ function CalorieGoalSection() {
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold text-app-text">Calorie Goal</p>
-          <ProgressBar value={cals} max={CAL_GOAL} color="bg-blue-500" />
-          <p className="text-xs text-app-muted mt-1">{cals} / {CAL_GOAL} kcal</p>
+          <ProgressBar value={pct} max={100} color="bg-blue-500" />
+          <p className="text-xs text-app-muted mt-1">{cals} / {calGoal} kcal</p>
         </div>
       </div>
     </div>

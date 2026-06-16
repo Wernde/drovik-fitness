@@ -70,6 +70,18 @@ function macroFromLog(food: Food, log: FoodLog) {
 function fmt1(n: number) { return Math.round(n * 10) / 10 }
 function fmtInt(n: number) { return Math.round(n) }
 
+const DIARY_DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+const DIARY_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
+function formatDiaryDate(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  return `${DIARY_DAYS[new Date(y, m - 1, d).getDay()]}, ${d} ${DIARY_MONTHS[m - 1]}`
+}
+function addDiaryDays(dateStr: string, n: number): string {
+  const [y, m, d] = dateStr.split('-').map(Number)
+  const dt = new Date(y, m - 1, d + n)
+  return [dt.getFullYear(), String(dt.getMonth() + 1).padStart(2, '0'), String(dt.getDate()).padStart(2, '0')].join('-')
+}
+
 // ── Small shared components ───────────────────────────────────────────────────
 
 function CategoryBadge({ category }: { category: FoodCategory }) {
@@ -93,18 +105,17 @@ function MiniBar({ value, max, color }: { value: number; max: number; color: str
 
 interface FoodSearchModalProps {
   meal: MealSlot
+  date: string
   onClose: () => void
 }
 
-function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
+function FoodSearchModal({ meal, date, onClose }: FoodSearchModalProps) {
   const [query, setQuery]   = useState('')
   const [picked, setPicked] = useState<Food | null>(null)
   const [amount, setAmount] = useState('100')
   const [pickedRecipe, setPickedRecipe] = useState<Recipe | null>(null)
   const [servingCount, setServingCount] = useState('1')
   const [saving, setSaving] = useState(false)
-
-  const todayStr = today()
 
   const allFoodsRaw = useLiveQuery(
     () => db.foods.filter((f) => !f.deleted).toArray().then((list) =>
@@ -169,7 +180,7 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
       const timestamp = now()
       await db.foodLogs.add({
         id: crypto.randomUUID(),
-        date: todayStr,
+        date,
         foodId: picked.id,
         meal,
         amountG: g,
@@ -195,7 +206,7 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
       const servings = pickedRecipe.servings || 1
       const logs: FoodLog[] = rfs.map((rf) => ({
         id: crypto.randomUUID(),
-        date: todayStr,
+        date,
         foodId: rf.foodId,
         meal,
         amountG: (rf.amountG / servings) * count,
@@ -412,6 +423,7 @@ function FoodSearchModal({ meal, onClose }: FoodSearchModalProps) {
 
 interface DiaryTabProps {
   targets: { calories: number; proteinG: number; carbsG: number; fatG: number } | null
+  date: string
 }
 
 // localStorage key for meal photos: drovik:meal-photo:{date}:{meal}
@@ -419,20 +431,19 @@ function mealPhotoKey(date: string, meal: MealSlot) {
   return `drovik:meal-photo:${date}:${meal}`
 }
 
-function DiaryTab({ targets }: DiaryTabProps) {
+function DiaryTab({ targets, date }: DiaryTabProps) {
   const [addingMeal, setAddingMeal] = useState<MealSlot | null>(null)
-  const todayStr  = today()
+  const [photoTick, setPhotoTick]   = useState(0)
   const { units } = useUnits()
 
-  // Per-meal photos stored in localStorage (date-scoped so they reset each day)
-  const [mealPhotos, setMealPhotos] = useState<Partial<Record<MealSlot, string>>>(() => {
+  const mealPhotos = useMemo(() => {
     const out: Partial<Record<MealSlot, string>> = {}
     for (const m of MEAL_ORDER) {
-      const stored = localStorage.getItem(mealPhotoKey(todayStr, m))
+      const stored = localStorage.getItem(mealPhotoKey(date, m))
       if (stored) out[m] = stored
     }
     return out
-  })
+  }, [date, photoTick])
 
   function captureMealPhoto(meal: MealSlot) {
     const input = document.createElement('input')
@@ -445,8 +456,8 @@ function DiaryTab({ targets }: DiaryTabProps) {
       const reader = new FileReader()
       reader.onload = () => {
         const dataUrl = reader.result as string
-        localStorage.setItem(mealPhotoKey(todayStr, meal), dataUrl)
-        setMealPhotos((prev) => ({ ...prev, [meal]: dataUrl }))
+        localStorage.setItem(mealPhotoKey(date, meal), dataUrl)
+        setPhotoTick((t) => t + 1)
       }
       reader.readAsDataURL(file)
     }
@@ -454,13 +465,13 @@ function DiaryTab({ targets }: DiaryTabProps) {
   }
 
   function clearMealPhoto(meal: MealSlot) {
-    localStorage.removeItem(mealPhotoKey(todayStr, meal))
-    setMealPhotos((prev) => { const n = { ...prev }; delete n[meal]; return n })
+    localStorage.removeItem(mealPhotoKey(date, meal))
+    setPhotoTick((t) => t + 1)
   }
 
   const foodLogs = useLiveQuery(
-    () => db.foodLogs.where('date').equals(todayStr).filter((l) => !l.deleted).toArray(),
-    [todayStr],
+    () => db.foodLogs.where('date').equals(date).filter((l) => !l.deleted).toArray(),
+    [date],
   ) ?? []
 
   const allFoods = useLiveQuery(
@@ -476,8 +487,8 @@ function DiaryTab({ targets }: DiaryTabProps) {
 
   // Nutrition log for water
   const nutritionLog = useLiveQuery(
-    () => db.nutritionLogs.filter((l) => l.date === todayStr && !l.deleted).first(),
-    [todayStr],
+    () => db.nutritionLogs.filter((l) => l.date === date && !l.deleted).first(),
+    [date],
   )
 
   const waterMl  = nutritionLog?.waterMl ?? 0
@@ -490,7 +501,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
       await db.nutritionLogs.update(nutritionLog.id, { waterMl: newTotal, updatedAt: timestamp, syncedAt: null })
     } else {
       await db.nutritionLogs.add({
-        id: crypto.randomUUID(), date: todayStr,
+        id: crypto.randomUUID(), date,
         calories: null, proteinG: null, carbsG: null, fatG: null, waterMl: newTotal,
         notes: '', createdAt: timestamp, updatedAt: timestamp, syncedAt: null, deleted: false,
       })
@@ -521,7 +532,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
     <div className="flex flex-col gap-4">
       {/* Macro summary card */}
       <div className="bg-app-card rounded-2xl border border-app-border p-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-3">Today's Nutrition</p>
+        <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-3">Nutrition</p>
         <div className="grid grid-cols-4 gap-2">
           {[
             { label: 'Calories', value: fmtInt(totals.calories), unit: 'kcal', target: targets?.calories, color: 'bg-accent' },
@@ -670,7 +681,7 @@ function DiaryTab({ targets }: DiaryTabProps) {
       </div>
 
       {addingMeal && (
-        <FoodSearchModal meal={addingMeal} onClose={() => setAddingMeal(null)} />
+        <FoodSearchModal meal={addingMeal} date={date} onClose={() => setAddingMeal(null)} />
       )}
     </div>
   )
@@ -1591,6 +1602,7 @@ type Tab = 'diary' | 'foods' | 'recipes' | 'plan'
 
 export default function Nutrition() {
   const [tab, setTab] = useState<Tab>('diary')
+  const [diaryDate, setDiaryDate] = useState(today)
 
   const [profile, setProfile] = useState<NutritionProfile | null>(() => loadProfile())
 
@@ -1642,7 +1654,33 @@ export default function Nutrition() {
         ))}
       </div>
 
-      {tab === 'diary'   && <DiaryTab targets={targets} />}
+      {tab === 'diary' && (
+        <>
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => setDiaryDate((d) => addDiaryDays(d, -1))}
+              className="w-9 h-9 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-muted active:bg-app-border"
+              aria-label="Previous day"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+              </svg>
+            </button>
+            <p className="text-sm font-bold text-app-text">{formatDiaryDate(diaryDate)}</p>
+            <button
+              onClick={() => setDiaryDate((d) => addDiaryDays(d, 1))}
+              disabled={diaryDate >= today()}
+              className="w-9 h-9 rounded-full bg-app-card border border-app-border flex items-center justify-center text-app-muted active:bg-app-border disabled:opacity-40"
+              aria-label="Next day"
+            >
+              <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+              </svg>
+            </button>
+          </div>
+          <DiaryTab targets={targets} date={diaryDate} />
+        </>
+      )}
       {tab === 'foods'   && <FoodsTab />}
       {tab === 'recipes' && <RecipesTab />}
       {tab === 'plan'    && <PlanTab onProfileSaved={setProfile} />}
