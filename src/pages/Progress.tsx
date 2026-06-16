@@ -41,12 +41,13 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
   const [selectedId, setSelectedId] = useState<string>('')
   const [search,     setSearch]     = useState('')
   const [chartMode,  setChartMode]  = useState<ChartMode>('e1rm')
+  const { units } = useUnits()
 
   const filteredEx = exercises
     .filter((e) => !search || e.name.toLowerCase().includes(search.toLowerCase()))
     .sort((a, b) => a.name.localeCompare(b.name))
 
-  const chartData = useLiveQuery(async () => {
+  const rawChartData = useLiveQuery(async () => {
     if (!selectedId) return []
 
     const sessionExercises = await db.sessionExercises
@@ -95,11 +96,22 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
       }))
   }, [selectedId])
 
-  const isE1rm   = chartMode === 'e1rm'
-  const dataKey  = isE1rm ? 'e1rm' : 'volume'
-  const label    = isE1rm ? 'Est. 1RM' : 'Volume'
-  const unit     = isE1rm ? 'kg' : 'kg'
-  const chartLabel = isE1rm ? 'Estimated 1RM (kg) per session' : 'Total volume (kg) per session'
+  const wUnit = weightLabel(units.weight)
+
+  const chartData = useMemo(
+    () => rawChartData?.map((d) => ({
+      ...d,
+      e1rm:   kgToDisplay(d.e1rm, units.weight),
+      volume: Math.round(kgToDisplay(d.volume, units.weight)),
+    })),
+    [rawChartData, units.weight],
+  )
+
+  const isE1rm     = chartMode === 'e1rm'
+  const dataKey    = isE1rm ? 'e1rm' : 'volume'
+  const label      = isE1rm ? 'Est. 1RM' : 'Volume'
+  const unit       = wUnit
+  const chartLabel = isE1rm ? `Estimated 1RM (${wUnit}) per session` : `Total volume (${wUnit}) per session`
 
   return (
     <div>
@@ -167,7 +179,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
 
           {!chartData || chartData.length === 0 ? (
             <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted text-sm">
-              No data yet. Log some sets to see your progress.
+              {rawChartData === undefined ? 'Loading…' : 'No data yet. Log some sets to see your progress.'}
             </div>
           ) : (
             <div className="rounded-2xl bg-app-card border border-app-border p-4">
@@ -461,6 +473,7 @@ function BodyTab() {
 // ── PRs tab ───────────────────────────────────────────────────────────────────
 
 function PRsTab({ exercises }: { exercises: Exercise[] }) {
+  const { units } = useUnits()
   const prs = useLiveQuery(async () => {
     const allSets = await db.sets
       .filter((s) => !s.deleted && !s.isWarmup && s.reps > 0 && s.weight > 0)
@@ -519,8 +532,8 @@ function PRsTab({ exercises }: { exercises: Exercise[] }) {
             <p className="text-xs text-app-muted">{exercise!.muscleGroup}</p>
           </div>
           <div className="text-right flex-none">
-            <p className="text-sm font-bold text-accent-dark">{e1rm} kg e1RM</p>
-            <p className="text-xs text-app-muted">{weight} kg × {reps}</p>
+            <p className="text-sm font-bold text-accent-dark">{kgToDisplay(e1rm, units.weight)} {weightLabel(units.weight)} e1RM</p>
+            <p className="text-xs text-app-muted">{kgToDisplay(weight, units.weight)} {weightLabel(units.weight)} × {reps}</p>
           </div>
         </li>
       ))}

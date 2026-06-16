@@ -72,6 +72,18 @@ export default function SessionDetail() {
   }, [sessionId, session?.programId, session?.workoutDayId])
 
   if (!session || !data) {
+    if (data !== undefined && !session) {
+      return (
+        <div className="page-x pt-6">
+          <button onClick={() => navigate(-1)} className="flex-none text-app-muted active:text-app-text p-1 -ml-1 mb-4" aria-label="Back">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
+            </svg>
+          </button>
+          <p className="text-app-muted text-sm">Session not found.</p>
+        </div>
+      )
+    }
     return <div className="flex items-center justify-center h-40 text-app-muted">Loading…</div>
   }
 
@@ -89,7 +101,7 @@ export default function SessionDetail() {
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-4">
         <button
-          onClick={() => navigate('/history')}
+          onClick={() => navigate(-1)}
           className="flex-none text-app-muted active:text-app-text p-1 -ml-1"
           aria-label="Back"
         >
