@@ -5,6 +5,7 @@
 import { useState } from 'react'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
+import { Button, Field } from './ui'
 
 interface Props {
   program?: Program
@@ -46,7 +47,7 @@ export default function ProgramForm({ program, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10">
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-app-text">{program ? 'Edit Program' : 'New Program'}</h2>
@@ -58,40 +59,29 @@ export default function ProgramForm({ program, onClose }: Props) {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Push Pull Legs"
-              autoFocus
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-          </div>
+          <Field
+            label="Name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Push Pull Legs"
+            autoFocus
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Description <span className="text-app-muted font-normal">(optional)</span>
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="e.g. 6-day PPL, 2 days on 1 day off"
-              rows={2}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-            />
-          </div>
+          <Field
+            label={<>Description <span className="text-app-muted font-normal">(optional)</span></>}
+            multiline
+            rows={2}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="e.g. 6-day PPL, 2 days on 1 day off"
+          />
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-error-text">{error}</p>}
 
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth onClick={handleSave} disabled={saving}>
             {saving ? 'Saving…' : program ? 'Save Changes' : 'Create Program'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

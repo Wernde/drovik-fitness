@@ -7,6 +7,7 @@ import { db } from '../db/db'
 import type { WorkoutSession } from '../db/db'
 import { useUnits } from '../contexts/UnitsContext'
 import { fmtVolume, kgToDisplay, weightLabel } from '../lib/units'
+import { Button } from './ui'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -113,7 +114,7 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10 max-h-[85vh] overflow-y-auto">
+      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10 max-h-[85vh] overflow-y-auto">
 
         {/* Header */}
         <div className="text-center mb-6">
@@ -126,13 +127,13 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
           <div className="flex flex-col gap-4">
             {/* Volume + sets row */}
             <div className="flex gap-3">
-              <div className="flex-1 rounded-2xl bg-app-bg border border-app-border px-4 py-3 text-center">
+              <div className="flex-1 rounded-card bg-app-bg border border-app-border px-4 py-3 text-center">
                 <p className="text-xl font-bold text-accent-dark tabular-nums">
                   {summary.workingSets}
                 </p>
                 <p className="text-xs text-app-muted mt-0.5">Working sets</p>
               </div>
-              <div className="flex-1 rounded-2xl bg-app-bg border border-app-border px-4 py-3 text-center">
+              <div className="flex-1 rounded-card bg-app-bg border border-app-border px-4 py-3 text-center">
                 <p className="text-xl font-bold text-accent-dark tabular-nums">
                   {fmtVolume(summary.totalVolume, units.weight)}
                 </p>
@@ -142,7 +143,7 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
 
             {/* Muscle groups */}
             {summary.muscleList.length > 0 && (
-              <div className="rounded-2xl bg-app-bg border border-app-border px-4 py-3">
+              <div className="rounded-card bg-app-bg border border-app-border px-4 py-3">
                 <p className="text-xs text-app-muted mb-2">Muscle groups</p>
                 <div className="flex flex-col gap-2">
                   {summary.muscleList.map(([muscle, count]) => {
@@ -191,18 +192,12 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
 
         {/* Actions */}
         <div className="flex flex-col gap-2 mt-6">
-          <button
-            onClick={onFinish}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-bold text-sm active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth size="lg" onClick={onFinish}>
             Complete Workout
-          </button>
-          <button
-            onClick={onBack}
-            className="w-full rounded-2xl border border-app-border text-app-muted py-3 text-sm active:bg-app-bg"
-          >
+          </Button>
+          <Button variant="secondary" fullWidth onClick={onBack}>
             Keep Going
-          </button>
+          </Button>
         </div>
       </div>
     </div>

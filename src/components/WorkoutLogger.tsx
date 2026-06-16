@@ -6,6 +6,7 @@ import type { WorkoutSession, SessionExercise, DayExercise, Exercise, ExerciseVi
 import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import WorkoutSummary from './WorkoutSummary'
+import { Button } from './ui'
 import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
@@ -61,7 +62,7 @@ function ExerciseThumb({ category }: { category?: string }) {
   const icon     = CAT_ICONS[key]
   const isStroke = key === 'cable'
   return (
-    <div className="w-11 h-11 rounded-xl bg-app-text flex items-center justify-center flex-shrink-0">
+    <div className="w-11 h-11 rounded-input bg-app-text flex items-center justify-center flex-shrink-0">
       <svg
         viewBox="0 0 24 24"
         fill={isStroke ? 'none' : 'white'}
@@ -556,7 +557,7 @@ export default function WorkoutLogger({ session }: Props) {
     <div style={{ paddingBottom: 'calc(148px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* ── Fixed header ── */}
-      <div className="fixed top-0 left-0 right-0 md:left-60 z-40 bg-app-card border-b border-app-border">
+      <div className="fixed top-0 left-0 right-0 md:left-60 z-40 bg-app-surface border-b border-app-border">
         {/* Row 1 — Cancel | Workout name | Finish */}
         <div className="px-4 flex items-center justify-between h-11 border-b border-app-border/40">
           <button
@@ -600,7 +601,7 @@ export default function WorkoutLogger({ session }: Props) {
       {/* ── Exercise cards ── */}
       <div className="mt-[100px] px-3 pt-3 space-y-3">
         {sessionExercises.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted mt-4">
+          <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted mt-4">
             Tap <strong className="text-app-text">Add Exercise</strong> to get started.
           </div>
         ) : (
@@ -618,7 +619,7 @@ export default function WorkoutLogger({ session }: Props) {
             const hasGuide   = !!exercise.instructions
 
             return (
-              <div key={se.id} className="bg-app-card rounded-2xl shadow-sm border border-app-border overflow-hidden">
+              <div key={se.id} className="bg-app-surface rounded-card shadow-card border border-app-border overflow-hidden">
 
                 {/* ── Exercise header ── */}
                 <div className="flex items-center gap-3 px-4 pt-4 pb-2">
@@ -684,7 +685,7 @@ export default function WorkoutLogger({ session }: Props) {
                   const localUrl = localVideoUrls.get(se.exerciseId)
                   if (localUrl) {
                     return (
-                      <div className="mx-4 mb-3 rounded-xl overflow-hidden bg-black">
+                      <div className="mx-4 mb-3 rounded-input overflow-hidden bg-black">
                         <video
                           src={localUrl}
                           controls
@@ -696,7 +697,7 @@ export default function WorkoutLogger({ session }: Props) {
                   }
                   if (!hasVideo || !videoId) return null
                   return expandedVideos.has(se.id) ? (
-                    <div className="mx-4 mb-3 rounded-xl overflow-hidden" style={{ aspectRatio: '16/9' }}>
+                    <div className="mx-4 mb-3 rounded-input overflow-hidden" style={{ aspectRatio: '16/9' }}>
                       <iframe
                         className="w-full h-full"
                         src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`}
@@ -708,7 +709,7 @@ export default function WorkoutLogger({ session }: Props) {
                   ) : (
                     <button
                       onClick={() => setExpandedVideos((prev) => { const n = new Set(prev); n.add(se.id); return n })}
-                      className="block relative mx-4 mb-3 rounded-xl overflow-hidden active:opacity-80"
+                      className="block relative mx-4 mb-3 rounded-input overflow-hidden active:opacity-80"
                       style={{ aspectRatio: '16/9' }}
                       aria-label={`Play ${exercise.name} tutorial`}
                     >
@@ -730,7 +731,7 @@ export default function WorkoutLogger({ session }: Props) {
 
                 {/* ── Guide / Instructions panel ── */}
                 {guideOpen && exercise.instructions && (
-                  <div className="mx-4 mb-3 p-3 rounded-xl bg-blue-50 border border-blue-100">
+                  <div className="mx-4 mb-3 p-3 rounded-input bg-blue-50 border border-blue-100">
                     <p className="text-xs text-blue-800 leading-relaxed whitespace-pre-line">
                       {exercise.instructions}
                     </p>
@@ -751,7 +752,7 @@ export default function WorkoutLogger({ session }: Props) {
                       }
                       placeholder="Notes for this exercise (e.g. technique cues, machine settings)…"
                       rows={2}
-                      className="w-full rounded-xl border border-app-border bg-app-bg px-3 py-2 text-sm text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent resize-none"
+                      className="w-full rounded-input border border-app-border bg-app-bg px-3 py-2 text-sm text-app-text placeholder-app-faint focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label resize-none"
                     />
                   </div>
                 )}
@@ -835,10 +836,10 @@ export default function WorkoutLogger({ session }: Props) {
                             inputMode="numeric"
                             value={row.reps}
                             onChange={(e) => updateDraft(se.id, i, 'reps', e.target.value)}
-                            className={`w-[54px] h-10 rounded-xl border text-center text-sm font-bold focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent mx-1 transition-colors ${
+                            className={`w-[54px] h-10 rounded-input border text-center text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
                               row.done
                                 ? 'bg-amber-100 border-amber-200 text-amber-800'
-                                : 'bg-app-card border-app-border text-app-text focus:bg-amber-50'
+                                : 'bg-app-surface border-app-border text-app-text focus:bg-amber-50'
                             }`}
                             placeholder="—"
                           />
@@ -850,10 +851,10 @@ export default function WorkoutLogger({ session }: Props) {
                             value={row.kg}
                             step={units.weight === 'lbs' ? 1 : 0.5}
                             onChange={(e) => updateDraft(se.id, i, 'kg', e.target.value)}
-                            className={`w-[54px] h-10 rounded-xl border text-center text-sm font-bold focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent mx-1 transition-colors ${
+                            className={`w-[54px] h-10 rounded-input border text-center text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
                               row.done
                                 ? 'bg-amber-100 border-amber-200 text-amber-800'
-                                : 'bg-app-card border-app-border text-app-text focus:bg-amber-50'
+                                : 'bg-app-surface border-app-border text-app-text focus:bg-amber-50'
                             }`}
                             placeholder="—"
                           />
@@ -899,7 +900,7 @@ export default function WorkoutLogger({ session }: Props) {
                               value={row.note}
                               onChange={(e) => updateDraft(se.id, i, 'note', e.target.value)}
                               placeholder="Note for this set…"
-                              className="w-full rounded-lg border border-app-border bg-app-bg px-3 py-1.5 text-xs text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent"
+                              className="w-full rounded-input border border-app-border bg-app-bg px-3 py-1.5 text-xs text-app-text placeholder-app-faint focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
                             />
                           </div>
                         )}
@@ -928,7 +929,7 @@ export default function WorkoutLogger({ session }: Props) {
         {/* ── Add Exercise button ── */}
         <button
           onClick={() => setShowPicker(true)}
-          className="w-full py-4 text-blue-500 text-sm font-semibold flex items-center justify-center gap-2 bg-app-card rounded-2xl border border-dashed border-blue-200 shadow-sm active:bg-blue-50"
+          className="w-full py-4 text-blue-500 text-sm font-semibold flex items-center justify-center gap-2 bg-app-surface rounded-card border border-dashed border-blue-200 shadow-card active:bg-blue-50"
         >
           <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-blue-500">
@@ -941,24 +942,20 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Sticky Finish Workout button ── */}
       <div
-        className="fixed left-0 right-0 md:left-60 bg-app-card/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
+        className="fixed left-0 right-0 md:left-60 bg-app-surface/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
         style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
       >
-        <button
-          onClick={handleFinishPress}
-          disabled={saving}
-          className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
-        >
+        <Button variant="primary" fullWidth size="lg" onClick={handleFinishPress} disabled={saving}>
           {saving ? 'Saving…' : 'Finish Workout'}
-        </button>
+        </Button>
       </div>
 
       {/* ── Options sheet ── */}
       {showOptions && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowOptions(false)} />
-          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-card rounded-t-3xl px-5 pt-4 pb-8">
-            <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-5" />
+          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-4 pb-8">
+            <div className="w-10 h-1 rounded-full bg-app-border mx-auto mb-5" />
             <h2 className="text-base font-extrabold text-app-text mb-4">Workout Options</h2>
 
             {/* Auto-fill toggle */}
@@ -994,12 +991,9 @@ export default function WorkoutLogger({ session }: Props) {
               <span className="text-sm font-semibold">Discard Workout</span>
             </button>
 
-            <button
-              onClick={() => setShowOptions(false)}
-              className="w-full mt-2 rounded-2xl bg-app-bg text-app-text py-3.5 font-bold text-sm active:bg-gray-100"
-            >
+            <Button variant="secondary" fullWidth size="lg" className="mt-2" onClick={() => setShowOptions(false)}>
               Close
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -1008,22 +1002,16 @@ export default function WorkoutLogger({ session }: Props) {
       {showDiscard && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowDiscard(false)} />
-          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-card rounded-t-3xl px-5 pt-6 pb-8">
+          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-6 pb-8">
             <h2 className="text-lg font-extrabold text-app-text mb-1">Discard workout?</h2>
             <p className="text-sm text-app-muted mb-6">Your progress will not be saved.</p>
             <div className="flex flex-col gap-2">
-              <button
-                onClick={handleDiscard}
-                className="w-full rounded-2xl bg-red-500 text-white py-3.5 font-bold text-sm active:bg-red-600"
-              >
+              <Button variant="danger" fullWidth size="lg" onClick={handleDiscard}>
                 Discard
-              </button>
-              <button
-                onClick={() => setShowDiscard(false)}
-                className="w-full rounded-2xl bg-app-bg text-app-text py-3.5 font-bold text-sm active:bg-gray-100"
-              >
+              </Button>
+              <Button variant="secondary" fullWidth size="lg" onClick={() => setShowDiscard(false)}>
                 Keep Going
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -1036,8 +1024,8 @@ export default function WorkoutLogger({ session }: Props) {
         return (
           <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
             <div className="absolute inset-0 bg-black/40" onClick={() => setExerciseMenu(null)} />
-            <div className="relative z-50 w-full max-w-sm mx-auto bg-app-card rounded-t-3xl px-5 pt-4 pb-8">
-              <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto mb-4" />
+            <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-4 pb-8">
+              <div className="w-10 h-1 rounded-full bg-app-border mx-auto mb-4" />
               {menuEx && (
                 <p className="text-base font-extrabold text-app-text mb-4 truncate">{menuEx.name}</p>
               )}
@@ -1071,12 +1059,9 @@ export default function WorkoutLogger({ session }: Props) {
                 <p className="text-sm font-semibold text-red-500">Remove Exercise</p>
               </button>
 
-              <button
-                onClick={() => setExerciseMenu(null)}
-                className="w-full mt-3 rounded-2xl bg-app-bg text-app-text py-3 font-bold text-sm active:bg-gray-100"
-              >
+              <Button variant="secondary" fullWidth className="mt-3" onClick={() => setExerciseMenu(null)}>
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         )

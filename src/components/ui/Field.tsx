@@ -1,7 +1,7 @@
 import { useId } from 'react'
 
 interface FieldProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'id'> {
-  label:      string
+  label:      React.ReactNode
   id?:        string
   error?:     string
   hint?:      string

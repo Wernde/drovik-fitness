@@ -8,6 +8,7 @@ import { db, now } from '../db/db'
 import type { DayExercise } from '../db/db'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
+import { Button, Field } from './ui'
 
 const REST_PRESETS = [
   { label: '30s',   secs: 30  },
@@ -94,7 +95,7 @@ export default function DayExerciseForm(props: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-end md:items-center md:justify-center" onClick={(e) => { if (e.target === e.currentTarget) props.onClose() }}>
       <div className="absolute inset-0 bg-black/40 md:block hidden" onClick={props.onClose} />
-      <div className="relative w-full md:max-w-md md:rounded-2xl md:shadow-2xl bg-app-card rounded-t-2xl shadow-xl p-6 pb-10 max-h-[90vh] overflow-y-auto" style={{ marginBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+      <div className="relative w-full md:max-w-md md:rounded-card md:shadow-modal bg-app-surface rounded-t-card shadow-modal p-6 pb-10 max-h-[90vh] overflow-y-auto" style={{ marginBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
         onClick={(e) => e.stopPropagation()}
       >
 
@@ -112,43 +113,36 @@ export default function DayExerciseForm(props: Props) {
         <div className="flex flex-col gap-4">
           <div className="flex gap-3">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-app-text mb-1">Sets</label>
-              <input
+              <Field
+                label="Sets"
                 type="number"
                 inputMode="numeric"
                 value={targetSets}
                 onChange={(e) => setTargetSets(e.target.value)}
                 min={1}
-                className="w-full rounded-xl border border-app-border bg-app-bg text-app-text px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-app-text mb-1">Reps</label>
-              <input
+              <Field
+                label="Reps"
                 type="text"
                 value={targetReps}
                 onChange={(e) => setTargetReps(e.target.value)}
                 placeholder="e.g. 8–12 or AMRAP"
-                className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Target weight ({weightLabel(units.weight)}) <span className="text-app-muted font-normal">(optional)</span>
-            </label>
-            <input
-              type="number"
-              inputMode="decimal"
-              value={targetWeight}
-              onChange={(e) => setTargetWeight(e.target.value)}
-              placeholder="e.g. 80"
-              min={0}
-              step={0.5}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-          </div>
+          <Field
+            label={<>Target weight ({weightLabel(units.weight)}) <span className="text-app-muted font-normal">(optional)</span></>}
+            type="number"
+            inputMode="decimal"
+            value={targetWeight}
+            onChange={(e) => setTargetWeight(e.target.value)}
+            placeholder="e.g. 80"
+            min={0}
+            step={0.5}
+          />
 
           <div>
             <label className="block text-sm font-medium text-app-text mb-2">
@@ -209,7 +203,7 @@ export default function DayExerciseForm(props: Props) {
                   onChange={(e) => setRestSecs(e.target.value)}
                   placeholder="e.g. 240"
                   min={1}
-                  className="w-28 rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-28 rounded-input border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2 text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
                   autoFocus
                 />
                 <span className="text-sm text-app-muted">seconds</span>
@@ -222,28 +216,19 @@ export default function DayExerciseForm(props: Props) {
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Notes <span className="text-app-muted font-normal">(optional)</span>
-            </label>
-            <input
-              type="text"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="e.g. Pause at bottom"
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-          </div>
+          <Field
+            label={<>Notes <span className="text-app-muted font-normal">(optional)</span></>}
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="e.g. Pause at bottom"
+          />
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-error-text">{error}</p>}
 
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth onClick={handleSave} disabled={saving}>
             {saving ? 'Saving…' : props.mode === 'edit' ? 'Save Changes' : 'Add Exercise'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

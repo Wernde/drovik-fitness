@@ -5,6 +5,7 @@
 import { useState } from 'react'
 import { db, now } from '../db/db'
 import type { WorkoutDay } from '../db/db'
+import { Button, Field } from './ui'
 
 interface Props {
   programId: string
@@ -45,7 +46,7 @@ export default function DayForm({ programId, phaseId = null, day, nextOrder, onC
 
   return (
     <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10">
 
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-app-text">{day ? 'Rename Day' : 'Add Day'}</h2>
@@ -57,27 +58,19 @@ export default function DayForm({ programId, phaseId = null, day, nextOrder, onC
         </div>
 
         <div className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">Day name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Push, Pull, Legs A"
-              autoFocus
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-          </div>
+          <Field
+            label="Day name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Push, Pull, Legs A"
+            autoFocus
+            error={error}
+          />
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
-
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth onClick={handleSave} disabled={saving}>
             {saving ? 'Saving…' : day ? 'Save' : 'Add Day'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
