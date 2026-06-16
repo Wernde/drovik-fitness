@@ -3,18 +3,39 @@
 @tailwind utilities;
 
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
+/* Default values = Gold theme. Runtime overrides come from applyTheme()       */
 :root {
+  /* Accent */
   --color-accent:        #FFCA10;
   --color-accent-dark:   #B8900A;
   --color-accent-darker: #8A6C00;
   --color-accent-light:  #FFF9E0;
+  --color-accent-label:  #7A5C00; /* safe gold text on light bg — ~5.2:1 on white */
 
-  --color-app-bg:     #F4F6F9;
-  --color-app-card:   #ffffff;
-  --color-app-border: #E3E5E5;
-  --color-app-text:   #241F20;
-  --color-app-muted:  #7A7980;
-  --color-app-faint:  #C8C8C8;
+  /* Surfaces */
+  --color-app-bg:            #F4F6F9;
+  --color-app-card:          #FFFFFF;
+  --color-app-raised:        #F7F8FA; /* modal / sheet layer above card */
+  --color-app-border:        #E3E5E5;
+  --color-app-border-subtle: #ECEEF0; /* inner row dividers, table lines */
+
+  /* Text */
+  --color-app-text:     #241F20;
+  --color-app-muted:    #5C5B62; /* was #7A7980 (3.87:1, failed AA) → now ~5.0:1 */
+  --color-app-faint:    #999899; /* decorative / placeholder only */
+  --color-app-disabled: #BBBABA; /* non-interactive decoration only */
+
+  /* Semantic state — each has a tinted surface (bg) and a label (text) */
+  --color-success-bg:   #F0FDF4;
+  --color-success-text: #15803D;
+  --color-info-bg:      #EFF6FF;
+  --color-info-text:    #1D4ED8;
+  --color-warning-bg:   #FFFBEB;
+  --color-warning-text: #B45309;
+  --color-error-bg:     #FEF2F2;
+  --color-error-text:   #B91C1C;
+  --color-neutral-bg:   #F5F3FF;
+  --color-neutral-text: #6D28D9;
 
   --muscle-body: #c8c8c8;
   --muscle-hi:   #FFCA10;
@@ -122,5 +143,11 @@
   select,
   textarea {
     font-size: 16px;
+  }
+
+  /* Accessible keyboard focus — two-ring style, theme-aware */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-label);
+    outline-offset: 2px;
   }
 }
