@@ -9,6 +9,8 @@ import DayExerciseForm from '../components/DayExerciseForm'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { CAT_ICON_PATHS } from '../components/ExerciseThumb'
 import MuscleIcon from '../components/MuscleIcon'
+import { useUnits } from '../contexts/UnitsContext'
+import { kgToDisplay, weightLabel } from '../lib/units'
 
 const EQUIPMENT_LABELS: Record<string, string> = {
   barbell:    'Barbell',
@@ -26,6 +28,7 @@ const EQUIPMENT_LABELS: Record<string, string> = {
 export default function DayDetail() {
   const { programId, dayId } = useParams<{ programId: string; dayId: string }>()
   const navigate              = useNavigate()
+  const { units }             = useUnits()
 
   const [editMode,        setEditMode]        = useState(false)
   const [showMenu,        setShowMenu]        = useState(false)
@@ -178,7 +181,7 @@ export default function DayDetail() {
       {/* ── Fixed header ── */}
       <div className="sticky top-0 z-40 bg-app-card border-b border-app-border px-4 flex items-center justify-between h-14">
         <button
-          onClick={() => navigate('/programs')}
+          onClick={() => navigate(-1)}
           className="flex items-center justify-center w-9 h-9 rounded-full bg-app-bg text-app-muted active:text-app-text"
           aria-label="Back"
         >
@@ -303,7 +306,7 @@ export default function DayDetail() {
                           <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
                           <p className="text-xs text-app-muted mt-0.5">
                             {de.targetSets} × {de.targetReps}
-                            {de.targetWeight != null ? ` @ ${de.targetWeight} kg` : ''}
+                            {de.targetWeight != null ? ` @ ${kgToDisplay(de.targetWeight, units.weight)} ${weightLabel(units.weight)}` : ''}
                             {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
                           </p>
                         </div>
@@ -352,7 +355,7 @@ export default function DayDetail() {
                       <p className="font-bold text-[15px] text-app-text truncate">{exercise.name}</p>
                       <p className="text-xs text-app-muted mt-0.5">
                         {de.targetSets} sets × {de.targetReps}
-                        {de.targetWeight != null ? ` · ${de.targetWeight} kg` : ''}
+                        {de.targetWeight != null ? ` · ${kgToDisplay(de.targetWeight, units.weight)} ${weightLabel(units.weight)}` : ''}
                         {de.restSecs != null ? ` · ${de.restSecs}s rest` : ''}
                       </p>
                       {exercise.instructions && (
@@ -531,7 +534,7 @@ export default function DayDetail() {
                 {[
                   { label: 'Sets',   value: String(detailDE.targetSets) },
                   { label: 'Reps',   value: detailDE.targetReps },
-                  { label: 'Weight', value: detailDE.targetWeight != null ? `${detailDE.targetWeight} kg` : '—' },
+                  { label: 'Weight', value: detailDE.targetWeight != null ? `${kgToDisplay(detailDE.targetWeight, units.weight)} ${weightLabel(units.weight)}` : '—' },
                   { label: 'Rest',   value: detailDE.restSecs != null ? `${detailDE.restSecs}s` : '—' },
                 ].map(({ label, value }) => (
                   <div key={label} className="bg-app-bg rounded-xl p-3 flex flex-col items-center">

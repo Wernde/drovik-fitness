@@ -10,7 +10,7 @@ import type { WorkoutDay } from '../db/db'
 import { useAuth } from '../contexts/AuthContext'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
 import { useUnits, } from '../contexts/UnitsContext'
-import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel } from '../lib/units'
+import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel, displayToKg } from '../lib/units'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -238,13 +238,14 @@ export default function Home() {
     if (isNaN(val) || val <= 0) return
     setSavingWt(true)
     try {
-      const ts = now()
+      const ts  = now()
+      const kg  = displayToKg(val, units.weight)
       const existing = await db.bodyWeightLogs.filter((l) => l.date === todayIso && !l.deleted).first()
       if (existing) {
-        await db.bodyWeightLogs.update(existing.id, { weight: val, updatedAt: ts, syncedAt: null })
+        await db.bodyWeightLogs.update(existing.id, { weight: kg, updatedAt: ts, syncedAt: null })
       } else {
         await db.bodyWeightLogs.add({
-          id: crypto.randomUUID(), date: todayIso, weight: val,
+          id: crypto.randomUUID(), date: todayIso, weight: kg,
           notes: '', createdAt: ts, updatedAt: ts, syncedAt: null, deleted: false,
         })
       }

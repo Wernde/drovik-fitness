@@ -15,7 +15,7 @@ import {
   type Sex, type ActivityLevel, type DietId, type NutritionProfile,
 } from '../lib/tdee'
 import { useUnits } from '../contexts/UnitsContext'
-import { mlToDisplay, waterLabel } from '../lib/units'
+import { mlToDisplay, waterLabel, kgToDisplay, weightLabel } from '../lib/units'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -1375,7 +1375,8 @@ interface PlanTabProps {
 }
 
 function PlanTab({ onProfileSaved }: PlanTabProps) {
-  const storedProfile = loadProfile()
+  const storedProfile  = loadProfile()
+  const { units }      = useUnits()
 
   // Latest body weight for TDEE calc
   const latestWeight = useLiveQuery(
@@ -1443,9 +1444,9 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
 
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <label className="text-xs font-bold text-app-muted block mb-1">Weight (kg)</label>
+            <label className="text-xs font-bold text-app-muted block mb-1">Weight ({weightLabel(units.weight)})</label>
             <div className="w-full bg-app-bg border border-app-border rounded-xl px-3 py-2.5 text-sm text-app-text">
-              {latestWeight != null ? `${latestWeight} kg` : 'Not logged'}
+              {latestWeight != null ? `${kgToDisplay(latestWeight, units.weight)} ${weightLabel(units.weight)}` : 'Not logged'}
             </div>
           </div>
           <div>
