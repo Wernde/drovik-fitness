@@ -26,6 +26,11 @@ async function exportData(): Promise<void> {
     sessionExercises,
     sets,
     bodyWeightLogs,
+    foods,
+    foodLogs,
+    recipes,
+    recipeFoods,
+    nutritionLogs,
   ] = await Promise.all([
     db.exercises.toArray(),
     db.programs.toArray(),
@@ -35,6 +40,11 @@ async function exportData(): Promise<void> {
     db.sessionExercises.toArray(),
     db.sets.toArray(),
     db.bodyWeightLogs.toArray(),
+    db.foods.filter((f) => f.isCustom).toArray(),
+    db.foodLogs.toArray(),
+    db.recipes.toArray(),
+    db.recipeFoods.toArray(),
+    db.nutritionLogs.toArray(),
   ])
 
   const payload = {
@@ -48,6 +58,11 @@ async function exportData(): Promise<void> {
     sessionExercises,
     sets,
     bodyWeightLogs,
+    foods,
+    foodLogs,
+    recipes,
+    recipeFoods,
+    nutritionLogs,
   }
 
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
@@ -89,6 +104,11 @@ async function importData(file: File): Promise<string> {
       db.sessionExercises,
       db.sets,
       db.bodyWeightLogs,
+      db.foods,
+      db.foodLogs,
+      db.recipes,
+      db.recipeFoods,
+      db.nutritionLogs,
     ], async () => {
       if (p.exercises)        await db.exercises.bulkPut(p.exercises)
       if (p.programs)         await db.programs.bulkPut(p.programs)
@@ -98,6 +118,11 @@ async function importData(file: File): Promise<string> {
       if (p.sessionExercises) await db.sessionExercises.bulkPut(p.sessionExercises)
       if (p.sets)             await db.sets.bulkPut(p.sets)
       if (p.bodyWeightLogs)   await db.bodyWeightLogs.bulkPut(p.bodyWeightLogs)
+      if (p.foods)            await db.foods.bulkPut(p.foods)
+      if (p.foodLogs)         await db.foodLogs.bulkPut(p.foodLogs)
+      if (p.recipes)          await db.recipes.bulkPut(p.recipes)
+      if (p.recipeFoods)      await db.recipeFoods.bulkPut(p.recipeFoods)
+      if (p.nutritionLogs)    await db.nutritionLogs.bulkPut(p.nutritionLogs)
     })
     return ''
   } catch (err: unknown) {
@@ -395,7 +420,7 @@ export default function Settings() {
           <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
             <p className="text-sm font-semibold text-app-text mb-0.5">Export backup</p>
             <p className="text-xs text-app-muted mb-3">
-              Downloads a JSON file with all exercises, programs, and workout history.
+              Downloads a JSON file with all exercises, programs, workout history, and nutrition data.
             </p>
             <button
               onClick={handleExport}

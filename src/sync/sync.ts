@@ -472,21 +472,30 @@ function savePullCursor(table: string, ts: string) {
   } catch {}
 }
 
+const PULL_PAGE = 1000
+
 async function pullTable(t: SyncTable): Promise<void> {
-  const cursor    = getPullCursor(t.supabase)
-  const pullTime  = new Date().toISOString()
+  const cursor   = getPullCursor(t.supabase)
+  const pullTime = new Date().toISOString()
 
-  let query = supabase.from(t.supabase).select('*')
-  if (cursor) query = query.gt('updated_at', cursor)
+  let from = 0
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    let query = supabase.from(t.supabase).select('*').range(from, from + PULL_PAGE - 1)
+    if (cursor) query = query.gt('updated_at', cursor)
 
-  const { data, error } = await query
-  if (error) throw new Error(`Pull ${t.supabase}: ${error.message}`)
+    const { data, error } = await query
+    if (error) throw new Error(`Pull ${t.supabase}: ${error.message}`)
 
-  if (data && data.length > 0) {
-    // Set syncedAt = pullTime so pulled rows are NOT treated as pending by
-    // pushTable (which skips rows where syncedAt !== null).
-    const localRows = data.map((r) => ({ ...t.toLocal(r), syncedAt: pullTime }))
-    await t.dexie.bulkPut(localRows)
+    if (data && data.length > 0) {
+      // Set syncedAt = pullTime so pulled rows are NOT treated as pending by
+      // pushTable (which skips rows where syncedAt !== null).
+      const localRows = data.map((r) => ({ ...t.toLocal(r), syncedAt: pullTime }))
+      await t.dexie.bulkPut(localRows)
+    }
+
+    if (!data || data.length < PULL_PAGE) break
+    from += PULL_PAGE
   }
 
   // Always advance the cursor so the next pull is incremental.

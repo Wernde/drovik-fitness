@@ -24,7 +24,13 @@ function heatColor(count: number, isToday: boolean, isFuture: boolean): string {
   return '#B45309'                   // amber-700 — max
 }
 
-function YearHeatmap({ sessionCountMap }: { sessionCountMap: Map<string, number> }) {
+function YearHeatmap({
+  sessionCountMap,
+  onDayClick,
+}: {
+  sessionCountMap: Map<string, number>
+  onDayClick?: (date: string) => void
+}) {
   const today = new Date()
   today.setHours(12, 0, 0, 0)
   const dow       = today.getDay()
@@ -123,10 +129,17 @@ function YearHeatmap({ sessionCountMap }: { sessionCountMap: Map<string, number>
               const isToday = day === todayStr
               const isFuture = day > todayStr
               const bg      = heatColor(count, isToday, isFuture)
+              const hasSession = count > 0
               return (
                 <div
                   key={wi}
-                  title={count > 0 ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : day}
+                  role={hasSession ? 'button' : undefined}
+                  tabIndex={hasSession ? 0 : undefined}
+                  title={hasSession ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : day}
+                  onClick={hasSession ? () => onDayClick?.(day) : undefined}
+                  onKeyDown={hasSession ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDayClick?.(day) }
+                  } : undefined}
                   style={{
                     width:        cellSize,
                     height:       cellSize,
@@ -135,6 +148,7 @@ function YearHeatmap({ sessionCountMap }: { sessionCountMap: Map<string, number>
                     backgroundColor: bg,
                     outline:      isToday ? '2px solid #B8900A' : undefined,
                     outlineOffset: isToday ? 1 : undefined,
+                    cursor:       hasSession ? 'pointer' : undefined,
                   }}
                 />
               )
@@ -222,7 +236,13 @@ export default function History() {
       <h1 className="text-2xl font-extrabold text-app-text mb-5">History</h1>
 
       {/* ── Year heatmap ── */}
-      <YearHeatmap sessionCountMap={sessionCountMap} />
+      <YearHeatmap
+        sessionCountMap={sessionCountMap}
+        onDayClick={(date) => {
+          const s = sessions.find((s) => s.date === date)
+          if (s) navigate(`/history/${s.id}`)
+        }}
+      />
 
       {/* ── Calendar ── */}
       <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
