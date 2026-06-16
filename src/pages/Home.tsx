@@ -2,9 +2,8 @@
  * Home (Dash) — main dashboard.
  */
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { supabase } from '../lib/supabase'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import type { WorkoutDay } from '../db/db'
@@ -84,17 +83,6 @@ export default function Home() {
   const rawName     = email.split('@')[0].split(/[._\-]/)[0]
   const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
   const initials    = displayName.slice(0, 2).toUpperCase()
-
-  const [avatarUrl,  setAvatarUrl]  = useState('')
-  const [profileName, setProfileName] = useState('')
-  useEffect(() => {
-    if (!session) return
-    supabase.from('profiles').select('avatar_url, first_name').eq('id', session.user.id).single()
-      .then(({ data }) => {
-        if (data?.avatar_url)  setAvatarUrl(data.avatar_url)
-        if (data?.first_name)  setProfileName(data.first_name)
-      })
-  }, [session])
 
   const todayIso  = today()
   const dateStrip = buildDateStrip()
@@ -320,14 +308,11 @@ export default function Home() {
       {/* ── Top bar ──────────────────────────────────────────────────── */}
       <div className="page-x pt-6 pb-3 flex items-center gap-3">
         <Link to="/profile" className="w-11 h-11 rounded-full bg-accent flex items-center justify-center text-sm font-extrabold text-app-text flex-shrink-0 overflow-hidden active:opacity-80">
-          {avatarUrl
-            ? <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
-            : <span>{initials}</span>
-          }
+          <span>{initials}</span>
         </Link>
         <div className="flex-1">
           <p className="text-xs text-app-muted font-medium leading-none mb-0.5">Let's Go,</p>
-          <p className="text-2xl font-extrabold text-app-text leading-tight">{profileName || displayName}</p>
+          <p className="text-2xl font-extrabold text-app-text leading-tight">{displayName}</p>
         </div>
         <Link to="/settings" className="w-11 h-11 rounded-full bg-accent flex items-center justify-center text-app-text active:bg-accent-dark flex-shrink-0" aria-label="Settings">
           <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">

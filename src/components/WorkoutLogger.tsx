@@ -112,7 +112,9 @@ export default function WorkoutLogger({ session }: Props) {
   const [expandedVideos,  setExpandedVideos]  = useState<Set<string>>(new Set())
   const [localVideoUrls,  setLocalVideoUrls]  = useState<Map<string, string>>(new Map())
 
-  const draftsInit = useRef(false)
+  const draftsInit    = useRef(false)
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const saveSetsRef   = useRef<(silent?: boolean) => Promise<boolean>>(() => Promise.resolve(false))
 
   // Live data from DB — must be declared before any useEffect that uses it in deps
   const data = useLiveQuery<SessionData>(async () => {
@@ -281,6 +283,21 @@ export default function WorkoutLogger({ session }: Props) {
     })
   }, [autoFill]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Keep ref current so the timer always calls the latest closure
+  useEffect(() => { saveSetsRef.current = saveSets })
+
+  // Auto-save 1.5 s after the last draft change — protects against app close/crash
+  useEffect(() => {
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+    autoSaveTimer.current = setTimeout(() => {
+      if (!draftsInit.current) return
+      saveSetsRef.current(true)
+    }, 1500)
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current)
+    }
+  }, [drafts, exerciseNotes]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const existingExerciseIds = useMemo(
     () => new Set(data?.sessionExercises.map((se) => se.exerciseId) ?? []),
     [data],
@@ -429,52 +446,54 @@ export default function WorkoutLogger({ session }: Props) {
     }
   }
 
-  async function saveSets(): Promise<boolean> {
-    setSaving(true)
+  async function saveSets(silent = false): Promise<boolean> {
+    if (!silent) setSaving(true)
     try {
       const ts = now()
-      // Persist exercise-level notes
-      if (data) {
-        for (const se of data.sessionExercises) {
-          const note = exerciseNotes.get(se.id) ?? ''
-          await db.sessionExercises.update(se.id, { notes: note, updatedAt: ts, syncedAt: null })
+      await db.transaction('rw', db.sets, db.sessionExercises, async () => {
+        if (data) {
+          for (const se of data.sessionExercises) {
+            const note = exerciseNotes.get(se.id) ?? ''
+            await db.sessionExercises.update(se.id, { notes: note, updatedAt: ts, syncedAt: null })
+          }
         }
-      }
-      // Persist sets (delete old, bulk-add new)
-      for (const [seId, rows] of drafts) {
-        const validRows = rows.filter(
-          (r) => r.reps.trim() !== '' && r.kg.trim() !== '' &&
-                 !isNaN(Number(r.reps)) && !isNaN(Number(r.kg)),
-        )
-        await db.sets
-          .where('sessionExerciseId').equals(seId)
-          .modify({ deleted: true, updatedAt: ts, syncedAt: null })
-        if (validRows.length > 0) {
-          await db.sets.bulkAdd(
-            validRows.map((r, i) => ({
-              id:                crypto.randomUUID(),
-              sessionExerciseId: seId,
-              setNumber:         i + 1,
-              reps:              parseInt(r.reps, 10),
-              weight:            displayToKg(parseFloat(r.kg), units.weight),
-              rpe:               null,
-              rir:               null,
-              notes:             r.note,
-              isWarmup:          false,
-              machineSetting:    '',
-              createdAt:         ts,
-              updatedAt:         ts,
-              syncedAt:          null,
-              deleted:           false,
-            })),
+        for (const [seId, rows] of drafts) {
+          const validRows = rows.filter(
+            (r) => r.reps.trim() !== '' && r.kg.trim() !== '' &&
+                   !isNaN(Number(r.reps)) && !isNaN(Number(r.kg)),
           )
+          await db.sets
+            .where('sessionExerciseId').equals(seId)
+            .modify({ deleted: true, updatedAt: ts, syncedAt: null })
+          if (validRows.length > 0) {
+            await db.sets.bulkAdd(
+              validRows.map((r, i) => ({
+                id:                crypto.randomUUID(),
+                sessionExerciseId: seId,
+                setNumber:         i + 1,
+                reps:              parseInt(r.reps, 10),
+                weight:            displayToKg(parseFloat(r.kg), units.weight),
+                rpe:               null,
+                rir:               null,
+                notes:             r.note,
+                isWarmup:          false,
+                machineSetting:    '',
+                createdAt:         ts,
+                updatedAt:         ts,
+                syncedAt:          null,
+                deleted:           false,
+              })),
+            )
+          }
         }
-      }
-      setSaving(false)
+      })
+      if (!silent) setSaving(false)
       return true
     } catch {
-      showToast('Failed to save workout. Please try again.')
-      setSaving(false)
+      if (!silent) {
+        showToast('Failed to save workout. Please try again.')
+        setSaving(false)
+      }
       return false
     }
   }
@@ -489,7 +508,7 @@ export default function WorkoutLogger({ session }: Props) {
     try {
       const ts = now()
       await db.workoutSessions.update(session.id, { finishedAt: ts, updatedAt: ts, syncedAt: null })
-      navigate('/programs')
+      navigate(`/history/${session.id}`)
     } catch {
       showToast('Failed to complete workout. Please try again.')
       setSaving(false)
