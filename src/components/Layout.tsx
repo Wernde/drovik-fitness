@@ -166,7 +166,7 @@ export default function Layout() {
   // ── Quick Add items ───────────────────────────────────────────────────────
   const QA_ITEMS: QAItem[] = [
     { label: 'AI Coach',   icon: `${BASE}icons/ai-coach.svg`,   to: '/more'       },
-    { label: 'Workout',    icon: `${BASE}icons/workout.svg`,    to: '/programs'   },
+    { label: 'Workout',    icon: `${BASE}icons/workout.svg`,    to: '/log'        },
     { label: 'Cardio',     icon: `${BASE}icons/cardio.svg`,     to: '/log'        },
     { label: 'Meal',       icon: `${BASE}icons/meal.svg`,       to: '/nutrition'  },
     { label: 'Water',      icon: `${BASE}icons/water.svg`,      to: '/nutrition'  },

@@ -260,11 +260,19 @@ export default function History() {
         <div className="grid grid-cols-7 gap-y-1">
           {calendarDays.map((date, idx) => {
             if (!date) return <div key={idx} />
-            const dateStr    = isoDate(date)
-            const isToday    = dateStr === todayStr
-            const hasSession = sessionDates.has(dateStr)
+            const dateStr      = isoDate(date)
+            const isToday      = dateStr === todayStr
+            const hasSession   = sessionDates.has(dateStr)
+            const firstSession = hasSession
+              ? sessions.find((s) => s.date === dateStr)
+              : undefined
             return (
-              <div key={dateStr} className="flex flex-col items-center py-0.5">
+              <button
+                key={dateStr}
+                className={`flex flex-col items-center py-0.5 ${firstSession ? 'active:opacity-70' : 'cursor-default'}`}
+                onClick={firstSession ? () => navigate(`/history/${firstSession.id}`) : undefined}
+                aria-label={firstSession ? `${date.getDate()} — view workout` : undefined}
+              >
                 <span className={[
                   'w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium',
                   isToday
@@ -278,7 +286,7 @@ export default function History() {
                 {hasSession && !isToday && (
                   <span className="w-1.5 h-1.5 rounded-full bg-accent-dark mt-0.5" />
                 )}
-              </div>
+              </button>
             )
           })}
         </div>

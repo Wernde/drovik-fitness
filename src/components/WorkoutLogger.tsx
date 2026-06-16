@@ -95,7 +95,7 @@ export default function WorkoutLogger({ session }: Props) {
 
   const [drafts,          setDrafts]          = useState<Map<string, DraftRow[]>>(new Map())
   const [prevData,        setPrevData]        = useState<Map<string, DraftRow[]>>(new Map())
-  const [autoFill,        setAutoFill]        = useState(false)
+  const [autoFill,        setAutoFill]        = useState(() => localStorage.getItem('drovik:autoFill') === 'true')
   const [elapsed,         setElapsed]         = useState(0)
   const [saving,          setSaving]          = useState(false)
   const [showDiscard,     setShowDiscard]     = useState(false)
@@ -968,7 +968,11 @@ export default function WorkoutLogger({ session }: Props) {
                 <p className="text-xs text-app-muted mt-0.5">Fill all empty sets with previous values</p>
               </div>
               <button
-                onClick={() => setAutoFill((v) => !v)}
+                onClick={() => {
+                    const next = !autoFill
+                    setAutoFill(next)
+                    localStorage.setItem('drovik:autoFill', String(next))
+                  }}
                 className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${autoFill ? 'bg-blue-500' : 'bg-gray-300'}`}
                 role="switch"
                 aria-checked={autoFill}

@@ -709,10 +709,10 @@ function AddCustomFoodModal({ onClose }: { onClose: () => void }) {
         id: crypto.randomUUID(),
         name: name.trim(),
         category,
-        caloriesPer100g: parseFloat(cal) || 0,
-        proteinPer100g:  parseFloat(protein) || 0,
-        carbsPer100g:    parseFloat(carbs) || 0,
-        fatPer100g:      parseFloat(fat) || 0,
+        caloriesPer100g: Math.max(0, parseFloat(cal) || 0),
+        proteinPer100g:  Math.max(0, parseFloat(protein) || 0),
+        carbsPer100g:    Math.max(0, parseFloat(carbs) || 0),
+        fatPer100g:      Math.max(0, parseFloat(fat) || 0),
         isCustom: true,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -962,7 +962,7 @@ function NewRecipeModal({ onClose }: { onClose: () => void }) {
       await db.recipes.add({
         id: recipeId,
         name: name.trim(),
-        servings: parseInt(servings) || 1,
+        servings: Math.max(1, parseFloat(servings) || 1),
         notes,
         createdAt: timestamp,
         updatedAt: timestamp,
@@ -1011,10 +1011,11 @@ function NewRecipeModal({ onClose }: { onClose: () => void }) {
           <label className="text-xs font-bold text-app-muted block mb-1">Servings</label>
           <input
             type="number"
-            inputMode="numeric"
+            inputMode="decimal"
             value={servings}
             onChange={(e) => setServings(e.target.value)}
-            min={1}
+            min={0.5}
+            step={0.5}
             className="w-full bg-app-bg border border-app-border rounded-xl px-3 py-2.5 text-sm text-app-text focus:outline-none focus:ring-2 focus:ring-accent"
           />
         </div>
@@ -1396,7 +1397,7 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
   const [dietId,   setDietId]   = useState<DietId>(storedProfile?.dietId    ?? 'standard')
   const [saved,    setSaved]    = useState(false)
 
-  const weightKg = latestWeight ?? 80
+  const weightKg = latestWeight ?? null
 
   const bmr = useMemo(() => {
     const h = parseFloat(height)
@@ -1412,7 +1413,7 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
 
   const diet = DIET_PROGRAMS.find((d) => d.id === dietId)!
   const macros = useMemo(() => {
-    if (tdee == null) return null
+    if (tdee == null || weightKg == null) return null
     return calcMacros(weightKg, tdee, diet)
   }, [weightKg, tdee, diet])
 
