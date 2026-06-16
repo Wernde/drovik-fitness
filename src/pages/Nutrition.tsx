@@ -495,7 +495,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
   const waterPct = Math.min(100, Math.round((waterMl / WATER_GOAL_ML) * 100))
 
   async function addWater(ml: number) {
-    const newTotal = waterMl + ml
+    const newTotal = Math.min(waterMl + ml, WATER_GOAL_ML * 2)
     const timestamp = now()
     if (nutritionLog) {
       await db.nutritionLogs.update(nutritionLog.id, { waterMl: newTotal, updatedAt: timestamp, syncedAt: null })
@@ -668,7 +668,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
           <div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${waterPct}%` }} />
         </div>
         <div className="flex gap-2 px-4 pb-4">
-          {[250, 500, 750].map((ml) => (
+          {(units.water === 'fl_oz' ? [237, 473, 710] : [250, 500, 750]).map((ml) => (
             <button
               key={ml}
               onClick={() => addWater(ml)}

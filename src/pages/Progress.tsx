@@ -9,7 +9,7 @@
  * Estimated 1RM uses the Epley formula: weight × (1 + reps / 30)
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useUnits } from '../contexts/UnitsContext'
@@ -542,7 +542,7 @@ function MacroBadge({ label, value, unit, color }: { label: string; value: numbe
 }
 
 function NutritionTab() {
-  const logs = useLiveQuery(
+  const manualLogs = useLiveQuery(
     () => db.nutritionLogs
       .filter((l) => !l.deleted)
       .toArray()
@@ -550,8 +550,68 @@ function NutritionTab() {
     [],
   )
 
-  const todayStr  = today()
-  const todayLog  = logs?.find((l) => l.date === todayStr)
+  // Aggregate food diary (foodLogs) totals per date
+  const diaryTotals = useLiveQuery(async () => {
+    const logs = await db.foodLogs.filter((l) => !l.deleted).toArray()
+    if (logs.length === 0) return new Map<string, { calories: number; proteinG: number; carbsG: number; fatG: number }>()
+    const foodIds = [...new Set(logs.map((l) => l.foodId))]
+    const foods   = await db.foods.where('id').anyOf(foodIds).toArray()
+    const foodMap = new Map(foods.map((f) => [f.id, f]))
+    const byDate  = new Map<string, { calories: number; proteinG: number; carbsG: number; fatG: number }>()
+    for (const log of logs) {
+      const food = foodMap.get(log.foodId)
+      if (!food) continue
+      const f = log.amountG / 100
+      const prev = byDate.get(log.date) ?? { calories: 0, proteinG: 0, carbsG: 0, fatG: 0 }
+      byDate.set(log.date, {
+        calories: prev.calories + food.caloriesPer100g * f,
+        proteinG: prev.proteinG + food.proteinPer100g  * f,
+        carbsG:   prev.carbsG   + food.carbsPer100g    * f,
+        fatG:     prev.fatG     + food.fatPer100g      * f,
+      })
+    }
+    return byDate
+  }, [])
+
+  const todayStr   = today()
+  const todayLog   = manualLogs?.find((l) => l.date === todayStr)
+  const todayDiary = diaryTotals?.get(todayStr)
+
+  // Unified history: food diary wins for macros; water always from nutritionLogs
+  const unifiedHistory = useMemo(() => {
+    if (manualLogs === undefined || diaryTotals === undefined) return []
+    const dates = new Set<string>()
+    manualLogs.forEach((l) => dates.add(l.date))
+    diaryTotals.forEach((_, date) => dates.add(date))
+    return [...dates]
+      .sort((a, b) => b.localeCompare(a))
+      .slice(0, 30)
+      .map((date) => {
+        const diary  = diaryTotals.get(date)
+        const manual = manualLogs.find((l) => l.date === date)
+        const waterMl = manual?.waterMl ?? null
+        if (diary) {
+          return {
+            date,
+            calories: Math.round(diary.calories),
+            proteinG: Math.round(diary.proteinG),
+            carbsG:   Math.round(diary.carbsG),
+            fatG:     Math.round(diary.fatG),
+            waterMl,
+            fromDiary: true,
+          }
+        }
+        return {
+          date,
+          calories: manual?.calories ?? null,
+          proteinG: manual?.proteinG ?? null,
+          carbsG:   manual?.carbsG   ?? null,
+          fatG:     manual?.fatG     ?? null,
+          waterMl,
+          fromDiary: false,
+        }
+      })
+  }, [manualLogs, diaryTotals])
 
   const [calories, setCalories] = useState('')
   const [protein,  setProtein]  = useState('')
@@ -608,16 +668,48 @@ function NutritionTab() {
     }
   }
 
-  const chartData = (logs ?? [])
-    .filter((l) => l.calories != null)
-    .map((l) => ({ date: shortDate(l.date), calories: l.calories }))
+  const chartData = unifiedHistory
+    .filter((d) => d.calories != null)
+    .map((d) => ({ date: shortDate(d.date), calories: d.calories }))
     .reverse()
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Entry form */}
+
+      {/* Today summary from food diary (when diary data exists) */}
+      {todayDiary && (
+        <div className="rounded-2xl bg-app-card border border-app-border p-4">
+          <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-2">Today — Food Diary</p>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Calories', value: Math.round(todayDiary.calories), unit: 'kcal' },
+              { label: 'Protein',  value: Math.round(todayDiary.proteinG),  unit: 'g' },
+              { label: 'Carbs',    value: Math.round(todayDiary.carbsG),    unit: 'g' },
+              { label: 'Fat',      value: Math.round(todayDiary.fatG),      unit: 'g' },
+            ].map(({ label, value, unit }) => (
+              <div key={label} className="text-center">
+                <p className="text-[10px] text-app-muted">{label}</p>
+                <p className="text-sm font-extrabold text-app-text">
+                  {value}<span className="text-[10px] font-normal text-app-muted"> {unit}</span>
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Manual entry form */}
       <div className="rounded-2xl bg-app-card border border-app-border p-4 flex flex-col gap-3">
-        <p className="text-sm font-semibold text-app-text">Today</p>
+        <div>
+          <p className="text-sm font-semibold text-app-text">
+            {todayDiary ? 'Water / Override' : 'Today'}
+          </p>
+          {todayDiary && (
+            <p className="text-xs text-app-muted mt-0.5">
+              Diary data shown above. Use this to log water or manually override macros.
+            </p>
+          )}
+        </div>
 
         {/* Calories */}
         <div>
@@ -666,11 +758,11 @@ function NutritionTab() {
           onClick={handleSave} disabled={saving}
           className="w-full rounded-2xl bg-accent text-app-text py-2.5 text-sm font-semibold active:bg-accent-dark disabled:opacity-60"
         >
-          {saving ? 'Saving…' : todayLog ? 'Update Today' : 'Log Today'}
+          {saving ? 'Saving…' : todayLog ? 'Update' : 'Save'}
         </button>
       </div>
 
-      {/* Calorie chart */}
+      {/* Calorie chart — unified data from diary + manual */}
       {chartData.length > 1 && (
         <div className="rounded-2xl bg-app-card border border-app-border p-4">
           <p className="text-xs text-app-muted mb-3">Calories over time</p>
@@ -679,31 +771,36 @@ function NutritionTab() {
         </div>
       )}
 
-      {/* Recent entries */}
-      {logs && logs.length > 0 && (
+      {/* Unified history — diary entries labelled, manual entries unlabelled */}
+      {unifiedHistory.length > 0 && (
         <ul className="flex flex-col gap-2">
-          {logs.slice(0, 14).map((l) => (
-            <li key={l.id} className="rounded-2xl bg-app-card border border-app-border px-4 py-3">
+          {unifiedHistory.slice(0, 14).map((entry) => (
+            <li key={entry.date} className="rounded-2xl bg-app-card border border-app-border px-4 py-3">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-semibold text-app-text">{shortDate(l.date)}</span>
-                {l.calories != null && (
-                  <span className="text-sm font-bold text-accent-dark">{l.calories} kcal</span>
-                )}
+                <span className="text-sm font-semibold text-app-text">{shortDate(entry.date)}</span>
+                <div className="flex items-center gap-2">
+                  {entry.fromDiary && (
+                    <span className="text-[10px] font-bold text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded-full">diary</span>
+                  )}
+                  {entry.calories != null && (
+                    <span className="text-sm font-bold text-accent-dark">{entry.calories} kcal</span>
+                  )}
+                </div>
               </div>
               <div className="flex flex-wrap gap-1">
-                <MacroBadge label="P" value={l.proteinG} unit="g" color="bg-blue-50 text-blue-600" />
-                <MacroBadge label="C" value={l.carbsG}   unit="g" color="bg-amber-50 text-amber-600" />
-                <MacroBadge label="F" value={l.fatG}     unit="g" color="bg-orange-50 text-orange-600" />
-                <MacroBadge label="💧" value={l.waterMl != null ? Math.round(l.waterMl / 100) / 10 : null} unit="L" color="bg-cyan-50 text-cyan-600" />
+                <MacroBadge label="P" value={entry.proteinG} unit="g" color="bg-blue-50 text-blue-600" />
+                <MacroBadge label="C" value={entry.carbsG}   unit="g" color="bg-amber-50 text-amber-600" />
+                <MacroBadge label="F" value={entry.fatG}     unit="g" color="bg-orange-50 text-orange-600" />
+                <MacroBadge label="💧" value={entry.waterMl != null ? Math.round(entry.waterMl / 100) / 10 : null} unit="L" color="bg-cyan-50 text-cyan-600" />
               </div>
             </li>
           ))}
         </ul>
       )}
 
-      {logs?.length === 0 && (
+      {unifiedHistory.length === 0 && manualLogs !== undefined && (
         <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted text-sm">
-          No entries yet. Log today's nutrition above.
+          No entries yet. Log today's nutrition above or add foods in the Nutrition diary.
         </div>
       )}
     </div>
