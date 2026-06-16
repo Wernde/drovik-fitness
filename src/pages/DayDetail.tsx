@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import DragList from '../components/DragList'
 import { db, now, today } from '../db/db'
+import { Button } from '../components/ui'
 import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
@@ -179,7 +180,7 @@ export default function DayDetail() {
     <div style={{ paddingBottom: 'calc(88px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* ── Fixed header ── */}
-      <div className="sticky top-0 z-40 bg-app-card border-b border-app-border px-4 flex items-center justify-between h-14">
+      <div className="sticky top-0 z-40 bg-app-surface border-b border-app-border px-4 flex items-center justify-between h-14">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center justify-center w-9 h-9 rounded-full bg-app-bg text-app-muted active:text-app-text"
@@ -205,7 +206,7 @@ export default function DayDetail() {
           {showMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-10 z-50 w-40 bg-app-card rounded-2xl shadow-lg border border-app-border overflow-hidden">
+              <div className="absolute right-0 top-10 z-50 w-40 bg-app-surface rounded-card shadow-float border border-app-border overflow-hidden">
                 <button
                   onClick={() => { setShowMenu(false); setEditMode(true) }}
                   className="w-full text-left px-4 py-3 text-sm text-app-text active:bg-app-bg"
@@ -226,7 +227,7 @@ export default function DayDetail() {
             <p className="text-base font-extrabold text-app-text">Edit Exercises</p>
             <button
               onClick={() => setEditMode(false)}
-              className="flex items-center gap-1.5 text-sm font-bold text-app-text bg-app-bg border border-app-border rounded-2xl px-3 py-1.5 active:bg-gray-100"
+              className="flex items-center gap-1.5 text-sm font-bold text-app-text bg-app-bg border border-app-border rounded-card px-3 py-1.5 active:bg-app-bg"
             >
               Done
             </button>
@@ -242,7 +243,7 @@ export default function DayDetail() {
 
             {/* Stats chips row */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
-              <div className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+              <div className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5 text-app-muted">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
                 </svg>
@@ -252,7 +253,7 @@ export default function DayDetail() {
               </div>
 
               {estMin != null && (
-                <div className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+                <div className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5 text-app-muted">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -261,7 +262,7 @@ export default function DayDetail() {
               )}
 
               {equipmentList.slice(0, 3).map((cat) => (
-                <div key={cat} className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+                <div key={cat} className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
                   <div className="w-3.5 h-3.5 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-app-muted">
                       <path d={CAT_ICON_PATHS[cat] ?? CAT_ICON_PATHS.default} fillRule="evenodd" clipRule="evenodd" />
@@ -276,7 +277,7 @@ export default function DayDetail() {
 
         {/* ── Exercise list ── */}
         {dayExercises.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+          <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted">
             {editMode
               ? <span>Tap <strong className="text-app-text">Add Exercise</strong> below.</span>
               : <span>Tap ⋯ → Edit Day to add exercises.</span>
@@ -291,7 +292,7 @@ export default function DayDetail() {
                 const exercise = exerciseMap.get(de.exerciseId)
                 if (!exercise) return null
                 return (
-                  <div className="bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden">
+                  <div className="bg-app-surface rounded-card border border-app-border shadow-card overflow-hidden">
                     {confirmDelete !== de.id ? (
                       <div className="flex items-center gap-2 px-3 py-3">
                         <div {...dragHandleProps} className="text-app-faint p-1.5 flex-none select-none" aria-label="Drag to reorder">
@@ -299,7 +300,7 @@ export default function DayDetail() {
                             <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
                           </svg>
                         </div>
-                        <div className="flex-none flex items-center justify-center w-10 h-10 rounded-xl bg-app-bg">
+                        <div className="flex-none flex items-center justify-center w-10 h-10 rounded-input bg-app-bg">
                           <MuscleIcon muscleGroup={exercise.muscleGroup} width={24} height={36} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -316,17 +317,17 @@ export default function DayDetail() {
                             <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
                           </svg>
                         </button>
-                        <button onClick={() => setConfirmDelete(de.id)} className="text-app-faint active:text-red-500 p-2" aria-label="Remove">
+                        <button onClick={() => setConfirmDelete(de.id)} className="text-app-faint active:text-error-text p-2" aria-label="Remove">
                           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
                             <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
                           </svg>
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-3 px-4 py-3 bg-red-50">
-                        <p className="flex-1 text-sm text-red-700">Remove <strong>{exercise.name}</strong>?</p>
+                      <div className="flex items-center gap-3 px-4 py-3 bg-error-bg">
+                        <p className="flex-1 text-sm text-error-text">Remove <strong>{exercise.name}</strong>?</p>
                         <button onClick={() => setConfirmDelete(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
-                        <button onClick={() => handleDelete(de.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Remove</button>
+                        <button onClick={() => handleDelete(de.id)} className="text-xs font-bold text-white bg-red-500 rounded-input px-3 py-1.5 active:bg-red-600">Remove</button>
                       </div>
                     )}
                   </div>
@@ -345,10 +346,10 @@ export default function DayDetail() {
                 <button
                   key={de.id}
                   onClick={() => openDetail(de)}
-                  className="w-full bg-app-card rounded-2xl border border-app-border shadow-sm overflow-hidden active:bg-app-bg text-left"
+                  className="w-full bg-app-surface rounded-card border border-app-border shadow-card overflow-hidden active:bg-app-bg text-left"
                 >
                   <div className="flex items-center gap-3 px-4 py-3.5">
-                    <div className="flex-none flex items-center justify-center w-11 h-11 rounded-xl bg-app-bg">
+                    <div className="flex-none flex items-center justify-center w-11 h-11 rounded-input bg-app-bg">
                       <MuscleIcon muscleGroup={exercise.muscleGroup} width={26} height={40} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -396,7 +397,7 @@ export default function DayDetail() {
         {editMode && (
           <button
             onClick={() => setShowPicker(true)}
-            className="mt-3 w-full flex items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-accent text-accent-dark text-sm font-bold py-4 active:bg-accent-light"
+            className="mt-3 w-full flex items-center justify-center gap-2 rounded-card border-2 border-dashed border-accent text-accent-dark text-sm font-bold py-4 active:bg-accent-light"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
               <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -409,24 +410,20 @@ export default function DayDetail() {
       {/* ── Sticky Start Now button (view mode) ── */}
       {!editMode && (
         <div
-          className="fixed left-0 right-0 md:left-60 bg-app-card border-t border-app-border px-4 py-3 z-30"
+          className="fixed left-0 right-0 md:left-60 bg-app-surface border-t border-app-border px-4 py-3 z-30"
           style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
         >
           {startError && (
-            <p className="text-xs text-red-600 text-center mb-2">{startError}</p>
+            <p className="text-xs text-error-text text-center mb-2">{startError}</p>
           )}
           {dayExercises.length === 0 ? (
             <p className="text-center text-sm text-app-muted py-2">
               Add exercises above before starting.
             </p>
           ) : (
-            <button
-              onClick={startNow}
-              disabled={starting}
-              className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark disabled:opacity-60"
-            >
+            <Button variant="primary" fullWidth size="lg" onClick={startNow} disabled={starting}>
               {starting ? 'Starting…' : 'Start Now'}
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -438,10 +435,10 @@ export default function DayDetail() {
           style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
         >
           <div className="absolute inset-0 bg-black/40" onClick={closeDetail} />
-          <div className="relative z-50 w-full max-w-lg mx-auto bg-app-card rounded-t-3xl pb-8 max-h-[80vh] overflow-y-auto">
+          <div className="relative z-50 w-full max-w-lg mx-auto bg-app-surface rounded-t-[24px] pb-8 max-h-[80vh] overflow-y-auto">
             {/* Handle */}
-            <div className="sticky top-0 bg-app-card pt-3 pb-2 px-5 flex items-center justify-between border-b border-app-border/50 z-10">
-              <div className="w-10 h-1 rounded-full bg-gray-200 mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
+            <div className="sticky top-0 bg-app-surface pt-3 pb-2 px-5 flex items-center justify-between border-b border-app-border/50 z-10">
+              <div className="w-10 h-1 rounded-full bg-app-border mx-auto absolute left-1/2 -translate-x-1/2 top-3" />
               <div />
               <button onClick={closeDetail} className="ml-auto text-app-muted p-1 active:text-app-text">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
@@ -453,7 +450,7 @@ export default function DayDetail() {
             <div className="page-x pt-4">
               {/* Exercise header */}
               <div className="flex items-center gap-4 mb-4">
-                <div className="flex-none flex items-center justify-center w-16 h-16 rounded-2xl bg-app-bg">
+                <div className="flex-none flex items-center justify-center w-16 h-16 rounded-card bg-app-bg">
                   <MuscleIcon muscleGroup={detailExercise.muscleGroup} width={36} height={54} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -467,7 +464,7 @@ export default function DayDetail() {
                 const vid = getYouTubeId(detailExercise.videoUrl)
                 if (!vid) return null
                 return detailVideoOpen ? (
-                  <div className="relative w-full rounded-2xl overflow-hidden mb-4" style={{ aspectRatio: '16/9' }}>
+                  <div className="relative w-full rounded-card overflow-hidden mb-4" style={{ aspectRatio: '16/9' }}>
                     <iframe
                       className="w-full h-full"
                       src={`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&playsinline=1`}
@@ -479,7 +476,7 @@ export default function DayDetail() {
                 ) : (
                   <button
                     onClick={() => setDetailVideoOpen(true)}
-                    className="relative w-full rounded-2xl overflow-hidden mb-4 active:opacity-80"
+                    className="relative w-full rounded-card overflow-hidden mb-4 active:opacity-80"
                     style={{ aspectRatio: '16/9' }}
                     aria-label={`Play ${detailExercise.name} tutorial`}
                   >
@@ -522,7 +519,7 @@ export default function DayDetail() {
 
               {/* Instructions panel */}
               {guideOpen && detailExercise.instructions && (
-                <div className="mb-4 p-4 rounded-2xl bg-blue-50 border border-blue-100">
+                <div className="mb-4 p-4 rounded-card bg-blue-50 border border-blue-100">
                   <p className="text-sm text-blue-800 leading-relaxed whitespace-pre-line">
                     {detailExercise.instructions}
                   </p>
@@ -537,7 +534,7 @@ export default function DayDetail() {
                   { label: 'Weight', value: detailDE.targetWeight != null ? `${kgToDisplay(detailDE.targetWeight, units.weight)} ${weightLabel(units.weight)}` : '—' },
                   { label: 'Rest',   value: detailDE.restSecs != null ? `${detailDE.restSecs}s` : '—' },
                 ].map(({ label, value }) => (
-                  <div key={label} className="bg-app-bg rounded-xl p-3 flex flex-col items-center">
+                  <div key={label} className="bg-app-bg rounded-input p-3 flex flex-col items-center">
                     <span className="text-[11px] font-semibold text-app-muted uppercase tracking-wide">{label}</span>
                     <span className="text-base font-extrabold text-app-text mt-1">{value}</span>
                   </div>
@@ -546,19 +543,16 @@ export default function DayDetail() {
 
               {/* Day exercise notes */}
               {detailDE.notes && (
-                <div className="mb-4 p-3 rounded-xl bg-accent-light border border-accent">
+                <div className="mb-4 p-3 rounded-input bg-accent-light border border-accent">
                   <p className="text-xs font-semibold text-accent-dark mb-0.5">Notes</p>
                   <p className="text-sm text-app-text">{detailDE.notes}</p>
                 </div>
               )}
 
               {/* Edit targets button */}
-              <button
-                onClick={() => { closeDetail(); setEditingDE(detailDE) }}
-                className="w-full rounded-2xl bg-accent text-app-text py-3.5 font-bold text-sm active:bg-accent-dark"
-              >
+              <Button variant="primary" fullWidth size="lg" onClick={() => { closeDetail(); setEditingDE(detailDE) }}>
                 Edit Targets
-              </button>
+              </Button>
             </div>
           </div>
         </div>

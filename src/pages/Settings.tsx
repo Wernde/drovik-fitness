@@ -10,6 +10,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import { useSyncStatus } from '../sync/useSyncStatus'
 import { THEMES, saveTheme, getActiveThemeId } from '../lib/themes'
+import { Button } from '../components/ui'
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -136,7 +137,7 @@ function UnitToggle<T extends string>({
   value, options, onChange,
 }: { value: T; options: { id: T; label: string }[]; onChange: (v: T) => void }) {
   return (
-    <div className="flex rounded-xl overflow-hidden border border-app-border">
+    <div className="flex rounded-input overflow-hidden border border-app-border">
       {options.map(({ id, label }) => (
         <button
           key={id}
@@ -265,7 +266,7 @@ export default function Settings() {
       {/* ── Appearance ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Appearance</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+        <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
           <p className="text-sm font-semibold text-app-text mb-1">Colour theme</p>
           <p className="text-xs text-app-muted mb-4">Tap any theme to switch instantly.</p>
           <div className="grid grid-cols-3 gap-3">
@@ -279,7 +280,7 @@ export default function Settings() {
                 >
                   {/* Mini app preview */}
                   <div
-                    className="w-full rounded-2xl overflow-hidden"
+                    className="w-full rounded-card overflow-hidden"
                     style={{
                       background: theme.appBg,
                       outline: isActive ? `3px solid ${theme.accent}` : `1.5px solid ${theme.appBorder}`,
@@ -297,7 +298,7 @@ export default function Settings() {
                     {/* Fake card */}
                     <div className="p-2 flex flex-col gap-1.5">
                       <div
-                        className="rounded-xl p-2 flex flex-col gap-1"
+                        className="rounded-input p-2 flex flex-col gap-1"
                         style={{ background: theme.appCard, border: `1px solid ${theme.appBorder}` }}
                       >
                         <div className="h-1.5 rounded-full w-10" style={{ background: theme.appText + '70' }} />
@@ -326,7 +327,7 @@ export default function Settings() {
       {/* ── Units ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Units</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+        <div className="rounded-card bg-app-surface border border-app-border divide-y divide-app-border overflow-hidden">
           {([
             { label: 'Weight',       node: <UnitToggle value={units.weight}      options={[{ id: 'kg' as const, label: 'kg' }, { id: 'lbs' as const, label: 'lbs' }]}           onChange={setWeight}      /> },
             { label: 'Measurements', node: <UnitToggle value={units.measurement} options={[{ id: 'cm' as const, label: 'cm' }, { id: 'in' as const, label: 'in' }]}            onChange={setMeasurement} /> },
@@ -345,14 +346,14 @@ export default function Settings() {
       {/* ── Account ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Account</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4 flex items-center justify-between">
+        <div className="rounded-card bg-app-surface border border-app-border px-4 py-4 flex items-center justify-between">
           <div>
             <p className="text-sm font-semibold text-app-text">{session?.user.email}</p>
             <p className="text-xs text-app-muted mt-0.5">Signed in</p>
           </div>
           <button
             onClick={signOut}
-            className="text-sm text-red-500 font-semibold active:text-red-600"
+            className="text-sm text-error-text font-semibold active:opacity-80"
           >
             Sign out
           </button>
@@ -362,7 +363,7 @@ export default function Settings() {
       {/* ── Sync ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Sync</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+        <div className="rounded-card bg-app-surface border border-app-border divide-y divide-app-border overflow-hidden">
 
           {/* Status row */}
           <div className="px-4 py-3 flex items-center gap-3">
@@ -387,9 +388,9 @@ export default function Settings() {
 
           {/* Error details */}
           {lastError && (
-            <div className="px-4 py-3 bg-red-50">
+            <div className="px-4 py-3 bg-error-bg">
               <p className="text-xs font-bold text-red-600 mb-1">Error detail</p>
-              <p className="text-xs text-red-500 font-mono break-all">{lastError}</p>
+              <p className="text-xs text-error-text font-mono break-all">{lastError}</p>
             </div>
           )}
 
@@ -399,13 +400,14 @@ export default function Settings() {
             <p className="text-xs text-app-muted mb-3">
               Clears the sync cursor and re-downloads all data from Supabase. Use this if data is missing on this device.
             </p>
-            <button
+            <Button
+              variant="primary"
+              size="sm"
               onClick={handleForceResync}
               disabled={forceResyncing || syncStatus === 'syncing'}
-              className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark disabled:opacity-60"
             >
               {forceResyncing ? 'Re-syncing…' : 'Re-sync now'}
-            </button>
+            </Button>
           </div>
 
         </div>
@@ -417,22 +419,18 @@ export default function Settings() {
         <div className="flex flex-col gap-2">
 
           {/* Export */}
-          <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+          <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
             <p className="text-sm font-semibold text-app-text mb-0.5">Export backup</p>
             <p className="text-xs text-app-muted mb-3">
               Downloads a JSON file with all exercises, programs, workout history, and nutrition data.
             </p>
-            <button
-              onClick={handleExport}
-              disabled={exporting}
-              className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark disabled:opacity-60"
-            >
+            <Button variant="primary" size="sm" onClick={handleExport} disabled={exporting}>
               {exporting ? 'Exporting…' : 'Export JSON'}
-            </button>
+            </Button>
           </div>
 
           {/* Import */}
-          <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+          <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
             <p className="text-sm font-semibold text-app-text mb-0.5">Import backup</p>
             <p className="text-xs text-app-muted mb-3">
               Merges a previously exported JSON file. Existing records are overwritten if the imported version is newer.
@@ -445,19 +443,15 @@ export default function Settings() {
               onChange={handleFileSelected}
               className="hidden"
             />
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={importLoading}
-              className="rounded-2xl border border-app-border text-app-muted bg-app-bg px-4 py-2 text-sm font-bold active:bg-app-border disabled:opacity-60"
-            >
+            <Button variant="secondary" size="sm" onClick={() => fileInputRef.current?.click()} disabled={importLoading}>
               {importLoading ? 'Importing…' : 'Import JSON'}
-            </button>
+            </Button>
 
             {importStatus === 'success' && (
-              <p className="text-sm text-green-600 mt-2">Import successful — data merged.</p>
+              <p className="text-sm text-success-text mt-2">Import successful — data merged.</p>
             )}
             {importStatus === 'error' && (
-              <p className="text-sm text-red-500 mt-2">{importError}</p>
+              <p className="text-sm text-error-text mt-2">{importError}</p>
             )}
           </div>
         </div>
@@ -466,7 +460,7 @@ export default function Settings() {
       {/* ── Apple Watch ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Apple Watch</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border divide-y divide-app-border overflow-hidden">
+        <div className="rounded-card bg-app-surface border border-app-border divide-y divide-app-border overflow-hidden">
 
           {/* Status */}
           <div className="px-4 py-3 flex items-center gap-3">
@@ -540,7 +534,7 @@ export default function Settings() {
       {/* ── AI Coach ── */}
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">AI Coach</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+        <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
           <p className="text-sm font-semibold text-app-text mb-0.5">Anthropic API key</p>
           <p className="text-xs text-app-muted mb-3">
             Powers the AI Coach on the More tab. Get a key at console.anthropic.com. Stored locally on this device only.
@@ -550,21 +544,18 @@ export default function Settings() {
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder="sk-ant-…"
-            className="w-full rounded-xl border border-app-border bg-app-bg px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent mb-3 font-mono"
+            className="w-full rounded-input border border-app-border bg-app-bg px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label mb-3 font-mono"
           />
-          <button
-            onClick={handleSaveApiKey}
-            className="rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
-          >
+          <Button variant="primary" size="sm" onClick={handleSaveApiKey}>
             {apiKeySaved ? 'Saved!' : 'Save key'}
-          </button>
+          </Button>
         </div>
       </section>
 
       {/* ── About ── */}
       <section>
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">About</h2>
-        <div className="rounded-2xl bg-app-card border border-app-border px-4 py-4">
+        <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
           <p className="text-sm font-semibold text-app-text mb-1">Drovik Fitness</p>
           <p className="text-xs text-app-muted">Local-first personal workout tracker. All data stored on your device and synced to Supabase when online.</p>
         </div>

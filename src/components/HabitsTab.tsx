@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import type { Habit } from '../db/db'
+import { Button, Field } from './ui'
 
 // ── Color palette ──────────────────────────────────────────────────────────────
 
@@ -98,7 +99,7 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
       style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-bold text-app-text">{habit ? 'Edit Habit' : 'New Habit'}</h2>
           <button onClick={onClose} className="text-app-muted active:text-app-text p-1" aria-label="Close">
@@ -109,17 +110,14 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">Habit name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Morning stretch, Drink water"
-              autoFocus
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-            />
-          </div>
+          <Field
+            label="Habit name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Morning stretch, Drink water"
+            autoFocus
+          />
 
           <div>
             <label className="block text-sm font-medium text-app-text mb-2">Colour</label>
@@ -131,7 +129,7 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
                   className={[
                     'w-9 h-9 rounded-full transition-transform',
                     COLORS[c].dot,
-                    color === c ? 'ring-2 ring-offset-2 ring-offset-app-card ring-accent scale-110' : '',
+                    color === c ? 'ring-2 ring-offset-2 ring-offset-app-surface ring-accent scale-110' : '',
                   ].join(' ')}
                   aria-label={c}
                 />
@@ -139,38 +137,34 @@ function HabitForm({ habit, onClose }: HabitFormProps) {
             </div>
           </div>
 
-          {error && <p className="text-sm text-red-500">{error}</p>}
+          {error && <p className="text-sm text-error-text">{error}</p>}
 
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth onClick={handleSave} disabled={saving}>
             {saving ? 'Saving…' : habit ? 'Save' : 'Add Habit'}
-          </button>
+          </Button>
 
           {habit && !confirm && (
             <button
               onClick={() => setConfirm(true)}
-              className="w-full rounded-2xl border border-red-200 text-red-500 py-2.5 text-sm active:bg-red-50"
+              className="w-full rounded-card border border-error-text text-error-text py-2.5 text-sm active:bg-error-bg"
             >
               Delete Habit
             </button>
           )}
 
           {habit && confirm && (
-            <div className="rounded-2xl bg-red-50 p-4 flex flex-col gap-3">
-              <p className="text-sm text-red-700 text-center">Delete this habit and all its history?</p>
+            <div className="rounded-card bg-error-bg p-4 flex flex-col gap-3">
+              <p className="text-sm text-error-text text-center">Delete this habit and all its history?</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setConfirm(false)}
-                  className="flex-1 rounded-xl border border-app-border text-app-muted py-2 text-sm"
+                  className="flex-1 rounded-input border border-app-border text-app-muted py-2 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="flex-1 rounded-xl bg-red-500 text-white py-2 text-sm font-semibold"
+                  className="flex-1 rounded-input bg-red-500 text-white py-2 text-sm font-semibold"
                 >
                   Delete
                 </button>
@@ -230,7 +224,7 @@ export default function HabitsTab() {
   return (
     <div className="flex flex-col gap-3">
       {habits.length === 0 && (
-        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted text-sm">
+        <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted text-sm">
           No habits yet. Add one below to start tracking daily streaks.
         </div>
       )}
@@ -243,7 +237,7 @@ export default function HabitsTab() {
         const colorCfg  = COLORS[habit.color] ?? COLORS.lime
 
         return (
-          <div key={habit.id} className="bg-app-card border border-app-border rounded-2xl px-4 py-3">
+          <div key={habit.id} className="bg-app-surface border border-app-border rounded-card px-4 py-3">
             <div className="flex items-center gap-3">
               {/* Colour dot — tappable to edit */}
               <button onClick={() => setFormTarget(habit)} aria-label="Edit habit">
@@ -307,12 +301,9 @@ export default function HabitsTab() {
         )
       })}
 
-      <button
-        onClick={() => setFormTarget(null)}
-        className="w-full rounded-2xl border border-app-border text-app-muted py-3 text-sm font-medium active:bg-app-bg"
-      >
+      <Button variant="secondary" fullWidth onClick={() => setFormTarget(null)}>
         + Add Habit
-      </button>
+      </Button>
 
       {formTarget !== undefined && (
         <HabitForm

@@ -33,16 +33,16 @@ function DayRow({
 
   if (confirmingDelete) {
     return (
-      <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
-        <p className="flex-1 text-sm text-red-700">Delete <strong>{day.name}</strong>?</p>
+      <div className="flex items-center gap-3 rounded-card bg-error-bg border border-error-text/30 px-4 py-3">
+        <p className="flex-1 text-sm text-error-text">Delete <strong>{day.name}</strong>?</p>
         <button onClick={onCancelDelete} className="text-xs text-app-muted px-2 py-1">Cancel</button>
-        <button onClick={onConfirmDelete} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
+        <button onClick={onConfirmDelete} className="text-xs font-bold text-white bg-red-500 rounded-input px-3 py-1.5 active:bg-red-600">Delete</button>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-2 rounded-2xl bg-app-card border border-app-border px-3 py-3">
+    <div className="flex items-center gap-2 rounded-card bg-app-surface border border-app-border px-3 py-3">
       <div {...dragHandleProps} className="touch-none cursor-grab active:cursor-grabbing text-app-faint p-1.5 flex-none" aria-label="Drag to reorder">
         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
           <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
@@ -60,7 +60,7 @@ function DayRow({
           <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
         </svg>
       </button>
-      <button onClick={onDelete} className="flex-none text-app-faint active:text-red-500 p-1" aria-label={`Delete ${day.name}`}>
+      <button onClick={onDelete} className="flex-none text-app-faint active:text-error-text p-1" aria-label={`Delete ${day.name}`}>
         <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
           <path fillRule="evenodd" d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z" clipRule="evenodd" />
         </svg>
@@ -210,13 +210,13 @@ export default function ProgramDetail() {
         <div className="flex gap-2 flex-none">
           <button
             onClick={() => { setEditingPhase(undefined); setPhaseForm(true) }}
-            className="flex items-center gap-1 rounded-2xl border border-app-border text-app-muted px-3 py-1.5 text-sm font-semibold active:bg-app-border flex-none"
+            className="flex items-center gap-1 rounded-card border border-app-border text-app-muted px-3 py-1.5 text-sm font-semibold active:bg-app-border flex-none"
           >
             + Phase
           </button>
           <button
             onClick={() => openDayForm(null)}
-            className="flex items-center gap-1 rounded-2xl bg-accent text-app-text px-3 py-1.5 text-sm font-bold active:bg-accent-dark flex-none"
+            className="flex items-center gap-1 rounded-card bg-accent text-app-text px-3 py-1.5 text-sm font-bold active:bg-accent-dark flex-none"
           >
             + Day
           </button>
@@ -231,7 +231,7 @@ export default function ProgramDetail() {
       {/* ── No phases: flat list ── */}
       {!hasPhases && (
         days.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+          <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted">
             No days yet. Tap <strong className="text-app-text">+ Day</strong> to get started,
             or <strong className="text-app-text">+ Phase</strong> to add a training block first.
           </div>
@@ -249,12 +249,12 @@ export default function ProgramDetail() {
               <div key={phase.id}>
                 {/* Phase header */}
                 {isDeleting ? (
-                  <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 mb-2">
-                    <p className="flex-1 text-sm text-red-700">
+                  <div className="flex items-center gap-3 rounded-card bg-error-bg border border-error-text/30 px-4 py-3 mb-2">
+                    <p className="flex-1 text-sm text-error-text">
                       Delete <strong>{phase.name}</strong>? Its days will become unassigned.
                     </p>
                     <button onClick={() => setConfirmDeletePhase(null)} className="text-xs text-app-muted px-2 py-1">Cancel</button>
-                    <button onClick={() => handleDeletePhase(phase.id)} className="text-xs font-bold text-white bg-red-500 rounded-xl px-3 py-1.5 active:bg-red-600">Delete</button>
+                    <button onClick={() => handleDeletePhase(phase.id)} className="text-xs font-bold text-white bg-red-500 rounded-input px-3 py-1.5 active:bg-red-600">Delete</button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-2 mb-2">
@@ -281,7 +281,7 @@ export default function ProgramDetail() {
                     </button>
                     <button
                       onClick={() => setConfirmDeletePhase(phase.id)}
-                      className="flex-none text-app-faint active:text-red-500 p-1"
+                      className="flex-none text-app-faint active:text-error-text p-1"
                       aria-label={`Delete ${phase.name}`}
                     >
                       <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -295,7 +295,7 @@ export default function ProgramDetail() {
 
                 <button
                   onClick={() => openDayForm(phase.id)}
-                  className="w-full mt-2 rounded-xl border border-dashed border-app-border text-app-faint text-xs py-2 active:border-accent active:text-accent-dark"
+                  className="w-full mt-2 rounded-input border border-dashed border-app-border text-app-faint text-xs py-2 active:border-accent active:text-accent-dark"
                 >
                   + Add day to {phase.name}
                 </button>

@@ -8,6 +8,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
+import { Button, Field } from './ui'
 
 const CATEGORIES: { value: ExerciseCategory; label: string }[] = [
   { value: 'barbell',    label: 'Barbell' },
@@ -161,7 +162,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
       {/* Slide-up panel */}
-      <div className="w-full bg-app-card rounded-t-2xl shadow-xl p-6 pb-10">
+      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -181,19 +182,14 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
 
         <div className="flex flex-col gap-4">
           {/* Name */}
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Incline Dumbbell Press"
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
-              autoFocus
-            />
-          </div>
+          <Field
+            label="Name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Incline Dumbbell Press"
+            autoFocus
+          />
 
           {/* Category */}
           <div>
@@ -203,7 +199,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as ExerciseCategory)}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-input border border-app-border bg-app-bg text-app-text px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
             >
               {CATEGORIES.map(({ value, label }) => (
                 <option key={value} value={value}>{label}</option>
@@ -219,7 +215,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <select
               value={muscleGroup}
               onChange={(e) => setMuscleGroup(e.target.value)}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-input border border-app-border bg-app-bg text-app-text px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
             >
               <option value="">Select muscle group…</option>
               {MUSCLE_GROUPS.map((g) => (
@@ -238,7 +234,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
             <div className="mb-3">
               <p className="text-xs text-app-muted mb-1.5">Your own recording (stored on-device)</p>
               {localVideoObjUrl ? (
-                <div className="rounded-xl overflow-hidden bg-black relative">
+                <div className="rounded-input overflow-hidden bg-black relative">
                   <video
                     src={localVideoObjUrl}
                     controls
@@ -256,7 +252,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               ) : (
                 <button
                   onClick={() => videoInputRef.current?.click()}
-                  className="w-full border-2 border-dashed border-app-border rounded-xl py-4 text-sm text-app-muted font-semibold flex items-center justify-center gap-2 active:bg-app-bg"
+                  className="w-full border-2 border-dashed border-app-border rounded-input py-4 text-sm text-app-muted font-semibold flex items-center justify-center gap-2 active:bg-app-bg"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
@@ -271,7 +267,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
                 className="hidden"
                 onChange={handleVideoFile}
               />
-              <p className="text-[10px] text-app-faint mt-1">MP4, MOV, WEBM — stored only on this device</p>
+              <p className="text-nav text-app-faint mt-1">MP4, MOV, WEBM — stored only on this device</p>
             </div>
 
             {/* YouTube URL (optional fallback) */}
@@ -283,7 +279,7 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               value={videoUrl}
               onChange={(e) => setVideoUrl(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=…"
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
+              className="w-full rounded-input border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
             />
             {thumbnailUrl && (
               <div className="mt-2 rounded-lg overflow-hidden relative">
@@ -298,37 +294,29 @@ export default function ExerciseForm({ exercise, onClose }: Props) {
               </div>
             )}
             {videoUrl.trim() && !videoId && (
-              <p className="text-xs text-amber-600 mt-1">Paste a youtube.com or youtu.be link to see a preview.</p>
+              <p className="text-xs text-warning-text mt-1">Paste a youtube.com or youtu.be link to see a preview.</p>
             )}
           </div>
 
           {/* Instructions */}
-          <div>
-            <label className="block text-sm font-medium text-app-text mb-1">
-              Instructions <span className="text-app-muted font-normal">(optional)</span>
-            </label>
-            <textarea
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-              placeholder="e.g. Keep chest up, drive knees out, full depth"
-              rows={3}
-              className="w-full rounded-xl border border-app-border bg-app-bg text-app-text placeholder-app-faint px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent resize-none"
-            />
-          </div>
+          <Field
+            label={<>Instructions <span className="text-app-muted font-normal">(optional)</span></>}
+            multiline
+            rows={3}
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            placeholder="e.g. Keep chest up, drive knees out, full depth"
+          />
 
           {/* Validation error */}
           {error && (
-            <p className="text-sm text-red-500">{error}</p>
+            <p className="text-sm text-error-text">{error}</p>
           )}
 
           {/* Save button */}
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className="w-full rounded-2xl bg-accent text-app-text py-3 font-semibold text-sm disabled:opacity-60 active:bg-accent-dark"
-          >
+          <Button variant="primary" fullWidth onClick={handleSave} disabled={saving}>
             {saving ? 'Saving…' : exercise ? 'Save Changes' : 'Add Exercise'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

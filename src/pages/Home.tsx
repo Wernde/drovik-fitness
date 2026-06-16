@@ -336,10 +336,10 @@ export default function Home() {
               <div
                 key={iso}
                 className={[
-                  'flex-1 rounded-2xl py-2 text-center',
+                  'flex-1 rounded-card py-2 text-center',
                   isToday
                     ? 'bg-app-text'
-                    : 'bg-app-card border border-app-border',
+                    : 'bg-app-surface border border-app-border',
                 ].join(' ')}
               >
                 <p className={`text-[11px] font-bold uppercase mb-1 ${isToday ? 'text-white/60' : 'text-app-muted'}`}>
@@ -360,8 +360,8 @@ export default function Home() {
         {/* ── Things to Do Today ────────────────────────────────────── */}
         <div>
           <p className="text-base font-extrabold text-app-text mb-2">Today's Nutrition</p>
-          <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
-            <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-gray-50">
+          <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
+            <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-app-bg">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
@@ -429,7 +429,7 @@ export default function Home() {
           <p className="text-base font-extrabold text-app-text mb-2">This Week</p>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Sessions this week */}
-            <Link to="/history" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
+            <Link to="/history" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-green-500">
                   <path fillRule="evenodd" d="M6 3.75A2.75 2.75 0 018.75 1h2.5A2.75 2.75 0 0114 3.75v.443c.572.055 1.14.122 1.706.2C17.053 4.582 18 5.75 18 7.07v3.469c0 1.126-.694 2.191-1.83 2.54-1.952.599-4.024.921-6.17.921s-4.219-.322-6.17-.921C2.694 12.73 2 11.665 2 10.539V7.07c0-1.321.947-2.489 2.294-2.676A41.047 41.047 0 016 4.193V3.75zm6.5 0v.325a41.622 41.622 0 00-5 0V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25zM10 10a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1V11a1 1 0 00-1-1H10z" clipRule="evenodd" />
@@ -441,7 +441,7 @@ export default function Home() {
               <p className="text-xs text-app-muted mt-0.5">workouts</p>
             </Link>
             {/* Body Weight */}
-            <Link to="/body" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
+            <Link to="/body" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-blue-500">
                   <path fillRule="evenodd" d="M10 2a.75.75 0 01.75.75v.258a33.186 33.186 0 016.668.83.75.75 0 01-.336 1.461 31.28 31.28 0 00-1.103-.232l1.702 7.545a.75.75 0 01-.505.893c-.336.095-.68.187-1.032.27a.75.75 0 11-.352-1.456c.237-.057.473-.118.706-.184L14.228 5.545A31.086 31.086 0 0010 5.261a31.08 31.08 0 00-4.228.284L4.102 11.73c.233.066.47.127.706.184a.75.75 0 11-.352 1.455 35.645 35.645 0 01-1.032-.27.75.75 0 01-.505-.893l1.702-7.545a31.28 31.28 0 00-1.103.232.75.75 0 01-.336-1.461 33.186 33.186 0 016.668-.83V2.75A.75.75 0 0110 2zM5.082 14.5a.75.75 0 01.75-.75h8.336a.75.75 0 010 1.5H5.832a.75.75 0 01-.75-.75z" clipRule="evenodd" />
@@ -455,7 +455,7 @@ export default function Home() {
               <p className="text-xs text-app-muted mt-0.5">{wtDate ?? 'Not logged'}</p>
             </Link>
             {/* Volume this week */}
-            <Link to="/progress" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
+            <Link to="/progress" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-violet-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-violet-500">
                   <path d="M15.5 2A1.5 1.5 0 0014 3.5v13a1.5 1.5 0 003 0v-13A1.5 1.5 0 0015.5 2zM9.5 6A1.5 1.5 0 008 7.5v9a1.5 1.5 0 003 0v-9A1.5 1.5 0 009.5 6zM3.5 10A1.5 1.5 0 002 11.5v5a1.5 1.5 0 003 0v-5A1.5 1.5 0 003.5 10z" />
@@ -468,7 +468,7 @@ export default function Home() {
               <p className="text-xs text-app-muted mt-0.5">lifted</p>
             </Link>
             {/* Calorie intake */}
-            <Link to="/nutrition" className="bg-app-card rounded-2xl border border-app-border px-4 py-3 block active:opacity-75">
+            <Link to="/nutrition" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
               <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center mb-2">
                 <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-orange-500">
                   <path d="M11.983 1.907a.75.75 0 00-1.292-.657l-8.5 9.5A.75.75 0 002.75 12h6.572l-1.305 6.093a.75.75 0 001.292.657l8.5-9.5A.75.75 0 0017.25 8h-6.572l1.305-6.093z" />
@@ -485,7 +485,7 @@ export default function Home() {
         </div>
 
         {/* ── Track Water ───────────────────────────────────────────── */}
-        <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
+        <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
           <div className="flex items-center gap-3 px-4 pt-4 pb-2">
             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-blue-500">
@@ -504,7 +504,7 @@ export default function Home() {
           <div className="flex gap-2 px-4 pb-4">
             {(units.water === 'fl_oz' ? [237, 473, 710] : [250, 500, 750]).map((ml) => (
               <button key={ml} onClick={() => addWater(ml)}
-                className="flex-1 bg-app-bg border border-app-border text-app-text text-sm font-bold py-2.5 rounded-xl active:bg-accent-light">
+                className="flex-1 bg-app-bg border border-app-border text-app-text text-sm font-bold py-2.5 rounded-input active:bg-accent-light">
                 +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
               </button>
             ))}
@@ -512,10 +512,10 @@ export default function Home() {
         </div>
 
         {/* ── Apple Watch Health ───────────────────────────────────── */}
-        <div className="rounded-2xl overflow-hidden border border-app-border" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
+        <div className="rounded-card overflow-hidden border border-app-border" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
           <div className="px-4 pt-4 pb-3 flex items-center gap-3">
             {/* Apple Watch icon */}
-            <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-9 h-9 rounded-input bg-white/10 flex items-center justify-center flex-shrink-0">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
                 <path d="M17 2H7L5.5 6h13L17 2zM7 22h10l1.5-4H5.5L7 22zM3 7a2 2 0 00-2 2v6a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2H3zm9 9a4 4 0 110-8 4 4 0 010 8zm.75-6.5v2.25l1.5 1.5-1.06 1.06-1.69-1.69V9.5h1.25z" />
               </svg>
@@ -597,7 +597,7 @@ export default function Home() {
         </div>
 
         {/* ── Body Stats ────────────────────────────────────────────── */}
-        <div className="bg-app-card rounded-2xl border border-app-border p-4">
+        <div className="bg-app-surface rounded-card border border-app-border p-4">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-accent-dark">
@@ -622,12 +622,12 @@ export default function Home() {
               onChange={(e) => setWeightInput(e.target.value)}
               placeholder={`Enter weight (${weightLabel(units.weight)})`}
               step={0.1} min={0}
-              className="flex-1 bg-app-bg border border-app-border rounded-xl px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus:ring-2 focus:ring-accent"
+              className="flex-1 bg-app-bg border border-app-border rounded-input px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
             />
             <button
               onClick={saveWeight}
               disabled={savingWt || !weightInput}
-              className="bg-accent text-app-text text-sm font-bold px-5 py-2.5 rounded-xl active:bg-accent-dark disabled:opacity-50"
+              className="bg-accent text-app-text text-sm font-bold px-5 py-2.5 rounded-input active:bg-accent-dark disabled:opacity-50"
             >
               {savingWt ? '…' : 'Save'}
             </button>
@@ -639,11 +639,11 @@ export default function Home() {
           <p className="text-base font-extrabold text-app-text mb-2">Today's Workout</p>
 
           {data?.activeSession ? (
-            <Link to="/log" className="block rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
+            <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
               <div className="px-5 py-5">
                 <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-1">In Progress</p>
                 <p className="text-2xl font-extrabold text-white mb-4">Resume Workout</p>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-xl">
+                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
                   Continue
                 </div>
@@ -653,7 +653,7 @@ export default function Home() {
             <button
               onClick={() => { setStartError(null); startNextDay(data.nextDay!, data.activeProgram!.id) }}
               disabled={starting}
-              className="w-full rounded-2xl overflow-hidden text-left disabled:opacity-70 active:opacity-90"
+              className="w-full rounded-card overflow-hidden text-left disabled:opacity-70 active:opacity-90"
               style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}
             >
               <div className="px-5 py-5 relative overflow-hidden">
@@ -678,19 +678,19 @@ export default function Home() {
                     </span>
                   )}
                 </div>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-xl">
+                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
                   Start Now
                 </div>
               </div>
             </button>
           ) : (
-            <Link to="/log" className="block rounded-2xl overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
+            <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
               <div className="px-5 py-5 relative overflow-hidden">
                 <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
                 <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Free Workout</p>
                 <p className="text-2xl font-extrabold text-white mb-4">Start Workout</p>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-xl">
+                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
                   Start Now
                 </div>

@@ -82,7 +82,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search exercises…"
             autoFocus
-            className="w-full rounded-2xl border border-app-border bg-app-card text-app-text placeholder-app-faint pl-9 pr-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent"
+            className="w-full rounded-card border border-app-border bg-app-surface text-app-text placeholder-app-faint pl-9 pr-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
           />
         </div>
       </div>
@@ -97,7 +97,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap',
               filter === value
                 ? 'bg-accent text-app-text'
-                : 'bg-app-card border border-app-border text-app-muted',
+                : 'bg-app-surface border border-app-border text-app-muted',
             ].join(' ')}
           >
             {label}
@@ -115,7 +115,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap',
               muscleFilter === mg
                 ? 'bg-app-text text-white'
-                : 'bg-app-card border border-app-border text-app-muted',
+                : 'bg-app-surface border border-app-border text-app-muted',
             ].join(' ')}
           >
             {mg === 'all' ? 'All Muscles' : mg}
@@ -135,7 +135,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
         {!exercises ? (
           <div className="flex items-center justify-center h-20 text-app-muted">Loading…</div>
         ) : filtered.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+          <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted">
             {search ? `No results for "${search}"` : 'No exercises in this category.'}
           </div>
         ) : (
@@ -147,10 +147,10 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
                   <button
                     onClick={() => onSelect(exercise)}
                     className={[
-                      'w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 text-left',
+                      'w-full flex items-center gap-3 rounded-card px-3 py-2.5 text-left',
                       alreadyAdded
-                        ? 'bg-app-card/40 opacity-50'
-                        : 'bg-app-card border border-app-border active:bg-accent-light',
+                        ? 'bg-app-surface/40 opacity-50'
+                        : 'bg-app-surface border border-app-border active:bg-accent-light',
                     ].join(' ')}
                   >
                     <MuscleIcon muscleGroup={exercise.muscleGroup} width={32} height={48} />

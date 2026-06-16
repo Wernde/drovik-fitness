@@ -93,7 +93,7 @@ function YearHeatmap({
   const GAP = 2
 
   return (
-    <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
+    <div className="rounded-card bg-app-surface border border-app-border p-4 mb-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs text-app-muted font-medium">Last 52 weeks</p>
@@ -112,7 +112,7 @@ function YearHeatmap({
           {weeks.map((_, wi) => (
             <div key={wi} style={{ width: cellSize, flexShrink: 0, overflow: 'visible' }}>
               {monthLabels.has(wi) && (
-                <span style={{ fontSize: 9, color: '#7A7980', whiteSpace: 'nowrap', display: 'block' }}>
+                <span style={{ fontSize: 9, color: 'var(--color-app-muted)', whiteSpace: 'nowrap', display: 'block' }}>
                   {monthLabels.get(wi)}
                 </span>
               )}
@@ -146,7 +146,7 @@ function YearHeatmap({
                     flexShrink:   0,
                     borderRadius: Math.max(2, Math.floor(cellSize / 4)),
                     backgroundColor: bg,
-                    outline:      isToday ? '2px solid #B8900A' : undefined,
+                    outline:      isToday ? '2px solid var(--color-accent-dark)' : undefined,
                     outlineOffset: isToday ? 1 : undefined,
                     cursor:       hasSession ? 'pointer' : undefined,
                   }}
@@ -158,14 +158,14 @@ function YearHeatmap({
 
         {/* Colour legend */}
         <div className="flex items-center gap-1.5 mt-3">
-          <span className="text-[10px] text-app-faint">Less</span>
+          <span className="text-nav text-app-faint">Less</span>
           {['#EEF0F3', '#FDE68A', '#FBBF24', '#F59E0B', '#B45309'].map((c) => (
             <div
               key={c}
               style={{ width: cellSize, height: cellSize, borderRadius: 2, backgroundColor: c, flexShrink: 0 }}
             />
           ))}
-          <span className="text-[10px] text-app-faint">More</span>
+          <span className="text-nav text-app-faint">More</span>
         </div>
       </div>
     </div>
@@ -245,12 +245,12 @@ export default function History() {
       />
 
       {/* ── Calendar ── */}
-      <div className="rounded-2xl bg-app-card border border-app-border p-4 mb-5">
+      <div className="rounded-card bg-app-surface border border-app-border p-4 mb-5">
         {/* Month nav */}
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={prevMonth}
-            className="p-2 rounded-xl bg-app-bg border border-app-border text-app-muted active:bg-app-border"
+            className="p-2 rounded-input bg-app-bg border border-app-border text-app-muted active:bg-app-border"
             aria-label="Previous month"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -260,7 +260,7 @@ export default function History() {
           <span className="text-sm font-bold text-app-text">{monthLabel}</span>
           <button
             onClick={nextMonth}
-            className="p-2 rounded-xl bg-app-bg border border-app-border text-app-muted active:bg-app-border"
+            className="p-2 rounded-input bg-app-bg border border-app-border text-app-muted active:bg-app-border"
             aria-label="Next month"
           >
             <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
@@ -323,7 +323,7 @@ export default function History() {
       </div>
 
       {monthSessions.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-app-border p-8 text-center text-app-muted">
+        <div className="rounded-card border-2 border-dashed border-app-border p-8 text-center text-app-muted">
           No workouts recorded this month.
         </div>
       ) : (
@@ -341,10 +341,10 @@ export default function History() {
               <li key={session.id}>
                 <button
                   onClick={() => navigate(`/history/${session.id}`)}
-                  className="w-full flex items-center gap-4 rounded-2xl bg-app-card border border-app-border px-4 py-3 text-left active:bg-accent-light"
+                  className="w-full flex items-center gap-4 rounded-card bg-app-surface border border-app-border px-4 py-3 text-left active:bg-accent-light"
                 >
                   {/* Date bubble */}
-                  <div className="flex-none w-12 h-12 rounded-xl bg-accent-light flex flex-col items-center justify-center">
+                  <div className="flex-none w-12 h-12 rounded-input bg-accent-light flex flex-col items-center justify-center">
                     <span className="text-accent-dark text-lg font-bold leading-none">{dayNum}</span>
                     <span className="text-accent-dark/70 text-xs">{month}</span>
                   </div>
