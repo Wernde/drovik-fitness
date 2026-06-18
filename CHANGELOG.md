@@ -4,6 +4,23 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Visual Redesign — Bold Themes + Live Nav Icons
+
+### Changed
+- **6 new gym-grade themes** — all previous themes replaced with high-energy palettes:
+  - **Carbon** (default) — matte black + electric gold `#FFD60A`
+  - **Volt** — deep black + neon lime `#B5F018` (Nike Volt inspired)
+  - **Blaze** — charcoal + electric orange `#FF5720` (fire intensity)
+  - **Pulse** — deep navy + electric cyan `#00D4FF` (precision/tech)
+  - **Crimson** — black + vivid red `#FF1744` (beast mode)
+  - **Arctic** — bright white + electric violet `#7C3AED` (the clean light option)
+- **Nav icons converted to inline SVG** — icons now use `currentColor` and light up with the accent colour when active; previously static image files that never changed
+- **Brown removed** — active nav label was `text-accent-dark` (#B8900A, golden-brown); now uses `text-accent` — the vivid accent itself
+- **Muscle diagram tracks theme** — `--muscle-hi` and `--muscle-body` CSS vars now update with each theme change
+- **Flash-prevention script updated** — `index.html` inline theme map updated to match new palette; default fallback changed from `gold` to `carbon`
+
+---
+
 ## Apple Watch Integration (via Apple Shortcuts)
 
 ### Added

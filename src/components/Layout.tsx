@@ -5,29 +5,55 @@ import { useSyncStatus } from '../sync/useSyncStatus'
 const PULL_THRESHOLD = 72
 const BASE = import.meta.env.BASE_URL
 
+// ── Nav icons — inline SVG so they inherit currentColor and react to active state ──
+
+function NavHome() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  )
+}
+
+function NavDumbbell() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
+      <rect x="2" y="9" width="5" height="6" rx="1.5"/>
+      <rect x="17" y="9" width="5" height="6" rx="1.5"/>
+      <line x1="7" y1="12" x2="17" y2="12"/>
+      <line x1="7" y1="10.5" x2="7" y2="13.5"/>
+      <line x1="17" y1="10.5" x2="17" y2="13.5"/>
+    </svg>
+  )
+}
+
+function NavUtensils() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
+      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/>
+      <path d="M7 2v20"/>
+      <path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
+    </svg>
+  )
+}
+
+function NavClock() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 7v5l3 3"/>
+    </svg>
+  )
+}
+
 // ── Bottom nav items (excludes FAB) ──────────────────────────────────────────
 
 const NAV: { to: string; label: string; icon: JSX.Element }[] = [
-  {
-    to: '/',
-    label: 'Home',
-    icon: <img src={`${BASE}icons/nav-home.svg`} alt="" className="w-7 h-7" />,
-  },
-  {
-    to: '/programs',
-    label: 'Program',
-    icon: <img src={`${BASE}icons/nav-program.svg`} alt="" className="w-7 h-7" />,
-  },
-  {
-    to: '/nutrition',
-    label: 'Nutrition',
-    icon: <img src={`${BASE}icons/nav-nutrition.svg`} alt="" className="w-7 h-7" />,
-  },
-  {
-    to: '/history',
-    label: 'History',
-    icon: <img src={`${BASE}icons/nav-history.svg`} alt="" className="w-7 h-7" />,
-  },
+  { to: '/',          label: 'Home',      icon: <NavHome />      },
+  { to: '/programs',  label: 'Program',   icon: <NavDumbbell />  },
+  { to: '/nutrition', label: 'Nutrition', icon: <NavUtensils /> },
+  { to: '/history',   label: 'History',   icon: <NavClock />     },
 ]
 
 // ── Quick Add items ───────────────────────────────────────────────────────────
@@ -293,7 +319,7 @@ export default function Layout() {
                     className={({ isActive }) => [
                       'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
-                        ? 'border-accent text-accent-dark'
+                        ? 'border-accent text-accent'
                         : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >
@@ -322,7 +348,7 @@ export default function Layout() {
                     className={({ isActive }) => [
                       'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
-                        ? 'border-accent text-accent-dark'
+                        ? 'border-accent text-accent'
                         : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >

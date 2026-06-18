@@ -9,9 +9,9 @@ export interface Theme {
   accentLabel:  string  // safe for text on this theme's bg surface
   appBg:        string
   appCard:      string
-  appRaised:    string  // elevated layer: modal, sheet
+  appRaised:    string
   appBorder:    string
-  appBorderSubtle: string  // inner row dividers
+  appBorderSubtle: string
   appText:      string
   appMuted:     string
   appFaint:     string
@@ -30,82 +30,88 @@ export interface Theme {
 
 export const THEMES: Theme[] = [
   {
-    // Brand default — warm light grey, gold accent
-    id: 'gold', name: 'Gold', dark: false,
-    accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#FFF9E0',
-    accentLabel: '#7A5C00',
-    appBg: '#F4F6F9', appCard: '#FFFFFF', appRaised: '#F7F8FA', appBorder: '#E3E5E5', appBorderSubtle: '#ECEEF0',
-    appText: '#241F20', appMuted: '#5C5B62', appFaint: '#999899', appDisabled: '#BBBABA',
-    successBg: '#F0FDF4', successText: '#15803D',
-    infoBg: '#EFF6FF',   infoText: '#1D4ED8',
-    warningBg: '#FFFBEB', warningText: '#B45309',
-    errorBg: '#FEF2F2',  errorText: '#B91C1C',
-    neutralBg: '#F5F3FF', neutralText: '#6D28D9',
+    // Matte black + electric gold — raw power, premium default
+    id: 'carbon', name: 'Carbon', dark: true,
+    accent: '#FFD60A', accentDark: '#E6BF00', accentDarker: '#C8A500', accentLight: '#1A1500',
+    accentLabel: '#FFD60A',
+    appBg: '#0C0C0E', appCard: '#141416', appRaised: '#1C1C1F',
+    appBorder: '#242428', appBorderSubtle: '#1A1A1E',
+    appText: '#F2F2F5', appMuted: '#8A8A8F', appFaint: '#3A3A3E', appDisabled: '#2A2A2E',
+    successBg: '#0A2215', successText: '#34D399',
+    infoBg:    '#081428', infoText:    '#60A5FA',
+    warningBg: '#1C1408', warningText: '#FBBF24',
+    errorBg:   '#1C0808', errorText:   '#F87171',
+    neutralBg: '#130820', neutralText: '#A78BFA',
   },
   {
-    // Pure dark — near-black surfaces, gold accent stays
-    id: 'onyx', name: 'Onyx', dark: true,
-    accent: '#FFCA10', accentDark: '#B8900A', accentDarker: '#8A6C00', accentLight: '#1E1A08',
-    accentLabel: '#FFCA10',
-    appBg: '#0C0D0F', appCard: '#161819', appRaised: '#1E2024', appBorder: '#252729', appBorderSubtle: '#1D1E20',
-    appText: '#F0EFE8', appMuted: '#8B8A87', appFaint: '#3E3D3A', appDisabled: '#2A2928',
-    successBg: '#052E16', successText: '#4ADE80',
-    infoBg: '#0A1628',   infoText: '#60A5FA',
-    warningBg: '#1C1005', warningText: '#FCD34D',
-    errorBg: '#1C0808',  errorText: '#F87171',
-    neutralBg: '#130B24', neutralText: '#A78BFA',
+    // Deep black + neon lime — electric, Nike Volt energy
+    id: 'volt', name: 'Volt', dark: true,
+    accent: '#B5F018', accentDark: '#96D400', accentDarker: '#7AB800', accentLight: '#0E1800',
+    accentLabel: '#B5F018',
+    appBg: '#070A06', appCard: '#0C1009', appRaised: '#121808',
+    appBorder: '#1C2818', appBorderSubtle: '#141C10',
+    appText: '#F0F5E6', appMuted: '#7A8870', appFaint: '#283020', appDisabled: '#1E2818',
+    successBg: '#0A2210', successText: '#4ADE80',
+    infoBg:    '#080F20', infoText:    '#60A5FA',
+    warningBg: '#1C1508', warningText: '#FBBF24',
+    errorBg:   '#1C0808', errorText:   '#F87171',
+    neutralBg: '#100820', neutralText: '#A78BFA',
   },
   {
-    // Dark navy — deep blue surfaces, electric blue accent
-    id: 'midnight', name: 'Midnight', dark: true,
-    accent: '#4F90FF', accentDark: '#2563EB', accentDarker: '#1D4ED8', accentLight: '#0D1A3A',
-    accentLabel: '#7AABFF',
-    appBg: '#080D1C', appCard: '#0E1630', appRaised: '#131D3D', appBorder: '#1A2545', appBorderSubtle: '#0F1835',
-    appText: '#EEF2FF', appMuted: '#8B9CC8', appFaint: '#2A3552', appDisabled: '#1E2A45',
-    successBg: '#042315', successText: '#4ADE80',
-    infoBg: '#0A1428',   infoText: '#60A5FA',
-    warningBg: '#1A0E04', warningText: '#FCD34D',
-    errorBg: '#1A0505',  errorText: '#F87171',
-    neutralBg: '#0E0820', neutralText: '#A78BFA',
+    // Charcoal + electric orange — fire intensity, high output
+    id: 'blaze', name: 'Blaze', dark: true,
+    accent: '#FF5720', accentDark: '#E03A00', accentDarker: '#C02C00', accentLight: '#1E0800',
+    accentLabel: '#FF5720',
+    appBg: '#0D0806', appCard: '#150D08', appRaised: '#1C1208',
+    appBorder: '#2C1A0C', appBorderSubtle: '#201410',
+    appText: '#FFF2EC', appMuted: '#9A7A68', appFaint: '#3A2018', appDisabled: '#2A1810',
+    successBg: '#0A2215', successText: '#4ADE80',
+    infoBg:    '#080F24', infoText:    '#60A5FA',
+    warningBg: '#1E1008', warningText: '#FBBF24',
+    errorBg:   '#1E0808', errorText:   '#F87171',
+    neutralBg: '#100820', neutralText: '#A78BFA',
   },
   {
-    // Warm dark — charcoal with electric orange, high energy
-    id: 'ember', name: 'Ember', dark: true,
-    accent: '#FF6B2C', accentDark: '#CC4F15', accentDarker: '#A33A0A', accentLight: '#1E0E05',
-    accentLabel: '#FF8C55',
-    appBg: '#0F0A07', appCard: '#1A1209', appRaised: '#231A0C', appBorder: '#2E1E0E', appBorderSubtle: '#201508',
-    appText: '#FFF0E8', appMuted: '#A08070', appFaint: '#3D2518', appDisabled: '#2A1A10',
-    successBg: '#042315', successText: '#4ADE80',
-    infoBg: '#050F1C',   infoText: '#60A5FA',
-    warningBg: '#1A0F04', warningText: '#FCD34D',
-    errorBg: '#1A0505',  errorText: '#F87171',
-    neutralBg: '#0E0820', neutralText: '#A78BFA',
+    // Deep navy + electric cyan — precision, tech, Whoop-like
+    id: 'pulse', name: 'Pulse', dark: true,
+    accent: '#00D4FF', accentDark: '#00AACC', accentDarker: '#0088AA', accentLight: '#001824',
+    accentLabel: '#00D4FF',
+    appBg: '#040810', appCard: '#080F1E', appRaised: '#0C1428',
+    appBorder: '#122038', appBorderSubtle: '#0A1830',
+    appText: '#E8F4FF', appMuted: '#6A8CAA', appFaint: '#1C3050', appDisabled: '#142440',
+    successBg: '#082215', successText: '#4ADE80',
+    infoBg:    '#081428', infoText:    '#60A5FA',
+    warningBg: '#1C1208', warningText: '#FBBF24',
+    errorBg:   '#1C0808', errorText:   '#F87171',
+    neutralBg: '#100820', neutralText: '#A78BFA',
   },
   {
-    // Clean light — blue-white surfaces, deep indigo accent
+    // Black + vivid red — beast mode, combat sport energy
+    id: 'crimson', name: 'Crimson', dark: true,
+    accent: '#FF1744', accentDark: '#E0002C', accentDarker: '#C00020', accentLight: '#1E0010',
+    accentLabel: '#FF1744',
+    appBg: '#0A0305', appCard: '#120408', appRaised: '#1A080C',
+    appBorder: '#2A0C14', appBorderSubtle: '#1E0810',
+    appText: '#FFF0F2', appMuted: '#9A7080', appFaint: '#3A1820', appDisabled: '#2A1018',
+    successBg: '#0A2215', successText: '#4ADE80',
+    infoBg:    '#080F24', infoText:    '#60A5FA',
+    warningBg: '#1C1008', warningText: '#FBBF24',
+    errorBg:   '#1C0808', errorText:   '#F87171',
+    neutralBg: '#100820', neutralText: '#A78BFA',
+  },
+  {
+    // Bright white + electric violet — crisp, clean, the one light option
     id: 'arctic', name: 'Arctic', dark: false,
-    accent: '#4F46E5', accentDark: '#3730A3', accentDarker: '#2C278A', accentLight: '#EEF2FF',
-    accentLabel: '#3730A3',
-    appBg: '#F0F4FF', appCard: '#FFFFFF', appRaised: '#F5F8FF', appBorder: '#D8E2FF', appBorderSubtle: '#E4EAFF',
-    appText: '#1E1B4B', appMuted: '#6366A0', appFaint: '#C4C7D4', appDisabled: '#B0B5CF',
+    accent: '#7C3AED', accentDark: '#6D28D9', accentDarker: '#5B21B6', accentLight: '#F5F3FF',
+    accentLabel: '#6D28D9',
+    appBg: '#F5F5FF', appCard: '#FFFFFF', appRaised: '#F8F7FF',
+    appBorder: '#E0DEFF', appBorderSubtle: '#ECEAFF',
+    appText: '#1A1040', appMuted: '#6B5E9A', appFaint: '#C8C4E0', appDisabled: '#B8B4D0',
     successBg: '#F0FDF4', successText: '#15803D',
-    infoBg: '#EEF2FF',   infoText: '#3730A3',
+    infoBg:    '#EEF2FF', infoText:    '#4338CA',
     warningBg: '#FFFBEB', warningText: '#B45309',
-    errorBg: '#FEF2F2',  errorText: '#B91C1C',
-    neutralBg: '#F5F3FF', neutralText: '#4F46E5',
-  },
-  {
-    // Earthy — warm sage backgrounds, deep forest green accent
-    id: 'sage', name: 'Sage', dark: false,
-    accent: '#16A34A', accentDark: '#15803D', accentDarker: '#0F6030', accentLight: '#DCFCE7',
-    accentLabel: '#0F6030',
-    appBg: '#F2F5F1', appCard: '#FFFFFF', appRaised: '#F7F9F6', appBorder: '#D0DECA', appBorderSubtle: '#DCE8D8',
-    appText: '#1A2C1A', appMuted: '#567856', appFaint: '#B8C8B4', appDisabled: '#AABCA6',
-    successBg: '#ECFDF5', successText: '#166534',
-    infoBg: '#EFF6FF',   infoText: '#1D4ED8',
-    warningBg: '#FFFBEB', warningText: '#B45309',
-    errorBg: '#FEF2F2',  errorText: '#B91C1C',
-    neutralBg: '#F5F3FF', neutralText: '#6D28D9',
+    errorBg:   '#FEF2F2', errorText:   '#B91C1C',
+    neutralBg: '#F5F3FF', neutralText: '#7C3AED',
   },
 ]
 
@@ -142,6 +148,10 @@ export function applyTheme(themeId: string): void {
   s.setProperty('--color-neutral-bg',   theme.neutralBg)
   s.setProperty('--color-neutral-text', theme.neutralText)
 
+  // Muscle diagram colours track the theme
+  s.setProperty('--muscle-body', theme.dark ? '#4A4A4E' : '#D0D0D0')
+  s.setProperty('--muscle-hi',   theme.accent)
+
   document.documentElement.classList.toggle('dark-theme', theme.dark)
 }
 
@@ -151,7 +161,7 @@ export function saveTheme(themeId: string): void {
 }
 
 export function getActiveThemeId(): string {
-  try { return localStorage.getItem(STORAGE_KEY) ?? 'gold' } catch { return 'gold' }
+  try { return localStorage.getItem(STORAGE_KEY) ?? 'carbon' } catch { return 'carbon' }
 }
 
 export function loadTheme(): void {

@@ -119,15 +119,15 @@
       (function () {
         try {
           var T = {
-            gold:     { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#FFF9E0', bg:'#F4F6F9',card:'#FFFFFF',border:'#E3E5E5',text:'#241F20',muted:'#7A7980',faint:'#C8C8C8',dark:false },
-            onyx:     { a:'#FFCA10',ad:'#B8900A',ax:'#8A6C00',al:'#1E1A08', bg:'#0C0D0F',card:'#161819',border:'#252729',text:'#F0EFE8',muted:'#8B8A87',faint:'#3E3D3A',dark:true  },
-            midnight: { a:'#4F90FF',ad:'#2563EB',ax:'#1D4ED8',al:'#0D1A3A', bg:'#080D1C',card:'#0E1630',border:'#1A2545',text:'#EEF2FF',muted:'#8B9CC8',faint:'#2A3552',dark:true  },
-            ember:    { a:'#FF6B2C',ad:'#CC4F15',ax:'#A33A0A',al:'#1E0E05', bg:'#0F0A07',card:'#1A1209',border:'#2E1E0E',text:'#FFF0E8',muted:'#A08070',faint:'#3D2518',dark:true  },
-            arctic:   { a:'#4F46E5',ad:'#3730A3',ax:'#2C278A',al:'#EEF2FF', bg:'#F0F4FF',card:'#FFFFFF',border:'#D8E2FF',text:'#1E1B4B',muted:'#6366A0',faint:'#C4C7D4',dark:false },
-            sage:     { a:'#16A34A',ad:'#15803D',ax:'#0F6030',al:'#DCFCE7', bg:'#F2F5F1',card:'#FFFFFF',border:'#D0DECA',text:'#1A2C1A',muted:'#5D7A5D',faint:'#B8C8B4',dark:false },
+            carbon:  { a:'#FFD60A',ad:'#E6BF00',ax:'#C8A500',al:'#1A1500', bg:'#0C0C0E',card:'#141416',border:'#242428',text:'#F2F2F5',muted:'#8A8A8F',faint:'#3A3A3E',dark:true  },
+            volt:    { a:'#B5F018',ad:'#96D400',ax:'#7AB800',al:'#0E1800', bg:'#070A06',card:'#0C1009',border:'#1C2818',text:'#F0F5E6',muted:'#7A8870',faint:'#283020',dark:true  },
+            blaze:   { a:'#FF5720',ad:'#E03A00',ax:'#C02C00',al:'#1E0800', bg:'#0D0806',card:'#150D08',border:'#2C1A0C',text:'#FFF2EC',muted:'#9A7A68',faint:'#3A2018',dark:true  },
+            pulse:   { a:'#00D4FF',ad:'#00AACC',ax:'#0088AA',al:'#001824', bg:'#040810',card:'#080F1E',border:'#122038',text:'#E8F4FF',muted:'#6A8CAA',faint:'#1C3050',dark:true  },
+            crimson: { a:'#FF1744',ad:'#E0002C',ax:'#C00020',al:'#1E0010', bg:'#0A0305',card:'#120408',border:'#2A0C14',text:'#FFF0F2',muted:'#9A7080',faint:'#3A1820',dark:true  },
+            arctic:  { a:'#7C3AED',ad:'#6D28D9',ax:'#5B21B6',al:'#F5F3FF', bg:'#F5F5FF',card:'#FFFFFF',border:'#E0DEFF',text:'#1A1040',muted:'#6B5E9A',faint:'#C8C4E0',dark:false },
           };
-          var id = localStorage.getItem('drovik:theme') || 'gold';
-          var t  = T[id] || T.gold;
+          var id = localStorage.getItem('drovik:theme') || 'carbon';
+          var t  = T[id] || T.carbon;
           var s  = document.documentElement.style;
           s.setProperty('--color-accent',        t.a);
           s.setProperty('--color-accent-dark',   t.ad);

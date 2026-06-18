@@ -3,42 +3,42 @@
 @tailwind utilities;
 
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
-/* Default values = Gold theme. Runtime overrides come from applyTheme()       */
+/* Default values = Carbon theme. Runtime overrides come from applyTheme()     */
 :root {
   /* Accent */
-  --color-accent:        #FFCA10;
-  --color-accent-dark:   #B8900A;
-  --color-accent-darker: #8A6C00;
-  --color-accent-light:  #FFF9E0;
-  --color-accent-label:  #7A5C00; /* safe gold text on light bg — ~5.2:1 on white */
+  --color-accent:        #FFD60A;
+  --color-accent-dark:   #E6BF00;
+  --color-accent-darker: #C8A500;
+  --color-accent-light:  #1A1500;
+  --color-accent-label:  #FFD60A;
 
   /* Surfaces */
-  --color-app-bg:            #F4F6F9;
-  --color-app-card:          #FFFFFF;
-  --color-app-raised:        #F7F8FA; /* modal / sheet layer above card */
-  --color-app-border:        #E3E5E5;
-  --color-app-border-subtle: #ECEEF0; /* inner row dividers, table lines */
+  --color-app-bg:            #0C0C0E;
+  --color-app-card:          #141416;
+  --color-app-raised:        #1C1C1F;
+  --color-app-border:        #242428;
+  --color-app-border-subtle: #1A1A1E;
 
   /* Text */
-  --color-app-text:     #241F20;
-  --color-app-muted:    #5C5B62; /* was #7A7980 (3.87:1, failed AA) → now ~5.0:1 */
-  --color-app-faint:    #999899; /* decorative / placeholder only */
-  --color-app-disabled: #BBBABA; /* non-interactive decoration only */
+  --color-app-text:     #F2F2F5;
+  --color-app-muted:    #8A8A8F;
+  --color-app-faint:    #3A3A3E;
+  --color-app-disabled: #2A2A2E;
 
-  /* Semantic state — each has a tinted surface (bg) and a label (text) */
-  --color-success-bg:   #F0FDF4;
-  --color-success-text: #15803D;
-  --color-info-bg:      #EFF6FF;
-  --color-info-text:    #1D4ED8;
-  --color-warning-bg:   #FFFBEB;
-  --color-warning-text: #B45309;
-  --color-error-bg:     #FEF2F2;
-  --color-error-text:   #B91C1C;
-  --color-neutral-bg:   #F5F3FF;
-  --color-neutral-text: #6D28D9;
+  /* Semantic state */
+  --color-success-bg:   #0A2215;
+  --color-success-text: #34D399;
+  --color-info-bg:      #081428;
+  --color-info-text:    #60A5FA;
+  --color-warning-bg:   #1C1408;
+  --color-warning-text: #FBBF24;
+  --color-error-bg:     #1C0808;
+  --color-error-text:   #F87171;
+  --color-neutral-bg:   #130820;
+  --color-neutral-text: #A78BFA;
 
-  --muscle-body: #c8c8c8;
-  --muscle-hi:   #FFCA10;
+  --muscle-body: #4A4A4E;
+  --muscle-hi:   #FFD60A;
 }
 
 /* Dark mode intentionally disabled — app always uses the light theme */
