@@ -2,12 +2,13 @@
  * Home (Dash) — main dashboard.
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
 import type { WorkoutDay } from '../db/db'
 import { useAuth } from '../contexts/AuthContext'
+import { supabase } from '../lib/supabase'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
 import { useUnits, } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel, displayToKg } from '../lib/units'
@@ -78,11 +79,18 @@ export default function Home() {
   const [startError,  setStartError]  = useState<string | null>(null)
   const [weightInput, setWeightInput] = useState('')
   const [savingWt,    setSavingWt]    = useState(false)
+  const [avatarUrl,   setAvatarUrl]   = useState<string | null>(null)
 
   const email       = session?.user?.email ?? ''
   const rawName     = email.split('@')[0].split(/[._\-]/)[0]
   const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
   const initials    = displayName.slice(0, 2).toUpperCase()
+
+  useEffect(() => {
+    if (!session) return
+    supabase.from('profiles').select('avatar_url').eq('id', session.user.id).single()
+      .then(({ data }) => { if (data?.avatar_url) setAvatarUrl(data.avatar_url) })
+  }, [session])
 
   const todayIso  = today()
   const dateStrip = buildDateStrip()
@@ -309,7 +317,10 @@ export default function Home() {
       {/* ── Top bar ──────────────────────────────────────────────────── */}
       <div className="page-x pt-6 pb-3 flex items-center gap-3">
         <Link to="/profile" className="w-11 h-11 rounded-full bg-accent flex items-center justify-center text-sm font-extrabold text-app-text flex-shrink-0 overflow-hidden active:opacity-80">
-          <span>{initials}</span>
+          {avatarUrl
+            ? <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+            : <span>{initials}</span>
+          }
         </Link>
         <div className="flex-1">
           <p className="text-xs text-app-muted font-medium leading-none mb-0.5">Let's Go,</p>
