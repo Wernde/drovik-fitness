@@ -1,10 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import { loadTheme } from './lib/themes'
+import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 
+loadTheme()
+
 // Register the service worker (vite-plugin-pwa injects this automatically during build).
-import { registerSW } from 'virtual:pwa-register'
 registerSW({ immediate: true })
 
 // When a new service worker takes control (after autoUpdate + clientsClaim),

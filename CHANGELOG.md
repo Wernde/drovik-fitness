@@ -4,6 +4,17 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Light / Dark Theme Toggle
+
+### Added
+- **Settings mode selector** - Appearance now has clear Dark and Light buttons. Dark selects the Carbon gym theme, while Light selects the off-white theme.
+
+### Changed
+- **Light theme refined** - the light option is now a cleaner white/off-white background with crisp white cards, dark text, and the existing electric indigo accent.
+- **Theme startup restore expanded** - the pre-paint theme script now restores the full theme token set so reloads keep the selected light or dark look immediately.
+
+---
+
 ## Icon Modernisation Pass
 
 ### Changed

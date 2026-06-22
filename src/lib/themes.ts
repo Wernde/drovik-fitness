@@ -46,6 +46,9 @@ export interface Theme {
 //   Semantic states: dark-surface safe values — vivid enough to read but not neon.
 // ─────────────────────────────────────────────────────────────────────────────
 
+export const DARK_THEME_ID = 'carbon'
+export const LIGHT_THEME_ID = 'arctic'
+
 export const THEMES: Theme[] = [
   {
     // Near-black charcoal + warm amber — premium, like a luxury watch brand
@@ -126,12 +129,12 @@ export const THEMES: Theme[] = [
   {
     // Clean white + electric indigo — the one light option, confident and bold
     // Pairs well with the strong typographic hierarchy that makes fitness apps feel premium
-    id: 'arctic', name: 'Arctic', dark: false,
-    accent: '#4F46E5', accentDark: '#4338CA', accentDarker: '#3730A3', accentLight: '#EEF2FF',
+    id: 'arctic', name: 'Light', dark: false,
+    accent: '#4F46E5', accentDark: '#4338CA', accentDarker: '#312E81', accentLight: '#EEF2FF',
     accentLabel: '#4338CA',
-    appBg: '#F4F5FA', appCard: '#FFFFFF', appRaised: '#F8F8FF',
-    appBorder: '#E2E3EE', appBorderSubtle: '#ECEDF6',
-    appText: '#18183A', appMuted: '#6060A0', appFaint: '#C8C8E0', appDisabled: '#B8B8D0',
+    appBg: '#FAFAFD', appCard: '#FFFFFF', appRaised: '#F6F7FC',
+    appBorder: '#E3E5F0', appBorderSubtle: '#EEF0F6',
+    appText: '#17172F', appMuted: '#5D6187', appFaint: '#C6C9DB', appDisabled: '#B8BCCE',
     successBg: '#F0FDF4', successText: '#15803D',
     infoBg:    '#EEF2FF', infoText:    '#4338CA',
     warningBg: '#FFFBEB', warningText: '#B45309',
@@ -185,7 +188,7 @@ export function saveTheme(themeId: string): void {
 }
 
 export function getActiveThemeId(): string {
-  try { return localStorage.getItem(STORAGE_KEY) ?? 'carbon' } catch { return 'carbon' }
+  try { return localStorage.getItem(STORAGE_KEY) ?? DARK_THEME_ID } catch { return DARK_THEME_ID }
 }
 
 export function loadTheme(): void {

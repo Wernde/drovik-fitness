@@ -9,7 +9,7 @@ import { useUnits } from '../contexts/UnitsContext'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import { useSyncStatus } from '../sync/useSyncStatus'
-import { THEMES, saveTheme, getActiveThemeId } from '../lib/themes'
+import { THEMES, DARK_THEME_ID, LIGHT_THEME_ID, saveTheme, getActiveThemeId } from '../lib/themes'
 import { Button } from '../components/ui'
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
@@ -214,6 +214,8 @@ export default function Settings() {
   const { status: syncStatus, forceResync, lastSyncAt, lastError } = useSyncStatus()
   const [forceResyncing, setForceResyncing] = useState(false)
   const [activeThemeId, setActiveThemeId] = useState(getActiveThemeId)
+  const activeTheme = THEMES.find((theme) => theme.id === activeThemeId) ?? THEMES[0]
+  const activeMode = activeTheme.dark ? 'dark' : 'light'
 
   const [exporting,      setExporting]      = useState(false)
   const [importStatus,   setImportStatus]   = useState<'idle' | 'success' | 'error'>('idle')
@@ -302,14 +304,66 @@ export default function Settings() {
       <section className="mb-5">
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Appearance</h2>
         <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
+          <p className="text-sm font-semibold text-app-text mb-1">Mode</p>
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            {([
+              { id: 'dark', label: 'Dark', detail: 'Carbon', themeId: DARK_THEME_ID },
+              { id: 'light', label: 'Light', detail: 'Off-white', themeId: LIGHT_THEME_ID },
+            ] as const).map((option) => {
+              const optionTheme = THEMES.find((theme) => theme.id === option.themeId) ?? THEMES[0]
+              const isActive = activeMode === option.id
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => handleThemeChange(option.themeId)}
+                  className={`rounded-card border px-3 py-3 text-left transition-all active:scale-[0.98] ${
+                    isActive
+                      ? 'border-accent bg-accent-light shadow-card'
+                      : 'border-app-border bg-app-bg active:bg-app-border'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
+                      style={{ background: optionTheme.accentLight, color: optionTheme.accentLabel }}
+                    >
+                      {option.id === 'dark' ? (
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5" aria-hidden>
+                          <path d="M14.5 12.9a6.3 6.3 0 01-7.4-7.4 6.25 6.25 0 107.4 7.4z" />
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" className="w-5 h-5" aria-hidden>
+                          <circle cx="10" cy="10" r="3" strokeWidth="1.8" />
+                          <path
+                            d="M10 2.75v2M10 15.25v2M17.25 10h-2M4.75 10h-2M15.13 4.87l-1.42 1.42M6.29 13.71l-1.42 1.42M15.13 15.13l-1.42-1.42M6.29 6.29L4.87 4.87"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      )}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-sm font-extrabold text-app-text">{option.label}</span>
+                      <span className="block text-xs font-medium text-app-muted">{option.detail}</span>
+                    </span>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+          <div className="h-px bg-app-border mb-4" />
           <p className="text-sm font-semibold text-app-text mb-1">Colour theme</p>
-          <p className="text-xs text-app-muted mb-4">Tap any theme to switch instantly.</p>
+          <p className="text-xs text-app-muted mb-4">Tap any theme to fine-tune the app palette.</p>
           <div className="grid grid-cols-3 gap-3">
             {THEMES.map((theme) => {
               const isActive = activeThemeId === theme.id
               return (
                 <button
                   key={theme.id}
+                  type="button"
+                  aria-pressed={isActive}
                   onClick={() => handleThemeChange(theme.id)}
                   className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
                 >
