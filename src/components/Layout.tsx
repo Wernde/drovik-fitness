@@ -1,136 +1,48 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import type { CSSProperties, ReactNode } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
+import BrandIcon, { brandIconTileStyle } from './BrandIcon'
+import type { BrandIconName, BrandIconTone } from './BrandIcon'
 
 const PULL_THRESHOLD = 72
 const BASE = import.meta.env.BASE_URL
 
-// ── Nav icons — one rounded-line system for active and inactive states ─────────
+// ── Nav icons ─────────────────────────────────────────────────────────────────
 
 type NavIconProps = { active: boolean }
-type IconTone = keyof typeof ICON_TONES
-
-const ICON_TONES = {
-  gold: {
-    high: '#FFF4BC',
-    mid:  '#F5C842',
-    low:  '#C9A227',
-    deep: '#151008',
-    soft: 'rgba(245, 200, 66, 0.14)',
-    glow: 'rgba(245, 200, 66, 0.36)',
-  },
-  blue: {
-    high: '#DDF5FF',
-    mid:  '#00AAFF',
-    low:  '#0878C9',
-    deep: '#07101B',
-    soft: 'rgba(0, 170, 255, 0.14)',
-    glow: 'rgba(0, 170, 255, 0.34)',
-  },
-  flame: {
-    high: '#FFE6BE',
-    mid:  '#FF9D2E',
-    low:  '#C65C14',
-    deep: '#190C05',
-    soft: 'rgba(255, 157, 46, 0.14)',
-    glow: 'rgba(255, 157, 46, 0.32)',
-  },
-  steel: {
-    high: '#FFFFFF',
-    mid:  '#C9D2E3',
-    low:  '#7B8496',
-    deep: '#141821',
-    soft: 'rgba(201, 210, 227, 0.12)',
-    glow: 'rgba(148, 163, 184, 0.24)',
-  },
-} as const
-
-function iconTileStyle(tone: IconTone, active = true): CSSProperties {
-  const p = ICON_TONES[tone]
-  return {
-    color: active ? p.deep : p.mid,
-    borderColor: active ? 'rgba(255, 255, 255, 0.28)' : 'var(--color-app-border)',
-    background: active
-      ? `linear-gradient(145deg, ${p.high} 0%, ${p.mid} 38%, ${p.low} 76%, ${p.deep} 145%)`
-      : `linear-gradient(145deg, ${p.soft} 0%, var(--color-app-card) 62%, rgba(0, 0, 0, 0.12) 100%)`,
-    boxShadow: active
-      ? `inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -12px 18px rgba(0,0,0,0.24), 0 10px 20px -12px ${p.glow}`
-      : `inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 16px -14px ${p.glow}`,
-  }
-}
 
 function NavIconShell({
   active,
   tone,
-  children,
-}: NavIconProps & { tone: IconTone; children: ReactNode }) {
+  icon,
+}: NavIconProps & { tone: BrandIconTone; icon: BrandIconName }) {
   return (
     <span
       className="relative w-9 h-9 rounded-2xl border flex items-center justify-center overflow-hidden transition-all"
-      style={iconTileStyle(tone, active)}
+      style={brandIconTileStyle(tone, active)}
       aria-hidden="true"
     >
       <span className="absolute inset-x-1 top-1 h-2 rounded-full bg-white/45 blur-[1px]" />
       <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={active ? 2.45 : 2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="relative z-10 w-[22px] h-[22px]"
-        style={{ filter: active ? 'drop-shadow(0 1px 0 rgba(255,255,255,0.35))' : 'drop-shadow(0 1px 2px rgba(0,0,0,0.16))' }}
-      >
-        {children}
-      </svg>
+      <BrandIcon name={icon} tone={tone} active={active} size={24} className="relative z-10" />
     </span>
   )
 }
 
 function NavHome({ active }: NavIconProps) {
-  return (
-    <NavIconShell active={active} tone="gold">
-      <path d="M4.5 10.5 12 4l7.5 6.5" />
-      <path d="M6.5 9.25V19a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5V9.25" />
-      <path d="M9.75 20.5v-5.25a1 1 0 0 1 1-1h2.5a1 1 0 0 1 1 1v5.25" />
-    </NavIconShell>
-  )
+  return <NavIconShell active={active} tone="gold" icon="home" />
 }
 
 function NavDumbbell({ active }: NavIconProps) {
-  return (
-    <NavIconShell active={active} tone="gold">
-      <path d="M3.25 9.5v5" />
-      <path d="M6.25 8.25v7.5" />
-      <path d="M17.75 8.25v7.5" />
-      <path d="M20.75 9.5v5" />
-      <path d="M6.25 12h11.5" />
-    </NavIconShell>
-  )
+  return <NavIconShell active={active} tone="gold" icon="program" />
 }
 
 function NavUtensils({ active }: NavIconProps) {
-  return (
-    <NavIconShell active={active} tone="blue">
-      <path d="M7 3v18" />
-      <path d="M4.5 3v6.25A2.5 2.5 0 0 0 7 11.75a2.5 2.5 0 0 0 2.5-2.5V3" />
-      <path d="M17 3c-1.75 1.8-2.75 4.05-2.75 6.6V13h4.25" />
-      <path d="M18.5 3v18" />
-    </NavIconShell>
-  )
+  return <NavIconShell active={active} tone="blue" icon="nutrition" />
 }
 
 function NavClock({ active }: NavIconProps) {
-  return (
-    <NavIconShell active={active} tone="flame">
-      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
-      <path d="M12 7.5v5l3.25 2" />
-      <path d="M7.5 4.2 6.4 2.8" />
-      <path d="M16.5 4.2l1.1-1.4" />
-    </NavIconShell>
-  )
+  return <NavIconShell active={active} tone="flame" icon="history" />
 }
 
 // ── Bottom nav items ──────────────────────────────────────────────────────────
@@ -146,8 +58,8 @@ const NAV_ITEMS = [
 
 interface QAItem {
   label: string
-  icon: string
-  tone: IconTone
+  icon: BrandIconName
+  tone: BrandIconTone
   to?: string
   action?: () => void
 }
@@ -203,12 +115,12 @@ function HeartbeatLine() {
 }
 
 function QuickAddIcon({
-  src,
+  icon,
   tone,
   large = false,
 }: {
-  src: string
-  tone: IconTone
+  icon: BrandIconName
+  tone: BrandIconTone
   large?: boolean
 }) {
   return (
@@ -217,16 +129,12 @@ function QuickAddIcon({
         'relative rounded-2xl border flex items-center justify-center flex-shrink-0 overflow-hidden',
         large ? 'w-14 h-14' : 'w-11 h-11',
       ].join(' ')}
-      style={iconTileStyle(tone)}
+      style={brandIconTileStyle(tone)}
       aria-hidden="true"
     >
       <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <img
-        src={src}
-        alt=""
-        className={`${large ? 'w-9 h-9' : 'w-7 h-7'} relative z-10`}
-        style={{ filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.22))' }}
-      />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
+      <BrandIcon name={icon} tone={tone} size={large ? 36 : 28} className="relative z-10" />
     </span>
   )
 }
@@ -307,15 +215,15 @@ export default function Layout() {
 
   // ── Quick Add items ───────────────────────────────────────────────────────
   const QA_ITEMS: QAItem[] = [
-    { label: 'AI Coach',   icon: `${BASE}icons/ai-coach.svg`,   tone: 'blue',  to: '/more'       },
-    { label: 'Workout',    icon: `${BASE}icons/workout.svg`,    tone: 'gold',  to: '/log'        },
-    { label: 'Cardio',     icon: `${BASE}icons/cardio.svg`,     tone: 'blue',  to: '/log'        },
-    { label: 'Meal',       icon: `${BASE}icons/meal.svg`,       tone: 'flame', to: '/nutrition'  },
-    { label: 'Water',      icon: `${BASE}icons/water.svg`,      tone: 'blue',  to: '/nutrition'  },
-    { label: 'Body Stats', icon: `${BASE}icons/body-stats.svg`, tone: 'gold',  to: '/body'       },
-    { label: 'Progress',   icon: `${BASE}icons/progress.svg`,   tone: 'blue',  to: '/progress'   },
-    { label: 'Exercises',  icon: `${BASE}icons/exercises.svg`,  tone: 'gold',  to: '/exercises'  },
-    { label: 'Calculator', icon: `${BASE}icons/calculator.svg`, tone: 'steel', to: '/calculator' },
+    { label: 'AI Coach',   icon: 'ai',         tone: 'blue',  to: '/more'       },
+    { label: 'Workout',    icon: 'workout',    tone: 'gold',  to: '/log'        },
+    { label: 'Cardio',     icon: 'cardio',     tone: 'blue',  to: '/log'        },
+    { label: 'Meal',       icon: 'meal',       tone: 'flame', to: '/nutrition'  },
+    { label: 'Water',      icon: 'water',      tone: 'blue',  to: '/nutrition'  },
+    { label: 'Body Stats', icon: 'body',       tone: 'gold',  to: '/body'       },
+    { label: 'Progress',   icon: 'progress',   tone: 'blue',  to: '/progress'   },
+    { label: 'Exercises',  icon: 'exercises',  tone: 'gold',  to: '/exercises'  },
+    { label: 'Calculator', icon: 'calculator', tone: 'steel', to: '/calculator' },
   ]
 
   function handleQA(item: QAItem) {
@@ -339,7 +247,7 @@ export default function Layout() {
         <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
-          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border">
+          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border shadow-[8px_0_24px_-22px_rgba(0,0,0,0.45)]">
 
             {/* Brand */}
             <div className="px-3 py-3 border-b border-app-border">
@@ -381,7 +289,7 @@ export default function Layout() {
                     className="qa-item w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-app-bg transition-colors text-left"
                     style={{ animationDelay: `${i * 35}ms` }}
                   >
-                    <QuickAddIcon src={item.icon} tone={item.tone} />
+                    <QuickAddIcon icon={item.icon} tone={item.tone} />
                     <span className="text-sm font-semibold text-app-text">{item.label}</span>
                   </button>
                 ))}
@@ -393,12 +301,9 @@ export default function Layout() {
               <button
                 onClick={() => setQaOpen((v) => !v)}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-extrabold transition-all active:scale-[0.99]"
-                style={iconTileStyle(qaOpen ? 'blue' : 'gold')}
+                style={brandIconTileStyle(qaOpen ? 'blue' : 'gold')}
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" className="w-5 h-5 flex-none">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
+                <BrandIcon name="plus" tone={qaOpen ? 'blue' : 'gold'} size={24} className="flex-none" />
                 Quick Add
               </button>
             </div>
@@ -426,7 +331,7 @@ export default function Layout() {
 
             {/* ── Mobile bottom nav (hidden on md+) ──────────────────────── */}
             <nav
-              className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-app-card border-t border-app-border"
+              className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-app-card border-t border-app-border shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.45)]"
               style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
               <div className="h-[72px] flex items-center">
@@ -455,13 +360,10 @@ export default function Layout() {
                   <button
                     onClick={() => setQaOpen((v) => !v)}
                     className="w-12 h-12 rounded-full border flex items-center justify-center shadow-float active:scale-95 transition-transform"
-                    style={iconTileStyle(qaOpen ? 'blue' : 'gold')}
+                    style={brandIconTileStyle(qaOpen ? 'blue' : 'gold')}
                     aria-label="Quick add"
                   >
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="w-6 h-6">
-                      <line x1="12" y1="5" x2="12" y2="19" />
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
+                    <BrandIcon name="plus" tone={qaOpen ? 'blue' : 'gold'} size={28} />
                   </button>
                 </div>
 
@@ -508,7 +410,7 @@ export default function Layout() {
                   onClick={() => handleQA(item)}
                   className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
                 >
-                  <QuickAddIcon src={item.icon} tone={item.tone} large />
+                  <QuickAddIcon icon={item.icon} tone={item.tone} large />
                   <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
                 </button>
               ))}

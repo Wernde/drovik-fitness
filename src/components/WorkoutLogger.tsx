@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
-import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
@@ -8,6 +7,7 @@ import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import WorkoutSummary from './WorkoutSummary'
 import { Button } from './ui'
+import BrandIcon, { brandIconTileStyle, categoryIconConfig } from './BrandIcon'
 import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
@@ -30,80 +30,16 @@ function formatElapsed(seconds: number) {
 
 const DEFAULT_REST_SECS = 90
 
-const CAT_ICONS: Record<string, JSX.Element> = {
-  barbell: (
-    <path d="M6.375 7.5C6.375 5.634 7.884 4.125 9.75 4.125h4.5c1.866 0 3.375 1.509 3.375 3.375v9c0 1.866-1.509 3.375-3.375 3.375h-4.5A3.375 3.375 0 016.375 16.5v-9z" />
-  ),
-  dumbbell: (
-    <path d="M5.25 4.5a.75.75 0 00-1.5 0v15a.75.75 0 001.5 0v-15zM20.25 4.5a.75.75 0 00-1.5 0v15a.75.75 0 001.5 0v-15zM3.75 10.5A2.25 2.25 0 016 8.25h.75V15H6a2.25 2.25 0 01-2.25-2.25v-2.25zM18 8.25h.75a2.25 2.25 0 012.25 2.25v2.25A2.25 2.25 0 0118.75 15H18V8.25zM8.25 8.25H15.75v7.5H8.25V8.25z" />
-  ),
-  cable: (
-    <path d="M12 3v1.5M12 19.5V21M6.22 6.22l1.06 1.06M16.72 16.72l1.06 1.06M3 12h1.5M19.5 12H21M6.22 17.78l1.06-1.06M16.72 7.28l1.06-1.06M12 7.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9z" />
-  ),
-  machine: (
-    <path
-      fillRule="evenodd"
-      d="M2.25 4.5A2.25 2.25 0 014.5 2.25h15a2.25 2.25 0 012.25 2.25v15a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25v-15zm5.25 0a.75.75 0 000 1.5h9a.75.75 0 000-1.5h-9zM6 12a.75.75 0 01.75-.75h10.5a.75.75 0 010 1.5H6.75A.75.75 0 016 12zm.75 3.75a.75.75 0 000 1.5h9a.75.75 0 000-1.5h-9z"
-      clipRule="evenodd"
-    />
-  ),
-  bodyweight: (
-    <path
-      fillRule="evenodd"
-      d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"
-      clipRule="evenodd"
-    />
-  ),
-  default: (
-    <path d="M5.25 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" />
-  ),
-}
-
-const LOGGER_ICON_TONES = {
-  gold:  { high: '#FFF4BC', mid: '#F5C842', low: '#C9A227', deep: '#151008', glow: 'rgba(245, 200, 66, 0.32)' },
-  blue:  { high: '#DDF5FF', mid: '#00AAFF', low: '#0878C9', deep: '#07101B', glow: 'rgba(0, 170, 255, 0.30)' },
-  flame: { high: '#FFE6BE', mid: '#FF9D2E', low: '#C65C14', deep: '#190C05', glow: 'rgba(255, 157, 46, 0.28)' },
-  steel: { high: '#FFFFFF', mid: '#C9D2E3', low: '#7B8496', deep: '#141821', glow: 'rgba(148, 163, 184, 0.22)' },
-} as const
-
-function loggerIconTone(categoryKey: string) {
-  if (['barbell', 'dumbbell'].includes(categoryKey)) return LOGGER_ICON_TONES.gold
-  if (['cable', 'band', 'cardio'].includes(categoryKey)) return LOGGER_ICON_TONES.blue
-  if (categoryKey === 'bodyweight') return LOGGER_ICON_TONES.flame
-  if (categoryKey === 'machine') return LOGGER_ICON_TONES.steel
-  return LOGGER_ICON_TONES.gold
-}
-
-function loggerIconStyle(categoryKey: string): CSSProperties {
-  const p = loggerIconTone(categoryKey)
-  return {
-    color: p.deep,
-    borderColor: 'rgba(255, 255, 255, 0.28)',
-    background: `linear-gradient(145deg, ${p.high} 0%, ${p.mid} 42%, ${p.low} 78%, ${p.deep} 150%)`,
-    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -12px 18px rgba(0,0,0,0.22), 0 9px 20px -15px ${p.glow}`,
-  }
-}
-
 function ExerciseThumb({ category }: { category?: string }) {
-  const key      = category && CAT_ICONS[category] ? category : 'default'
-  const icon     = CAT_ICONS[key]
-  const isStroke = key === 'cable'
+  const icon = categoryIconConfig(category)
   return (
     <div
       className="relative w-11 h-11 rounded-input border flex items-center justify-center flex-shrink-0 overflow-hidden"
-      style={loggerIconStyle(key)}
+      style={brandIconTileStyle(icon.tone)}
     >
       <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <svg
-        viewBox="0 0 24 24"
-        fill={isStroke ? 'none' : 'currentColor'}
-        stroke={isStroke ? 'currentColor' : 'none'}
-        strokeWidth={isStroke ? 1.5 : 0}
-        className="relative z-10 w-5 h-5"
-        style={{ filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.35))' }}
-      >
-        {icon}
-      </svg>
+      <span className="absolute inset-0 rounded-input ring-1 ring-inset ring-white/20" />
+      <BrandIcon name={icon.name} tone={icon.tone} size={26} className="relative z-10" />
     </div>
   )
 }

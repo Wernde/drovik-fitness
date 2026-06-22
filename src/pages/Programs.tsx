@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react'
-import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
 import ProgramForm from '../components/ProgramForm'
+import BrandIcon, { brandIconTileStyle } from '../components/BrandIcon'
+import type { BrandIconName, BrandIconTone } from '../components/BrandIcon'
 
 function getDayIconKind(muscleGroup: string) {
   const muscle = muscleGroup.toLowerCase()
@@ -18,161 +19,29 @@ function getDayIconKind(muscleGroup: string) {
   return 'lift'
 }
 
-const DAY_ICON_TONES = {
-  push: {
-    high: '#FFF4BC',
-    mid:  '#F5C842',
-    low:  '#C9A227',
-    deep: '#151008',
-    glow: 'rgba(245, 200, 66, 0.34)',
-  },
-  pull: {
-    high: '#DDF5FF',
-    mid:  '#00AAFF',
-    low:  '#0878C9',
-    deep: '#07101B',
-    glow: 'rgba(0, 170, 255, 0.32)',
-  },
-  legs: {
-    high: '#FFE6BE',
-    mid:  '#FF9D2E',
-    low:  '#C65C14',
-    deep: '#190C05',
-    glow: 'rgba(255, 157, 46, 0.30)',
-  },
-  core: {
-    high: '#F7E8FF',
-    mid:  '#A855F7',
-    low:  '#7E22CE',
-    deep: '#15051F',
-    glow: 'rgba(168, 85, 247, 0.26)',
-  },
-  cardio: {
-    high: '#DDF5FF',
-    mid:  '#00AAFF',
-    low:  '#0E7490',
-    deep: '#06151C',
-    glow: 'rgba(0, 170, 255, 0.30)',
-  },
-  full: {
-    high: '#FFF4BC',
-    mid:  '#F5C842',
-    low:  '#00AAFF',
-    deep: '#07101B',
-    glow: 'rgba(245, 200, 66, 0.30)',
-  },
-  lift: {
-    high: '#FFF4BC',
-    mid:  '#F5C842',
-    low:  '#C9A227',
-    deep: '#151008',
-    glow: 'rgba(245, 200, 66, 0.34)',
-  },
-  template: {
-    high: '#FFFFFF',
-    mid:  '#D8DEEA',
-    low:  '#9AA4B8',
-    deep: '#283041',
-    glow: 'rgba(148, 163, 184, 0.22)',
-  },
-} as const
-
-function dayIconStyle(kind: string): CSSProperties {
-  const p = DAY_ICON_TONES[kind as keyof typeof DAY_ICON_TONES] ?? DAY_ICON_TONES.lift
-  return {
-    color: p.deep,
-    borderColor: 'rgba(255, 255, 255, 0.28)',
-    background: `linear-gradient(145deg, ${p.high} 0%, ${p.mid} 42%, ${p.low} 78%, ${p.deep} 150%)`,
-    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -13px 18px rgba(0,0,0,0.24), 0 10px 22px -15px ${p.glow}`,
-  }
+const DAY_ICON_CONFIG: Record<string, { icon: BrandIconName; tone: BrandIconTone }> = {
+  push:     { icon: 'push',     tone: 'gold' },
+  pull:     { icon: 'pull',     tone: 'blue' },
+  legs:     { icon: 'legs',     tone: 'flame' },
+  core:     { icon: 'core',     tone: 'purple' },
+  cardio:   { icon: 'cardio',   tone: 'blue' },
+  full:     { icon: 'full',     tone: 'gold' },
+  lift:     { icon: 'lift',     tone: 'gold' },
+  template: { icon: 'template', tone: 'steel' },
 }
 
 function ProgramDayIcon({ muscleGroup, empty }: { muscleGroup: string; empty: boolean }) {
   const kind = empty ? 'template' : getDayIconKind(muscleGroup)
+  const config = DAY_ICON_CONFIG[kind] ?? DAY_ICON_CONFIG.lift
 
   return (
     <div
       className="relative m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-2xl border flex-shrink-0 overflow-hidden"
-      style={dayIconStyle(kind)}
+      style={brandIconTileStyle(config.tone)}
     >
       <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
       <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth={2.15}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="relative z-10 w-7 h-7"
-        style={{ filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.35))' }}
-        aria-hidden="true"
-      >
-        {kind === 'push' && (
-          <>
-            <path d="M5 15.5 9.5 11l3.5 3.5 6-6" />
-            <path d="M4 19h16" />
-            <path d="M16 8.5h3.5V12" />
-          </>
-        )}
-        {kind === 'pull' && (
-          <>
-            <path d="M5 8h14" />
-            <path d="M7 8c.5 4.5 2.2 7 5 7s4.5-2.5 5-7" />
-            <path d="M9.5 16.5 8 20" />
-            <path d="M14.5 16.5 16 20" />
-          </>
-        )}
-        {kind === 'legs' && (
-          <>
-            <path d="M9 4v6.5L6.5 20" />
-            <path d="M15 4v6.5l2.5 9.5" />
-            <path d="M8 11h8" />
-            <path d="M5.5 20h4" />
-            <path d="M14.5 20h4" />
-          </>
-        )}
-        {kind === 'core' && (
-          <>
-            <path d="M12 4v16" />
-            <path d="M8.5 6.5h7" />
-            <path d="M8.5 10h7" />
-            <path d="M8.5 13.5h7" />
-            <path d="M8.5 17h7" />
-          </>
-        )}
-        {kind === 'cardio' && (
-          <>
-            <path d="M3 12h3.5l2-5 4 10 2-5H21" />
-            <path d="M6.5 18.5A8 8 0 1 0 6.5 5.5" />
-          </>
-        )}
-        {kind === 'full' && (
-          <>
-            <path d="M12 4v16" />
-            <path d="M5 9h14" />
-            <path d="M7 20h10" />
-            <path d="m8 5 4-2 4 2" />
-          </>
-        )}
-        {kind === 'lift' && (
-          <>
-            <path d="M4 12h16" />
-            <path d="M6 9v6" />
-            <path d="M18 9v6" />
-            <path d="M9 10.5v3" />
-            <path d="M15 10.5v3" />
-          </>
-        )}
-        {kind === 'template' && (
-          <>
-            <path d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5Z" />
-            <path d="M8.5 9h7" />
-            <path d="M8.5 12h7" />
-            <path d="M8.5 15h4" />
-          </>
-        )}
-      </svg>
+      <BrandIcon name={config.icon} tone={config.tone} size={34} className="relative z-10" />
     </div>
   )
 }
@@ -372,7 +241,7 @@ export default function Programs() {
               </button>
             </div>
             {days.length > 0 ? (
-              <div className="bg-app-card border-t border-b border-app-border md:border md:rounded-2xl md:mx-6 md:mt-2 overflow-hidden lg:mx-8">
+              <div className="bg-app-card border-t border-b border-app-border md:border md:rounded-2xl md:mx-6 md:mt-2 overflow-hidden lg:mx-8 shadow-card">
                 {days.map((day) => {
                   const exCount = exCountMap[day.id] ?? 0
                   const estMin  = estMinMap[day.id]
@@ -385,7 +254,7 @@ export default function Programs() {
                     <button
                       key={day.id}
                       onClick={() => navigate(`/programs/${program.id}/days/${day.id}`)}
-                      className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
+                      className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-accent-light hover:bg-app-bg/70 text-left transition-colors"
                     >
                       <ProgramDayIcon muscleGroup={dayMuscleMap[day.id] ?? ''} empty={exCount === 0} />
                       <div className="flex-1 py-4 pr-2 min-w-0">

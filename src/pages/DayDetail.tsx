@@ -8,7 +8,7 @@ import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
-import { CAT_ICON_PATHS } from '../components/ExerciseThumb'
+import BrandIcon, { brandIconTileStyle, categoryIconConfig } from '../components/BrandIcon'
 import MuscleIcon from '../components/MuscleIcon'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel } from '../lib/units'
@@ -261,16 +261,20 @@ export default function DayDetail() {
                 </div>
               )}
 
-              {equipmentList.slice(0, 3).map((cat) => (
-                <div key={cat} className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
-                  <div className="w-3.5 h-3.5 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-app-muted">
-                      <path d={CAT_ICON_PATHS[cat] ?? CAT_ICON_PATHS.default} fillRule="evenodd" clipRule="evenodd" />
-                    </svg>
+              {equipmentList.slice(0, 3).map((cat) => {
+                const icon = categoryIconConfig(cat)
+                return (
+                  <div key={cat} className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
+                    <span
+                      className="relative w-5 h-5 rounded-lg border flex items-center justify-center overflow-hidden flex-shrink-0"
+                      style={brandIconTileStyle(icon.tone)}
+                    >
+                      <BrandIcon name={icon.name} tone={icon.tone} size={14} className="relative z-10" />
+                    </span>
+                    <span className="text-xs font-semibold text-app-text">{EQUIPMENT_LABELS[cat] ?? cat}</span>
                   </div>
-                  <span className="text-xs font-semibold text-app-text">{EQUIPMENT_LABELS[cat] ?? cat}</span>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}
