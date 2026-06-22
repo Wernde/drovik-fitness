@@ -11,6 +11,7 @@ import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
+import type { LoggedSet } from '../db/db'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -102,6 +103,8 @@ export default function WorkoutLogger({ session }: Props) {
   const [showDiscard,     setShowDiscard]     = useState(false)
   const [showPicker,      setShowPicker]      = useState(false)
   const [showSummary,     setShowSummary]     = useState(false)
+  const [lastSavedAt,     setLastSavedAt]     = useState<string | null>(null)
+  const [saveError,       setSaveError]       = useState<string | null>(null)
   const [showOptions,     setShowOptions]     = useState(false)
   const [restTimer,       setRestTimer]       = useState<{ secs: number; exerciseName: string } | null>(null)
   const [expandedGuide,   setExpandedGuide]   = useState<Set<string>>(new Set())
@@ -224,7 +227,7 @@ export default function WorkoutLogger({ session }: Props) {
         next.set(se.id, existing.map((s) => ({
           reps: String(s.reps),
           kg:   String(kgToDisplay(s.weight, units.weight)),
-          done: false,
+          done: true,
           note: s.notes ?? '',
         })))
       } else {
@@ -366,7 +369,13 @@ export default function WorkoutLogger({ session }: Props) {
     setSubstituteSeId(null)
     try {
       const ts = now()
-      await db.sessionExercises.update(seId, { exerciseId: exercise.id, updatedAt: ts, syncedAt: null })
+      await db.transaction('rw', db.sessionExercises, db.sets, db.workoutSessions, async () => {
+        await db.sessionExercises.update(seId, { exerciseId: exercise.id, updatedAt: ts, syncedAt: null })
+        await db.sets
+          .where('sessionExerciseId').equals(seId)
+          .modify({ deleted: true, updatedAt: ts, syncedAt: null })
+        await db.workoutSessions.update(session.id, { updatedAt: ts, syncedAt: null })
+      })
       // Reset drafts for the new exercise
       setDrafts((prev) => {
         const next = new Map(prev)
@@ -413,16 +422,19 @@ export default function WorkoutLogger({ session }: Props) {
       const ts        = now()
       const nextOrder = data?.sessionExercises.length ?? 0
       const seId      = crypto.randomUUID()
-      await db.sessionExercises.add({
-        id:               seId,
-        workoutSessionId: session.id,
-        exerciseId:       exercise.id,
-        order:            nextOrder,
-        notes:            '',
-        createdAt:        ts,
-        updatedAt:        ts,
-        syncedAt:         null,
-        deleted:          false,
+      await db.transaction('rw', db.sessionExercises, db.workoutSessions, async () => {
+        await db.sessionExercises.add({
+          id:               seId,
+          workoutSessionId: session.id,
+          exerciseId:       exercise.id,
+          order:            nextOrder,
+          notes:            '',
+          createdAt:        ts,
+          updatedAt:        ts,
+          syncedAt:         null,
+          deleted:          false,
+        })
+        await db.workoutSessions.update(session.id, { updatedAt: ts, syncedAt: null })
       })
       setDrafts((prev) => {
         const next = new Map(prev)
@@ -436,7 +448,14 @@ export default function WorkoutLogger({ session }: Props) {
 
   async function removeExercise(seId: string) {
     try {
-      await db.sessionExercises.update(seId, { deleted: true, updatedAt: now(), syncedAt: null })
+      const ts = now()
+      await db.transaction('rw', db.sessionExercises, db.sets, db.workoutSessions, async () => {
+        await db.sessionExercises.update(seId, { deleted: true, updatedAt: ts, syncedAt: null })
+        await db.sets
+          .where('sessionExerciseId').equals(seId)
+          .modify({ deleted: true, updatedAt: ts, syncedAt: null })
+        await db.workoutSessions.update(session.id, { updatedAt: ts, syncedAt: null })
+      })
       setDrafts((prev) => {
         const next = new Map(prev)
         next.delete(seId)
@@ -451,7 +470,7 @@ export default function WorkoutLogger({ session }: Props) {
     if (!silent) setSaving(true)
     try {
       const ts = now()
-      await db.transaction('rw', db.sets, db.sessionExercises, async () => {
+      await db.transaction('rw', db.sets, db.sessionExercises, db.workoutSessions, async () => {
         if (data) {
           for (const se of data.sessionExercises) {
             const note = exerciseNotes.get(se.id) ?? ''
@@ -463,34 +482,60 @@ export default function WorkoutLogger({ session }: Props) {
             (r) => r.reps.trim() !== '' && r.kg.trim() !== '' &&
                    !isNaN(Number(r.reps)) && !isNaN(Number(r.kg)),
           )
-          await db.sets
+          const existing = await db.sets
             .where('sessionExerciseId').equals(seId)
-            .modify({ deleted: true, updatedAt: ts, syncedAt: null })
-          if (validRows.length > 0) {
-            await db.sets.bulkAdd(
-              validRows.map((r, i) => ({
-                id:                crypto.randomUUID(),
+            .toArray()
+          existing.sort((a, b) => a.setNumber - b.setNumber)
+
+          const usedIds = new Set<string>()
+          for (const [i, r] of validRows.entries()) {
+            const setNumber = i + 1
+            const current =
+              existing.find((set) => set.setNumber === setNumber && !set.deleted && !usedIds.has(set.id)) ??
+              existing.find((set) => set.setNumber === setNumber && !usedIds.has(set.id))
+            const payload: Omit<LoggedSet, 'id' | 'createdAt' | 'sessionExerciseId'> = {
+              setNumber,
+              reps:           parseInt(r.reps, 10),
+              weight:         displayToKg(parseFloat(r.kg), units.weight),
+              rpe:            current?.rpe ?? null,
+              rir:            current?.rir ?? null,
+              notes:          r.note,
+              isWarmup:       current?.isWarmup ?? false,
+              machineSetting: current?.machineSetting ?? '',
+              updatedAt:      ts,
+              syncedAt:       null,
+              deleted:        false,
+            }
+
+            if (current) {
+              usedIds.add(current.id)
+              await db.sets.update(current.id, payload)
+            } else {
+              const id = crypto.randomUUID()
+              usedIds.add(id)
+              await db.sets.add({
+                id,
                 sessionExerciseId: seId,
-                setNumber:         i + 1,
-                reps:              parseInt(r.reps, 10),
-                weight:            displayToKg(parseFloat(r.kg), units.weight),
-                rpe:               null,
-                rir:               null,
-                notes:             r.note,
-                isWarmup:          false,
-                machineSetting:    '',
                 createdAt:         ts,
-                updatedAt:         ts,
-                syncedAt:          null,
-                deleted:           false,
-              })),
-            )
+                ...payload,
+              })
+            }
+          }
+
+          for (const set of existing) {
+            if (!usedIds.has(set.id) && !set.deleted) {
+              await db.sets.update(set.id, { deleted: true, updatedAt: ts, syncedAt: null })
+            }
           }
         }
+        await db.workoutSessions.update(session.id, { updatedAt: ts, syncedAt: null })
       })
+      setLastSavedAt(ts)
+      setSaveError(null)
       if (!silent) setSaving(false)
       return true
-    } catch {
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : 'Save failed')
       if (!silent) {
         showToast('Failed to save workout. Please try again.')
         setSaving(false)
@@ -518,7 +563,22 @@ export default function WorkoutLogger({ session }: Props) {
 
   async function handleDiscard() {
     try {
-      await db.workoutSessions.update(session.id, { deleted: true, updatedAt: now(), syncedAt: null })
+      const ts = now()
+      const sessionExercises = await db.sessionExercises
+        .where('workoutSessionId').equals(session.id)
+        .toArray()
+
+      await db.transaction('rw', db.workoutSessions, db.sessionExercises, db.sets, async () => {
+        await db.workoutSessions.update(session.id, { deleted: true, updatedAt: ts, syncedAt: null })
+        await db.sessionExercises
+          .where('workoutSessionId').equals(session.id)
+          .modify({ deleted: true, updatedAt: ts, syncedAt: null })
+        for (const se of sessionExercises) {
+          await db.sets
+            .where('sessionExerciseId').equals(se.id)
+            .modify({ deleted: true, updatedAt: ts, syncedAt: null })
+        }
+      })
     } catch { /* best-effort */ }
     navigate(-1)
   }
@@ -552,6 +612,11 @@ export default function WorkoutLogger({ session }: Props) {
   }
 
   const { sessionExercises, exerciseMap, dayExerciseMap } = data
+  const saveStatus = saveError
+    ? 'Save failed'
+    : lastSavedAt
+      ? `Saved ${new Date(lastSavedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+      : null
 
   return (
     <div style={{ paddingBottom: 'calc(148px + env(safe-area-inset-bottom, 0px))' }}>
@@ -586,6 +651,11 @@ export default function WorkoutLogger({ session }: Props) {
               {formatElapsed(elapsed)}
             </span>
           </div>
+          {saveStatus && (
+            <span className={`absolute left-4 bottom-1 text-[11px] font-semibold ${saveError ? 'text-red-500' : 'text-app-faint'}`}>
+              {saveStatus}
+            </span>
+          )}
           <button
             onClick={() => setShowOptions(true)}
             className="absolute right-4 text-app-muted p-1"

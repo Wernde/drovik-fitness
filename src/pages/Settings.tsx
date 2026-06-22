@@ -21,49 +21,70 @@ async function exportData(): Promise<void> {
   const [
     exercises,
     programs,
+    programPhases,
     workoutDays,
     dayExercises,
     workoutSessions,
     sessionExercises,
     sets,
     bodyWeightLogs,
+    bodyMeasurementLogs,
+    nutritionLogs,
+    habits,
+    habitCompletions,
     foods,
     foodLogs,
     recipes,
     recipeFoods,
-    nutritionLogs,
+    progressPhotos,
+    healthMetrics,
+    healthWorkouts,
   ] = await Promise.all([
     db.exercises.toArray(),
     db.programs.toArray(),
+    db.programPhases.toArray(),
     db.workoutDays.toArray(),
     db.dayExercises.toArray(),
     db.workoutSessions.toArray(),
     db.sessionExercises.toArray(),
     db.sets.toArray(),
     db.bodyWeightLogs.toArray(),
+    db.bodyMeasurementLogs.toArray(),
+    db.nutritionLogs.toArray(),
+    db.habits.toArray(),
+    db.habitCompletions.toArray(),
     db.foods.filter((f) => f.isCustom).toArray(),
     db.foodLogs.toArray(),
     db.recipes.toArray(),
     db.recipeFoods.toArray(),
-    db.nutritionLogs.toArray(),
+    db.progressPhotos.toArray(),
+    db.healthMetrics.toArray(),
+    db.healthWorkouts.toArray(),
   ])
 
   const payload = {
     exportedAt: new Date().toISOString(),
-    version:    1,
+    version:    2,
     exercises,
     programs,
+    programPhases,
     workoutDays,
     dayExercises,
     workoutSessions,
     sessionExercises,
     sets,
     bodyWeightLogs,
+    bodyMeasurementLogs,
+    nutritionLogs,
+    habits,
+    habitCompletions,
     foods,
     foodLogs,
     recipes,
     recipeFoods,
-    nutritionLogs,
+    progressPhotos,
+    healthMetrics,
+    healthWorkouts,
   }
 
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
@@ -99,31 +120,45 @@ async function importData(file: File): Promise<string> {
     await db.transaction('rw', [
       db.exercises,
       db.programs,
+      db.programPhases,
       db.workoutDays,
       db.dayExercises,
       db.workoutSessions,
       db.sessionExercises,
       db.sets,
       db.bodyWeightLogs,
+      db.bodyMeasurementLogs,
+      db.nutritionLogs,
+      db.habits,
+      db.habitCompletions,
       db.foods,
       db.foodLogs,
       db.recipes,
       db.recipeFoods,
-      db.nutritionLogs,
+      db.progressPhotos,
+      db.healthMetrics,
+      db.healthWorkouts,
     ], async () => {
       if (p.exercises)        await db.exercises.bulkPut(p.exercises)
       if (p.programs)         await db.programs.bulkPut(p.programs)
+      if (p.programPhases)    await db.programPhases.bulkPut(p.programPhases)
       if (p.workoutDays)      await db.workoutDays.bulkPut(p.workoutDays)
       if (p.dayExercises)     await db.dayExercises.bulkPut(p.dayExercises)
       if (p.workoutSessions)  await db.workoutSessions.bulkPut(p.workoutSessions)
       if (p.sessionExercises) await db.sessionExercises.bulkPut(p.sessionExercises)
       if (p.sets)             await db.sets.bulkPut(p.sets)
       if (p.bodyWeightLogs)   await db.bodyWeightLogs.bulkPut(p.bodyWeightLogs)
+      if (p.bodyMeasurementLogs) await db.bodyMeasurementLogs.bulkPut(p.bodyMeasurementLogs)
+      if (p.nutritionLogs)    await db.nutritionLogs.bulkPut(p.nutritionLogs)
+      if (p.habits)           await db.habits.bulkPut(p.habits)
+      if (p.habitCompletions) await db.habitCompletions.bulkPut(p.habitCompletions)
       if (p.foods)            await db.foods.bulkPut(p.foods)
       if (p.foodLogs)         await db.foodLogs.bulkPut(p.foodLogs)
       if (p.recipes)          await db.recipes.bulkPut(p.recipes)
       if (p.recipeFoods)      await db.recipeFoods.bulkPut(p.recipeFoods)
-      if (p.nutritionLogs)    await db.nutritionLogs.bulkPut(p.nutritionLogs)
+      if (p.progressPhotos)   await db.progressPhotos.bulkPut(p.progressPhotos)
+      if (p.healthMetrics)    await db.healthMetrics.bulkPut(p.healthMetrics)
+      if (p.healthWorkouts)   await db.healthWorkouts.bulkPut(p.healthWorkouts)
     })
     return ''
   } catch (err: unknown) {
@@ -481,7 +516,7 @@ export default function Settings() {
           <div className="px-4 py-3">
             <p className="text-xs text-app-muted mb-1">Your User ID <span className="text-app-faint">(paste into Shortcut)</span></p>
             <div className="flex items-center gap-2">
-              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{userId}</p>
+              <p className="flex-1 min-w-0 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 break-all">{userId}</p>
               <CopyButton text={userId} />
             </div>
           </div>
@@ -490,7 +525,7 @@ export default function Settings() {
           <div className="px-4 py-3">
             <p className="text-xs text-app-muted mb-1">Supabase REST URL</p>
             <div className="flex items-center gap-2">
-              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{restUrl}</p>
+              <p className="flex-1 min-w-0 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 break-all">{restUrl}</p>
               <CopyButton text={restUrl} />
             </div>
           </div>
@@ -499,7 +534,7 @@ export default function Settings() {
           <div className="px-4 py-3">
             <p className="text-xs text-app-muted mb-1">Anon Key <span className="text-app-faint">(apikey header)</span></p>
             <div className="flex items-center gap-2">
-              <p className="flex-1 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 truncate">{SUPABASE_ANON.slice(0, 24)}…</p>
+              <p className="flex-1 min-w-0 text-xs font-mono text-app-text bg-app-bg border border-app-border rounded-lg px-2 py-1.5 break-all">{SUPABASE_ANON.slice(0, 24)}…</p>
               <CopyButton text={SUPABASE_ANON} />
             </div>
           </div>
@@ -522,7 +557,7 @@ export default function Settings() {
               ].map((step, i) => (
                 <li key={i} className="flex gap-2.5">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-accent text-app-text text-[10px] font-extrabold flex items-center justify-center mt-0.5">{i + 1}</span>
-                  <span className="leading-relaxed whitespace-pre-line">{step}</span>
+                  <span className="min-w-0 leading-relaxed whitespace-pre-line break-words">{step}</span>
                 </li>
               ))}
             </ol>

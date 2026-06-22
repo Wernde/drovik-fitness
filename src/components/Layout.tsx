@@ -1,70 +1,83 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import type { ReactNode } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
 
 const PULL_THRESHOLD = 72
 const BASE = import.meta.env.BASE_URL
 
-// ── Nav icons — inline SVG with active (bold filled) / inactive (thin outline) variants ──
-// Convention: inactive = stroke 1.75 (light); active = filled or stroke 2.5 (heavy)
-// Both use currentColor — color is controlled by the parent NavLink text class.
+// ── Nav icons — one rounded-line system for active and inactive states ─────────
 
 type NavIconProps = { active: boolean }
 
+function NavIconShell({
+  active,
+  children,
+}: NavIconProps & { children: ReactNode }) {
+  return (
+    <span
+      className={[
+        'w-9 h-9 rounded-2xl flex items-center justify-center transition-colors',
+        active ? 'bg-app-surface/45 text-app-text' : 'bg-transparent text-current',
+      ].join(' ')}
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={active ? 2.35 : 1.85}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-[22px] h-[22px]"
+      >
+        {children}
+      </svg>
+    </span>
+  )
+}
+
 function NavHome({ active }: NavIconProps) {
-  return active ? (
-    <svg viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6" aria-hidden>
-      <path fillRule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-6H2a1 1 0 01-.707-1.707l7-7z" clipRule="evenodd"/>
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
-      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
-    </svg>
+  return (
+    <NavIconShell active={active}>
+      <path d="M4.5 10.5 12 4l7.5 6.5" />
+      <path d="M6.5 9.25V19a1.5 1.5 0 0 0 1.5 1.5h8a1.5 1.5 0 0 0 1.5-1.5V9.25" />
+      <path d="M9.75 20.5v-5.25a1 1 0 0 1 1-1h2.5a1 1 0 0 1 1 1v5.25" />
+    </NavIconShell>
   )
 }
 
 function NavDumbbell({ active }: NavIconProps) {
-  return active ? (
-    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-6 h-6" aria-hidden>
-      <rect x="2" y="8.5" width="5.5" height="7" rx="1.5"/>
-      <rect x="16.5" y="8.5" width="5.5" height="7" rx="1.5"/>
-      <rect x="7.5" y="11" width="9" height="2" rx="0.5"/>
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
-      <rect x="2" y="9" width="5" height="6" rx="1.5"/>
-      <rect x="17" y="9" width="5" height="6" rx="1.5"/>
-      <line x1="7" y1="12" x2="17" y2="12"/>
-    </svg>
+  return (
+    <NavIconShell active={active}>
+      <path d="M3.25 9.5v5" />
+      <path d="M6.25 8.25v7.5" />
+      <path d="M17.75 8.25v7.5" />
+      <path d="M20.75 9.5v5" />
+      <path d="M6.25 12h11.5" />
+    </NavIconShell>
   )
 }
 
 function NavUtensils({ active }: NavIconProps) {
-  // Fork on left, knife on right — universally understood nutrition icon
-  return active ? (
-    <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" className="w-6 h-6" aria-hidden>
-      <path d="M11 2a1 1 0 00-1 1v4a3 3 0 002 2.83V21a1 1 0 002 0V9.83A3 3 0 0016 7V3a1 1 0 00-2 0v4a1 1 0 01-2 0V3a1 1 0 00-1-1zM5 2a1 1 0 00-1 1v6a3 3 0 002 2.83V21a1 1 0 002 0V11.83A3 3 0 008 9V3a1 1 0 00-1-1c-.55 0-1 .45-1 1v5H5V3a1 1 0 00-1-1z"/>
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
-      <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/>
-      <path d="M7 2v20"/>
-      <path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>
-    </svg>
+  return (
+    <NavIconShell active={active}>
+      <path d="M7 3v18" />
+      <path d="M4.5 3v6.25A2.5 2.5 0 0 0 7 11.75a2.5 2.5 0 0 0 2.5-2.5V3" />
+      <path d="M17 3c-1.75 1.8-2.75 4.05-2.75 6.6V13h4.25" />
+      <path d="M18.5 3v18" />
+    </NavIconShell>
   )
 }
 
 function NavClock({ active }: NavIconProps) {
-  return active ? (
-    <svg viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6" aria-hidden>
-      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd"/>
-    </svg>
-  ) : (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6" aria-hidden>
-      <circle cx="12" cy="12" r="9"/>
-      <path d="M12 7v5l3 3"/>
-    </svg>
+  return (
+    <NavIconShell active={active}>
+      <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" />
+      <path d="M12 7.5v5l3.25 2" />
+      <path d="M7.5 4.2 6.4 2.8" />
+      <path d="M16.5 4.2l1.1-1.4" />
+    </NavIconShell>
   )
 }
 
@@ -133,6 +146,20 @@ function HeartbeatLine() {
         }}
       />
     </svg>
+  )
+}
+
+function QuickAddIcon({ src, large = false }: { src: string; large?: boolean }) {
+  return (
+    <span
+      className={[
+        'rounded-2xl bg-app-surface border border-app-border shadow-sm flex items-center justify-center flex-shrink-0',
+        large ? 'w-14 h-14' : 'w-11 h-11',
+      ].join(' ')}
+      aria-hidden="true"
+    >
+      <img src={src} alt="" className={large ? 'w-9 h-9' : 'w-7 h-7'} />
+    </span>
   )
 }
 
@@ -286,7 +313,7 @@ export default function Layout() {
                     className="qa-item w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-app-bg transition-colors text-left"
                     style={{ animationDelay: `${i * 35}ms` }}
                   >
-                    <img src={item.icon} alt="" className="w-9 h-9 flex-shrink-0" />
+                    <QuickAddIcon src={item.icon} />
                     <span className="text-sm font-semibold text-app-text">{item.label}</span>
                   </button>
                 ))}
@@ -411,7 +438,7 @@ export default function Layout() {
                   onClick={() => handleQA(item)}
                   className="rounded-2xl bg-app-bg border border-app-border p-4 flex items-center gap-3 active:opacity-70"
                 >
-                  <img src={item.icon} alt="" className="w-11 h-11 flex-shrink-0" />
+                  <QuickAddIcon src={item.icon} large />
                   <span className="text-sm font-semibold text-app-text text-left leading-tight">{item.label}</span>
                 </button>
               ))}

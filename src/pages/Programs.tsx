@@ -4,8 +4,105 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
 import ProgramForm from '../components/ProgramForm'
-import MuscleIcon from '../components/MuscleIcon'
 
+function getDayIconKind(muscleGroup: string) {
+  const muscle = muscleGroup.toLowerCase()
+  if (!muscle) return 'template'
+  if (['quad', 'hamstring', 'glute', 'calf', 'inner thigh'].some((m) => muscle.includes(m))) return 'legs'
+  if (['back', 'trap', 'bicep'].some((m) => muscle.includes(m))) return 'pull'
+  if (['chest', 'shoulder', 'tricep'].some((m) => muscle.includes(m))) return 'push'
+  if (muscle.includes('core')) return 'core'
+  if (muscle.includes('cardio')) return 'cardio'
+  if (muscle.includes('full')) return 'full'
+  return 'lift'
+}
+
+function ProgramDayIcon({ muscleGroup, empty }: { muscleGroup: string; empty: boolean }) {
+  const kind = empty ? 'template' : getDayIconKind(muscleGroup)
+  const activeClass = empty
+    ? 'bg-app-bg border-app-border text-app-faint'
+    : 'bg-accent-light border-accent/40 text-accent-dark'
+
+  return (
+    <div className={`m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-2xl border ${activeClass} flex-shrink-0 shadow-sm`}>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="w-7 h-7"
+        aria-hidden="true"
+      >
+        {kind === 'push' && (
+          <>
+            <path d="M5 15.5 9.5 11l3.5 3.5 6-6" />
+            <path d="M4 19h16" />
+            <path d="M16 8.5h3.5V12" />
+          </>
+        )}
+        {kind === 'pull' && (
+          <>
+            <path d="M5 8h14" />
+            <path d="M7 8c.5 4.5 2.2 7 5 7s4.5-2.5 5-7" />
+            <path d="M9.5 16.5 8 20" />
+            <path d="M14.5 16.5 16 20" />
+          </>
+        )}
+        {kind === 'legs' && (
+          <>
+            <path d="M9 4v6.5L6.5 20" />
+            <path d="M15 4v6.5l2.5 9.5" />
+            <path d="M8 11h8" />
+            <path d="M5.5 20h4" />
+            <path d="M14.5 20h4" />
+          </>
+        )}
+        {kind === 'core' && (
+          <>
+            <path d="M12 4v16" />
+            <path d="M8.5 6.5h7" />
+            <path d="M8.5 10h7" />
+            <path d="M8.5 13.5h7" />
+            <path d="M8.5 17h7" />
+          </>
+        )}
+        {kind === 'cardio' && (
+          <>
+            <path d="M3 12h3.5l2-5 4 10 2-5H21" />
+            <path d="M6.5 18.5A8 8 0 1 0 6.5 5.5" />
+          </>
+        )}
+        {kind === 'full' && (
+          <>
+            <path d="M12 4v16" />
+            <path d="M5 9h14" />
+            <path d="M7 20h10" />
+            <path d="m8 5 4-2 4 2" />
+          </>
+        )}
+        {kind === 'lift' && (
+          <>
+            <path d="M4 12h16" />
+            <path d="M6 9v6" />
+            <path d="M18 9v6" />
+            <path d="M9 10.5v3" />
+            <path d="M15 10.5v3" />
+          </>
+        )}
+        {kind === 'template' && (
+          <>
+            <path d="M7 4.5h10A1.5 1.5 0 0 1 18.5 6v12A1.5 1.5 0 0 1 17 19.5H7A1.5 1.5 0 0 1 5.5 18V6A1.5 1.5 0 0 1 7 4.5Z" />
+            <path d="M8.5 9h7" />
+            <path d="M8.5 12h7" />
+            <path d="M8.5 15h4" />
+          </>
+        )}
+      </svg>
+    </div>
+  )
+}
 
 export default function Programs() {
   const navigate = useNavigate()
@@ -217,9 +314,7 @@ export default function Programs() {
                       onClick={() => navigate(`/programs/${program.id}/days/${day.id}`)}
                       className="w-full flex items-center border-b border-app-border last:border-b-0 active:bg-gray-50 text-left"
                     >
-                      <div className="m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-xl bg-app-bg flex-shrink-0">
-                        <MuscleIcon muscleGroup={dayMuscleMap[day.id] ?? ''} width={32} height={48} />
-                      </div>
+                      <ProgramDayIcon muscleGroup={dayMuscleMap[day.id] ?? ''} empty={exCount === 0} />
                       <div className="flex-1 py-4 pr-2 min-w-0">
                         <p className="font-bold text-[15px] text-app-text truncate">{day.name}</p>
                         <p className="text-[13px] text-app-muted mt-0.5">{subtitle}</p>

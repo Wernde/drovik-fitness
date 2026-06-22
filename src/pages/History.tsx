@@ -336,6 +336,7 @@ export default function History() {
               weekday: 'short', day: 'numeric', month: 'short',
             })
             const duration = formatDuration(session.startedAt, session.finishedAt)
+            const durationLabel = duration === 'Left open' || duration === 'Check time' ? 'review' : 'duration'
 
             return (
               <li key={session.id}>
@@ -358,7 +359,7 @@ export default function History() {
                   {/* Duration */}
                   <div className="flex-none text-right">
                     <p className="text-sm font-semibold text-app-text">{duration}</p>
-                    <p className="text-xs text-app-muted">duration</p>
+                    <p className="text-xs text-app-muted">{durationLabel}</p>
                   </div>
 
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-none">

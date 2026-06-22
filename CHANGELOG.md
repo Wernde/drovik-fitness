@@ -4,6 +4,29 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Icon Modernisation Pass
+
+### Changed
+- **Navigation icons refreshed** — sidebar and mobile nav now use a single rounded-line icon style with cleaner active states instead of mixed filled/outline artwork.
+- **Quick Add icons polished** — quick-add icons now sit inside consistent rounded tiles so the sheet and desktop menu feel more like one app system.
+- **Program day icons updated** — active program rows now use modern workout-category tiles based on the day's primary muscle group, replacing the repeated anatomy thumbnails on the Programs screen.
+
+---
+
+## Workout Logging Reliability Pass
+
+### Fixed
+- **Stale workout recovery** — Log now detects unfinished sessions older than 12 hours and shows a recovery screen instead of automatically resuming an 80+ hour workout.
+- **Set autosave stability** — workout autosave now updates existing set rows in place instead of deleting and recreating every set on each save, reducing sync churn and making saved data feel stable.
+- **Discard cleanup** — discarding a workout, removing an exercise, or substituting an exercise now also soft-deletes the related set rows so old data does not linger.
+- **Workout start safety** — starting a program workout now creates the session and its exercises in one local transaction.
+- **Saved set state** — previously saved sets now reload as completed in the active logger rather than appearing unchecked.
+- **History durations** — implausibly long finished sessions are shown as "Left open" for review instead of normal 100+ hour durations.
+- **Settings backup coverage** — JSON export/import now includes current app data areas including phases, body measurements, habits, progress photos, and Apple Watch health tables.
+- **Apple Watch setup text** — long Supabase values wrap cleanly in Settings so the REST URL is not visually split with a misleading space.
+
+---
+
 ## Visual Redesign — Bold Themes + Live Nav Icons
 
 ### Changed
