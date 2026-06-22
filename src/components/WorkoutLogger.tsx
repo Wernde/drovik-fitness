@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
+import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
@@ -58,18 +59,48 @@ const CAT_ICONS: Record<string, JSX.Element> = {
   ),
 }
 
+const LOGGER_ICON_TONES = {
+  gold:  { high: '#FFF4BC', mid: '#F5C842', low: '#C9A227', deep: '#151008', glow: 'rgba(245, 200, 66, 0.32)' },
+  blue:  { high: '#DDF5FF', mid: '#00AAFF', low: '#0878C9', deep: '#07101B', glow: 'rgba(0, 170, 255, 0.30)' },
+  flame: { high: '#FFE6BE', mid: '#FF9D2E', low: '#C65C14', deep: '#190C05', glow: 'rgba(255, 157, 46, 0.28)' },
+  steel: { high: '#FFFFFF', mid: '#C9D2E3', low: '#7B8496', deep: '#141821', glow: 'rgba(148, 163, 184, 0.22)' },
+} as const
+
+function loggerIconTone(categoryKey: string) {
+  if (['barbell', 'dumbbell'].includes(categoryKey)) return LOGGER_ICON_TONES.gold
+  if (['cable', 'band', 'cardio'].includes(categoryKey)) return LOGGER_ICON_TONES.blue
+  if (categoryKey === 'bodyweight') return LOGGER_ICON_TONES.flame
+  if (categoryKey === 'machine') return LOGGER_ICON_TONES.steel
+  return LOGGER_ICON_TONES.gold
+}
+
+function loggerIconStyle(categoryKey: string): CSSProperties {
+  const p = loggerIconTone(categoryKey)
+  return {
+    color: p.deep,
+    borderColor: 'rgba(255, 255, 255, 0.28)',
+    background: `linear-gradient(145deg, ${p.high} 0%, ${p.mid} 42%, ${p.low} 78%, ${p.deep} 150%)`,
+    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.72), inset 0 -12px 18px rgba(0,0,0,0.22), 0 9px 20px -15px ${p.glow}`,
+  }
+}
+
 function ExerciseThumb({ category }: { category?: string }) {
   const key      = category && CAT_ICONS[category] ? category : 'default'
   const icon     = CAT_ICONS[key]
   const isStroke = key === 'cable'
   return (
-    <div className="w-11 h-11 rounded-input bg-app-text flex items-center justify-center flex-shrink-0">
+    <div
+      className="relative w-11 h-11 rounded-input border flex items-center justify-center flex-shrink-0 overflow-hidden"
+      style={loggerIconStyle(key)}
+    >
+      <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
       <svg
         viewBox="0 0 24 24"
-        fill={isStroke ? 'none' : 'white'}
-        stroke={isStroke ? 'white' : 'none'}
+        fill={isStroke ? 'none' : 'currentColor'}
+        stroke={isStroke ? 'currentColor' : 'none'}
         strokeWidth={isStroke ? 1.5 : 0}
-        className="w-5 h-5"
+        className="relative z-10 w-5 h-5"
+        style={{ filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.35))' }}
       >
         {icon}
       </svg>

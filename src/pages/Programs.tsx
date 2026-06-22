@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import type { CSSProperties } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
@@ -17,22 +18,94 @@ function getDayIconKind(muscleGroup: string) {
   return 'lift'
 }
 
+const DAY_ICON_TONES = {
+  push: {
+    high: '#FFF4BC',
+    mid:  '#F5C842',
+    low:  '#C9A227',
+    deep: '#151008',
+    glow: 'rgba(245, 200, 66, 0.34)',
+  },
+  pull: {
+    high: '#DDF5FF',
+    mid:  '#00AAFF',
+    low:  '#0878C9',
+    deep: '#07101B',
+    glow: 'rgba(0, 170, 255, 0.32)',
+  },
+  legs: {
+    high: '#FFE6BE',
+    mid:  '#FF9D2E',
+    low:  '#C65C14',
+    deep: '#190C05',
+    glow: 'rgba(255, 157, 46, 0.30)',
+  },
+  core: {
+    high: '#F7E8FF',
+    mid:  '#A855F7',
+    low:  '#7E22CE',
+    deep: '#15051F',
+    glow: 'rgba(168, 85, 247, 0.26)',
+  },
+  cardio: {
+    high: '#DDF5FF',
+    mid:  '#00AAFF',
+    low:  '#0E7490',
+    deep: '#06151C',
+    glow: 'rgba(0, 170, 255, 0.30)',
+  },
+  full: {
+    high: '#FFF4BC',
+    mid:  '#F5C842',
+    low:  '#00AAFF',
+    deep: '#07101B',
+    glow: 'rgba(245, 200, 66, 0.30)',
+  },
+  lift: {
+    high: '#FFF4BC',
+    mid:  '#F5C842',
+    low:  '#C9A227',
+    deep: '#151008',
+    glow: 'rgba(245, 200, 66, 0.34)',
+  },
+  template: {
+    high: '#FFFFFF',
+    mid:  '#D8DEEA',
+    low:  '#9AA4B8',
+    deep: '#283041',
+    glow: 'rgba(148, 163, 184, 0.22)',
+  },
+} as const
+
+function dayIconStyle(kind: string): CSSProperties {
+  const p = DAY_ICON_TONES[kind as keyof typeof DAY_ICON_TONES] ?? DAY_ICON_TONES.lift
+  return {
+    color: p.deep,
+    borderColor: 'rgba(255, 255, 255, 0.28)',
+    background: `linear-gradient(145deg, ${p.high} 0%, ${p.mid} 42%, ${p.low} 78%, ${p.deep} 150%)`,
+    boxShadow: `inset 0 1px 0 rgba(255,255,255,0.75), inset 0 -13px 18px rgba(0,0,0,0.24), 0 10px 22px -15px ${p.glow}`,
+  }
+}
+
 function ProgramDayIcon({ muscleGroup, empty }: { muscleGroup: string; empty: boolean }) {
   const kind = empty ? 'template' : getDayIconKind(muscleGroup)
-  const activeClass = empty
-    ? 'bg-app-bg border-app-border text-app-faint'
-    : 'bg-accent-light border-accent/40 text-accent-dark'
 
   return (
-    <div className={`m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-2xl border ${activeClass} flex-shrink-0 shadow-sm`}>
+    <div
+      className="relative m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-2xl border flex-shrink-0 overflow-hidden"
+      style={dayIconStyle(kind)}
+    >
+      <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
       <svg
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth={2.15}
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="w-7 h-7"
+        className="relative z-10 w-7 h-7"
+        style={{ filter: 'drop-shadow(0 1px 0 rgba(255,255,255,0.35))' }}
         aria-hidden="true"
       >
         {kind === 'push' && (

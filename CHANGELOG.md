@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Branded 3D Icon Pass
+
+### Changed
+- **Logo-colour icon system** - navigation, Quick Add, program day, and exercise category icons now use Drovik-inspired carbon, metallic gold, white-highlight, and electric-blue styling.
+- **3D icon tiles** - key icons now have layered gradients, highlights, borders, and soft shadows so they feel more dimensional while staying lightweight and offline-friendly.
+- **Program day colour cues** - workout day icons now use distinct push, pull, legs, core, cardio, and template tones while keeping the gold/blue brand palette as the anchor.
+
+---
+
 ## Light / Dark Theme Toggle
 
 ### Added
