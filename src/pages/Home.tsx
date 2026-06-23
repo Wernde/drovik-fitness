@@ -377,10 +377,11 @@ export default function Home() {
           <p className="text-base font-extrabold text-app-text mb-2">Today's Nutrition</p>
           <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
             <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-app-bg">
-              <div className="w-8 h-8 rounded-full bg-success-bg flex items-center justify-center flex-shrink-0">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-success-text">
-                  <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
-                </svg>
+              <div
+                className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
+                style={brandIconTileStyle('flame')}
+              >
+                <BrandIcon name="nutrition" tone="flame" size={30} />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-bold text-app-text">Daily Nutrition</p>
@@ -445,11 +446,11 @@ export default function Home() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Sessions this week */}
             <Link to="/history" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div className="w-8 h-8 rounded-full bg-success-bg flex items-center justify-center mb-2">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-success-text">
-                  <path fillRule="evenodd" d="M6 3.75A2.75 2.75 0 018.75 1h2.5A2.75 2.75 0 0114 3.75v.443c.572.055 1.14.122 1.706.2C17.053 4.582 18 5.75 18 7.07v3.469c0 1.126-.694 2.191-1.83 2.54-1.952.599-4.024.921-6.17.921s-4.219-.322-6.17-.921C2.694 12.73 2 11.665 2 10.539V7.07c0-1.321.947-2.489 2.294-2.676A41.047 41.047 0 016 4.193V3.75zm6.5 0v.325a41.622 41.622 0 00-5 0V3.75c0-.69.56-1.25 1.25-1.25h2.5c.69 0 1.25.56 1.25 1.25zM10 10a1 1 0 00-1 1v.01a1 1 0 001 1h.01a1 1 0 001-1V11a1 1 0 00-1-1H10z" clipRule="evenodd" />
-                  <path d="M3 15.055v-.684c.527.071 1.059.132 1.595.183a41.454 41.454 0 007.81 0 41.453 41.453 0 001.595-.183v.684c0 1.322-.948 2.488-2.292 2.675a41.524 41.524 0 01-6.416 0C3.948 17.543 3 16.377 3 15.055z" />
-                </svg>
+              <div
+                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
+                style={brandIconTileStyle('blue')}
+              >
+                <BrandIcon name="history" tone="blue" size={30} />
               </div>
               <p className="text-xs text-app-muted mb-1">Sessions this week</p>
               <p className="text-2xl font-extrabold text-app-text">{data?.weekStats.sessions ?? 0}</p>
@@ -457,10 +458,11 @@ export default function Home() {
             </Link>
             {/* Body Weight */}
             <Link to="/body" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div className="w-8 h-8 rounded-full bg-info-bg flex items-center justify-center mb-2">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-info-text">
-                  <path fillRule="evenodd" d="M10 2a.75.75 0 01.75.75v.258a33.186 33.186 0 016.668.83.75.75 0 01-.336 1.461 31.28 31.28 0 00-1.103-.232l1.702 7.545a.75.75 0 01-.505.893c-.336.095-.68.187-1.032.27a.75.75 0 11-.352-1.456c.237-.057.473-.118.706-.184L14.228 5.545A31.086 31.086 0 0010 5.261a31.08 31.08 0 00-4.228.284L4.102 11.73c.233.066.47.127.706.184a.75.75 0 11-.352 1.455 35.645 35.645 0 01-1.032-.27.75.75 0 01-.505-.893l1.702-7.545a31.28 31.28 0 00-1.103.232.75.75 0 01-.336-1.461 33.186 33.186 0 016.668-.83V2.75A.75.75 0 0110 2zM5.082 14.5a.75.75 0 01.75-.75h8.336a.75.75 0 010 1.5H5.832a.75.75 0 01-.75-.75z" clipRule="evenodd" />
-                </svg>
+              <div
+                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
+                style={brandIconTileStyle('steel')}
+              >
+                <BrandIcon name="body" tone="steel" size={30} />
               </div>
               <p className="text-xs text-app-muted mb-1">Body Weight</p>
               <p className="text-2xl font-extrabold text-app-text">
@@ -471,10 +473,11 @@ export default function Home() {
             </Link>
             {/* Volume this week */}
             <Link to="/progress" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div className="w-8 h-8 rounded-full bg-neutral-bg flex items-center justify-center mb-2">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-neutral-text">
-                  <path d="M15.5 2A1.5 1.5 0 0014 3.5v13a1.5 1.5 0 003 0v-13A1.5 1.5 0 0015.5 2zM9.5 6A1.5 1.5 0 008 7.5v9a1.5 1.5 0 003 0v-9A1.5 1.5 0 009.5 6zM3.5 10A1.5 1.5 0 002 11.5v5a1.5 1.5 0 003 0v-5A1.5 1.5 0 003.5 10z" />
-                </svg>
+              <div
+                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
+                style={brandIconTileStyle('purple')}
+              >
+                <BrandIcon name="progress" tone="purple" size={30} />
               </div>
               <p className="text-xs text-app-muted mb-1">Volume this week</p>
               <p className="text-2xl font-extrabold text-app-text">
@@ -484,10 +487,11 @@ export default function Home() {
             </Link>
             {/* Calorie intake */}
             <Link to="/nutrition" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div className="w-8 h-8 rounded-full bg-warning-bg flex items-center justify-center mb-2">
-                <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-warning-text">
-                  <path d="M11.983 1.907a.75.75 0 00-1.292-.657l-8.5 9.5A.75.75 0 002.75 12h6.572l-1.305 6.093a.75.75 0 001.292.657l8.5-9.5A.75.75 0 0017.25 8h-6.572l1.305-6.093z" />
-                </svg>
+              <div
+                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
+                style={brandIconTileStyle('flame')}
+              >
+                <BrandIcon name="meal" tone="flame" size={30} />
               </div>
               <p className="text-xs text-app-muted mb-1">Calorie Intake</p>
               <p className="text-2xl font-extrabold text-app-text">
@@ -502,10 +506,11 @@ export default function Home() {
         {/* ── Track Water ───────────────────────────────────────────── */}
         <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
           <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-            <div className="w-9 h-9 rounded-full bg-info-bg flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-info-text">
-                <path d="M12 2.25a.75.75 0 01.6.3l6.45 8.61A7.5 7.5 0 1112 21.75a7.5 7.5 0 01-6-12l.001-.001L11.4 2.55a.75.75 0 01.6-.3z" />
-              </svg>
+            <div
+              className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
+              style={brandIconTileStyle('blue')}
+            >
+              <BrandIcon name="water" tone="blue" size={30} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Track Water</p>
@@ -614,10 +619,11 @@ export default function Home() {
         {/* ── Body Stats ────────────────────────────────────────────── */}
         <div className="bg-app-surface rounded-card border border-app-border p-4">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full bg-accent-light flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-accent-dark">
-                <path d="M12 2a5 5 0 110 10A5 5 0 0112 2zm0 12c5.523 0 10 2.239 10 5v1H2v-1c0-2.761 4.477-5 10-5z" />
-              </svg>
+            <div
+              className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
+              style={brandIconTileStyle('steel')}
+            >
+              <BrandIcon name="body" tone="steel" size={30} />
             </div>
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Body Stats</p>

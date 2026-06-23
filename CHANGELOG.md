@@ -6,7 +6,12 @@ All notable changes are documented here, newest first.
 
 ## Branded 3D Icon Pass
 
+### Added
+- **Premium PNG icon pack** - added the supplied 3D icon and thumbnail artwork as optimized transparent app assets in `public/icons/premium`.
+
 ### Changed
+- **Theme-reactive icon glow** - the new PNG icon artwork now follows the selected colour theme, so the orange/yellow glow shifts toward blue, lime, red, violet, or orange depending on Appearance.
+- **Dashboard icon polish** - the Home dashboard shortcuts now use the raised 3D image icons for Settings, Nutrition, History, Body Stats, Progress, Meal, and Water.
 - **Shared 3D pictogram artwork** - navigation, Quick Add, program days, exercise thumbnails, workout logger cards, and day-detail equipment chips now use one branded SVG icon system instead of mixed flat line art and image tiles.
 - **Logo-colour icon system** - navigation, Quick Add, program day, and exercise category icons now use Drovik-inspired carbon, metallic gold, white-highlight, and electric-blue styling.
 - **3D icon tiles** - key icons now have layered gradients, highlights, borders, and soft shadows so they feel more dimensional while staying lightweight and offline-friendly.
