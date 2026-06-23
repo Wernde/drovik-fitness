@@ -26,6 +26,7 @@ export interface Theme {
   errorText:    string
   neutralBg:    string
   neutralText:  string
+  premiumIconFilter: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,6 +65,7 @@ export const THEMES: Theme[] = [
     warningBg: '#1E1608', warningText: '#FBBF24',
     errorBg:   '#1E0A10', errorText:   '#F87171',
     neutralBg: '#130E20', neutralText: '#A78BFA',
+    premiumIconFilter: 'saturate(1.08)',
   },
   {
     // Dark forest + vivid lime — Nike Volt energy, 10:1 contrast proven
@@ -79,6 +81,7 @@ export const THEMES: Theme[] = [
     warningBg: '#1C1608', warningText: '#FBBF24',
     errorBg:   '#1C0A0E', errorText:   '#F87171',
     neutralBg: '#0E0820', neutralText: '#A78BFA',
+    premiumIconFilter: 'hue-rotate(68deg) saturate(1.22)',
   },
   {
     // Warm dark + Strava orange — THE proven fitness accent, 7.1:1 contrast
@@ -94,6 +97,7 @@ export const THEMES: Theme[] = [
     warningBg: '#1E1200', warningText: '#FBBF24',
     errorBg:   '#1E0A0E', errorText:   '#F87171',
     neutralBg: '#110820', neutralText: '#A78BFA',
+    premiumIconFilter: 'hue-rotate(10deg) saturate(1.12)',
   },
   {
     // Deep navy + electric blue — precision, tech, Whoop-adjacent, 8:1 contrast
@@ -109,6 +113,7 @@ export const THEMES: Theme[] = [
     warningBg: '#1C1608', warningText: '#FBBF24',
     errorBg:   '#1C0A0E', errorText:   '#F87171',
     neutralBg: '#10082A', neutralText: '#A78BFA',
+    premiumIconFilter: 'hue-rotate(188deg) saturate(1.32)',
   },
   {
     // Dark charcoal + rose-red — beast mode, Peloton-adjacent, 5.6:1 contrast
@@ -125,6 +130,7 @@ export const THEMES: Theme[] = [
     warningBg: '#1C1608', warningText: '#FBBF24',
     errorBg:   '#1E0A10', errorText:   '#F87171',
     neutralBg: '#100820', neutralText: '#A78BFA',
+    premiumIconFilter: 'hue-rotate(318deg) saturate(1.22)',
   },
   {
     // Clean white + electric indigo — the one light option, confident and bold
@@ -140,6 +146,7 @@ export const THEMES: Theme[] = [
     warningBg: '#FFFBEB', warningText: '#B45309',
     errorBg:   '#FEF2F2', errorText:   '#B91C1C',
     neutralBg: '#F5F3FF', neutralText: '#4F46E5',
+    premiumIconFilter: 'hue-rotate(218deg) saturate(1.18)',
   },
 ]
 
@@ -178,6 +185,7 @@ export function applyTheme(themeId: string): void {
 
   s.setProperty('--muscle-body', theme.dark ? '#4A4A52' : '#C8C8DC')
   s.setProperty('--muscle-hi',   theme.accent)
+  s.setProperty('--premium-icon-filter', theme.premiumIconFilter)
 
   document.documentElement.classList.toggle('dark-theme', theme.dark)
 }

@@ -39,6 +39,7 @@
 
   --muscle-body: #4A4A52;
   --muscle-hi:   #FBBF24;
+  --premium-icon-filter: saturate(1.08);
 }
 
 /* Dark mode intentionally disabled — app always uses the light theme */
