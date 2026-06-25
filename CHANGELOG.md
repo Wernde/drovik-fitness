@@ -4,6 +4,14 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Navigation Logo Refresh
+
+### Changed
+- **Sidebar logo replaced** - updated the top-left navigation brand image with the new 3D Drovik Fitness wordmark.
+- **Transparent logo background** - generated the nav logo as a transparent PNG while keeping the animated heartbeat line beside it.
+
+---
+
 ## App Icon Refresh
 
 ### Changed
