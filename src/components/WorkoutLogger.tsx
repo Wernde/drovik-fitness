@@ -7,7 +7,8 @@ import ExercisePicker from './ExercisePicker'
 import RestTimer from './RestTimer'
 import WorkoutSummary from './WorkoutSummary'
 import { Button } from './ui'
-import BrandIcon, { brandIconTileStyle, categoryIconConfig } from './BrandIcon'
+import { PremiumIconTile } from './BrandIcon'
+import { ExerciseThumb } from './ExerciseThumb'
 import { useToast } from '../contexts/ToastContext'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel } from '../lib/units'
@@ -29,20 +30,6 @@ function formatElapsed(seconds: number) {
 }
 
 const DEFAULT_REST_SECS = 90
-
-function ExerciseThumb({ category }: { category?: string }) {
-  const icon = categoryIconConfig(category)
-  return (
-    <div
-      className="relative w-11 h-11 rounded-input border flex items-center justify-center flex-shrink-0 overflow-hidden"
-      style={brandIconTileStyle(icon.tone)}
-    >
-      <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-input ring-1 ring-inset ring-white/20" />
-      <BrandIcon name={icon.name} tone={icon.tone} size={26} className="relative z-10" />
-    </div>
-  )
-}
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
@@ -968,11 +955,7 @@ export default function WorkoutLogger({ session }: Props) {
           onClick={() => setShowPicker(true)}
           className="w-full py-4 text-blue-500 text-sm font-semibold flex items-center justify-center gap-2 bg-app-surface rounded-card border border-dashed border-blue-200 shadow-card active:bg-blue-50"
         >
-          <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-            <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-blue-500">
-              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-            </svg>
-          </span>
+          <PremiumIconTile name="plus" tone="blue" size="xs" usage="button" active iconSize={18} />
           Add Exercise
         </button>
       </div>

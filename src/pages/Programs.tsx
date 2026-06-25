@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now } from '../db/db'
 import type { Program } from '../db/db'
 import ProgramForm from '../components/ProgramForm'
-import BrandIcon, { brandIconTileStyle } from '../components/BrandIcon'
+import { PremiumIconTile } from '../components/BrandIcon'
 import type { BrandIconName, BrandIconTone } from '../components/BrandIcon'
 
 function getDayIconKind(muscleGroup: string) {
@@ -35,14 +35,15 @@ function ProgramDayIcon({ muscleGroup, empty }: { muscleGroup: string; empty: bo
   const config = DAY_ICON_CONFIG[kind] ?? DAY_ICON_CONFIG.lift
 
   return (
-    <div
-      className="relative m-3 ml-4 flex items-center justify-center w-14 h-14 rounded-2xl border flex-shrink-0 overflow-hidden"
-      style={brandIconTileStyle(config.tone)}
-    >
-      <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
-      <BrandIcon name={config.icon} tone={config.tone} size={34} className="relative z-10" />
-    </div>
+    <PremiumIconTile
+      name={config.icon}
+      tone={config.tone}
+      size="lg"
+      usage="card"
+      active
+      className="m-3 ml-4"
+      iconSize={34}
+    />
   )
 }
 
@@ -144,14 +145,15 @@ export default function Programs() {
 
       {/* ── Page heading (always "Program") ───────────────────── */}
       <div className="page-x pt-6 pb-3 border-b border-app-border flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-app-text">Program</h1>
+        <div className="flex items-center gap-3 min-w-0">
+          <PremiumIconTile name="program" tone="gold" size="md" usage="card" active />
+          <h1 className="text-2xl font-extrabold text-app-text">Program</h1>
+        </div>
         <button
           onClick={() => { setEditing(undefined); setFormOpen(true) }}
           className="flex items-center gap-1.5 rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-          </svg>
+          <PremiumIconTile name="plus" tone="gold" size="xs" usage="button" active iconSize={18} />
           New
         </button>
       </div>

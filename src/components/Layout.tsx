@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
-import BrandIcon, { brandIconTileStyle } from './BrandIcon'
+import { PremiumIconTile } from './BrandIcon'
 import type { BrandIconName, BrandIconTone } from './BrandIcon'
 
 const PULL_THRESHOLD = 72
@@ -17,15 +17,14 @@ function NavIconShell({
   icon,
 }: NavIconProps & { tone: BrandIconTone; icon: BrandIconName }) {
   return (
-    <span
-      className="relative w-10 h-10 rounded-card border-2 flex items-center justify-center overflow-hidden transition-all"
-      style={brandIconTileStyle(tone, active)}
-      aria-hidden="true"
-    >
-      <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-card ring-1 ring-inset ring-orange-200/45" />
-      <BrandIcon name={icon} tone={tone} active={active} size={28} className="relative z-10" />
-    </span>
+    <PremiumIconTile
+      name={icon}
+      tone={tone}
+      size="sm"
+      usage="nav"
+      active={active}
+      variant={active ? 'active' : 'muted'}
+    />
   )
 }
 
@@ -124,18 +123,14 @@ function QuickAddIcon({
   large?: boolean
 }) {
   return (
-    <span
-      className={[
-        'relative rounded-2xl border flex items-center justify-center flex-shrink-0 overflow-hidden',
-        large ? 'w-14 h-14' : 'w-11 h-11',
-      ].join(' ')}
-      style={brandIconTileStyle(tone)}
-      aria-hidden="true"
-    >
-      <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
-      <BrandIcon name={icon} tone={tone} size={large ? 36 : 28} className="relative z-10" />
-    </span>
+    <PremiumIconTile
+      name={icon}
+      tone={tone}
+      size={large ? 'lg' : 'md'}
+      usage="button"
+      active
+      iconSize={large ? 36 : 28}
+    />
   )
 }
 
@@ -300,10 +295,16 @@ export default function Layout() {
             <div className="px-3 pb-6 flex-shrink-0">
               <button
                 onClick={() => setQaOpen((v) => !v)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-extrabold transition-all active:scale-[0.99]"
-                style={brandIconTileStyle(qaOpen ? 'blue' : 'gold')}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-orange-200/70 bg-app-surface text-sm font-extrabold text-app-text shadow-sm transition-all hover:bg-app-bg active:scale-[0.99]"
               >
-                <BrandIcon name="plus" tone={qaOpen ? 'blue' : 'gold'} size={24} className="flex-none" />
+                <PremiumIconTile
+                  name="plus"
+                  tone={qaOpen ? 'blue' : 'gold'}
+                  size="xs"
+                  usage="button"
+                  active={qaOpen}
+                  variant={qaOpen ? 'active' : 'default'}
+                />
                 Quick Add
               </button>
             </div>
@@ -359,11 +360,18 @@ export default function Layout() {
                 <div className="flex-1 flex items-center justify-center h-full border-t-[2.5px] border-transparent">
                   <button
                     onClick={() => setQaOpen((v) => !v)}
-                    className="w-12 h-12 rounded-full border flex items-center justify-center shadow-float active:scale-95 transition-transform"
-                    style={brandIconTileStyle(qaOpen ? 'blue' : 'gold')}
+                    className="w-12 h-12 rounded-full flex items-center justify-center shadow-float active:scale-95 transition-transform"
                     aria-label="Quick add"
                   >
-                    <BrandIcon name="plus" tone={qaOpen ? 'blue' : 'gold'} size={28} />
+                    <PremiumIconTile
+                      name="plus"
+                      tone={qaOpen ? 'blue' : 'gold'}
+                      size="md"
+                      usage="button"
+                      active={qaOpen}
+                      className="rounded-full"
+                      iconSize={28}
+                    />
                   </button>
                 </div>
 
