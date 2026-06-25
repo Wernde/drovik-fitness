@@ -15,8 +15,8 @@ export default defineConfig({
         name: 'Drovik Fitness',
         short_name: 'Drovik',
         description: 'Personal fitness tracker',
-        theme_color: '#a3e635',       // sky-500
-        background_color: '#0f172a',  // slate-950 (used while the app is loading)
+        theme_color: '#FBBF24',
+        background_color: '#111115',
         display: 'standalone',        // hides the browser chrome when installed
         orientation: 'portrait',
         start_url: './',

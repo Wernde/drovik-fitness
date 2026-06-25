@@ -4,6 +4,19 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Icon Colour Lock + Mode Cleanup
+
+### Added
+- **D logo app icon** - replaced the installed PWA icon assets with the supplied 3D D thumbnail for browser tabs and phone home screens.
+
+### Changed
+- **Original icon colours preserved** - premium PNG icons no longer hue-shift with the app theme, keeping the supplied artwork fixed in both Dark and Light modes.
+- **Appearance simplified** - removed the colour theme picker so Settings now offers only Dark and Light mode.
+- **Icon tile contrast improved** - lightened icon tile backgrounds and strengthened nav icon borders so Home, Program, Nutrition, and History match the rest of the 3D icon system.
+- **PWA theme colour aligned** - updated the install manifest colours to match the Carbon/amber app identity.
+
+---
+
 ## Branded 3D Icon Pass
 
 ### Added
