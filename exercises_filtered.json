@@ -1,0 +1,4377 @@
+[
+  {
+    "name": "3/4 Sit-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "90/90 Hamstring",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Ab Crunch Machine",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Advanced Kettlebell Windmill",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Air Bike",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "All Fours Quad Stretch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Alternate Hammer Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Alternate Heel Touchers",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Alternate Incline Dumbbell Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Alternating Cable Shoulder Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Alternating Deltoid Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Alternating Floor Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Alternating Hang Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Alternating Kettlebell Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Alternating Kettlebell Row",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Alternating Renegade Row",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Anti-Gravity Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Arnold Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Around The Worlds",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Back Flyes - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Band Good Morning",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Band Good Morning (Pull Through)",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Band Hip Adductions",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "adductors"
+    ]
+  },
+  {
+    "name": "Band Pull Apart",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Band Skull Crusher",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Barbell Ab Rollout",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Barbell Ab Rollout - On Knees",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Barbell Bench Press - Medium Grip",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Barbell Curls Lying Against An Incline",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Barbell Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Barbell Full Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Glute Bridge",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Barbell Guillotine Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Barbell Hack Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Hip Thrust",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Barbell Incline Bench Press - Medium Grip",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Barbell Incline Shoulder Raise",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Barbell Lunge",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Rear Delt Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Barbell Rollout from Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Barbell Seated Calf Raise",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Barbell Shoulder Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Barbell Shrug",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Barbell Shrug Behind The Back",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Barbell Side Bend",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Barbell Side Split Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Squat To A Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Step Ups",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Barbell Walking Lunge",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Bench Dips",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Bench Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Bench Press - Powerlifting",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Bench Press - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Bench Press with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Bent-Arm Barbell Pullover",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Bent-Arm Dumbbell Pullover",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Bent-Knee Hip Raise",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Bent Over Barbell Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Bent Over Dumbbell Rear Delt Raise With Head On Bench",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Bent Over Low-Pulley Side Lateral",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Bent Over One-Arm Long Bar Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Bent Over Two-Arm Long Bar Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Bent Over Two-Dumbbell Row",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Bent Over Two-Dumbbell Row With Palms In",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Bent Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Bicycling, Stationary",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Board Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Body-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Body Tricep Press",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Bodyweight Squat",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Bosu Ball Cable Crunch With Side Bends",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Bottoms-Up Clean From The Hang Position",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Bottoms Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Box Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Box Squat with Bands",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Box Squat with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Bradford/Rocky Presses",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Butt-Ups",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Butt Lift (Bridge)",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Butterfly",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Cable Chest Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Cable Crossover",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Cable Crunch",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cable Deadlifts",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Cable Hammer Curls - Rope Attachment",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Cable Hip Adduction",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Cable Incline Pushdown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Cable Incline Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Cable Internal Rotation",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Cable Iron Cross",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Cable Judo Flip",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cable Lying Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Cable One Arm Tricep Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Cable Preacher Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Cable Rear Delt Fly",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Cable Reverse Crunch",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cable Rope Overhead Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Cable Rope Rear-Delt Rows",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Cable Russian Twists",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cable Seated Crunch",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cable Seated Lateral Raise",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Cable Shoulder Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Cable Shrugs",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Cable Wrist Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Calf-Machine Shoulder Shrug",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Calf Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Calf Press On The Leg Press Machine",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Calf Raise On A Dumbbell",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Calf Raises - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Car Drivers",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Chair Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Chin-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Clean",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Clean Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Clean Pull",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Clean Shrug",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Clean and Jerk",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Clean and Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Clean from Blocks",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Clock Push-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Close-Grip Barbell Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Close-Grip Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Close-Grip EZ Bar Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Close-Grip Front Lat Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Close-Grip Push-Up off of a Dumbbell",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Close-Grip Standing Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Cocoons",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Concentration Curls",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Cross-Body Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cross Body Hammer Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Cross Over - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Crunch - Hands Overhead",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Crunch - Legs On Exercise Ball",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Crunches",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Cuban Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dead Bug",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Deadlift with Bands",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Deadlift with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Decline Barbell Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Decline Close-Grip Bench To Skull Crusher",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Decline Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Decline Dumbbell Bench Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Decline Dumbbell Flyes",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Decline Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Decline EZ Bar Triceps Extension",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Decline Oblique Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Decline Reverse Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Decline Smith Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Deficit Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Dip Machine",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Dips - Triceps Version",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Double Kettlebell Alternating Hang Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Double Kettlebell Jerk",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Double Kettlebell Push Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Double Kettlebell Snatch",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Double Kettlebell Windmill",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Double Leg Butt Kick",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Drag Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Alternate Bicep Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Bench Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Dumbbell Bench Press with Neutral Grip",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Dumbbell Bicep Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Clean",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Dumbbell Floor Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Flyes",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Dumbbell Incline Row",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Dumbbell Incline Shoulder Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Lunges",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Lying One-Arm Rear Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Lying Pronation",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Dumbbell Lying Rear Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Lying Supination",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Dumbbell One-Arm Shoulder Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell One-Arm Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Dumbbell One-Arm Upright Row",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Prone Incline Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Rear Lunge",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Scaption",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Seated Box Jump",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Seated One-Leg Calf Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Dumbbell Shoulder Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Dumbbell Shrug",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Dumbbell Side Bend",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Dumbbell Squat",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Squat To A Bench",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Step Ups",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Dumbbell Tricep Extension -Pronated Grip",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Elbow to Knee",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Elevated Back Lunge",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Elevated Cable Rows",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Elliptical Trainer",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Extended Range One-Arm Kettlebell Floor Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "External Rotation",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "External Rotation with Band",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "External Rotation with Cable",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Face Pull",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Fast Skipping",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Finger Curls",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Flat Bench Cable Flyes",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Flat Bench Leg Pull-In",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Flat Bench Lying Leg Raise",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Flexor Incline Dumbbell Curls",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Floor Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Floor Press with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Flutter Kicks",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Frankenstein Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Freehand Jump Squat",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Frog Sit-Ups",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Front Barbell Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Front Barbell Squat To A Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Front Cable Raise",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Front Dumbbell Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Front Incline Dumbbell Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Front Leg Raises",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Front Raise And Pullover",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Front Squat (Clean Grip)",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Front Squats With Two Kettlebells",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Front Two-Dumbbell Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Full Range-Of-Motion Lat Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Glute Ham Raise",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Glute Kickback",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Goblet Squat",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Good Morning",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Good Morning off Pins",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Gorilla Chin/Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Groiners",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "adductors"
+    ]
+  },
+  {
+    "name": "Hack Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Hammer Curls",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Hammer Grip Incline DB Bench Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Handstand Push-Ups",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Hang Clean",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Hang Clean - Below the Knees",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Hang Snatch",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Hang Snatch - Below Knees",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Hanging Bar Good Morning",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Hanging Leg Raise",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Hanging Pike",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Heaving Snatch Balance",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "High Cable Curls",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Hip Circles (prone)",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abductors"
+    ]
+  },
+  {
+    "name": "Hip Extension with Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Hip Flexion with Band",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Hip Lift with Band",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Hyperextensions With No Hyperextension Bench",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Inchworm",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Incline Barbell Triceps Extension",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Incline Bench Pull",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Incline Cable Chest Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Cable Flye",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Dumbbell Bench With Palms Facing In",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Dumbbell Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Incline Dumbbell Flyes",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Dumbbell Flyes - With A Twist",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Hammer Curls",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Incline Inner Biceps Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Incline Push-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Push-Up Close-Grip",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Incline Push-Up Medium",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Push-Up Reverse Grip",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Incline Push-Up Wide",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Internal Rotation with Band",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Iron Cross",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Isometric Chest Squeezes",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Isometric Neck Exercise - Front And Back",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "neck"
+    ]
+  },
+  {
+    "name": "Isometric Neck Exercise - Sides",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "neck"
+    ]
+  },
+  {
+    "name": "Isometric Wipers",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "JM Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Jackknife Sit-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Janda Sit-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Jefferson Squats",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Jerk Balance",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Jerk Dip Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Jogging, Treadmill",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Kettlebell Arnold Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Dead Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Kettlebell Figure 8",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Kettlebell Hang Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Kettlebell One-Legged Deadlift",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Kettlebell Pass Between The Legs",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Kettlebell Pirate Ships",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Pistol Squat",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Kettlebell Seated Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Seesaw Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Sumo High Pull",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Kettlebell Thruster",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Turkish Get-Up (Lunge style)",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Turkish Get-Up (Squat style)",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Kettlebell Windmill",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Knee Circles",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Knee Tuck Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Kneeling Cable Crunch With Alternating Oblique Twists",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Kneeling Cable Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Kneeling High Pulley Row",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Kneeling Jump Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Kneeling Single-Arm High Pulley Row",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Kneeling Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Landmine 180's",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Landmine Linear Jammer",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Lateral Bound",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "adductors"
+    ]
+  },
+  {
+    "name": "Lateral Raise - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Leg-Over Floor Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Leg Extensions",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Leg Lift",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Leg Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Leg Pull-In",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Leverage Chest Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Leverage Deadlift",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Leverage Decline Chest Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Leverage High Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Leverage Incline Chest Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Leverage Iso Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Leverage Shoulder Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Leverage Shrug",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Low Cable Crossover",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Low Cable Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Low Pulley Row To Neck",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Lower Back Curl",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Lunge Pass Through",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Lunge Sprint",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Lying Cable Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Lying Cambered Barbell Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Lying Close-Grip Bar Curl On High Pulley",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Lying Close-Grip Barbell Triceps Extension Behind The Head",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Lying Crossover",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abductors"
+    ]
+  },
+  {
+    "name": "Lying Dumbbell Tricep Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Lying Glute",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Lying High Bench Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Lying Leg Curls",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Lying Machine Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Lying One-Arm Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Lying Prone Quadriceps",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Lying Rear Delt Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Lying Supine Dumbbell Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Lying T-Bar Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Machine Bench Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Machine Bicep Curl",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Machine Preacher Curls",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Machine Shoulder (Military) Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Machine Triceps Extension",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Middle Back Shrug",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Monster Walk",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "abductors"
+    ]
+  },
+  {
+    "name": "Muscle Snatch",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Narrow Stance Hack Squats",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Narrow Stance Leg Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Narrow Stance Squats",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Natural Glute Ham Raise",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Neck Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Oblique Crunches",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Oblique Crunches - On The Floor",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Olympic Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "One-Arm Dumbbell Row",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "One-Arm Flat Bench Dumbbell Flye",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "One-Arm High-Pulley Cable Side Bends",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "One-Arm Incline Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Clean and Jerk",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Floor Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Jerk",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Military Press To The Side",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Para Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Push Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Row",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Snatch",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Split Jerk",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Split Snatch",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Arm Kettlebell Swings",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "One-Arm Long Bar Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "One-Arm Open Palm Kettlebell Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "One-Arm Overhead Kettlebell Squats",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "One-Arm Side Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "One-Arm Side Laterals",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "One-Legged Cable Kickback",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "One Arm Dumbbell Bench Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "One Arm Dumbbell Preacher Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "One Arm Floor Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "One Arm Lat Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "One Arm Pronated Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "One Arm Supinated Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "One Leg Barbell Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Open Palm Kettlebell Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Overhead Cable Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Overhead Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Overhead Triceps",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Pallof Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Pallof Press With Rotation",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Palms-Down Dumbbell Wrist Curl Over A Bench",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Palms-Down Wrist Curl Over A Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Palms-Up Barbell Wrist Curl Over A Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Palms-Up Dumbbell Wrist Curl Over A Bench",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Pin Presses",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Plank",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Plie Dumbbell Squat",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Plyo Kettlebell Pushups",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Plyo Push-up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Power Clean",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Power Clean from Blocks",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Power Jerk",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Power Partials",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Power Snatch",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Power Snatch from Blocks",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Preacher Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Preacher Hammer Dumbbell Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Press Sit-Up",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Pull Through",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Pullups",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Push-Up Wide",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Push-Ups - Close Triceps Position",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Push-Ups With Feet Elevated",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Push Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Push Press - Behind the Neck",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Push Up to Side Plank",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Pushups",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Pushups (Close and Wide Hand Positions)",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Rack Delivery",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Rack Pull with Bands",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Rack Pulls",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Rear Leg Raises",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Recumbent Bike",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Reverse Band Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Reverse Band Box Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Reverse Band Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Reverse Band Power Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Reverse Band Sumo Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Reverse Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Reverse Cable Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Reverse Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Reverse Flyes",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Reverse Flyes With External Rotation",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Reverse Grip Bent-Over Rows",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Reverse Grip Triceps Pushdown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Reverse Hyperextension",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Reverse Machine Flyes",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Reverse Triceps Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Rocket Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Rocking Standing Calf Raise",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Romanian Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Romanian Deadlift from Deficit",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Rope Crunch",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Rope Straight-Arm Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Rowing, Stationary",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Running, Treadmill",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Russian Twist",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Scissor Kick",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Scissors Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Seated Barbell Military Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Barbell Twist",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Seated Bent-Over One-Arm Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Seated Bent-Over Rear Delt Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Bent-Over Two-Arm Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Seated Biceps",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Seated Cable Rows",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Seated Cable Shoulder Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Calf Raise",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Seated Close-Grip Concentration Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Seated Dumbbell Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Seated Dumbbell Inner Biceps Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Seated Dumbbell Palms-Down Wrist Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated Dumbbell Palms-Up Wrist Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Flat Bench Leg Pull-In",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Seated Front Deltoid",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Glute",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Seated Good Mornings",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Seated Leg Curl",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Seated Leg Tucks",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Seated One-Arm Dumbbell Palms-Down Wrist Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated One-Arm Dumbbell Palms-Up Wrist Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated One-arm Cable Pulley Rows",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Seated Palm-Up Barbell Wrist Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated Palms-Down Barbell Wrist Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Seated Side Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Seated Triceps Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Seated Two-Arm Palms-Up Low-Pulley Wrist Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "See-Saw Press (Alternating Side Press)",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Shotgun Row",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Shoulder Press - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Side Bridge",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Side Jackknife",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Side Lateral Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Side Laterals to Front Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Side Leg Raises",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "adductors"
+    ]
+  },
+  {
+    "name": "Single-Arm Cable Crossover",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Single-Arm Linear Jammer",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Single-Arm Push-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Single-Leg Leg Extension",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Single Dumbbell Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Single Leg Butt Kick",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Single Leg Glute Bridge",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Sit-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Smith Incline Shoulder Raise",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Smith Machine Behind the Back Shrug",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Smith Machine Bench Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Smith Machine Bent Over Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Smith Machine Calf Raise",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Smith Machine Close-Grip Bench Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Smith Machine Decline Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Smith Machine Hang Power Clean",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Smith Machine Hip Raise",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Smith Machine Incline Bench Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Smith Machine Leg Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Smith Machine One-Arm Upright Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Smith Machine Overhead Shoulder Press",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Smith Machine Pistol Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Smith Machine Reverse Calf Raises",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Smith Machine Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Smith Machine Stiff-Legged Deadlift",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Smith Machine Upright Row",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Smith Single-Leg Split Squat",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Snatch",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Snatch Balance",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Snatch Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Snatch Pull",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Snatch Shrug",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Snatch from Blocks",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Speed Band Overhead Triceps",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Speed Box Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Speed Squats",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Spell Caster",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Spider Crawl",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Split Clean",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Split Jerk",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Split Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Split Snatch",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Split Squat with Dumbbells",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Squat Jerk",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Squat with Bands",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Squat with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Squat with Plate Movers",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Squats - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Stairmaster",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Standing Alternating Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Barbell Calf Raise",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Standing Barbell Press Behind Neck",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Bent-Over One-Arm Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Bent-Over Two-Arm Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Biceps Cable Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing Bradford Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Cable Chest Press",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Standing Cable Lift",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Standing Cable Wood Chop",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Standing Calf Raises",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Standing Concentration Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Calf Raise",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "calves"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Reverse Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Straight-Arm Front Delt Raise Above Head",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Dumbbell Upright Row",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Standing Front Barbell Raise Over Head",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Hip Circles",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abductors"
+    ]
+  },
+  {
+    "name": "Standing Inner-Biceps Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing Leg Curl",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Standing Long Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Standing Low-Pulley Deltoid Raise",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Low-Pulley One-Arm Triceps Extension",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Military Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing One-Arm Cable Curl",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing One-Arm Dumbbell Curl Over Incline Bench",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Standing One-Arm Dumbbell Triceps Extension",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Overhead Barbell Triceps Extension",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Standing Palm-In One-Arm Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Palms-In Dumbbell Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Standing Palms-Up Barbell Behind The Back Wrist Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Standing Rope Crunch",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Standing Towel Triceps Extension",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Star Jump",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Step-up with Knee Raise",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "glutes"
+    ]
+  },
+  {
+    "name": "Step Mill",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Stiff-Legged Barbell Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Stiff-Legged Dumbbell Deadlift",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Stiff Leg Barbell Good Morning",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "Stomach Vacuum",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Straight-Arm Dumbbell Pullover",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Straight-Arm Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Straight Bar Bench Mid Rows",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Straight Raises on Incline Bench",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Sumo Deadlift",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Sumo Deadlift with Bands",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Sumo Deadlift with Chains",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Superman",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lower back"
+    ]
+  },
+  {
+    "name": "T-Bar Row with Handle",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Tate Press",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Thigh Abductor",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "abductors"
+    ]
+  },
+  {
+    "name": "Thigh Adductor",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "adductors"
+    ]
+  },
+  {
+    "name": "Toe Touchers",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Tricep Dumbbell Kickback",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Triceps Overhead Extension with Rope",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Triceps Pushdown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Triceps Pushdown - Rope Attachment",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Triceps Pushdown - V-Bar Attachment",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "triceps"
+    ]
+  },
+  {
+    "name": "Tuck Crunch",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Two-Arm Dumbbell Preacher Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Two-Arm Kettlebell Clean",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Two-Arm Kettlebell Jerk",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Two-Arm Kettlebell Military Press",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Two-Arm Kettlebell Row",
+    "equipment": "kettlebells",
+    "primaryMuscles": [
+      "middle back"
+    ]
+  },
+  {
+    "name": "Underhand Cable Pulldowns",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Upright Barbell Row",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "shoulders"
+    ]
+  },
+  {
+    "name": "Upright Cable Row",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "Upright Row - With Bands",
+    "equipment": "bands",
+    "primaryMuscles": [
+      "traps"
+    ]
+  },
+  {
+    "name": "V-Bar Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "V-Bar Pullup",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Vertical Swing",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Walking, Treadmill",
+    "equipment": "machine",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Weighted Jump Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Weighted Sissy Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Wide-Grip Barbell Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Wide-Grip Decline Barbell Bench Press",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Wide-Grip Decline Barbell Pullover",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "chest"
+    ]
+  },
+  {
+    "name": "Wide-Grip Lat Pulldown",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Wide-Grip Pulldown Behind The Neck",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Wide-Grip Rear Pull-Up",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ]
+  },
+  {
+    "name": "Wide-Grip Standing Barbell Curl",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Wide Stance Barbell Squat",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Wide Stance Stiff Legs",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ]
+  },
+  {
+    "name": "Wind Sprints",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ]
+  },
+  {
+    "name": "Wrist Circles",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Wrist Rotations with Straight Bar",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "forearms"
+    ]
+  },
+  {
+    "name": "Zercher Squats",
+    "equipment": "barbell",
+    "primaryMuscles": [
+      "quadriceps"
+    ]
+  },
+  {
+    "name": "Zottman Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  },
+  {
+    "name": "Zottman Preacher Curl",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "biceps"
+    ]
+  }
+]
