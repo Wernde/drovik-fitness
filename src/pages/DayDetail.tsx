@@ -8,7 +8,7 @@ import type { DayExercise, Exercise } from '../db/db'
 import ExercisePicker from '../components/ExercisePicker'
 import DayExerciseForm from '../components/DayExerciseForm'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
-import BrandIcon, { brandIconTileStyle, categoryIconConfig } from '../components/BrandIcon'
+import { PremiumIconTile, categoryIconConfig } from '../components/BrandIcon'
 import MuscleIcon from '../components/MuscleIcon'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel } from '../lib/units'
@@ -238,8 +238,13 @@ export default function DayDetail() {
         {!editMode && (
           <div className="mb-5">
             {/* Day name + program name */}
-            <h1 className="text-2xl font-extrabold text-app-text leading-tight">{day.name}</h1>
-            <p className="text-sm text-app-muted mt-0.5">{program.name}</p>
+            <div className="flex items-start gap-3">
+              <PremiumIconTile name="program" tone="gold" size="md" usage="card" active />
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl font-extrabold text-app-text leading-tight">{day.name}</h1>
+                <p className="text-sm text-app-muted mt-0.5">{program.name}</p>
+              </div>
+            </div>
 
             {/* Stats chips row */}
             <div className="flex flex-wrap items-center gap-2 mt-3">
@@ -265,12 +270,15 @@ export default function DayDetail() {
                 const icon = categoryIconConfig(cat)
                 return (
                   <div key={cat} className="flex items-center gap-1.5 bg-app-surface border border-app-border rounded-full px-3 py-1.5 shadow-sm">
-                    <span
-                      className="relative w-5 h-5 rounded-lg border flex items-center justify-center overflow-hidden flex-shrink-0"
-                      style={brandIconTileStyle(icon.tone)}
-                    >
-                      <BrandIcon name={icon.name} tone={icon.tone} size={14} className="relative z-10" />
-                    </span>
+                    <PremiumIconTile
+                      name={icon.name}
+                      tone={icon.tone}
+                      size="xs"
+                      usage="card"
+                      active
+                      className="w-6 h-6 rounded-lg"
+                      iconSize={15}
+                    />
                     <span className="text-xs font-semibold text-app-text">{EQUIPMENT_LABELS[cat] ?? cat}</span>
                   </div>
                 )
