@@ -25,7 +25,9 @@ try {
       $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
       $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
       $graphics.DrawImage($sourceImage, 0, 0, $size, $size)
-      $bitmap.Save([string]$target.Path, [System.Drawing.Imaging.ImageFormat]::Png)
+      $tempPath = "$($target.Path).tmp.png"
+      $bitmap.Save($tempPath, [System.Drawing.Imaging.ImageFormat]::Png)
+      Move-Item -LiteralPath $tempPath -Destination ([string]$target.Path) -Force
     } finally {
       $graphics.Dispose()
       $bitmap.Dispose()
