@@ -72,19 +72,19 @@ export const THEMES: Theme[] = [
     iconTileDeep: '#BFB4A4',
   },
   {
-    // Clean white + electric indigo — the one light option, confident and bold
-    // Pairs well with the strong typographic hierarchy that makes fitness apps feel premium
+    // Clean white + electric blue — matching the cool rim light in the Drovik mark
+    // while the orange neon icon frames stay fixed to the supplied artwork.
     id: 'arctic', name: 'Light', dark: false,
-    accent: '#4F46E5', accentDark: '#4338CA', accentDarker: '#312E81', accentLight: '#EEF2FF',
-    accentLabel: '#4338CA',
+    accent: '#0EA5E9', accentDark: '#0369A1', accentDarker: '#075985', accentLight: '#E0F7FF',
+    accentLabel: '#0369A1',
     appBg: '#FAFAFD', appCard: '#FFFFFF', appRaised: '#F6F7FC',
     appBorder: '#E3E5F0', appBorderSubtle: '#EEF0F6',
     appText: '#17172F', appMuted: '#5D6187', appFaint: '#C6C9DB', appDisabled: '#B8BCCE',
     successBg: '#F0FDF4', successText: '#15803D',
-    infoBg:    '#EEF2FF', infoText:    '#4338CA',
+    infoBg:    '#E0F7FF', infoText:    '#0369A1',
     warningBg: '#FFFBEB', warningText: '#B45309',
     errorBg:   '#FEF2F2', errorText:   '#B91C1C',
-    neutralBg: '#F5F3FF', neutralText: '#4F46E5',
+    neutralBg: '#FFF7ED', neutralText: '#EA580C',
     iconTile: '#FFFFFF',
     iconTileMuted: '#EEF0F6',
     iconTileDeep: '#DDE2EE',

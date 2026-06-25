@@ -4,6 +4,8 @@ from PIL import Image
 
 SOURCE = Path(r"C:\Users\Owner\Desktop\APP\Icons")
 TARGET = Path.cwd() / "public" / "icons" / "premium"
+APP_ICON_SOURCE = SOURCE / "Logo Icon Thumbnail.png"
+APP_ICON_TARGET = Path.cwd() / "public"
 
 ICONS = {
     "AI.png": "ai.png",
@@ -22,6 +24,12 @@ ICONS = {
     "Water.png": "water.png",
     "Widget plus.png": "plus.png",
     "Workout.png": "workout.png",
+}
+
+APP_ICONS = {
+    "icon-512.png": 512,
+    "icon-192.png": 192,
+    "apple-touch-icon.png": 180,
 }
 
 
@@ -105,6 +113,16 @@ def main() -> None:
         canvas.alpha_composite(icon, ((384 - icon.width) // 2, (384 - icon.height) // 2))
         canvas.save(TARGET / out_name, optimize=True)
         print(f"{src_name} -> {out_name} {image.size} {image.mode}")
+
+    app_icon = trim_border(Image.open(APP_ICON_SOURCE))
+    APP_ICON_TARGET.mkdir(parents=True, exist_ok=True)
+    for out_name, size in APP_ICONS.items():
+        icon = app_icon.copy()
+        icon.thumbnail((size, size), Image.Resampling.LANCZOS)
+        canvas = Image.new("RGBA", (size, size), (255, 255, 255, 0))
+        canvas.alpha_composite(icon, ((size - icon.width) // 2, (size - icon.height) // 2))
+        canvas.save(APP_ICON_TARGET / out_name, optimize=True)
+        print(f"{APP_ICON_SOURCE.name} -> {out_name} {size}x{size}")
 
 
 if __name__ == "__main__":
