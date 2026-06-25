@@ -4,6 +4,14 @@ All notable changes are documented here, newest first.
 
 ---
 
+## App Icon Refresh
+
+### Changed
+- **Launcher icon replaced** - updated the browser, PWA, and Apple touch icon PNGs from the new 3D D artwork.
+- **Transparent icon background** - generated the installed app icons with transparent corners/background so the artwork is not forced into a filled square.
+
+---
+
 ## Icon Colour Lock + Mode Cleanup
 
 ### Added
