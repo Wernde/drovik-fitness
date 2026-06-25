@@ -8,6 +8,7 @@ export function ExerciseThumb({
   big?: boolean
 }) {
   const sz = big ? 'w-16 h-16 rounded-2xl' : 'w-11 h-11 rounded-xl'
+  const ringRadius = big ? 'rounded-2xl' : 'rounded-xl'
   const icon = categoryIconConfig(category)
 
   return (
@@ -16,7 +17,7 @@ export function ExerciseThumb({
       style={brandIconTileStyle(icon.tone)}
     >
       <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
+      <span className={`absolute inset-0 ${ringRadius} ring-1 ring-inset ring-orange-200/45`} />
       <BrandIcon
         name={icon.name}
         tone={icon.tone}

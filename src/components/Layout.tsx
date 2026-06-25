@@ -18,13 +18,13 @@ function NavIconShell({
 }: NavIconProps & { tone: BrandIconTone; icon: BrandIconName }) {
   return (
     <span
-      className="relative w-9 h-9 rounded-2xl border-2 flex items-center justify-center overflow-hidden transition-all"
+      className="relative w-10 h-10 rounded-card border-2 flex items-center justify-center overflow-hidden transition-all"
       style={brandIconTileStyle(tone, active)}
       aria-hidden="true"
     >
-      <span className="absolute inset-x-1 top-1 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
-      <BrandIcon name={icon} tone={tone} active={active} size={24} className="relative z-10" />
+      <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
+      <span className="absolute inset-0 rounded-card ring-1 ring-inset ring-orange-200/45" />
+      <BrandIcon name={icon} tone={tone} active={active} size={28} className="relative z-10" />
     </span>
   )
 }
@@ -133,7 +133,7 @@ function QuickAddIcon({
       aria-hidden="true"
     >
       <span className="absolute inset-x-1.5 top-1.5 h-2 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
       <BrandIcon name={icon} tone={tone} size={large ? 36 : 28} className="relative z-10" />
     </span>
   )

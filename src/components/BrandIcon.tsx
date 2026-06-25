@@ -79,10 +79,18 @@ const toneLift: Record<BrandIconTone, string> = {
   purple: '0 12px 28px -18px var(--color-neutral-text)',
 }
 
+const iconNeon = {
+  border: 'rgba(255, 122, 24, 0.95)',
+  borderSoft: 'rgba(255, 122, 24, 0.72)',
+  outer: '0 0 14px -3px rgba(255, 112, 0, 0.72)',
+  outerSoft: '0 0 10px -4px rgba(255, 112, 0, 0.48)',
+  halo: '0 0 30px -14px rgba(255, 190, 80, 0.70)',
+}
+
 export function brandIconTileStyle(tone: BrandIconTone, active = true): CSSProperties {
   return {
     color: 'var(--color-accent-label)',
-    borderColor: active ? 'var(--color-accent)' : 'var(--color-app-border)',
+    borderColor: active ? iconNeon.border : iconNeon.borderSoft,
     background: active
       ? [
           'radial-gradient(circle at 30% 18%, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.20) 34%, rgba(255,255,255,0) 58%)',
@@ -95,12 +103,16 @@ export function brandIconTileStyle(tone: BrandIconTone, active = true): CSSPrope
     boxShadow: active
       ? [
           'inset 0 1px 0 rgba(255,255,255,0.78)',
+          'inset 0 0 0 1px rgba(255,196,100,0.18)',
           'inset 0 -10px 16px rgba(40,40,52,0.14)',
+          iconNeon.outer,
+          iconNeon.halo,
           toneLift[tone],
           '0 16px 28px -22px rgba(0,0,0,0.58)',
         ].join(', ')
       : [
           'inset 0 1px 0 rgba(255,255,255,0.60)',
+          iconNeon.outerSoft,
           '0 10px 18px -18px rgba(0,0,0,0.42)',
         ].join(', '),
   }

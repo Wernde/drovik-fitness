@@ -40,7 +40,7 @@ function ProgramDayIcon({ muscleGroup, empty }: { muscleGroup: string; empty: bo
       style={brandIconTileStyle(config.tone)}
     >
       <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
       <BrandIcon name={config.icon} tone={config.tone} size={34} className="relative z-10" />
     </div>
   )
