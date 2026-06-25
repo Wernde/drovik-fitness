@@ -26,7 +26,9 @@ export interface Theme {
   errorText:    string
   neutralBg:    string
   neutralText:  string
-  premiumIconFilter: string
+  iconTile:     string
+  iconTileMuted: string
+  iconTileDeep: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -65,72 +67,9 @@ export const THEMES: Theme[] = [
     warningBg: '#1E1608', warningText: '#FBBF24',
     errorBg:   '#1E0A10', errorText:   '#F87171',
     neutralBg: '#130E20', neutralText: '#A78BFA',
-    premiumIconFilter: 'saturate(1.08)',
-  },
-  {
-    // Dark forest + vivid lime — Nike Volt energy, 10:1 contrast proven
-    // lime-500 (#84CC16) is vivid but grounded — not the fluorescent #B5F018
-    id: 'volt', name: 'Volt', dark: true,
-    accent: '#84CC16', accentDark: '#65A30D', accentDarker: '#4D7C0F', accentLight: '#0C1600',
-    accentLabel: '#84CC16',
-    appBg: '#0E1410', appCard: '#181F19', appRaised: '#212A22',
-    appBorder: '#2C3A2E', appBorderSubtle: '#242E26',
-    appText: '#EBF2EC', appMuted: '#7A9480', appFaint: '#2A3C2C', appDisabled: '#1E2C20',
-    successBg: '#0A2010', successText: '#22C55E',
-    infoBg:    '#0A1428', infoText:    '#60A5FA',
-    warningBg: '#1C1608', warningText: '#FBBF24',
-    errorBg:   '#1C0A0E', errorText:   '#F87171',
-    neutralBg: '#0E0820', neutralText: '#A78BFA',
-    premiumIconFilter: 'hue-rotate(68deg) saturate(1.22)',
-  },
-  {
-    // Warm dark + Strava orange — THE proven fitness accent, 7.1:1 contrast
-    // #F97316 is orange-500; Strava built their entire brand identity on this hue
-    id: 'blaze', name: 'Blaze', dark: true,
-    accent: '#F97316', accentDark: '#EA580C', accentDarker: '#C2410C', accentLight: '#1E0C00',
-    accentLabel: '#F97316',
-    appBg: '#130F09', appCard: '#1E1710', appRaised: '#272015',
-    appBorder: '#362C1C', appBorderSubtle: '#2C2418',
-    appText: '#F2EEE6', appMuted: '#9A8C78', appFaint: '#382C18', appDisabled: '#281E10',
-    successBg: '#0F2818', successText: '#22C55E',
-    infoBg:    '#0A1428', infoText:    '#60A5FA',
-    warningBg: '#1E1200', warningText: '#FBBF24',
-    errorBg:   '#1E0A0E', errorText:   '#F87171',
-    neutralBg: '#110820', neutralText: '#A78BFA',
-    premiumIconFilter: 'hue-rotate(10deg) saturate(1.12)',
-  },
-  {
-    // Deep navy + electric blue — precision, tech, Whoop-adjacent, 8:1 contrast
-    // blue-400 (#60A5FA) is electric but readable — not the harsh cyan that causes eye strain
-    id: 'surge', name: 'Surge', dark: true,
-    accent: '#60A5FA', accentDark: '#3B82F6', accentDarker: '#2563EB', accentLight: '#0A1830',
-    accentLabel: '#60A5FA',
-    appBg: '#0A0E18', appCard: '#131B2C', appRaised: '#1C2640',
-    appBorder: '#253552', appBorderSubtle: '#1C2A44',
-    appText: '#E4EEFF', appMuted: '#7090B8', appFaint: '#1C2C44', appDisabled: '#142238',
-    successBg: '#0A2018', successText: '#22C55E',
-    infoBg:    '#0A1430', infoText:    '#60A5FA',
-    warningBg: '#1C1608', warningText: '#FBBF24',
-    errorBg:   '#1C0A0E', errorText:   '#F87171',
-    neutralBg: '#10082A', neutralText: '#A78BFA',
-    premiumIconFilter: 'hue-rotate(188deg) saturate(1.32)',
-  },
-  {
-    // Dark charcoal + rose-red — beast mode, Peloton-adjacent, 5.6:1 contrast
-    // rose-500 (#F43F5E) is pink-shifted from pure red — less chromatic aberration,
-    // more readable, same intensity
-    id: 'crimson', name: 'Crimson', dark: true,
-    accent: '#F43F5E', accentDark: '#E11D48', accentDarker: '#BE123C', accentLight: '#200010',
-    accentLabel: '#F43F5E',
-    appBg: '#120A0E', appCard: '#1C1018', appRaised: '#261824',
-    appBorder: '#362030', appBorderSubtle: '#2A1828',
-    appText: '#F5ECF0', appMuted: '#9A8090', appFaint: '#3A1830', appDisabled: '#281020',
-    successBg: '#0A2018', successText: '#22C55E',
-    infoBg:    '#0A1428', infoText:    '#60A5FA',
-    warningBg: '#1C1608', warningText: '#FBBF24',
-    errorBg:   '#1E0A10', errorText:   '#F87171',
-    neutralBg: '#100820', neutralText: '#A78BFA',
-    premiumIconFilter: 'hue-rotate(318deg) saturate(1.22)',
+    iconTile: '#F5F0E4',
+    iconTileMuted: '#DDD6C7',
+    iconTileDeep: '#BFB4A4',
   },
   {
     // Clean white + electric indigo — the one light option, confident and bold
@@ -146,7 +85,9 @@ export const THEMES: Theme[] = [
     warningBg: '#FFFBEB', warningText: '#B45309',
     errorBg:   '#FEF2F2', errorText:   '#B91C1C',
     neutralBg: '#F5F3FF', neutralText: '#4F46E5',
-    premiumIconFilter: 'hue-rotate(218deg) saturate(1.18)',
+    iconTile: '#FFFFFF',
+    iconTileMuted: '#EEF0F6',
+    iconTileDeep: '#DDE2EE',
   },
 ]
 
@@ -182,10 +123,12 @@ export function applyTheme(themeId: string): void {
   s.setProperty('--color-error-text',   theme.errorText)
   s.setProperty('--color-neutral-bg',   theme.neutralBg)
   s.setProperty('--color-neutral-text', theme.neutralText)
+  s.setProperty('--color-icon-tile', theme.iconTile)
+  s.setProperty('--color-icon-tile-muted', theme.iconTileMuted)
+  s.setProperty('--color-icon-tile-deep', theme.iconTileDeep)
 
   s.setProperty('--muscle-body', theme.dark ? '#4A4A52' : '#C8C8DC')
   s.setProperty('--muscle-hi',   theme.accent)
-  s.setProperty('--premium-icon-filter', theme.premiumIconFilter)
 
   document.documentElement.classList.toggle('dark-theme', theme.dark)
 }
@@ -196,7 +139,12 @@ export function saveTheme(themeId: string): void {
 }
 
 export function getActiveThemeId(): string {
-  try { return localStorage.getItem(STORAGE_KEY) ?? DARK_THEME_ID } catch { return DARK_THEME_ID }
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    return THEMES.some((theme) => theme.id === saved) ? saved as string : DARK_THEME_ID
+  } catch {
+    return DARK_THEME_ID
+  }
 }
 
 export function loadTheme(): void {

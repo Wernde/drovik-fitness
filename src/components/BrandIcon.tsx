@@ -85,23 +85,23 @@ export function brandIconTileStyle(tone: BrandIconTone, active = true): CSSPrope
     borderColor: active ? 'var(--color-accent)' : 'var(--color-app-border)',
     background: active
       ? [
-          'radial-gradient(circle at 28% 18%, rgba(255,255,255,0.34) 0%, rgba(255,255,255,0) 32%)',
-          'linear-gradient(145deg, var(--color-app-raised) 0%, var(--color-app-card) 48%, var(--color-accent-light) 140%)',
+          'radial-gradient(circle at 30% 18%, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.20) 34%, rgba(255,255,255,0) 58%)',
+          'linear-gradient(145deg, rgba(255,255,255,0.92) 0%, var(--color-icon-tile) 50%, var(--color-icon-tile-deep) 100%)',
         ].join(', ')
       : [
-          'radial-gradient(circle at 28% 18%, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0) 34%)',
-          'linear-gradient(145deg, var(--color-app-card) 0%, var(--color-app-bg) 100%)',
+          'radial-gradient(circle at 30% 18%, rgba(255,255,255,0.72) 0%, rgba(255,255,255,0.12) 38%, rgba(255,255,255,0) 60%)',
+          'linear-gradient(145deg, var(--color-icon-tile) 0%, var(--color-icon-tile-muted) 100%)',
         ].join(', '),
     boxShadow: active
       ? [
-          'inset 0 1px 0 rgba(255,255,255,0.42)',
-          'inset 0 -12px 20px rgba(0,0,0,0.28)',
+          'inset 0 1px 0 rgba(255,255,255,0.78)',
+          'inset 0 -10px 16px rgba(40,40,52,0.14)',
           toneLift[tone],
-          '0 14px 24px -20px rgba(0,0,0,0.65)',
+          '0 16px 28px -22px rgba(0,0,0,0.58)',
         ].join(', ')
       : [
-          'inset 0 1px 0 rgba(255,255,255,0.18)',
-          '0 8px 16px -16px rgba(0,0,0,0.5)',
+          'inset 0 1px 0 rgba(255,255,255,0.60)',
+          '0 10px 18px -18px rgba(0,0,0,0.42)',
         ].join(', '),
   }
 }
@@ -151,8 +151,8 @@ export default function BrandIcon({
         objectFit: 'contain',
         opacity: active ? 1 : 0.72,
         filter: active
-          ? 'var(--premium-icon-filter) drop-shadow(0 5px 5px rgba(0,0,0,0.34))'
-          : 'var(--premium-icon-filter) grayscale(0.1) drop-shadow(0 3px 3px rgba(0,0,0,0.2))',
+          ? 'drop-shadow(0 5px 5px rgba(0,0,0,0.28))'
+          : 'drop-shadow(0 3px 3px rgba(0,0,0,0.18))',
       }}
     />
   )
