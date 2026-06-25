@@ -4,16 +4,17 @@ Add-Type -AssemblyName System.Drawing
 
 $sourcePath = 'C:\Users\Owner\Desktop\APP\Icons\Logo Icon Thumbnail.png'
 $targets = @(
-  @{ Path = 'C:\Users\Owner\Documents\_GitHub_\drovik-fitness\public\icon-512.png'; Size = 512 },
-  @{ Path = 'C:\Users\Owner\Documents\_GitHub_\drovik-fitness\public\icon-192.png'; Size = 192 },
-  @{ Path = 'C:\Users\Owner\Documents\_GitHub_\drovik-fitness\public\apple-touch-icon.png'; Size = 180 }
+  @{ Path = 'C:\tmp\drovik-app-icon-512.png'; Size = 512 },
+  @{ Path = 'C:\tmp\drovik-app-icon-192.png'; Size = 192 },
+  @{ Path = 'C:\tmp\drovik-app-icon-180.png'; Size = 180 }
 )
 
 $sourceImage = [System.Drawing.Image]::FromFile($sourcePath)
 
 try {
   foreach ($target in $targets) {
-    $size = [int]$target.Size
+    $targetPath = [string]$target['Path']
+    $size = [int]$target['Size']
     $bitmap = New-Object System.Drawing.Bitmap $size, $size
     $bitmap.SetResolution($sourceImage.HorizontalResolution, $sourceImage.VerticalResolution)
 
@@ -25,9 +26,7 @@ try {
       $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
       $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
       $graphics.DrawImage($sourceImage, 0, 0, $size, $size)
-      $tempPath = "$($target.Path).tmp.png"
-      $bitmap.Save($tempPath, [System.Drawing.Imaging.ImageFormat]::Png)
-      Move-Item -LiteralPath $tempPath -Destination ([string]$target.Path) -Force
+      $bitmap.Save($targetPath, [System.Drawing.Imaging.ImageFormat]::Png)
     } finally {
       $graphics.Dispose()
       $bitmap.Dispose()
