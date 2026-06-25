@@ -14,6 +14,7 @@ import WorkoutLogger from '../components/WorkoutLogger'
 import ErrorBoundary from '../components/ErrorBoundary'
 import { Button } from '../components/ui'
 import { useToast } from '../contexts/ToastContext'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 const STALE_WORKOUT_HOURS = 12
 const STALE_WORKOUT_MS = STALE_WORKOUT_HOURS * 60 * 60 * 1000
@@ -95,15 +96,12 @@ export default function Log() {
               <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
             </svg>
           </button>
+          <PremiumIconTile name="workout" tone="gold" size="md" usage="card" active />
           <h1 className="text-2xl font-extrabold text-app-text">Log Workout</h1>
         </div>
 
         <div className="rounded-card bg-app-surface border border-amber-200 px-4 py-5 shadow-card">
-          <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mb-4">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.7} className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
+          <PremiumIconTile name="date" tone="gold" size="lg" usage="card" active className="mb-4" iconSize={34} />
           <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-1">Workout left open</p>
           <h2 className="text-xl font-extrabold text-app-text mb-2">{activeDay?.name ?? 'Free Workout'}</h2>
           <p className="text-sm text-app-muted mb-5">
@@ -246,9 +244,10 @@ export default function Log() {
             <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="workout" tone="gold" size="md" usage="card" active />
         <h1 className="text-2xl font-extrabold text-app-text">Log Workout</h1>
       </div>
-      <p className="text-app-muted text-sm mb-6 pl-12">{dateLabel}</p>
+      <p className="text-app-muted text-sm mb-6 pl-[6.5rem] md:pl-[6.75rem]">{dateLabel}</p>
 
       {/* ── Active program days ── */}
       {activeProgram && programDays && programDays.length > 0 && (
@@ -270,11 +269,7 @@ export default function Log() {
                 disabled={starting}
                 className="w-full flex items-center gap-4 rounded-2xl bg-app-card border border-app-border px-4 py-4 text-left active:bg-accent-light disabled:opacity-60"
               >
-                <div className="flex-none w-10 h-10 rounded-xl bg-accent-light flex items-center justify-center text-accent-dark">
-                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
+                <PremiumIconTile name="program" tone="gold" size="sm" usage="button" active />
 
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-app-text truncate">{day.name}</p>
@@ -305,11 +300,7 @@ export default function Log() {
         disabled={starting}
         className="w-full flex items-center gap-4 rounded-2xl border-2 border-dashed border-app-border px-4 py-4 text-left active:border-accent disabled:opacity-60"
       >
-        <div className="flex-none w-10 h-10 rounded-xl bg-app-card border border-app-border flex items-center justify-center text-app-faint">
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
-            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-          </svg>
-        </div>
+        <PremiumIconTile name="plus" tone="gold" size="sm" usage="button" active />
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-sm text-app-text">Start Empty Workout</p>
           <p className="text-xs text-app-muted mt-0.5">Free workout, no programme</p>

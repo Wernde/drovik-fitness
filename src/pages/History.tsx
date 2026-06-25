@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import { formatDuration } from '../lib/utils'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 function isoDate(d: Date) { return d.toISOString().slice(0, 10) }
 
@@ -233,7 +234,10 @@ export default function History() {
 
   return (
     <div className="page-x pt-6">
-      <h1 className="text-2xl font-extrabold text-app-text mb-5">History</h1>
+      <div className="flex items-center gap-3 mb-5">
+        <PremiumIconTile name="history" tone="gold" size="md" usage="card" active />
+        <h1 className="text-2xl font-extrabold text-app-text">History</h1>
+      </div>
 
       {/* ── Year heatmap ── */}
       <YearHeatmap

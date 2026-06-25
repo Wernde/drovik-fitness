@@ -12,7 +12,7 @@ import { supabase } from '../lib/supabase'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
 import { useUnits, } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel, displayToKg } from '../lib/units'
-import BrandIcon, { brandIconTileStyle } from '../components/BrandIcon'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -329,11 +329,10 @@ export default function Home() {
         </div>
         <Link
           to="/settings"
-          className="w-11 h-11 rounded-card border flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
-          style={brandIconTileStyle('steel')}
+          className="flex-shrink-0 active:scale-95 transition-transform"
           aria-label="Settings"
         >
-          <BrandIcon name="settings" tone="steel" size={33} />
+          <PremiumIconTile name="settings" tone="steel" size="md" usage="button" active iconSize={33} />
         </Link>
       </div>
 
@@ -377,12 +376,7 @@ export default function Home() {
           <p className="text-base font-extrabold text-app-text mb-2">Today's Nutrition</p>
           <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
             <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-app-bg">
-              <div
-                className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
-                style={brandIconTileStyle('flame')}
-              >
-                <BrandIcon name="nutrition" tone="flame" size={30} />
-              </div>
+              <PremiumIconTile name="nutrition" tone="flame" size="sm" usage="card" active iconSize={30} />
               <div className="flex-1">
                 <p className="text-sm font-bold text-app-text">Daily Nutrition</p>
                 <p className="text-xs text-app-muted">{todayFoodTotals ? 'From food diary' : 'Tap to log food'}</p>
@@ -446,24 +440,14 @@ export default function Home() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Sessions this week */}
             <Link to="/history" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div
-                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
-                style={brandIconTileStyle('blue')}
-              >
-                <BrandIcon name="history" tone="blue" size={30} />
-              </div>
+              <PremiumIconTile name="history" tone="blue" size="sm" usage="card" active className="mb-2" iconSize={30} />
               <p className="text-xs text-app-muted mb-1">Sessions this week</p>
               <p className="text-2xl font-extrabold text-app-text">{data?.weekStats.sessions ?? 0}</p>
               <p className="text-xs text-app-muted mt-0.5">workouts</p>
             </Link>
             {/* Body Weight */}
             <Link to="/body" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div
-                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
-                style={brandIconTileStyle('steel')}
-              >
-                <BrandIcon name="body" tone="steel" size={30} />
-              </div>
+              <PremiumIconTile name="body" tone="steel" size="sm" usage="card" active className="mb-2" iconSize={30} />
               <p className="text-xs text-app-muted mb-1">Body Weight</p>
               <p className="text-2xl font-extrabold text-app-text">
                 {wt != null ? `${kgToDisplay(wt, units.weight)}` : '—'}
@@ -473,12 +457,7 @@ export default function Home() {
             </Link>
             {/* Volume this week */}
             <Link to="/progress" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div
-                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
-                style={brandIconTileStyle('purple')}
-              >
-                <BrandIcon name="progress" tone="purple" size={30} />
-              </div>
+              <PremiumIconTile name="progress" tone="gold" size="sm" usage="card" active className="mb-2" iconSize={30} />
               <p className="text-xs text-app-muted mb-1">Volume this week</p>
               <p className="text-2xl font-extrabold text-app-text">
                 {data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—'}
@@ -487,12 +466,7 @@ export default function Home() {
             </Link>
             {/* Calorie intake */}
             <Link to="/nutrition" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <div
-                className="w-10 h-10 rounded-card border flex items-center justify-center mb-2"
-                style={brandIconTileStyle('flame')}
-              >
-                <BrandIcon name="meal" tone="flame" size={30} />
-              </div>
+              <PremiumIconTile name="meal" tone="flame" size="sm" usage="card" active className="mb-2" iconSize={30} />
               <p className="text-xs text-app-muted mb-1">Calorie Intake</p>
               <p className="text-2xl font-extrabold text-app-text">
                 {cals > 0 ? cals.toLocaleString() : '—'}
@@ -506,12 +480,7 @@ export default function Home() {
         {/* ── Track Water ───────────────────────────────────────────── */}
         <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
           <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-            <div
-              className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
-              style={brandIconTileStyle('blue')}
-            >
-              <BrandIcon name="water" tone="blue" size={30} />
-            </div>
+            <PremiumIconTile name="water" tone="blue" size="sm" usage="card" active iconSize={30} />
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Track Water</p>
               <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)}</p>
@@ -619,12 +588,7 @@ export default function Home() {
         {/* ── Body Stats ────────────────────────────────────────────── */}
         <div className="bg-app-surface rounded-card border border-app-border p-4">
           <div className="flex items-center gap-3 mb-3">
-            <div
-              className="w-10 h-10 rounded-card border flex items-center justify-center flex-shrink-0"
-              style={brandIconTileStyle('steel')}
-            >
-              <BrandIcon name="body" tone="steel" size={30} />
-            </div>
+            <PremiumIconTile name="body" tone="steel" size="sm" usage="card" active iconSize={30} />
             <div className="flex-1">
               <p className="text-sm font-bold text-app-text">Body Stats</p>
               <p className="text-xs text-app-muted">Log today's weight</p>
@@ -662,8 +626,13 @@ export default function Home() {
           {data?.activeSession ? (
             <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
               <div className="px-5 py-5">
-                <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-1">In Progress</p>
-                <p className="text-2xl font-extrabold text-white mb-4">Resume Workout</p>
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-1">In Progress</p>
+                    <p className="text-2xl font-extrabold text-white leading-tight">Resume Workout</p>
+                  </div>
+                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
+                </div>
                 <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
                   Continue
@@ -680,12 +649,17 @@ export default function Home() {
               <div className="px-5 py-5 relative overflow-hidden">
                 {/* Decorative circle */}
                 <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">
-                  Workout · {data.activeProgram.name}
-                </p>
-                <p className="text-2xl font-extrabold text-white mb-3 leading-tight">
-                  {starting ? 'Starting…' : data.nextDay.name}
-                </p>
+                <div className="relative z-10 flex items-start justify-between gap-4 mb-3">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">
+                      Workout · {data.activeProgram.name}
+                    </p>
+                    <p className="text-2xl font-extrabold text-white leading-tight">
+                      {starting ? 'Starting…' : data.nextDay.name}
+                    </p>
+                  </div>
+                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
+                </div>
                 {startError && (
                   <p className="text-xs text-red-400 mb-2">{startError}</p>
                 )}
@@ -709,8 +683,13 @@ export default function Home() {
             <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
               <div className="px-5 py-5 relative overflow-hidden">
                 <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Free Workout</p>
-                <p className="text-2xl font-extrabold text-white mb-4">Start Workout</p>
+                <div className="relative z-10 flex items-start justify-between gap-4 mb-4">
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Free Workout</p>
+                    <p className="text-2xl font-extrabold text-white leading-tight">Start Workout</p>
+                  </div>
+                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
+                </div>
                 <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
                   <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
                   Start Now
