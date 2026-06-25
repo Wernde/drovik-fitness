@@ -36,13 +36,15 @@
   --color-error-text:   #F87171;
   --color-neutral-bg:   #130E20;
   --color-neutral-text: #A78BFA;
+  --color-icon-tile:       #F5F0E4;
+  --color-icon-tile-muted: #DDD6C7;
+  --color-icon-tile-deep:  #BFB4A4;
 
   --muscle-body: #4A4A52;
   --muscle-hi:   #FBBF24;
-  --premium-icon-filter: saturate(1.08);
 }
 
-/* Dark mode intentionally disabled — app always uses the light theme */
+/* Theme mode is controlled from Settings. */
 
 /* ── Bottom-nav clearance ────────────────────────────────────────────────────
    Applied to <main> in Layout. Pages must NOT add pb-24 on top of this —

@@ -305,7 +305,7 @@ export default function Settings() {
         <h2 className="text-xs font-semibold text-app-muted uppercase tracking-wider mb-3">Appearance</h2>
         <div className="rounded-card bg-app-surface border border-app-border px-4 py-4">
           <p className="text-sm font-semibold text-app-text mb-1">Mode</p>
-          <div className="grid grid-cols-2 gap-3 mb-5">
+          <div className="grid grid-cols-2 gap-3">
             {([
               { id: 'dark', label: 'Dark', detail: 'Carbon', themeId: DARK_THEME_ID },
               { id: 'light', label: 'Light', detail: 'Off-white', themeId: LIGHT_THEME_ID },
@@ -349,63 +349,6 @@ export default function Settings() {
                       <span className="block text-xs font-medium text-app-muted">{option.detail}</span>
                     </span>
                   </div>
-                </button>
-              )
-            })}
-          </div>
-          <div className="h-px bg-app-border mb-4" />
-          <p className="text-sm font-semibold text-app-text mb-1">Colour theme</p>
-          <p className="text-xs text-app-muted mb-4">Tap any theme to fine-tune the app palette.</p>
-          <div className="grid grid-cols-3 gap-3">
-            {THEMES.map((theme) => {
-              const isActive = activeThemeId === theme.id
-              return (
-                <button
-                  key={theme.id}
-                  type="button"
-                  aria-pressed={isActive}
-                  onClick={() => handleThemeChange(theme.id)}
-                  className="flex flex-col items-center gap-2 active:scale-95 transition-transform"
-                >
-                  {/* Mini app preview */}
-                  <div
-                    className="w-full rounded-card overflow-hidden"
-                    style={{
-                      background: theme.appBg,
-                      outline: isActive ? `3px solid ${theme.accent}` : `1.5px solid ${theme.appBorder}`,
-                      outlineOffset: isActive ? '2px' : '0px',
-                    }}
-                  >
-                    {/* Fake top bar */}
-                    <div
-                      className="px-2 pt-2 pb-1.5 flex items-center gap-1"
-                      style={{ borderBottom: `1px solid ${theme.appBorder}` }}
-                    >
-                      <div className="w-3 h-3 rounded-full" style={{ background: theme.accent }} />
-                      <div className="flex-1 h-1.5 rounded-full" style={{ background: theme.appMuted + '40' }} />
-                    </div>
-                    {/* Fake card */}
-                    <div className="p-2 flex flex-col gap-1.5">
-                      <div
-                        className="rounded-input p-2 flex flex-col gap-1"
-                        style={{ background: theme.appCard, border: `1px solid ${theme.appBorder}` }}
-                      >
-                        <div className="h-1.5 rounded-full w-10" style={{ background: theme.appText + '70' }} />
-                        <div className="h-1 rounded-full w-7" style={{ background: theme.appMuted + '60' }} />
-                      </div>
-                      {/* Fake accent button */}
-                      <div
-                        className="h-4 rounded-lg"
-                        style={{ background: theme.accent }}
-                      />
-                    </div>
-                  </div>
-                  <p
-                    className="text-[11px] font-bold"
-                    style={{ color: isActive ? theme.accent : 'var(--color-app-muted)' }}
-                  >
-                    {theme.name}
-                  </p>
                 </button>
               )
             })}

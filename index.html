@@ -114,7 +114,7 @@
       })();
     </script>
 
-    <!-- Restore saved colour theme before React paints (prevents flash) -->
+    <!-- Restore saved mode before React paints (prevents flash) -->
     <script>
       (function () {
         try {
@@ -125,39 +125,8 @@
               text:'#EDEDF2', muted:'#9090A0', faint:'#3C3C48', disabled:'#2C2C38',
               successBg:'#0F2818', successText:'#22C55E', infoBg:'#0A1830', infoText:'#60A5FA',
               warningBg:'#1E1608', warningText:'#FBBF24', errorBg:'#1E0A10', errorText:'#F87171',
-              neutralBg:'#130E20', neutralText:'#A78BFA', icon:'saturate(1.08)', dark:true
-            },
-            volt: {
-              a:'#84CC16', ad:'#65A30D', ax:'#4D7C0F', al:'#0C1600', label:'#84CC16',
-              bg:'#0E1410', card:'#181F19', raised:'#212A22', border:'#2C3A2E', borderSubtle:'#242E26',
-              text:'#EBF2EC', muted:'#7A9480', faint:'#2A3C2C', disabled:'#1E2C20',
-              successBg:'#0A2010', successText:'#22C55E', infoBg:'#0A1428', infoText:'#60A5FA',
-              warningBg:'#1C1608', warningText:'#FBBF24', errorBg:'#1C0A0E', errorText:'#F87171',
-              neutralBg:'#0E0820', neutralText:'#A78BFA', icon:'hue-rotate(68deg) saturate(1.22)', dark:true
-            },
-            blaze: {
-              a:'#F97316', ad:'#EA580C', ax:'#C2410C', al:'#1E0C00', label:'#F97316',
-              bg:'#130F09', card:'#1E1710', raised:'#272015', border:'#362C1C', borderSubtle:'#2C2418',
-              text:'#F2EEE6', muted:'#9A8C78', faint:'#382C18', disabled:'#281E10',
-              successBg:'#0F2818', successText:'#22C55E', infoBg:'#0A1428', infoText:'#60A5FA',
-              warningBg:'#1E1200', warningText:'#FBBF24', errorBg:'#1E0A0E', errorText:'#F87171',
-              neutralBg:'#110820', neutralText:'#A78BFA', icon:'hue-rotate(10deg) saturate(1.12)', dark:true
-            },
-            surge: {
-              a:'#60A5FA', ad:'#3B82F6', ax:'#2563EB', al:'#0A1830', label:'#60A5FA',
-              bg:'#0A0E18', card:'#131B2C', raised:'#1C2640', border:'#253552', borderSubtle:'#1C2A44',
-              text:'#E4EEFF', muted:'#7090B8', faint:'#1C2C44', disabled:'#142238',
-              successBg:'#0A2018', successText:'#22C55E', infoBg:'#0A1430', infoText:'#60A5FA',
-              warningBg:'#1C1608', warningText:'#FBBF24', errorBg:'#1C0A0E', errorText:'#F87171',
-              neutralBg:'#10082A', neutralText:'#A78BFA', icon:'hue-rotate(188deg) saturate(1.32)', dark:true
-            },
-            crimson: {
-              a:'#F43F5E', ad:'#E11D48', ax:'#BE123C', al:'#200010', label:'#F43F5E',
-              bg:'#120A0E', card:'#1C1018', raised:'#261824', border:'#362030', borderSubtle:'#2A1828',
-              text:'#F5ECF0', muted:'#9A8090', faint:'#3A1830', disabled:'#281020',
-              successBg:'#0A2018', successText:'#22C55E', infoBg:'#0A1428', infoText:'#60A5FA',
-              warningBg:'#1C1608', warningText:'#FBBF24', errorBg:'#1E0A10', errorText:'#F87171',
-              neutralBg:'#100820', neutralText:'#A78BFA', icon:'hue-rotate(318deg) saturate(1.22)', dark:true
+              neutralBg:'#130E20', neutralText:'#A78BFA',
+              iconTile:'#F5F0E4', iconTileMuted:'#DDD6C7', iconTileDeep:'#BFB4A4', dark:true
             },
             arctic: {
               a:'#4F46E5', ad:'#4338CA', ax:'#312E81', al:'#EEF2FF', label:'#4338CA',
@@ -165,7 +134,8 @@
               text:'#17172F', muted:'#5D6187', faint:'#C6C9DB', disabled:'#B8BCCE',
               successBg:'#F0FDF4', successText:'#15803D', infoBg:'#EEF2FF', infoText:'#4338CA',
               warningBg:'#FFFBEB', warningText:'#B45309', errorBg:'#FEF2F2', errorText:'#B91C1C',
-              neutralBg:'#F5F3FF', neutralText:'#4F46E5', icon:'hue-rotate(218deg) saturate(1.18)', dark:false
+              neutralBg:'#F5F3FF', neutralText:'#4F46E5',
+              iconTile:'#FFFFFF', iconTileMuted:'#EEF0F6', iconTileDeep:'#DDE2EE', dark:false
             },
           };
           var id = localStorage.getItem('drovik:theme') || 'carbon';
@@ -196,9 +166,11 @@
             '--color-error-text': t.errorText,
             '--color-neutral-bg': t.neutralBg,
             '--color-neutral-text': t.neutralText,
+            '--color-icon-tile': t.iconTile,
+            '--color-icon-tile-muted': t.iconTileMuted,
+            '--color-icon-tile-deep': t.iconTileDeep,
             '--muscle-body': t.dark ? '#4A4A52' : '#C8C8DC',
-            '--muscle-hi': t.a,
-            '--premium-icon-filter': t.icon
+            '--muscle-hi': t.a
           };
           Object.keys(vars).forEach(function (name) {
             s.setProperty(name, vars[name]);

@@ -18,7 +18,7 @@ function NavIconShell({
 }: NavIconProps & { tone: BrandIconTone; icon: BrandIconName }) {
   return (
     <span
-      className="relative w-9 h-9 rounded-2xl border flex items-center justify-center overflow-hidden transition-all"
+      className="relative w-9 h-9 rounded-2xl border-2 flex items-center justify-center overflow-hidden transition-all"
       style={brandIconTileStyle(tone, active)}
       aria-hidden="true"
     >
