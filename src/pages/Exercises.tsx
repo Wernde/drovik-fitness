@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, type Exercise, type ExerciseCategory } from '../db/db'
 import ExerciseForm from '../components/ExerciseForm'
-import MuscleIcon from '../components/MuscleIcon'
+import { ExerciseThumb } from '../components/ExerciseThumb'
+import { PremiumIconTile } from '../components/BrandIcon'
 import { getYouTubeId, getYouTubeThumbnail } from '../lib/youtube'
 import { filterExercises } from '../lib/exerciseSearch'
 
@@ -105,14 +106,13 @@ export default function Exercises() {
             <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="exercises" tone="gold" size="md" usage="card" active />
         <h1 className="flex-1 text-2xl font-extrabold text-app-text">Exercises</h1>
         <button
           onClick={openAdd}
           className="flex items-center gap-1.5 rounded-2xl bg-accent text-app-text px-4 py-2 text-sm font-bold active:bg-accent-dark"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
-            <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-          </svg>
+          <PremiumIconTile name="plus" tone="gold" size="xs" usage="button" active iconSize={18} />
           Add
         </button>
       </div>
@@ -186,9 +186,9 @@ export default function Exercises() {
             <li key={exercise.id}>
               {confirmDelete !== exercise.id ? (
                 <div className={`flex items-center gap-3 rounded-2xl bg-app-card pl-0 pr-3 py-0 overflow-hidden border border-app-border border-l-4 ${ACCENT[exercise.category]}`}>
-                  {/* Muscle icon */}
-                  <div className="flex-none flex items-center justify-center w-12 py-2 pl-3">
-                    <MuscleIcon muscleGroup={exercise.muscleGroup} width={28} height={42} />
+                  {/* Exercise category icon */}
+                  <div className="flex-none flex items-center justify-center w-14 py-2 pl-3">
+                    <ExerciseThumb category={exercise.category} />
                   </div>
 
                   {/* Name + badge */}

@@ -10,6 +10,7 @@ import {
   kgToDisplay, displayToKg, weightLabel,
   cmToDisplay, displayToCm, measurementLabel,
 } from '../lib/units'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -301,12 +302,14 @@ export default function BodyStats() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
           </svg>
         </button>
+        <PremiumIconTile name="body" tone="steel" size="md" usage="card" active />
         <h1 className="text-2xl font-extrabold text-app-text flex-1">Body Stats</h1>
         <button
           onClick={() => setLogOpen(true)}
-          className="bg-accent text-app-text text-sm font-bold px-4 py-2 rounded-full active:bg-accent-dark"
+          className="bg-accent text-app-text text-sm font-bold pl-1.5 pr-4 py-1.5 rounded-full active:bg-accent-dark flex items-center gap-2"
         >
-          + Log
+          <PremiumIconTile name="plus" tone="gold" size="xs" usage="button" active iconSize={18} />
+          Log
         </button>
       </div>
 

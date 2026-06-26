@@ -11,6 +11,7 @@ import { db } from '../db/db'
 import { useSyncStatus } from '../sync/useSyncStatus'
 import { THEMES, DARK_THEME_ID, LIGHT_THEME_ID, saveTheme, getActiveThemeId } from '../lib/themes'
 import { Button } from '../components/ui'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 const SUPABASE_URL  = import.meta.env.VITE_SUPABASE_URL  as string
 const SUPABASE_ANON = import.meta.env.VITE_SUPABASE_ANON_KEY as string
@@ -297,6 +298,7 @@ export default function Settings() {
             <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="settings" tone="steel" size="md" usage="card" active />
         <h1 className="text-2xl font-extrabold text-app-text">Settings</h1>
       </div>
 

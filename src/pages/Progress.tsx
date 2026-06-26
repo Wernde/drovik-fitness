@@ -18,6 +18,7 @@ import MiniLineChart from '../components/MiniLineChart'
 import { db, now, today } from '../db/db'
 import type { Exercise, NutritionLog, BodyMeasurementLog } from '../db/db'
 import HabitsTab from '../components/HabitsTab'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -856,14 +857,13 @@ export default function Progress() {
             <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="progress" tone="gold" size="md" usage="card" active />
         <h1 className="flex-1 text-2xl font-extrabold text-app-text">Progress</h1>
         <button
           onClick={() => navigate('/body')}
-          className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full px-3 py-1.5 text-xs font-semibold text-app-text active:bg-app-border"
+          className="flex items-center gap-1.5 bg-app-card border border-app-border rounded-full pl-1.5 pr-3 py-1.5 text-xs font-semibold text-app-text active:bg-app-border"
         >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 text-accent-dark">
-            <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clipRule="evenodd" />
-          </svg>
+          <PremiumIconTile name="body" tone="steel" size="xs" usage="button" active iconSize={18} />
           Body Stats
         </button>
       </div>

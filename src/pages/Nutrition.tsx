@@ -16,6 +16,7 @@ import {
 } from '../lib/tdee'
 import { useUnits } from '../contexts/UnitsContext'
 import { mlToDisplay, waterLabel, kgToDisplay, weightLabel } from '../lib/units'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -532,7 +533,10 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
     <div className="flex flex-col gap-4">
       {/* Macro summary card */}
       <div className="bg-app-card rounded-2xl border border-app-border p-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-3">Nutrition</p>
+        <div className="flex items-center gap-3 mb-3">
+          <PremiumIconTile name="nutrition" tone="flame" size="sm" usage="card" active iconSize={30} />
+          <p className="text-xs font-bold uppercase tracking-wide text-app-muted">Nutrition</p>
+        </div>
         <div className="grid grid-cols-4 gap-2">
           {[
             { label: 'Calories', value: fmtInt(totals.calories), unit: 'kcal', target: targets?.calories, color: 'bg-accent' },
@@ -571,13 +575,16 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
         return (
           <div key={meal} className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
             <div className="flex items-center justify-between px-4 pt-3 pb-2">
-              <div>
-                <p className="text-sm font-extrabold text-app-text">{MEAL_LABELS[meal]}</p>
-                {mealLogs.length > 0 && (
-                  <p className="text-xs text-app-muted">
-                    {fmtInt(mealTotals.cal)} kcal · {fmt1(mealTotals.pro)}g protein
-                  </p>
-                )}
+              <div className="flex items-center gap-3 min-w-0">
+                <PremiumIconTile name="meal" tone="flame" size="sm" usage="card" active iconSize={28} />
+                <div className="min-w-0">
+                  <p className="text-sm font-extrabold text-app-text">{MEAL_LABELS[meal]}</p>
+                  {mealLogs.length > 0 && (
+                    <p className="text-xs text-app-muted">
+                      {fmtInt(mealTotals.cal)} kcal · {fmt1(mealTotals.pro)}g protein
+                    </p>
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 {/* Camera button */}
@@ -653,11 +660,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
       {/* Water tracking */}
       <div className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
         <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-          <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-blue-500">
-              <path fillRule="evenodd" d="M11.484 2.17a.75.75 0 011.032 0 11.209 11.209 0 017.877 10.58 7.423 7.423 0 01-7.603 7.5c-4.114 0-7.47-3.036-7.47-7.125 0-3.6 2.488-6.7 5.91-7.765a.75.75 0 01.977.702v5.263a.75.75 0 001.5 0V4.14a.75.75 0 01.777-.746z" clipRule="evenodd" />
-            </svg>
-          </div>
+          <PremiumIconTile name="water" tone="blue" size="sm" usage="card" active iconSize={30} />
           <div className="flex-1">
             <p className="text-sm font-bold text-app-text">Water</p>
             <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)} · {mlToDisplay(Math.max(0, WATER_GOAL_ML - waterMl), units.water)} {waterLabel(units.water)} remaining</p>
@@ -1638,7 +1641,10 @@ export default function Nutrition() {
 
   return (
     <div className="page-x pt-5 overflow-x-hidden">
-      <h1 className="text-2xl font-extrabold text-app-text mb-4">Nutrition</h1>
+      <div className="flex items-center gap-3 mb-4">
+        <PremiumIconTile name="nutrition" tone="flame" size="md" usage="card" active />
+        <h1 className="text-2xl font-extrabold text-app-text">Nutrition</h1>
+      </div>
 
       {/* Tab bar */}
       <div className="flex gap-1 bg-app-border/30 rounded-2xl p-1 mb-5">
