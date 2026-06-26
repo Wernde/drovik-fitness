@@ -71,48 +71,6 @@ function SyncDot({ status }: { status: 'idle' | 'syncing' | 'error' }) {
   return null
 }
 
-function HeartbeatLine() {
-  const PATH = 'M0,18 L62,18 L86,18 L100,16 L112,18 L128,18 L150,18 L168,18 L182,6 L196,29 L212,9 L228,18 L278,18 L306,18 L320,16 L332,18 L350,18 L374,18 L389,8 L402,24 L418,13 L434,18 L520,18'
-  return (
-    <svg
-      viewBox="0 0 520 34"
-      preserveAspectRatio="none"
-      className="flex-1 h-5 min-w-0"
-      aria-hidden="true"
-      style={{ filter: 'drop-shadow(0 0 6px rgba(255,110,102,0.18)) drop-shadow(0 0 10px rgba(242,195,93,0.20))' }}
-    >
-      <defs>
-        <linearGradient id="hbGold" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%"   stopColor="#8a550d" />
-          <stop offset="28%"  stopColor="#ebb955" />
-          <stop offset="47%"  stopColor="#ff9a82" />
-          <stop offset="53%"  stopColor="#ff6e66" />
-          <stop offset="60%"  stopColor="#ffd5b0" />
-          <stop offset="74%"  stopColor="#fff0ae" />
-          <stop offset="100%" stopColor="#bd7f1f" />
-        </linearGradient>
-      </defs>
-      {/* Ghost base line */}
-      <path d={PATH} fill="none" stroke="rgba(255,255,255,0.10)" strokeWidth="2" />
-      {/* Animated gold trace */}
-      <path
-        className="heartbeat-live"
-        d={PATH}
-        fill="none"
-        stroke="url(#hbGold)"
-        strokeWidth="2.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={{
-          strokeDasharray: 560,
-          strokeDashoffset: 560,
-          animation: 'heartbeatTrace 2.85s linear infinite',
-        }}
-      />
-    </svg>
-  )
-}
-
 function QuickAddIcon({
   icon,
   tone,
@@ -242,26 +200,25 @@ export default function Layout() {
         <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
-          <aside className="hidden md:flex flex-col w-60 flex-none bg-app-card border-r border-app-border shadow-[8px_0_24px_-22px_rgba(0,0,0,0.45)]">
+          <aside className="hidden md:flex flex-col w-56 flex-none dashboard-sidebar">
 
             {/* Brand */}
-            <div className="px-3 py-3 border-b border-app-border">
-              <div className="rounded-xl bg-[#0D0D0D] px-4 py-3 flex items-center gap-3">
-                <img src={`${BASE}drovik-logo-gold.png`} alt="Drovik Fitness" className="h-7 w-auto flex-shrink-0" />
-                <HeartbeatLine />
+            <div className="px-4 pt-5 pb-4">
+              <div className="brand-logo-shell">
+                <img src={`${BASE}drovik-logo-gold.png`} alt="Drovik Fitness" className="h-12 w-full object-contain" />
                 <SyncDot status={status} />
               </div>
             </div>
 
             {/* Nav items */}
-            <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+            <nav className="flex-1 px-4 py-3 space-y-3 overflow-y-auto">
               {NAV_ITEMS.map(({ to, label, Icon }) => (
                 <NavLink key={to} to={to} end={to === '/'}
                   className={({ isActive }) => [
-                    'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-colors',
+                    'premium-nav-item flex items-center gap-4 px-4 py-3 rounded-card text-sm font-bold transition-all',
                     isActive
-                      ? 'bg-accent text-app-text shadow-sm'
-                      : 'text-app-muted hover:bg-app-bg hover:text-app-text font-semibold',
+                      ? 'is-active text-app-text'
+                      : 'text-app-muted hover:text-app-text font-semibold',
                   ].join(' ')}
                 >
                   {({ isActive }) => (
@@ -292,10 +249,10 @@ export default function Layout() {
             )}
 
             {/* Quick Add button */}
-            <div className="px-3 pb-6 flex-shrink-0">
+            <div className="px-5 pb-6 flex-shrink-0">
               <button
                 onClick={() => setQaOpen((v) => !v)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-orange-200/70 bg-app-surface text-sm font-extrabold text-app-text shadow-sm transition-all hover:bg-app-bg active:scale-[0.99]"
+                className="quick-add-rail-button w-full flex items-center gap-3 px-4 py-3 rounded-card text-sm font-extrabold text-app-text transition-all active:scale-[0.99]"
               >
                 <PremiumIconTile
                   name="plus"

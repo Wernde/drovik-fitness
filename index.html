@@ -120,22 +120,22 @@
         try {
           var T = {
             carbon: {
-              a:'#FBBF24', ad:'#D97706', ax:'#B45309', al:'#1C1400', label:'#FBBF24',
-              bg:'#111115', card:'#1C1C22', raised:'#252530', border:'#303038', borderSubtle:'#28282E',
-              text:'#EDEDF2', muted:'#9090A0', faint:'#3C3C48', disabled:'#2C2C38',
-              successBg:'#0F2818', successText:'#22C55E', infoBg:'#0A1830', infoText:'#60A5FA',
-              warningBg:'#1E1608', warningText:'#FBBF24', errorBg:'#1E0A10', errorText:'#F87171',
-              neutralBg:'#130E20', neutralText:'#A78BFA',
+              a:'#FF7A00', ad:'#EA580C', ax:'#9A3412', al:'#261003', label:'#FF7A00',
+              bg:'#02070B', card:'#07111A', raised:'#0C1824', border:'#243545', borderSubtle:'#162432',
+              text:'#F8FAFC', muted:'#A9B4C0', faint:'#4B5D6D', disabled:'#263545',
+              successBg:'#0A2010', successText:'#22C55E', infoBg:'#031B2C', infoText:'#00A8FF',
+              warningBg:'#261003', warningText:'#FF9A1F', errorBg:'#250A0A', errorText:'#F87171',
+              neutralBg:'#061728', neutralText:'#38BDF8', icon:'saturate(1)',
               iconTile:'#F5F0E4', iconTileMuted:'#DDD6C7', iconTileDeep:'#BFB4A4', dark:true
             },
             arctic: {
-              a:'#0EA5E9', ad:'#0369A1', ax:'#075985', al:'#E0F7FF', label:'#0369A1',
-              bg:'#FAFAFD', card:'#FFFFFF', raised:'#F6F7FC', border:'#E3E5F0', borderSubtle:'#EEF0F6',
-              text:'#17172F', muted:'#5D6187', faint:'#C6C9DB', disabled:'#B8BCCE',
-              successBg:'#F0FDF4', successText:'#15803D', infoBg:'#E0F7FF', infoText:'#0369A1',
-              warningBg:'#FFFBEB', warningText:'#B45309', errorBg:'#FEF2F2', errorText:'#B91C1C',
-              neutralBg:'#FFF7ED', neutralText:'#EA580C',
-              iconTile:'#FFFFFF', iconTileMuted:'#EEF0F6', iconTileDeep:'#DDE2EE', dark:false
+              a:'#FF6B00', ad:'#EA580C', ax:'#C2410C', al:'#FFF1E6', label:'#F25A00',
+              bg:'#F8FBFF', card:'#FFFFFF', raised:'#F0F5FB', border:'#D6E0EA', borderSubtle:'#E8EEF5',
+              text:'#101827', muted:'#4B5565', faint:'#AAB6C4', disabled:'#C6D0DB',
+              successBg:'#F0FDF4', successText:'#15803D', infoBg:'#E6F6FF', infoText:'#0078E7',
+              warningBg:'#FFF1E6', warningText:'#EA580C', errorBg:'#FEF2F2', errorText:'#B91C1C',
+              neutralBg:'#EAF6FF', neutralText:'#0284C7', icon:'saturate(1)',
+              iconTile:'#FFFFFF', iconTileMuted:'#EEF3F8', iconTileDeep:'#DCE5EF', dark:false
             },
           };
           var id = localStorage.getItem('drovik:theme') || 'carbon';
@@ -170,7 +170,8 @@
             '--color-icon-tile-muted': t.iconTileMuted,
             '--color-icon-tile-deep': t.iconTileDeep,
             '--muscle-body': t.dark ? '#4A4A52' : '#C8C8DC',
-            '--muscle-hi': t.a
+            '--muscle-hi': t.a,
+            '--premium-icon-filter': t.icon
           };
           Object.keys(vars).forEach(function (name) {
             s.setProperty(name, vars[name]);

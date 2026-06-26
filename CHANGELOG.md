@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Reference Dashboard Modes
+
+### Changed
+- **Home dashboard matched to supplied dark/light references** - rebuilt the Home screen into the premium Drovik layout with the left rail, date strip, nutrition band, weekly stats, water graph, lower action cards, workout hero, and right-side status rail.
+- **Logo treatment cleaned up** - removed the heartbeat line and black logo pill from the sidebar, resized the Drovik logo, and kept the background transparent.
+- **Theme system simplified** - Settings now exposes only Dark and Light modes, using the logo's orange and electric-blue palette in both modes with no purple colour theme.
+- **Icon wrapper completed** - added the shared premium icon tile wrapper in this checkout so nav, buttons, cards, and dashboard surfaces use consistent chrome/orange/blue icon containers without modifying the approved icon files.
+
+---
+
 ## Premium Icon Integration Completion
 
 ### Changed

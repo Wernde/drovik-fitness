@@ -1,8 +1,9 @@
 /**
- * Home (Dash) — main dashboard.
+ * Home (Dash) - premium Drovik dashboard.
  */
 
 import { useState, useMemo, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, now, today } from '../db/db'
@@ -10,19 +11,16 @@ import type { WorkoutDay } from '../db/db'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
-import { useUnits, } from '../contexts/UnitsContext'
+import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel, displayToKg } from '../lib/units'
 import { PremiumIconTile } from '../components/BrandIcon'
-
-// ── Constants ─────────────────────────────────────────────────────────────────
+import type { BrandIconName, BrandIconTone } from '../components/BrandIcon'
 
 const WATER_GOAL_ML = 2500
 const DEFAULT_GOALS = { calories: 2400, proteinG: 150, carbsG: 250, fatG: 70 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 function getWeekBounds() {
-  const d   = new Date()
+  const d = new Date()
   const mon = new Date(d)
   mon.setDate(d.getDate() - ((d.getDay() + 6) % 7))
   mon.setHours(0, 0, 0, 0)
@@ -31,8 +29,6 @@ function getWeekBounds() {
   const fmt = (dt: Date) => dt.toISOString().slice(0, 10)
   return { from: fmt(mon), to: fmt(sun) }
 }
-
-// formatVolume is handled by fmtVolume from units lib (unit-aware)
 
 function buildDateStrip() {
   const t = new Date()
@@ -45,23 +41,26 @@ function buildDateStrip() {
     d.setDate(mon.getDate() + i)
     return {
       date: d,
-      iso:  d.toISOString().slice(0, 10),
-      dow:  d.toLocaleDateString('en-AU', { weekday: 'short' }).toUpperCase(),
+      iso: d.toISOString().slice(0, 10),
+      dow: d.toLocaleDateString('en-AU', { weekday: 'short' }).toUpperCase(),
     }
   })
 }
 
-// Simple SVG donut — r=20, viewBox 48×48
-function Donut({ pct, color, size = 64 }: { pct: number; color: string; size?: number }) {
-  const r   = 20
-  const c   = 2 * Math.PI * r
+function Donut({ pct, color, size = 66 }: { pct: number; color: string; size?: number }) {
+  const r = 20
+  const c = 2 * Math.PI * r
   const arc = Math.min(pct / 100, 1) * c
   return (
-    <svg width={size} height={size} viewBox="0 0 48 48">
-      <circle cx="24" cy="24" r={r} fill="none" stroke="var(--color-app-border)" strokeWidth="5" />
+    <svg width={size} height={size} viewBox="0 0 48 48" className="drop-shadow-sm">
+      <circle cx="24" cy="24" r={r} fill="none" stroke="var(--dash-ring-track)" strokeWidth="5" />
       <circle
-        cx="24" cy="24" r={r} fill="none"
-        stroke={color} strokeWidth="5"
+        cx="24"
+        cy="24"
+        r={r}
+        fill="none"
+        stroke={color}
+        strokeWidth="5"
         strokeDasharray={`${arc} ${c}`}
         strokeLinecap="round"
         transform="rotate(-90 24 24)"
@@ -70,22 +69,111 @@ function Donut({ pct, color, size = 64 }: { pct: number; color: string; size?: n
   )
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+function SectionTitle({ children }: { children: ReactNode }) {
+  return <h2 className="text-sm font-extrabold uppercase tracking-wide text-app-text">{children}</h2>
+}
+
+function MetricRing({
+  label,
+  value,
+  target,
+  pct,
+  color,
+}: {
+  label: string
+  value: string
+  target: string
+  pct: number
+  color: string
+}) {
+  return (
+    <div className="metric-ring flex items-center gap-3 min-w-0">
+      <div className="relative flex-none">
+        <Donut pct={pct} color={color} />
+        <p className="absolute inset-0 flex items-center justify-center text-xl font-extrabold text-app-text leading-none">{value}</p>
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-extrabold uppercase text-app-text">{label}</p>
+        <p className="text-xs font-medium text-app-muted">{target}</p>
+      </div>
+    </div>
+  )
+}
+
+function StatCard({
+  icon,
+  tone,
+  label,
+  value,
+  detail,
+  to,
+}: {
+  icon: BrandIconName
+  tone: BrandIconTone
+  label: string
+  value: string
+  detail: string
+  to: string
+}) {
+  return (
+    <Link to={to} className="dashboard-panel flex items-center gap-4 p-4 min-h-[108px] active:scale-[0.99] transition-transform">
+      <PremiumIconTile name={icon} tone={tone} size="lg" usage="card" active iconSize={38} />
+      <div className="min-w-0">
+        <p className="text-xs font-extrabold uppercase text-app-muted">{label}</p>
+        <p className="text-2xl font-extrabold text-accent-label leading-tight">{value}</p>
+        <p className="text-sm font-medium text-app-muted leading-tight whitespace-pre-line">{detail}</p>
+      </div>
+    </Link>
+  )
+}
+
+function WaterGraph({ pct }: { pct: number }) {
+  const width = Math.max(0, Math.min(100, pct))
+  return (
+    <div className="water-graph">
+      <svg viewBox="0 0 1000 86" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 56 C80 18 145 80 225 42 C300 8 358 82 440 44 C520 10 585 72 665 38 C750 2 825 70 1000 35 L1000 86 L0 86 Z" className="water-fill" style={{ clipPath: `inset(0 ${100 - width}% 0 0)` }} />
+        <path d="M0 56 C80 18 145 80 225 42 C300 8 358 82 440 44 C520 10 585 72 665 38 C750 2 825 70 1000 35" className="water-line" />
+        {Array.from({ length: 31 }, (_, i) => (
+          <line key={i} x1={i * 33.3} x2={i * 33.3} y1="66" y2={i % 5 === 0 ? '84' : '76'} className="water-tick" />
+        ))}
+      </svg>
+      <div className="flex justify-between text-xs font-medium text-app-muted px-1">
+        <span>0</span>
+        <span>750</span>
+        <span>1500</span>
+        <span>2500</span>
+      </div>
+    </div>
+  )
+}
+
+function RailCard({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return <aside className={`dashboard-panel p-5 ${className}`}>{children}</aside>
+}
+
+function OutlineButton({ children, to }: { children: ReactNode; to: string }) {
+  return (
+    <Link to={to} className="inline-flex items-center justify-center rounded-input border border-orange-500/80 px-5 py-2.5 text-sm font-extrabold text-accent-label shadow-[0_0_16px_-10px_rgba(255,112,0,0.9)] transition hover:bg-accent-light active:scale-[0.98]">
+      {children}
+    </Link>
+  )
+}
 
 export default function Home() {
   const { session } = useAuth()
-  const navigate    = useNavigate()
-  const { units }   = useUnits()
-  const [starting,    setStarting]    = useState(false)
-  const [startError,  setStartError]  = useState<string | null>(null)
+  const navigate = useNavigate()
+  const { units } = useUnits()
+  const [starting, setStarting] = useState(false)
+  const [startError, setStartError] = useState<string | null>(null)
   const [weightInput, setWeightInput] = useState('')
-  const [savingWt,    setSavingWt]    = useState(false)
-  const [avatarUrl,   setAvatarUrl]   = useState<string | null>(null)
+  const [savingWt, setSavingWt] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
 
-  const email       = session?.user?.email ?? ''
-  const rawName     = email.split('@')[0].split(/[._\-]/)[0]
+  const email = session?.user?.email ?? ''
+  const rawName = email.split('@')[0].split(/[._\-]/)[0]
   const displayName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
-  const initials    = displayName.slice(0, 2).toUpperCase()
+  const initials = displayName.slice(0, 2).toUpperCase()
 
   useEffect(() => {
     if (!session) return
@@ -93,12 +181,9 @@ export default function Home() {
       .then(({ data }) => { if (data?.avatar_url) setAvatarUrl(data.avatar_url) })
   }, [session])
 
-  const todayIso  = today()
+  const todayIso = today()
   const dateStrip = buildDateStrip()
-
-  const todayLabel = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long' })
-
-  // ── DB queries ────────────────────────────────────────────────────────────
+  const fullDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
 
   const data = useLiveQuery(async () => {
     const [activeProgram, activeSession, allSessions] = await Promise.all([
@@ -107,12 +192,11 @@ export default function Home() {
       db.workoutSessions.filter((s) => !s.deleted && s.finishedAt !== null).toArray(),
     ])
 
-    const sorted         = allSessions.sort((a, b) => b.startedAt.localeCompare(a.startedAt))
+    const sorted = allSessions.sort((a, b) => b.startedAt.localeCompare(a.startedAt))
     const sessionDateSet = new Set(allSessions.map((s) => s.date))
-
-    // Next recommended day
     let nextDay: WorkoutDay | null = null
     let nextDayExCount = 0
+
     if (activeProgram) {
       const programDays = await db.workoutDays
         .where('programId').equals(activeProgram.id)
@@ -129,6 +213,7 @@ export default function Home() {
           nextDay = programDays[0]
         }
       }
+
       if (nextDay) {
         nextDayExCount = await db.dayExercises
           .where('workoutDayId').equals(nextDay.id)
@@ -137,9 +222,8 @@ export default function Home() {
       }
     }
 
-    // Weekly stats
     const { from, to } = getWeekBounds()
-    const weekSessions  = allSessions.filter((s) => s.date >= from && s.date <= to)
+    const weekSessions = allSessions.filter((s) => s.date >= from && s.date <= to)
     let weekVolume = 0
     if (weekSessions.length > 0) {
       const weekIds = new Set(weekSessions.map((s) => s.id))
@@ -147,8 +231,8 @@ export default function Home() {
         .filter((se) => !se.deleted && weekIds.has(se.workoutSessionId))
         .toArray()
       if (weekSEs.length > 0) {
-        const seIds   = new Set(weekSEs.map((se) => se.id))
-        const wkSets  = await db.sets
+        const seIds = new Set(weekSEs.map((se) => se.id))
+        const wkSets = await db.sets
           .filter((s) => !s.deleted && !s.isWarmup && s.weight > 0 && s.reps > 0 && seIds.has(s.sessionExerciseId))
           .toArray()
         weekVolume = wkSets.reduce((sum, s) => sum + s.weight * s.reps, 0)
@@ -156,8 +240,10 @@ export default function Home() {
     }
 
     return {
-      activeProgram, activeSession,
-      nextDay, nextDayExCount,
+      activeProgram,
+      activeSession,
+      nextDay,
+      nextDayExCount,
       sessionDateSet,
       weekStats: { sessions: weekSessions.length, volumeKg: weekVolume },
     }
@@ -176,7 +262,6 @@ export default function Home() {
     return logs[0] ?? null
   }, [])
 
-  // Today's food diary totals (from per-food logs)
   const todayFoodTotals = useLiveQuery(async () => {
     const logs = await db.foodLogs
       .where('date').equals(todayIso)
@@ -184,7 +269,7 @@ export default function Home() {
       .toArray()
     if (logs.length === 0) return null
     const foodIds = [...new Set(logs.map((l) => l.foodId))]
-    const foods   = await db.foods.where('id').anyOf(foodIds).toArray()
+    const foods = await db.foods.where('id').anyOf(foodIds).toArray()
     const foodMap = new Map(foods.map((f) => [f.id, f]))
     return logs.reduce(
       (acc, log) => {
@@ -193,9 +278,9 @@ export default function Home() {
         const f = log.amountG / 100
         return {
           calories: acc.calories + food.caloriesPer100g * f,
-          proteinG: acc.proteinG + food.proteinPer100g  * f,
-          carbsG:   acc.carbsG   + food.carbsPer100g    * f,
-          fatG:     acc.fatG     + food.fatPer100g      * f,
+          proteinG: acc.proteinG + food.proteinPer100g * f,
+          carbsG: acc.carbsG + food.carbsPer100g * f,
+          fatG: acc.fatG + food.fatPer100g * f,
         }
       },
       { calories: 0, proteinG: 0, carbsG: 0, fatG: 0 },
@@ -213,19 +298,17 @@ export default function Home() {
     [],
   )
 
-  // TDEE-derived macro targets (falls back to defaults if no profile set)
   const macroTargets = useMemo(() => {
-    const profile  = loadProfile()
+    const profile = loadProfile()
     const weightKg = latestWeight?.weight
     if (!profile || !weightKg) return DEFAULT_GOALS
-    const bmr  = calcBMR(weightKg, profile.heightCm, profile.age, profile.sex)
+    const bmr = calcBMR(weightKg, profile.heightCm, profile.age, profile.sex)
     const tdee = calcTDEE(bmr, profile.activityLevel)
     const diet = DIET_PROGRAMS.find((d) => d.id === profile.dietId) ?? DIET_PROGRAMS[0]
     return calcMacros(weightKg, tdee, diet)
   }, [latestWeight])
 
-  // Water helpers — prefer food diary water if logged there; fall back to nutritionLogs
-  const waterMl  = todayNutrition?.waterMl ?? 0
+  const waterMl = todayNutrition?.waterMl ?? 0
   const waterPct = Math.min(100, Math.round((waterMl / WATER_GOAL_ML) * 100))
 
   async function addWater(ml: number) {
@@ -235,9 +318,18 @@ export default function Home() {
       await db.nutritionLogs.update(todayNutrition.id, { waterMl: newTotal, updatedAt: ts, syncedAt: null })
     } else {
       await db.nutritionLogs.add({
-        id: crypto.randomUUID(), date: todayIso,
-        calories: null, proteinG: null, carbsG: null, fatG: null, waterMl: newTotal,
-        notes: '', createdAt: ts, updatedAt: ts, syncedAt: null, deleted: false,
+        id: crypto.randomUUID(),
+        date: todayIso,
+        calories: null,
+        proteinG: null,
+        carbsG: null,
+        fatG: null,
+        waterMl: newTotal,
+        notes: '',
+        createdAt: ts,
+        updatedAt: ts,
+        syncedAt: null,
+        deleted: false,
       })
     }
   }
@@ -247,15 +339,21 @@ export default function Home() {
     if (isNaN(val) || val <= 0) return
     setSavingWt(true)
     try {
-      const ts  = now()
-      const kg  = displayToKg(val, units.weight)
+      const ts = now()
+      const kg = displayToKg(val, units.weight)
       const existing = await db.bodyWeightLogs.filter((l) => l.date === todayIso && !l.deleted).first()
       if (existing) {
         await db.bodyWeightLogs.update(existing.id, { weight: kg, updatedAt: ts, syncedAt: null })
       } else {
         await db.bodyWeightLogs.add({
-          id: crypto.randomUUID(), date: todayIso, weight: kg,
-          notes: '', createdAt: ts, updatedAt: ts, syncedAt: null, deleted: false,
+          id: crypto.randomUUID(),
+          date: todayIso,
+          weight: kg,
+          notes: '',
+          createdAt: ts,
+          updatedAt: ts,
+          syncedAt: null,
+          deleted: false,
         })
       }
       setWeightInput('')
@@ -272,9 +370,17 @@ export default function Home() {
       const ts = now()
       const sessionId = crypto.randomUUID()
       await db.workoutSessions.add({
-        id: sessionId, workoutDayId: day.id, programId,
-        date: todayIso, startedAt: ts, finishedAt: null,
-        notes: '', createdAt: ts, updatedAt: ts, syncedAt: null, deleted: false,
+        id: sessionId,
+        workoutDayId: day.id,
+        programId,
+        date: todayIso,
+        startedAt: ts,
+        finishedAt: null,
+        notes: '',
+        createdAt: ts,
+        updatedAt: ts,
+        syncedAt: null,
+        deleted: false,
       })
       const des = await db.dayExercises
         .where('workoutDayId').equals(day.id)
@@ -284,10 +390,16 @@ export default function Home() {
       if (des.length > 0) {
         await db.sessionExercises.bulkAdd(
           des.map((de, idx) => ({
-            id: crypto.randomUUID(), workoutSessionId: sessionId,
-            exerciseId: de.exerciseId, order: idx, notes: '',
-            createdAt: ts, updatedAt: ts, syncedAt: null, deleted: false,
-          }))
+            id: crypto.randomUUID(),
+            workoutSessionId: sessionId,
+            exerciseId: de.exerciseId,
+            order: idx,
+            notes: '',
+            createdAt: ts,
+            updatedAt: ts,
+            syncedAt: null,
+            deleted: false,
+          })),
         )
       }
       navigate('/log')
@@ -297,408 +409,270 @@ export default function Home() {
     }
   }
 
-  // Nutrition donut values — food diary takes priority over manual nutritionLog
-  const cals    = todayFoodTotals ? Math.round(todayFoodTotals.calories) : (todayNutrition?.calories ?? 0)
+  const cals = todayFoodTotals ? Math.round(todayFoodTotals.calories) : (todayNutrition?.calories ?? 0)
   const protein = todayFoodTotals ? Math.round(todayFoodTotals.proteinG) : (todayNutrition?.proteinG ?? 0)
-  const carbs   = todayFoodTotals ? Math.round(todayFoodTotals.carbsG)   : (todayNutrition?.carbsG   ?? 0)
-  const fat     = todayFoodTotals ? Math.round(todayFoodTotals.fatG)     : (todayNutrition?.fatG     ?? 0)
-  const calPct  = Math.min(100, Math.round((cals    / macroTargets.calories) * 100))
-  const proPct  = Math.min(100, Math.round((protein / macroTargets.proteinG) * 100))
-  const crbPct  = Math.min(100, Math.round((carbs   / macroTargets.carbsG)   * 100))
-  const fatPct  = Math.min(100, Math.round((fat     / macroTargets.fatG)     * 100))
+  const carbs = todayFoodTotals ? Math.round(todayFoodTotals.carbsG) : (todayNutrition?.carbsG ?? 0)
+  const fat = todayFoodTotals ? Math.round(todayFoodTotals.fatG) : (todayNutrition?.fatG ?? 0)
+  const calPct = Math.min(100, Math.round((cals / macroTargets.calories) * 100))
+  const proPct = Math.min(100, Math.round((protein / macroTargets.proteinG) * 100))
+  const crbPct = Math.min(100, Math.round((carbs / macroTargets.carbsG) * 100))
+  const fatPct = Math.min(100, Math.round((fat / macroTargets.fatG) * 100))
 
-  const wt   = latestWeight?.weight ?? null
+  const wt = latestWeight?.weight ?? null
   const wtDate = latestWeight?.date
     ? new Date(latestWeight.date + 'T12:00:00').toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })
     : null
 
+  const hasActiveSession = Boolean(data?.activeSession)
+  const heroTitle = hasActiveSession ? 'Resume Your' : 'Start Your'
+  const heroButton = hasActiveSession ? 'Resume Workout' : data?.nextDay ? `Start ${data.nextDay.name}` : 'Start Workout'
+
   return (
-    <div className="flex flex-col bg-app-bg">
-
-      {/* ── Top bar ──────────────────────────────────────────────────── */}
-      <div className="page-x pt-6 pb-3 flex items-center gap-3">
-        <Link to="/profile" className="w-11 h-11 rounded-full bg-accent flex items-center justify-center text-sm font-extrabold text-app-text flex-shrink-0 overflow-hidden active:opacity-80">
-          {avatarUrl
-            ? <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
-            : <span>{initials}</span>
-          }
-        </Link>
-        <div className="flex-1">
-          <p className="text-xs text-app-muted font-medium leading-none mb-0.5">Let's Go,</p>
-          <p className="text-2xl font-extrabold text-app-text leading-tight">{displayName}</p>
-        </div>
-        <Link
-          to="/settings"
-          className="flex-shrink-0 active:scale-95 transition-transform"
-          aria-label="Settings"
-        >
-          <PremiumIconTile name="settings" tone="steel" size="md" usage="button" active iconSize={33} />
-        </Link>
-      </div>
-
-      {/* ── Date strip ───────────────────────────────────────────────── */}
-      <div className="page-x pb-4">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-base font-extrabold text-app-text">{todayLabel}</p>
-          <span className="text-xs font-bold text-app-text bg-accent px-3 py-1 rounded-full">Today</span>
-        </div>
-        <div className="flex gap-2">
-          {dateStrip.map(({ date, iso, dow }) => {
-            const isToday    = iso === todayIso
-            const hasWorkout = data?.sessionDateSet.has(iso) ?? false
-            return (
-              <div
-                key={iso}
-                className={[
-                  'flex-1 rounded-card py-2 text-center',
-                  isToday
-                    ? 'bg-app-text'
-                    : 'bg-app-surface border border-app-border',
-                ].join(' ')}
-              >
-                <p className={`text-[11px] font-bold uppercase mb-1 ${isToday ? 'text-white/60' : 'text-app-muted'}`}>
-                  {dow}
+    <div className="dashboard-page min-h-full px-4 py-4 md:px-5 md:py-5 xl:px-6">
+      <div className="home-dashboard-grid">
+        <div className="min-w-0 space-y-4">
+          <header className="dashboard-topbar">
+            <div className="flex items-center gap-4 min-w-0">
+              <Link to="/profile" className="profile-orb flex-none" aria-label="Profile">
+                {avatarUrl
+                  ? <img src={avatarUrl} alt="avatar" className="h-full w-full rounded-full object-cover" />
+                  : <span>{initials}</span>}
+              </Link>
+              <div className="min-w-0">
+                <p className="text-sm font-extrabold text-accent-label">Let's Go,</p>
+                <h1 className="truncate text-2xl md:text-3xl font-extrabold text-app-text leading-tight">{displayName}</h1>
+                <p className="mt-1 flex items-center gap-2 text-sm font-medium text-app-muted">
+                  <span aria-hidden="true">▦</span>
+                  {fullDate}
                 </p>
-                <p className={`text-sm font-extrabold ${isToday ? 'text-white' : 'text-app-text'}`}>
-                  {date.getDate()}
-                </p>
-                <div className={`w-1 h-1 rounded-full mx-auto mt-1 ${hasWorkout ? (isToday ? 'bg-white/40' : 'bg-accent-dark') : 'bg-transparent'}`} />
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4 page-x">
-
-        {/* ── Things to Do Today ────────────────────────────────────── */}
-        <div>
-          <p className="text-base font-extrabold text-app-text mb-2">Today's Nutrition</p>
-          <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
-            <Link to="/nutrition" className="flex items-center gap-3 px-4 py-3 border-b border-app-border active:bg-app-bg">
-              <PremiumIconTile name="nutrition" tone="flame" size="sm" usage="card" active iconSize={30} />
-              <div className="flex-1">
-                <p className="text-sm font-bold text-app-text">Daily Nutrition</p>
-                <p className="text-xs text-app-muted">{todayFoodTotals ? 'From food diary' : 'Tap to log food'}</p>
-              </div>
-              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-faint flex-shrink-0">
-                <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
-              </svg>
-            </Link>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3 px-4 py-4">
-              {/* Calories */}
-              <div className="flex items-center gap-3">
-                <div className="relative flex-shrink-0">
-                  <Donut pct={calPct} color="var(--color-accent)" />
-                  <p className="absolute inset-0 flex items-center justify-center text-xs font-bold text-app-text leading-none">{cals}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-app-text">Calories</p>
-                  <p className="text-xs text-app-muted">/ {macroTargets.calories}</p>
-                </div>
-              </div>
-              {/* Protein */}
-              <div className="flex items-center gap-3">
-                <div className="relative flex-shrink-0">
-                  <Donut pct={proPct} color="#3B82F6" />
-                  <p className="absolute inset-0 flex items-center justify-center text-xs font-bold text-app-text leading-none">{protein}g</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-app-text">Protein</p>
-                  <p className="text-xs text-app-muted">/ {macroTargets.proteinG}g</p>
-                </div>
-              </div>
-              {/* Carbs */}
-              <div className="flex items-center gap-3">
-                <div className="relative flex-shrink-0">
-                  <Donut pct={crbPct} color="#10B981" />
-                  <p className="absolute inset-0 flex items-center justify-center text-xs font-bold text-app-text leading-none">{carbs}g</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-app-text">Carbs</p>
-                  <p className="text-xs text-app-muted">/ {macroTargets.carbsG}g</p>
-                </div>
-              </div>
-              {/* Fat */}
-              <div className="flex items-center gap-3">
-                <div className="relative flex-shrink-0">
-                  <Donut pct={fatPct} color="#F59E0B" />
-                  <p className="absolute inset-0 flex items-center justify-center text-xs font-bold text-app-text leading-none">{fat}g</p>
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-app-text">Fat</p>
-                  <p className="text-xs text-app-muted">/ {macroTargets.fatG}g</p>
-                </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* ── My Progress ───────────────────────────────────────────── */}
-        <div>
-          <p className="text-base font-extrabold text-app-text mb-2">This Week</p>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Sessions this week */}
-            <Link to="/history" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <PremiumIconTile name="history" tone="blue" size="sm" usage="card" active className="mb-2" iconSize={30} />
-              <p className="text-xs text-app-muted mb-1">Sessions this week</p>
-              <p className="text-2xl font-extrabold text-app-text">{data?.weekStats.sessions ?? 0}</p>
-              <p className="text-xs text-app-muted mt-0.5">workouts</p>
-            </Link>
-            {/* Body Weight */}
-            <Link to="/body" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <PremiumIconTile name="body" tone="steel" size="sm" usage="card" active className="mb-2" iconSize={30} />
-              <p className="text-xs text-app-muted mb-1">Body Weight</p>
-              <p className="text-2xl font-extrabold text-app-text">
-                {wt != null ? `${kgToDisplay(wt, units.weight)}` : '—'}
-                <span className="text-sm font-semibold"> {weightLabel(units.weight)}</span>
-              </p>
-              <p className="text-xs text-app-muted mt-0.5">{wtDate ?? 'Not logged'}</p>
-            </Link>
-            {/* Volume this week */}
-            <Link to="/progress" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <PremiumIconTile name="progress" tone="gold" size="sm" usage="card" active className="mb-2" iconSize={30} />
-              <p className="text-xs text-app-muted mb-1">Volume this week</p>
-              <p className="text-2xl font-extrabold text-app-text">
-                {data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—'}
-              </p>
-              <p className="text-xs text-app-muted mt-0.5">lifted</p>
-            </Link>
-            {/* Calorie intake */}
-            <Link to="/nutrition" className="bg-app-surface rounded-card border border-app-border px-4 py-3 block active:opacity-75">
-              <PremiumIconTile name="meal" tone="flame" size="sm" usage="card" active className="mb-2" iconSize={30} />
-              <p className="text-xs text-app-muted mb-1">Calorie Intake</p>
-              <p className="text-2xl font-extrabold text-app-text">
-                {cals > 0 ? cals.toLocaleString() : '—'}
-                <span className="text-sm font-semibold"> cal</span>
-              </p>
-              <p className="text-xs text-app-muted mt-0.5">/{macroTargets.calories.toLocaleString()} goal</p>
-            </Link>
-          </div>
-        </div>
+            <div className="date-strip-card">
+              {dateStrip.map(({ date, iso, dow }) => {
+                const isToday = iso === todayIso
+                const hasWorkout = data?.sessionDateSet.has(iso) ?? false
+                return (
+                  <div key={iso} className={`date-tile ${isToday ? 'is-today' : ''}`}>
+                    <p className="text-xs font-extrabold">{dow}</p>
+                    <p className="text-2xl font-extrabold leading-none">{date.getDate()}</p>
+                    <span className={`mx-auto mt-1 block h-1 w-1 rounded-full ${hasWorkout ? 'bg-accent' : 'bg-transparent'}`} />
+                  </div>
+                )
+              })}
+            </div>
 
-        {/* ── Track Water ───────────────────────────────────────────── */}
-        <div className="bg-app-surface rounded-card border border-app-border overflow-hidden">
-          <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-            <PremiumIconTile name="water" tone="blue" size="sm" usage="card" active iconSize={30} />
-            <div className="flex-1">
-              <p className="text-sm font-bold text-app-text">Track Water</p>
-              <p className="text-xs text-app-muted">{mlToDisplay(waterMl, units.water)} / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)}</p>
-            </div>
-            <p className="text-sm font-extrabold text-info-text">{waterPct}%</p>
-          </div>
-          <div className="h-1.5 bg-app-border mx-4 mb-3 rounded-full overflow-hidden">
-            <div className="h-full bg-info-text rounded-full" style={{ width: `${waterPct}%` }} />
-          </div>
-          <div className="flex gap-2 px-4 pb-4">
-            {(units.water === 'fl_oz' ? [237, 473, 710] : [250, 500, 750]).map((ml) => (
-              <button key={ml} onClick={() => addWater(ml)}
-                className="flex-1 bg-app-bg border border-app-border text-app-text text-sm font-bold py-2.5 rounded-input active:bg-accent-light">
-                +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Apple Watch Health ───────────────────────────────────── */}
-        <div className="rounded-card overflow-hidden border border-app-border" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
-          <div className="px-4 pt-4 pb-3 flex items-center gap-3">
-            {/* Apple Watch icon */}
-            <div className="w-9 h-9 rounded-input bg-white/10 flex items-center justify-center flex-shrink-0">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-white">
-                <path d="M17 2H7L5.5 6h13L17 2zM7 22h10l1.5-4H5.5L7 22zM3 7a2 2 0 00-2 2v6a2 2 0 002 2h18a2 2 0 002-2V9a2 2 0 00-2-2H3zm9 9a4 4 0 110-8 4 4 0 010 8zm.75-6.5v2.25l1.5 1.5-1.06 1.06-1.69-1.69V9.5h1.25z" />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <p className="text-xs font-bold text-white/60 uppercase tracking-wide">Apple Watch</p>
-              <p className="text-sm font-extrabold text-white">
-                {todayHealth ? "Today's Stats" : 'Health Data'}
-              </p>
-            </div>
-            {todayHealth && (
-              <p className="text-[10px] text-white/40">Today</p>
-            )}
-          </div>
-
-          {todayHealth ? (
-            <div className="grid grid-cols-3 gap-px bg-white/10 border-t border-white/10">
-              {/* Resting HR */}
-              <div className="bg-[#1C1917] px-3 py-3 text-center">
-                <p className="text-xl font-extrabold text-white leading-none">
-                  {todayHealth.restingHr ?? '—'}
-                </p>
-                <p className="text-[10px] text-white/50 mt-0.5">BPM</p>
-                <p className="text-[10px] text-white/40">Resting HR</p>
-              </div>
-              {/* Active Cals */}
-              <div className="bg-[#1C1917] px-3 py-3 text-center">
-                <p className="text-xl font-extrabold text-accent leading-none">
-                  {todayHealth.activeCalories ?? '—'}
-                </p>
-                <p className="text-[10px] text-white/50 mt-0.5">kcal</p>
-                <p className="text-[10px] text-white/40">Active Cal</p>
-              </div>
-              {/* Steps */}
-              <div className="bg-[#1C1917] px-3 py-3 text-center">
-                <p className="text-xl font-extrabold text-white leading-none">
-                  {todayHealth.steps != null ? (todayHealth.steps >= 1000 ? `${(todayHealth.steps / 1000).toFixed(1)}k` : todayHealth.steps) : '—'}
-                </p>
-                <p className="text-[10px] text-white/50 mt-0.5">steps</p>
-                <p className="text-[10px] text-white/40">Steps</p>
-              </div>
-            </div>
-          ) : (
-            <div className="px-4 pb-4 border-t border-white/10 pt-3">
-              <p className="text-xs text-white/50 mb-2">No data yet — set up your Apple Shortcut to sync Watch stats automatically.</p>
-              <Link
-                to="/settings"
-                className="inline-flex items-center gap-1.5 bg-white/10 text-white text-xs font-bold px-3 py-2 rounded-full active:bg-white/20"
-              >
-                Set up in Settings →
+            <div className="flex items-center gap-3">
+              <button className="today-button">Today</button>
+              <button className="arrow-button" aria-label="Previous day">‹</button>
+              <button className="arrow-button" aria-label="Next day">›</button>
+              <Link to="/settings" className="settings-button" aria-label="Settings">
+                <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" active iconSize={24} />
               </Link>
             </div>
-          )}
+          </header>
 
-          {/* Latest workout */}
-          {latestHealthWorkout && (
-            <div className="px-4 py-3 border-t border-white/10 flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-white truncate">{latestHealthWorkout.workoutType || 'Workout'}</p>
-                <div className="flex gap-3 mt-0.5">
-                  {latestHealthWorkout.durationSecs != null && (
-                    <p className="text-[10px] text-white/50">
-                      {Math.round(latestHealthWorkout.durationSecs / 60)} min
-                    </p>
-                  )}
-                  {latestHealthWorkout.avgHr != null && (
-                    <p className="text-[10px] text-white/50">{latestHealthWorkout.avgHr} bpm avg</p>
-                  )}
-                  {latestHealthWorkout.activeCalories != null && (
-                    <p className="text-[10px] text-white/50">{latestHealthWorkout.activeCalories} kcal</p>
-                  )}
-                </div>
+          <section className="dashboard-panel nutrition-band">
+            <div className="flex items-center gap-4 min-w-[230px]">
+              <PremiumIconTile name="nutrition" tone="flame" size="lg" usage="card" active iconSize={42} />
+              <div className="min-w-0">
+                <SectionTitle>Today's Nutrition</SectionTitle>
+                <p className="mt-3 text-base font-extrabold text-app-text">Daily Nutrition</p>
+                <Link to="/nutrition" className="text-sm font-bold text-accent-label">{todayFoodTotals ? 'From food diary' : 'Tap to log food'}</Link>
               </div>
-              <p className="text-[10px] text-white/30 flex-shrink-0">
-                {new Date(latestHealthWorkout.workoutDate).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}
-              </p>
             </div>
-          )}
-        </div>
-
-        {/* ── Body Stats ────────────────────────────────────────────── */}
-        <div className="bg-app-surface rounded-card border border-app-border p-4">
-          <div className="flex items-center gap-3 mb-3">
-            <PremiumIconTile name="body" tone="steel" size="sm" usage="card" active iconSize={30} />
-            <div className="flex-1">
-              <p className="text-sm font-bold text-app-text">Body Stats</p>
-              <p className="text-xs text-app-muted">Log today's weight</p>
+            <div className="nutrition-metrics">
+              <MetricRing label="Calories" value={String(cals)} target={`/ ${macroTargets.calories.toLocaleString()} cal`} pct={calPct} color="var(--color-app-muted)" />
+              <MetricRing label="Protein" value={`${protein}g`} target={`/ ${macroTargets.proteinG}g`} pct={proPct} color="#8B5CF6" />
+              <MetricRing label="Carbs" value={`${carbs}g`} target={`/ ${macroTargets.carbsG}g`} pct={crbPct} color="#22C55E" />
+              <MetricRing label="Fat" value={`${fat}g`} target={`/ ${macroTargets.fatG}g`} pct={fatPct} color="#F97316" />
             </div>
-            {wt != null && (
-              <div className="text-right">
-                <p className="text-xl font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}<span className="text-sm font-semibold"> {weightLabel(units.weight)}</span></p>
-                <p className="text-xs text-app-muted">{wtDate}</p>
-              </div>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <input
-              type="number" inputMode="decimal"
-              value={weightInput}
-              onChange={(e) => setWeightInput(e.target.value)}
-              placeholder={`Enter weight (${weightLabel(units.weight)})`}
-              step={0.1} min={0}
-              className="flex-1 bg-app-bg border border-app-border rounded-input px-3 py-2.5 text-sm text-app-text placeholder-app-faint focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
-            />
-            <button
-              onClick={saveWeight}
-              disabled={savingWt || !weightInput}
-              className="bg-accent text-app-text text-sm font-bold px-5 py-2.5 rounded-input active:bg-accent-dark disabled:opacity-50"
-            >
-              {savingWt ? '…' : 'Save'}
-            </button>
-          </div>
-        </div>
+            <Link to="/nutrition" className="text-3xl text-app-muted active:text-accent-label" aria-label="Open nutrition">›</Link>
+          </section>
 
-        {/* ── Today's Workout ───────────────────────────────────────── */}
-        <div>
-          <p className="text-base font-extrabold text-app-text mb-2">Today's Workout</p>
+          <section className="space-y-3">
+            <SectionTitle>This Week</SectionTitle>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+              <StatCard icon="workout" tone="blue" label="Sessions" value={String(data?.weekStats.sessions ?? 0)} detail={'workouts\nthis week'} to="/history" />
+              <StatCard
+                icon="body"
+                tone="gold"
+                label="Body Weight"
+                value={wt != null ? `${kgToDisplay(wt, units.weight)} ${weightLabel(units.weight)}` : '—'}
+                detail={wtDate ?? 'Not logged'}
+                to="/body"
+              />
+              <StatCard
+                icon="progress"
+                tone="gold"
+                label="Volume"
+                value={data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—'}
+                detail="lifted"
+                to="/progress"
+              />
+              <StatCard
+                icon="meal"
+                tone="flame"
+                label="Calorie Intake"
+                value={cals > 0 ? `${cals.toLocaleString()} cal` : '— cal'}
+                detail={`/ ${macroTargets.calories.toLocaleString()} goal`}
+                to="/nutrition"
+              />
+            </div>
+          </section>
 
-          {data?.activeSession ? (
-            <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
-              <div className="px-5 py-5">
-                <div className="flex items-start justify-between gap-4 mb-4">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-1">In Progress</p>
-                    <p className="text-2xl font-extrabold text-white leading-tight">Resume Workout</p>
-                  </div>
-                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
-                </div>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
-                  Continue
-                </div>
-              </div>
-            </Link>
-          ) : data?.nextDay && data?.activeProgram ? (
-            <button
-              onClick={() => { setStartError(null); startNextDay(data.nextDay!, data.activeProgram!.id) }}
-              disabled={starting}
-              className="w-full rounded-card overflow-hidden text-left disabled:opacity-70 active:opacity-90"
-              style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}
-            >
-              <div className="px-5 py-5 relative overflow-hidden">
-                {/* Decorative circle */}
-                <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                <div className="relative z-10 flex items-start justify-between gap-4 mb-3">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">
-                      Workout · {data.activeProgram.name}
-                    </p>
-                    <p className="text-2xl font-extrabold text-white leading-tight">
-                      {starting ? 'Starting…' : data.nextDay.name}
+          <section className="dashboard-panel p-4">
+            <div className="flex items-start gap-4">
+              <PremiumIconTile name="water" tone="blue" size="sm" usage="card" active iconSize={30} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <SectionTitle>Track Water</SectionTitle>
+                    <p className="text-sm font-bold text-app-muted">
+                      <span className="text-info-text">{mlToDisplay(waterMl, units.water)}</span> / {mlToDisplay(WATER_GOAL_ML, units.water)} {waterLabel(units.water)}
                     </p>
                   </div>
-                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
+                  <p className="text-xl font-extrabold text-info-text">{waterPct}%</p>
                 </div>
-                {startError && (
-                  <p className="text-xs text-red-400 mb-2">{startError}</p>
-                )}
-                <div className="flex items-center gap-4 mb-4">
-                  {data.nextDayExCount > 0 && (
-                    <span className="flex items-center gap-1 text-white/60 text-xs">
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-accent">
-                        <path d="M6.672 1.911a1 1 0 10-1.932.518l.259.966a1 1 0 001.932-.518l-.26-.966zM2.429 4.74a1 1 0 10-.517 1.932l.966.259a1 1 0 00.517-1.932l-.966-.26zm8.814-.569a1 1 0 00-1.415-1.414l-.707.707a1 1 0 101.415 1.415l.707-.708zm-7.071 7.072l.707-.707A1 1 0 003.465 9.12l-.708.707a1 1 0 101.415 1.415zm3.2-5.171a1 1 0 00-1.3 1.3l4 10a1 1 0 001.823.075l1.38-2.759 3.018 3.02a1 1 0 001.414-1.415l-3.019-3.02 2.76-1.379a1 1 0 00-.076-1.822l-10-4z" />
-                      </svg>
-                      {data.nextDayExCount} exercise{data.nextDayExCount !== 1 ? 's' : ''}
-                    </span>
-                  )}
-                </div>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
-                  Start Now
+                <WaterGraph pct={waterPct} />
+                <div className="mt-3 grid grid-cols-3 gap-3">
+                  {(units.water === 'fl_oz' ? [237, 473, 710] : [250, 500, 750]).map((ml) => (
+                    <button key={ml} onClick={() => addWater(ml)} className="water-button">
+                      +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
+                    </button>
+                  ))}
                 </div>
               </div>
-            </button>
-          ) : (
-            <Link to="/log" className="block rounded-card overflow-hidden" style={{ background: 'linear-gradient(135deg,#1C1917,#2C2824)' }}>
-              <div className="px-5 py-5 relative overflow-hidden">
-                <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
-                <div className="relative z-10 flex items-start justify-between gap-4 mb-4">
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold text-accent/80 uppercase tracking-widest mb-2">Free Workout</p>
-                    <p className="text-2xl font-extrabold text-white leading-tight">Start Workout</p>
-                  </div>
-                  <PremiumIconTile name="workout" tone="gold" size="lg" usage="card" active iconSize={36} />
-                </div>
-                <div className="inline-flex items-center gap-1.5 bg-accent text-app-text text-sm font-bold px-4 py-2.5 rounded-input">
-                  <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
-                  Start Now
+            </div>
+          </section>
+
+          <section className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div className="dashboard-panel p-5 flex gap-4">
+              <PremiumIconTile name="cardio" tone="flame" size="xl" usage="card" active iconSize={46} />
+              <div className="min-w-0">
+                <SectionTitle>Apple Watch</SectionTitle>
+                <p className="mt-2 text-base font-extrabold text-app-text">{todayHealth ? "Today's Stats" : 'Health Data'}</p>
+                <p className="mt-2 text-sm text-app-muted">
+                  {todayHealth
+                    ? `${todayHealth.restingHr ?? '—'} bpm resting · ${todayHealth.steps ?? '—'} steps`
+                    : 'No data yet - set up your Apple Shortcut to sync Watch stats automatically.'}
+                </p>
+                {latestHealthWorkout && <p className="mt-2 text-xs font-bold text-accent-label">{latestHealthWorkout.workoutType || 'Latest workout'}</p>}
+                <OutlineButton to="/settings">Set up in Settings →</OutlineButton>
+              </div>
+            </div>
+
+            <div className="dashboard-panel p-5">
+              <div className="flex items-center gap-4">
+                <PremiumIconTile name="body" tone="gold" size="lg" usage="card" active iconSize={38} />
+                <div className="min-w-0">
+                  <SectionTitle>Body Stats</SectionTitle>
+                  <p className="mt-1 text-sm text-app-muted">Log today's weight</p>
                 </div>
               </div>
-            </Link>
-          )}
+              <div className="mt-4 flex items-center gap-3">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  value={weightInput}
+                  onChange={(e) => setWeightInput(e.target.value)}
+                  placeholder={`Enter weight (${weightLabel(units.weight)})`}
+                  step={0.1}
+                  min={0}
+                  className="dashboard-input flex-1"
+                />
+                <div className="text-right">
+                  <p className="text-2xl font-extrabold text-accent-label">
+                    {wt != null ? kgToDisplay(wt, units.weight) : '—'} <span className="text-sm">{weightLabel(units.weight)}</span>
+                  </p>
+                  <p className="text-xs text-app-muted">{wtDate ?? 'Not logged'}</p>
+                </div>
+              </div>
+              <button onClick={saveWeight} disabled={savingWt || !weightInput} className="save-button mt-4">
+                {savingWt ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+
+            <div className="dashboard-panel p-5 flex gap-4">
+              <PremiumIconTile name="progress" tone="blue" size="xl" usage="card" active iconSize={48} />
+              <div className="min-w-0">
+                <SectionTitle>Progress Insights</SectionTitle>
+                <p className="mt-2 font-extrabold text-app-text">Keep going strong!</p>
+                <p className="mt-2 text-sm text-app-muted">You're on track to crush your goals this week. Consistency is building champions.</p>
+                <OutlineButton to="/progress">View Progress →</OutlineButton>
+              </div>
+            </div>
+          </section>
+
+          <section className="workout-hero dashboard-panel overflow-hidden p-6 md:p-8">
+            <div className="relative z-10 max-w-[520px]">
+              <SectionTitle>Today's Workout</SectionTitle>
+              <p className="mt-2 text-3xl md:text-4xl xl:text-5xl font-extrabold uppercase italic leading-none text-app-text">{heroTitle}</p>
+              <p className="text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase italic leading-none text-accent-label">Workout</p>
+              <p className="mt-4 max-w-sm text-sm font-medium text-app-muted">⚡ Consistency builds champions. You've got this!</p>
+              {startError && <p className="mt-3 text-sm font-bold text-error-text">{startError}</p>}
+              {hasActiveSession ? (
+                <Link to="/log" className="hero-action mt-5">▶ {heroButton}</Link>
+              ) : data?.nextDay && data?.activeProgram ? (
+                <button
+                  onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
+                  disabled={starting}
+                  className="hero-action mt-5 disabled:opacity-60"
+                >
+                  ▶ {starting ? 'Starting...' : heroButton}
+                </button>
+              ) : (
+                <Link to="/log" className="hero-action mt-5">▶ {heroButton}</Link>
+              )}
+            </div>
+            <PremiumIconTile name="workout" tone="gold" size="xl" usage="card" active iconSize={48} className="workout-hero-icon" />
+          </section>
         </div>
 
+        <div className="dashboard-right-rail space-y-4">
+          <RailCard>
+            <SectionTitle>Streak</SectionTitle>
+            <div className="mt-5 flex items-center gap-5">
+              <PremiumIconTile name="meal" tone="flame" size="xl" usage="card" active iconSize={50} />
+              <div>
+                <p className="text-5xl font-extrabold text-accent-label leading-none">12</p>
+                <p className="font-bold text-app-muted">Days</p>
+                <p className="mt-2 text-xs text-app-muted">Keep the fire alive!</p>
+              </div>
+            </div>
+            <div className="streak-dots mt-6">
+              {Array.from({ length: 8 }, (_, i) => <span key={i} className={i < 5 ? 'is-hot' : ''} />)}
+            </div>
+          </RailCard>
+
+          <RailCard>
+            <SectionTitle>Next Workout</SectionTitle>
+            <div className="mt-5 flex gap-4">
+              <PremiumIconTile name="date" tone="gold" size="lg" usage="card" active iconSize={40} />
+              <div className="min-w-0">
+                <p className="text-lg font-extrabold text-app-text">{data?.nextDay?.name ?? 'Push Day'}</p>
+                <p className="text-sm text-app-muted">{data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Upper Body'}</p>
+                <p className="text-sm text-app-muted">Tomorrow · 7:00 AM</p>
+              </div>
+            </div>
+            <OutlineButton to="/programs">View Program →</OutlineButton>
+          </RailCard>
+
+          <RailCard>
+            <SectionTitle>Achievements</SectionTitle>
+            <div className="mt-5 flex items-center gap-4">
+              <PremiumIconTile name="progress" tone="gold" size="lg" usage="card" active iconSize={40} />
+              <div>
+                <p className="text-3xl font-extrabold text-accent-label">12 <span className="text-base text-app-muted">/ 24</span></p>
+                <p className="text-sm text-app-muted">Achievements Unlocked</p>
+              </div>
+            </div>
+            <div className="mt-6 h-2 rounded-full bg-app-border overflow-hidden">
+              <div className="h-full w-1/2 rounded-full bg-accent shadow-[0_0_18px_-4px_rgba(255,112,0,0.95)]" />
+            </div>
+            <OutlineButton to="/goals">View All →</OutlineButton>
+          </RailCard>
+        </div>
       </div>
     </div>
   )

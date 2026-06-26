@@ -137,18 +137,18 @@ type PremiumIconTileProps = {
 }
 
 const tileSizes: Record<BrandIconTileSize, { shell: string; radius: string; shine: string; icon: number }> = {
-  xs: { shell: 'w-8 h-8 rounded-xl',        radius: 'rounded-xl',        shine: 'inset-x-1 top-1 h-1.5', icon: 20 },
-  sm: { shell: 'w-10 h-10 rounded-card',    radius: 'rounded-card',      shine: 'inset-x-1.5 top-1.5 h-2', icon: 28 },
-  md: { shell: 'w-11 h-11 rounded-card',    radius: 'rounded-card',      shine: 'inset-x-1.5 top-1.5 h-2', icon: 30 },
-  lg: { shell: 'w-14 h-14 rounded-2xl',     radius: 'rounded-2xl',       shine: 'inset-x-2 top-1.5 h-2.5', icon: 36 },
-  xl: { shell: 'w-16 h-16 rounded-2xl',     radius: 'rounded-2xl',       shine: 'inset-x-2.5 top-2 h-3', icon: 42 },
+  xs: { shell: 'w-8 h-8 rounded-xl',        radius: 'rounded-xl',   shine: 'inset-x-1 top-1 h-1.5', icon: 20 },
+  sm: { shell: 'w-10 h-10 rounded-card',    radius: 'rounded-card', shine: 'inset-x-1.5 top-1.5 h-2', icon: 28 },
+  md: { shell: 'w-11 h-11 rounded-card',    radius: 'rounded-card', shine: 'inset-x-1.5 top-1.5 h-2', icon: 30 },
+  lg: { shell: 'w-14 h-14 rounded-2xl',     radius: 'rounded-2xl',  shine: 'inset-x-2 top-1.5 h-2.5', icon: 36 },
+  xl: { shell: 'w-16 h-16 rounded-2xl',     radius: 'rounded-2xl',  shine: 'inset-x-2.5 top-2 h-3', icon: 42 },
 }
 
 const usageClasses: Record<BrandIconTileUsage, string> = {
-  nav:     'border-2',
+  nav: 'border-2',
   sidebar: 'border-2',
-  card:    'border',
-  button:  'border',
+  card: 'border',
+  button: 'border',
 }
 
 export function PremiumIconTile({
@@ -246,8 +246,8 @@ export default function BrandIcon({
         objectFit: 'contain',
         opacity: active ? 1 : 0.72,
         filter: active
-          ? 'drop-shadow(0 5px 5px rgba(0,0,0,0.28))'
-          : 'drop-shadow(0 3px 3px rgba(0,0,0,0.18))',
+          ? 'var(--premium-icon-filter) drop-shadow(0 5px 5px rgba(0,0,0,0.34))'
+          : 'var(--premium-icon-filter) drop-shadow(0 3px 3px rgba(0,0,0,0.2))',
       }}
     />
   )

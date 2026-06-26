@@ -26,9 +26,7 @@ export interface Theme {
   errorText:    string
   neutralBg:    string
   neutralText:  string
-  iconTile:     string
-  iconTileMuted: string
-  iconTileDeep: string
+  premiumIconFilter: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -54,40 +52,34 @@ export const LIGHT_THEME_ID = 'arctic'
 
 export const THEMES: Theme[] = [
   {
-    // Near-black charcoal + warm amber — premium, like a luxury watch brand
-    // amber-400 (#FBBF24) gives 11.7:1 contrast on this bg. Not golden-brown.
+    // Glossy black/chrome + logo orange/blue.
     id: 'carbon', name: 'Carbon', dark: true,
-    accent: '#FBBF24', accentDark: '#D97706', accentDarker: '#B45309', accentLight: '#1C1400',
-    accentLabel: '#FBBF24',
-    appBg: '#111115', appCard: '#1C1C22', appRaised: '#252530',
-    appBorder: '#303038', appBorderSubtle: '#28282E',
-    appText: '#EDEDF2', appMuted: '#9090A0', appFaint: '#3C3C48', appDisabled: '#2C2C38',
-    successBg: '#0F2818', successText: '#22C55E',
-    infoBg:    '#0A1830', infoText:    '#60A5FA',
-    warningBg: '#1E1608', warningText: '#FBBF24',
-    errorBg:   '#1E0A10', errorText:   '#F87171',
-    neutralBg: '#130E20', neutralText: '#A78BFA',
-    iconTile: '#F5F0E4',
-    iconTileMuted: '#DDD6C7',
-    iconTileDeep: '#BFB4A4',
+    accent: '#FF7A00', accentDark: '#EA580C', accentDarker: '#9A3412', accentLight: '#261003',
+    accentLabel: '#FF7A00',
+    appBg: '#02070B', appCard: '#07111A', appRaised: '#0C1824',
+    appBorder: '#243545', appBorderSubtle: '#162432',
+    appText: '#F8FAFC', appMuted: '#A9B4C0', appFaint: '#4B5D6D', appDisabled: '#263545',
+    successBg: '#0A2010', successText: '#22C55E',
+    infoBg: '#031B2C', infoText: '#00A8FF',
+    warningBg: '#261003', warningText: '#FF9A1F',
+    errorBg: '#250A0A', errorText: '#F87171',
+    neutralBg: '#061728', neutralText: '#38BDF8',
+    premiumIconFilter: 'saturate(1)',
   },
   {
-    // Clean white + electric blue — matching the cool rim light in the Drovik mark
-    // while the orange neon icon frames stay fixed to the supplied artwork.
+    // White/chrome version using the same logo orange/blue accents.
     id: 'arctic', name: 'Light', dark: false,
-    accent: '#0EA5E9', accentDark: '#0369A1', accentDarker: '#075985', accentLight: '#E0F7FF',
-    accentLabel: '#0369A1',
-    appBg: '#FAFAFD', appCard: '#FFFFFF', appRaised: '#F6F7FC',
-    appBorder: '#E3E5F0', appBorderSubtle: '#EEF0F6',
-    appText: '#17172F', appMuted: '#5D6187', appFaint: '#C6C9DB', appDisabled: '#B8BCCE',
+    accent: '#FF6B00', accentDark: '#EA580C', accentDarker: '#C2410C', accentLight: '#FFF1E6',
+    accentLabel: '#F25A00',
+    appBg: '#F8FBFF', appCard: '#FFFFFF', appRaised: '#F0F5FB',
+    appBorder: '#D6E0EA', appBorderSubtle: '#E8EEF5',
+    appText: '#101827', appMuted: '#4B5565', appFaint: '#AAB6C4', appDisabled: '#C6D0DB',
     successBg: '#F0FDF4', successText: '#15803D',
-    infoBg:    '#E0F7FF', infoText:    '#0369A1',
-    warningBg: '#FFFBEB', warningText: '#B45309',
-    errorBg:   '#FEF2F2', errorText:   '#B91C1C',
-    neutralBg: '#FFF7ED', neutralText: '#EA580C',
-    iconTile: '#FFFFFF',
-    iconTileMuted: '#EEF0F6',
-    iconTileDeep: '#DDE2EE',
+    infoBg: '#E6F6FF', infoText: '#0078E7',
+    warningBg: '#FFF1E6', warningText: '#EA580C',
+    errorBg: '#FEF2F2', errorText: '#B91C1C',
+    neutralBg: '#EAF6FF', neutralText: '#0284C7',
+    premiumIconFilter: 'saturate(1)',
   },
 ]
 
@@ -123,12 +115,13 @@ export function applyTheme(themeId: string): void {
   s.setProperty('--color-error-text',   theme.errorText)
   s.setProperty('--color-neutral-bg',   theme.neutralBg)
   s.setProperty('--color-neutral-text', theme.neutralText)
-  s.setProperty('--color-icon-tile', theme.iconTile)
-  s.setProperty('--color-icon-tile-muted', theme.iconTileMuted)
-  s.setProperty('--color-icon-tile-deep', theme.iconTileDeep)
 
   s.setProperty('--muscle-body', theme.dark ? '#4A4A52' : '#C8C8DC')
   s.setProperty('--muscle-hi',   theme.accent)
+  s.setProperty('--premium-icon-filter', theme.premiumIconFilter)
+  s.setProperty('--color-icon-tile', theme.dark ? '#F5F0E4' : '#FFFFFF')
+  s.setProperty('--color-icon-tile-muted', theme.dark ? '#DDD6C7' : '#EEF3F8')
+  s.setProperty('--color-icon-tile-deep', theme.dark ? '#BFB4A4' : '#DCE5EF')
 
   document.documentElement.classList.toggle('dark-theme', theme.dark)
 }
@@ -139,12 +132,7 @@ export function saveTheme(themeId: string): void {
 }
 
 export function getActiveThemeId(): string {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    return THEMES.some((theme) => theme.id === saved) ? saved as string : DARK_THEME_ID
-  } catch {
-    return DARK_THEME_ID
-  }
+  try { return localStorage.getItem(STORAGE_KEY) ?? DARK_THEME_ID } catch { return DARK_THEME_ID }
 }
 
 export function loadTheme(): void {
