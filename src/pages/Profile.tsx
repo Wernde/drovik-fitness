@@ -18,6 +18,7 @@ import {
   calcBMR, calcTDEE, calcMacros,
   type Sex, type ActivityLevel, type DietId,
 } from '../lib/tdee'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Goal labels (user-friendly names for the diet programs) ───────────────────
 
@@ -242,6 +243,7 @@ export default function Profile() {
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="body" tone="steel" size="md" usage="card" active />
         <h1 className="text-xl font-extrabold text-app-text flex-1">My Profile</h1>
       </div>
 
