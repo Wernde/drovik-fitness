@@ -10,6 +10,7 @@ import type { WorkoutDay, ProgramPhase } from '../db/db'
 import DayForm from '../components/DayForm'
 import PhaseForm from '../components/PhaseForm'
 import DragList from '../components/DragList'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 // ── Reusable day row ──────────────────────────────────────────────────────────
 
@@ -48,6 +49,8 @@ function DayRow({
           <path d="M7 2a1 1 0 000 2 1 1 0 000-2zM7 8a1 1 0 000 2 1 1 0 000-2zM7 14a1 1 0 000 2 1 1 0 000-2zM13 2a1 1 0 000 2 1 1 0 000-2zM13 8a1 1 0 000 2 1 1 0 000-2zM13 14a1 1 0 000 2 1 1 0 000-2z" />
         </svg>
       </div>
+
+      <PremiumIconTile name="program" tone="gold" size="sm" usage="card" active />
 
       <button onClick={() => navigate(`/programs/${programId}/days/${day.id}`)} className="flex-1 text-left min-w-0">
         <p className="font-semibold text-sm text-app-text truncate">{day.name}</p>
@@ -203,6 +206,7 @@ export default function ProgramDetail() {
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="program" tone="gold" size="md" usage="card" active />
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-extrabold text-app-text truncate">{program.name}</h1>
           {program.description ? <p className="text-xs text-app-muted mt-0.5">{program.description}</p> : null}
