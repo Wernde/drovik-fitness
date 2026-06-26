@@ -6,10 +6,11 @@ import { Fragment } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, type LoggedSet } from '../db/db'
-import MuscleIcon from '../components/MuscleIcon'
 import { formatDuration } from '../lib/utils'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel, fmtVolume } from '../lib/units'
+import { PremiumIconTile } from '../components/BrandIcon'
+import { ExerciseThumb } from '../components/ExerciseThumb'
 
 export default function SessionDetail() {
   const { sessionId } = useParams<{ sessionId: string }>()
@@ -109,6 +110,7 @@ export default function SessionDetail() {
             <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="history" tone="gold" size="md" usage="card" active />
         <div className="flex-1 min-w-0">
           <h1 className="text-xl font-extrabold text-app-text truncate">{dayName ?? 'Free Workout'}</h1>
           <p className="text-xs text-app-muted mt-0.5">
@@ -149,7 +151,7 @@ export default function SessionDetail() {
           return (
             <li key={se.id} className="rounded-2xl bg-app-card border border-app-border px-3 py-3">
               <div className="flex items-center gap-2 mb-2">
-                <MuscleIcon muscleGroup={exercise.muscleGroup} width={28} height={42} />
+                <ExerciseThumb category={exercise.category} />
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm text-app-text truncate">{exercise.name}</p>
                   <p className="text-xs text-app-muted">{exercise.muscleGroup}</p>

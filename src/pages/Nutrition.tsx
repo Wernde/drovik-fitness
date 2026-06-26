@@ -575,7 +575,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
         return (
           <div key={meal} className="bg-app-card rounded-2xl border border-app-border overflow-hidden">
             <div className="flex items-center justify-between px-4 pt-3 pb-2">
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex flex-1 items-center gap-3 min-w-0">
                 <PremiumIconTile name="meal" tone="flame" size="sm" usage="card" active iconSize={28} />
                 <div className="min-w-0">
                   <p className="text-sm font-extrabold text-app-text">{MEAL_LABELS[meal]}</p>

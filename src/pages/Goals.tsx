@@ -10,6 +10,7 @@ import HabitsTab from '../components/HabitsTab'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, displayToKg, weightLabel, mlToDisplay, waterLabel } from '../lib/units'
 import { calcBMR, calcTDEE, calcMacros, loadProfile, DIET_PROGRAMS } from '../lib/tdee'
+import { PremiumIconTile } from '../components/BrandIcon'
 
 const WATER_GOAL_ML  = 2500
 const WEIGHT_GOAL_KEY = 'drovik:weight-goal'
@@ -332,6 +333,7 @@ export default function Goals() {
             <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
           </svg>
         </button>
+        <PremiumIconTile name="progress" tone="gold" size="md" usage="card" active />
         <h1 className="text-2xl font-extrabold text-app-text">Goals + Habits</h1>
       </div>
 

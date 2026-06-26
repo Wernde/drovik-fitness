@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Premium Icon Integration Completion
+
+### Changed
+- **Session history icon consistency** - session detail exercise rows now use the shared premium exercise thumbnail system instead of the older muscle sketch thumbnail.
+- **Goals route branding** - Goals + Habits now uses the same premium Drovik icon tile treatment as the main app routes.
+- **Nutrition header spacing** - meal card headers now reserve flexible space around the premium meal icons so camera/add controls stay tidy on mobile.
+
+---
+
 ## Navigation Logo Refresh
 
 ### Changed
