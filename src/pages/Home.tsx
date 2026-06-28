@@ -153,66 +153,30 @@ function RailCard({ children, className = '' }: { children: ReactNode; className
 }
 
 function FlameIconTile() {
+  const base = import.meta.env.BASE_URL
   return (
-    <span
-      className="relative flex items-center justify-center flex-shrink-0 overflow-hidden border w-16 h-16 rounded-2xl"
-      style={brandIconTileStyle('flame', true)}
+    <img
+      src={`${base}assets/streak-flame.png`}
+      alt=""
       aria-hidden="true"
-    >
-      <span className="absolute inset-x-2.5 top-2 h-3 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
-      <span className="absolute right-0.5 top-1.5 bottom-1.5 w-px rounded-2xl bg-sky-300/55 blur-[0.5px]" />
-      <svg className="relative z-10" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="flame-outer" x1="12" y1="1" x2="12" y2="21" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#FFE566" />
-            <stop offset="48%" stopColor="#FF8C00" />
-            <stop offset="100%" stopColor="#FF3D00" />
-          </linearGradient>
-          <linearGradient id="flame-inner" x1="12" y1="7" x2="12" y2="19" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#FFFDE7" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#FFD740" stopOpacity="0.7" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M12 1C9.5 5 5.5 8 5.5 13C5.5 17.7 8.5 21 12 21.5C15.5 21 18.5 17.7 18.5 13C18.5 8 14.5 5 12 1Z"
-          fill="url(#flame-outer)"
-        />
-        <path
-          d="M12 7.5C10.8 10 9.8 11.8 9.8 14C9.8 16.1 10.7 17.8 12 18.3C13.3 17.8 14.2 16.1 14.2 14C14.2 11.8 13.2 10 12 7.5Z"
-          fill="url(#flame-inner)"
-        />
-      </svg>
-    </span>
+      draggable={false}
+      className="w-16 h-16 object-contain flex-shrink-0"
+      style={{ filter: 'drop-shadow(0 0 14px rgba(255, 108, 0, 0.75))' }}
+    />
   )
 }
 
 function TrophyIconTile() {
+  const base = import.meta.env.BASE_URL
   return (
-    <span
-      className="relative flex items-center justify-center flex-shrink-0 overflow-hidden border w-14 h-14 rounded-2xl"
-      style={brandIconTileStyle('gold', true)}
+    <img
+      src={`${base}assets/trophy.png`}
+      alt=""
       aria-hidden="true"
-    >
-      <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
-      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
-      <span className="absolute right-0.5 top-1.5 bottom-1.5 w-px rounded-2xl bg-sky-300/55 blur-[0.5px]" />
-      <svg className="relative z-10" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="trophy-grad" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#FFE566" />
-            <stop offset="55%" stopColor="#FFAA00" />
-            <stop offset="100%" stopColor="#FF8000" />
-          </linearGradient>
-        </defs>
-        <path d="M8 2H16V13C16 15.8 14.2 18 12 18C9.8 18 8 15.8 8 13V2Z" fill="url(#trophy-grad)" />
-        <path d="M2 4H8V9.5C8 11.4 5.2 12 4.5 10.5V4C4.5 3 2 3 2 4Z" fill="url(#trophy-grad)" opacity="0.85" />
-        <path d="M16 4H22V10.5C22 12 19.5 12 19 10.5V4C19 3 16 3 16 4Z" fill="url(#trophy-grad)" opacity="0.85" />
-        <rect x="11" y="18" width="2" height="3" rx="1" fill="url(#trophy-grad)" />
-        <rect x="8.5" y="21" width="7" height="1.5" rx="0.75" fill="url(#trophy-grad)" />
-        <path d="M10 8.5C10 8.5 10.8 10.5 12 10.5C13.2 10.5 14 8.5 14 8.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1.2" strokeLinecap="round" />
-      </svg>
-    </span>
+      draggable={false}
+      className="w-14 h-14 object-contain flex-shrink-0"
+      style={{ filter: 'drop-shadow(0 0 12px rgba(255, 170, 0, 0.70))' }}
+    />
   )
 }
 
