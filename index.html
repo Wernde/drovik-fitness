@@ -38,6 +38,13 @@
         var styleEl = null;
         var done    = false;
 
+        // Skip splash when ?nosplash param present (dev/screenshot use only)
+        if (window.location.search.indexOf('nosplash') !== -1) {
+          dismiss();
+          setTimeout(function() { window.dispatchEvent(new CustomEvent('drovik:splash-complete')); }, 1500);
+          return;
+        }
+
         // ── Dismiss: fade-to-black (400ms) → remove splash → fade-from-black (600ms) ──
         function dismiss() {
           if (done) return;
