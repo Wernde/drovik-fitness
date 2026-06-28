@@ -460,7 +460,7 @@ html:not(.dark-theme) .workout-hero {
   top: 0;
   bottom: 0;
   width: 46%;
-  max-width: 320px;
+  max-width: 280px;
   z-index: 2;
   pointer-events: none;
   overflow: hidden;

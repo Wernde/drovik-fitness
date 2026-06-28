@@ -70,7 +70,7 @@ function Donut({ pct, color, size = 66 }: { pct: number; color: string; size?: n
 }
 
 function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="text-sm font-extrabold uppercase tracking-wide text-app-text">{children}</h2>
+  return <h2 className="text-xs font-extrabold uppercase tracking-widest text-app-muted">{children}</h2>
 }
 
 function MetricRing({
@@ -116,11 +116,11 @@ function StatCard({
   to: string
 }) {
   return (
-    <Link to={to} className="dashboard-panel flex items-center gap-4 p-4 min-h-[108px] active:scale-[0.99] transition-transform">
-      <PremiumIconTile name={icon} tone={tone} size="lg" usage="card" active iconSize={38} />
+    <Link to={to} className="dashboard-panel flex items-center gap-4 p-4 min-h-[120px] active:scale-[0.99] transition-transform">
+      <PremiumIconTile name={icon} tone={tone} size="xl" usage="card" active iconSize={44} />
       <div className="min-w-0">
         <p className="text-xs font-extrabold uppercase text-app-muted">{label}</p>
-        <p className="text-2xl font-extrabold text-accent-label leading-tight">{value}</p>
+        <p className="text-3xl font-extrabold text-accent-label leading-tight">{value}</p>
         <p className="text-sm font-medium text-app-muted leading-tight whitespace-pre-line">{detail}</p>
       </div>
     </Link>
@@ -219,112 +219,165 @@ function TrophyIconTile() {
 function HeroAthlete() {
   return (
     <div className="hero-athlete-wrap" aria-hidden="true">
-      <svg viewBox="0 0 300 520" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-athlete-svg">
+      {/* Power-stance athlete — arms at sides, chest out, dramatic lighting */}
+      <svg viewBox="0 0 210 520" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-athlete-svg">
         <defs>
-          <radialGradient id="hag-body" cx="50%" cy="40%" r="55%">
-            <stop offset="0%" stopColor="#FF8C00" stopOpacity="0.32" />
-            <stop offset="100%" stopColor="#FF6000" stopOpacity="0" />
+          <radialGradient id="hag-bloom" cx="62%" cy="42%" r="56%">
+            <stop offset="0%" stopColor="#FF8C00" stopOpacity="0.60" />
+            <stop offset="55%" stopColor="#FF5500" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#FF3000" stopOpacity="0" />
           </radialGradient>
-          <radialGradient id="hag-head" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#FF9A1F" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#FF9A1F" stopOpacity="0" />
+          <radialGradient id="hag-head" cx="50%" cy="50%" r="52%">
+            <stop offset="0%" stopColor="#FFA020" stopOpacity="0.36" />
+            <stop offset="100%" stopColor="#FF8000" stopOpacity="0" />
           </radialGradient>
-          <filter id="hag-glow">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <radialGradient id="hag-floor" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FF7000" stopOpacity="0.60" />
+            <stop offset="100%" stopColor="#FF4000" stopOpacity="0" />
+          </radialGradient>
+          <filter id="hag-soft">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="hag-rim">
-            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feGaussianBlur stdDeviation="2.2" result="blur" />
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="hag-glow-strong">
+            <feGaussianBlur stdDeviation="7" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="hag-floor-blur">
+            <feGaussianBlur stdDeviation="8" />
           </filter>
         </defs>
 
-        {/* ambient body glow */}
-        <ellipse cx="150" cy="220" rx="115" ry="185" fill="url(#hag-body)" />
-        {/* ground shadow */}
-        <ellipse cx="150" cy="508" rx="72" ry="13" fill="rgba(255,100,0,0.20)" />
+        {/* ── BACK-LIGHT BLOOM (behind figure) ── */}
+        <g filter="url(#hag-glow-strong)" opacity="0.9">
+          <ellipse cx="118" cy="210" rx="76" ry="165" fill="rgba(255,100,0,0.34)" />
+        </g>
 
-        <g filter="url(#hag-glow)">
+        {/* Orange ground spotlight */}
+        <ellipse cx="105" cy="514" rx="72" ry="12" fill="url(#hag-floor)" filter="url(#hag-floor-blur)" />
+        <ellipse cx="105" cy="514" rx="44" ry="7" fill="rgba(255,130,0,0.58)" />
+
+        <g filter="url(#hag-soft)">
           {/* ── HEAD ── */}
-          <circle cx="150" cy="50" r="28" fill="#040C16" stroke="rgba(255,145,0,0.58)" strokeWidth="1.8" />
-          {/* head halo */}
-          <ellipse cx="150" cy="50" rx="46" ry="48" fill="url(#hag-head)" />
+          <ellipse cx="105" cy="44" rx="26" ry="28" fill="#020810" stroke="rgba(255,148,0,0.62)" strokeWidth="1.6" />
+          <ellipse cx="105" cy="44" rx="40" ry="44" fill="url(#hag-head)" />
+          {/* jaw */}
+          <path d="M82 58 Q105 74 128 58 L126 70 Q105 85 84 70Z" fill="#020810" />
+          {/* Neck */}
+          <path d="M94 72 L116 72 L118 94 L92 94Z" fill="#020810" />
 
-          {/* ── NECK ── */}
-          <path d="M136 74 L164 74 L167 98 L133 98Z" fill="#040C16" />
+          {/* ── TRAPS ── */}
+          <path d="M30 130 C50 102 78 92 105 90 C132 92 160 102 180 130 L172 152 C156 126 132 118 105 116 C78 118 54 126 38 152Z"
+            fill="#020810" stroke="rgba(255,148,0,0.44)" strokeWidth="1.4" />
+          {/* Deltoid cap detail — right */}
+          <path d="M172 128 C184 134 188 148 184 160 C180 148 174 138 168 132Z" fill="#020810" stroke="rgba(255,175,0,0.40)" strokeWidth="1.2" />
+          {/* Deltoid cap detail — left */}
+          <path d="M38 128 C26 134 22 148 26 160 C30 148 36 138 42 132Z" fill="#020810" stroke="rgba(255,175,0,0.24)" strokeWidth="1" />
 
-          {/* ── TRAPS + SHOULDER CAPS ── */}
-          <path d="M42 138 C68 106 106 94 150 92 C194 94 232 106 258 138 L250 168 C228 142 196 132 150 130 C104 132 72 142 50 168Z"
-            fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.2" />
+          {/* ── CHEST / TORSO ── */}
+          <path d="M40 148 L52 276 L158 276 L170 148 C152 122 132 114 105 112 C78 114 58 122 40 148Z"
+            fill="#020810" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* pec V crease — pronounced */}
+          <path d="M62 168 Q82 198 105 196 Q128 198 148 168" stroke="rgba(255,175,0,0.38)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+          {/* pec lower curve */}
+          <path d="M66 184 Q105 202 144 184" stroke="rgba(255,148,0,0.24)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+          {/* sternum line */}
+          <line x1="105" y1="194" x2="105" y2="272" stroke="rgba(255,140,0,0.22)" strokeWidth="1" />
+          {/* abs — 3 rows, deep definition */}
+          <line x1="76" y1="210" x2="134" y2="210" stroke="rgba(255,155,0,0.26)" strokeWidth="1.3" strokeLinecap="round" />
+          <line x1="70" y1="234" x2="140" y2="234" stroke="rgba(255,145,0,0.20)" strokeWidth="1.2" strokeLinecap="round" />
+          <line x1="66" y1="258" x2="144" y2="258" stroke="rgba(255,135,0,0.15)" strokeWidth="1.1" strokeLinecap="round" />
+          {/* serratus detail */}
+          <path d="M52 198 Q58 210 52 222" stroke="rgba(255,140,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
+          <path d="M158 198 Q152 210 158 222" stroke="rgba(255,140,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
 
-          {/* ── TORSO (V-taper) ── */}
-          <path d="M52 162 L68 280 L232 280 L248 162 C224 138 196 130 150 128 C104 130 76 138 52 162Z"
-            fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
-          {/* pec line */}
-          <path d="M82 180 Q150 205 218 180" stroke="rgba(255,155,0,0.22)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-          {/* sternum / center line */}
-          <line x1="150" y1="198" x2="150" y2="276" stroke="rgba(255,140,0,0.15)" strokeWidth="1" />
-          {/* abs bands */}
-          <line x1="108" y1="222" x2="192" y2="222" stroke="rgba(255,140,0,0.13)" strokeWidth="1" strokeLinecap="round" />
-          <line x1="102" y1="246" x2="198" y2="246" stroke="rgba(255,140,0,0.12)" strokeWidth="1" strokeLinecap="round" />
-          <line x1="98"  y1="268" x2="202" y2="268" stroke="rgba(255,140,0,0.10)" strokeWidth="1" strokeLinecap="round" />
+          {/* ── LEFT ARM ── */}
+          {/* upper arm */}
+          <path d="M42 146 L20 234 L44 246 L66 156Z" fill="#020810" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* bicep peak */}
+          <path d="M24 200 Q14 218 20 234" stroke="rgba(255,175,0,0.26)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+          {/* tricep line */}
+          <path d="M56 164 Q62 200 56 230" stroke="rgba(255,130,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
+          {/* forearm */}
+          <path d="M20 234 L28 312 L52 312 L44 246Z" fill="#020810" stroke="rgba(255,140,0,0.22)" strokeWidth="0.8" />
+          {/* left fist */}
+          <path d="M26 310 Q22 324 34 330 Q46 334 52 326 L52 312Z" fill="#020810" stroke="rgba(255,140,0,0.32)" strokeWidth="1" />
 
-          {/* ── LEFT UPPER ARM (out & down) ── */}
-          <path d="M54 148 L8 238 L36 254 L80 162Z" fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
-          {/* LEFT FOREARM (bent back up — creates double-bicep flex) */}
-          <path d="M8 238 L24 164 L50 170 L36 254Z" fill="#040C16" stroke="rgba(255,140,0,0.22)" strokeWidth="0.9" />
-          {/* LEFT FIST */}
-          <ellipse cx="32" cy="153" rx="19" ry="14" fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.3" />
-
-          {/* ── RIGHT UPPER ARM (mirrored) ── */}
-          <path d="M246 148 L292 238 L264 254 L220 162Z" fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
-          {/* RIGHT FOREARM */}
-          <path d="M292 238 L276 164 L250 170 L264 254Z" fill="#040C16" stroke="rgba(255,140,0,0.22)" strokeWidth="0.9" />
-          {/* RIGHT FIST */}
-          <ellipse cx="268" cy="153" rx="19" ry="14" fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.3" />
+          {/* ── RIGHT ARM ── */}
+          <path d="M168 146 L190 234 L166 246 L144 156Z" fill="#020810" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* bicep peak */}
+          <path d="M186 200 Q196 218 190 234" stroke="rgba(255,175,0,0.26)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+          {/* tricep line */}
+          <path d="M154 164 Q148 200 154 230" stroke="rgba(255,130,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
+          {/* forearm */}
+          <path d="M190 234 L182 312 L158 312 L166 246Z" fill="#020810" stroke="rgba(255,140,0,0.22)" strokeWidth="0.8" />
+          {/* right fist */}
+          <path d="M184 310 Q188 324 178 330 Q166 334 158 326 L158 312Z" fill="#020810" stroke="rgba(255,140,0,0.32)" strokeWidth="1" />
 
           {/* ── SHORTS ── */}
-          <path d="M68 278 L80 362 L220 362 L232 278Z" fill="#080F1A" stroke="rgba(255,140,0,0.38)" strokeWidth="1.2" />
+          <path d="M54 274 L62 362 L148 362 L156 274Z" fill="#060E18" stroke="rgba(255,140,0,0.46)" strokeWidth="1.2" />
           {/* waistband */}
-          <rect x="68" y="274" width="164" height="13" rx="5" fill="rgba(255,112,0,0.52)" />
+          <rect x="52" y="270" width="106" height="12" rx="4" fill="rgba(255,120,0,0.62)" />
+          <rect x="56" y="271" width="98" height="4" rx="2" fill="rgba(255,210,80,0.24)" />
           {/* center seam */}
-          <line x1="150" y1="287" x2="150" y2="360" stroke="rgba(255,140,0,0.18)" strokeWidth="0.9" />
+          <line x1="105" y1="282" x2="105" y2="360" stroke="rgba(255,140,0,0.18)" strokeWidth="0.8" />
 
-          {/* ── LEFT THIGH ── */}
-          <path d="M78 358 L62 462 L110 466 L118 360Z" fill="#040C16" stroke="rgba(255,140,0,0.18)" strokeWidth="0.8" />
-          {/* LEFT CALF */}
-          <path d="M62 460 L56 510 L106 512 L108 462Z" fill="#040C16" />
-          {/* LEFT FOOT */}
-          <ellipse cx="82" cy="512" rx="28" ry="8" fill="#040C16" />
+          {/* ── LEFT THIGH — quad sweep detail ── */}
+          <path d="M60 358 L44 460 L90 464 L96 360Z" fill="#020810" stroke="rgba(255,140,0,0.22)" strokeWidth="0.8" />
+          {/* quad sweep outer */}
+          <path d="M46 390 Q36 420 44 450" stroke="rgba(255,152,0,0.24)" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+          {/* quad inner VMO line */}
+          <path d="M80 372 Q76 412 78 452" stroke="rgba(255,130,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
+          {/* left calf */}
+          <path d="M44 458 L36 512 L90 512 L90 462Z" fill="#020810" />
+          {/* calf bulge */}
+          <path d="M38 470 Q30 490 38 506" stroke="rgba(255,140,0,0.18)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+          {/* left foot */}
+          <path d="M36 510 L24 518 L90 520 L90 512Z" fill="#020810" />
+          <ellipse cx="58" cy="518" rx="32" ry="7" fill="#020810" />
 
-          {/* ── RIGHT THIGH ── */}
-          <path d="M222 358 L238 462 L190 466 L182 360Z" fill="#040C16" stroke="rgba(255,140,0,0.18)" strokeWidth="0.8" />
-          {/* RIGHT CALF */}
-          <path d="M238 460 L244 510 L194 512 L192 462Z" fill="#040C16" />
-          {/* RIGHT FOOT */}
-          <ellipse cx="218" cy="512" rx="28" ry="8" fill="#040C16" />
+          {/* ── RIGHT THIGH — quad sweep detail ── */}
+          <path d="M150 358 L166 460 L120 464 L114 360Z" fill="#020810" stroke="rgba(255,140,0,0.22)" strokeWidth="0.8" />
+          {/* quad sweep outer */}
+          <path d="M164 390 Q174 420 166 450" stroke="rgba(255,152,0,0.24)" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+          {/* quad inner VMO line */}
+          <path d="M130 372 Q134 412 132 452" stroke="rgba(255,130,0,0.16)" strokeWidth="1" strokeLinecap="round" fill="none" />
+          {/* right calf */}
+          <path d="M166 458 L174 512 L120 512 L120 462Z" fill="#020810" />
+          <path d="M172 470 Q180 490 172 506" stroke="rgba(255,140,0,0.18)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+          {/* right foot */}
+          <path d="M174 510 L186 518 L120 520 L120 512Z" fill="#020810" />
+          <ellipse cx="152" cy="518" rx="32" ry="7" fill="#020810" />
         </g>
 
-        {/* ── RIM LIGHTING ── */}
-        {/* orange rim — right body edge */}
+        {/* ── RIM LIGHTING — very bright orange right edge, blue-white left ── */}
         <g filter="url(#hag-rim)">
-          <path d="M248 162 L234 278 L222 360 L236 462 L244 510"
-            stroke="rgba(255,138,0,0.62)" strokeWidth="2.8" strokeLinecap="round" fill="none" />
-          {/* orange rim — right arm */}
-          <path d="M292 238 L276 162 L268 148"
-            stroke="rgba(255,130,0,0.55)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+          {/* orange right rim — torso (very bright) */}
+          <path d="M170 148 L158 274 L156 362 L166 460 L174 510"
+            stroke="rgba(255,148,0,0.90)" strokeWidth="3.2" strokeLinecap="round" fill="none" />
+          {/* orange right rim — right arm outer */}
+          <path d="M180 130 L192 236 L184 312 L180 330"
+            stroke="rgba(255,132,0,0.76)" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+          {/* orange shoulder / deltoid cap highlight */}
+          <path d="M172 126 C186 134 190 150 186 162"
+            stroke="rgba(255,215,80,0.80)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+          {/* secondary deltoid highlight */}
+          <path d="M184 140 C192 150 192 166 188 176"
+            stroke="rgba(255,185,45,0.55)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+          {/* catch light on head right side */}
+          <path d="M126 26 C140 32 144 48 138 60"
+            stroke="rgba(255,225,100,0.65)" strokeWidth="2.0" strokeLinecap="round" fill="none" />
         </g>
-        {/* cool blue-white rim — left body edge */}
-        <path d="M52 162 L68 280 L80 362 L62 462 L56 510"
-          stroke="rgba(140,210,255,0.40)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        {/* cool blue-white rim — left arm */}
-        <path d="M8 238 L24 162 L32 148"
-          stroke="rgba(140,210,255,0.36)" strokeWidth="2" strokeLinecap="round" fill="none" />
-        {/* shoulder highlight — orange catch-light */}
-        <path d="M244 140 C252 145 260 154 260 162"
-          stroke="rgba(255,200,80,0.50)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-        <path d="M56 140 C48 145 40 154 40 162"
-          stroke="rgba(180,230,255,0.42)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+        {/* blue-white left rim — torso */}
+        <path d="M40 148 L52 276 L62 362 L44 460 L36 510"
+          stroke="rgba(150,220,255,0.44)" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        {/* blue-white left arm edge */}
+        <path d="M30 130 L18 236 L26 312 L30 330"
+          stroke="rgba(150,220,255,0.34)" strokeWidth="2.0" strokeLinecap="round" fill="none" />
       </svg>
     </div>
   )
@@ -734,9 +787,9 @@ export default function Home() {
 
           <section className="dashboard-panel nutrition-band">
             <div className="flex items-center gap-4 min-w-[230px]">
-              <PremiumIconTile name="nutrition" tone="flame" size="lg" usage="card" active iconSize={42} />
+              <PremiumIconTile name="nutrition" tone="flame" size="xl" usage="card" active iconSize={44} />
               <div className="min-w-0">
-                <SectionTitle>Today's Nutrition</SectionTitle>
+                <SectionTitle>TODAY'S NUTRITION</SectionTitle>
                 <p className="mt-3 text-base font-extrabold text-app-text">Daily Nutrition</p>
                 <Link to="/nutrition" className="text-sm font-bold text-accent-label">{todayFoodTotals ? 'From food diary' : 'Tap to log food'}</Link>
               </div>
@@ -752,7 +805,7 @@ export default function Home() {
 
           <section className="space-y-3">
             <SectionTitle>This Week</SectionTitle>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <StatCard icon="workout" tone="blue" label="Sessions" value={String(data?.weekStats.sessions ?? 0)} detail={'workouts\nthis week'} to="/history" />
               <StatCard
                 icon="body"
@@ -865,9 +918,9 @@ export default function Home() {
           </section>
 
           <section className="workout-hero dashboard-panel overflow-hidden p-6 md:p-8">
-            <div className="relative z-10 pr-[44%]">
+            <div className="relative z-10 pr-[48%]">
               <SectionTitle>Today's Workout</SectionTitle>
-              <p className="mt-2 text-3xl md:text-4xl xl:text-5xl font-extrabold uppercase italic leading-none text-app-text">{heroTitle}</p>
+              <p className="mt-2 text-4xl md:text-5xl xl:text-6xl font-extrabold uppercase italic leading-none text-app-text">{heroTitle}</p>
               <p className="text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase italic leading-none text-accent-label">Workout</p>
               <p className="mt-4 max-w-sm text-sm font-medium text-app-muted">⚡ Consistency builds champions. You've got this!</p>
               {startError && <p className="mt-3 text-sm font-bold text-error-text">{startError}</p>}

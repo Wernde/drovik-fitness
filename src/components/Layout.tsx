@@ -249,10 +249,10 @@ export default function Layout() {
                     <PremiumIconTile
                       name={item.icon}
                       tone={item.tone}
-                      size="xs"
+                      size="sm"
                       usage="button"
                       active
-                      iconSize={22}
+                      iconSize={26}
                     />
                     <span className="text-sm font-semibold text-app-text">{item.label}</span>
                   </button>
