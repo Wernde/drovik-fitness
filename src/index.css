@@ -173,6 +173,10 @@ html:not(.dark-theme) .dashboard-sidebar {
   border-radius: 1rem;
 }
 
+.brand-logo-shell.is-compact {
+  min-height: 3.1rem;
+}
+
 .premium-nav-item {
   border: 1px solid transparent;
 }
@@ -199,6 +203,20 @@ html:not(.dark-theme) .premium-nav-item.is-active {
   box-shadow: var(--dash-orange-glow), var(--dash-panel-shadow);
 }
 
+.quick-add-rail-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 112, 0, 0.45) transparent;
+}
+
+.quick-add-rail-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.quick-add-rail-list::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: rgba(255, 112, 0, 0.42);
+}
+
 .dashboard-topbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -208,8 +226,13 @@ html:not(.dark-theme) .premium-nav-item.is-active {
 
 @media (min-width: 1024px) {
   .dashboard-topbar {
-    grid-template-columns: minmax(260px, 0.85fr) minmax(420px, 1.35fr) auto;
+    grid-template-columns: minmax(220px, 0.65fr) minmax(0, 1.8fr) auto;
   }
+}
+
+.dashboard-top-actions {
+  justify-content: flex-end;
+  white-space: nowrap;
 }
 
 .profile-orb {

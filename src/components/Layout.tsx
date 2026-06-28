@@ -200,22 +200,27 @@ export default function Layout() {
         <div className="flex flex-1 min-h-0">
 
           {/* ── Desktop sidebar nav (md+) ─────────────────────────────────── */}
-          <aside className="hidden md:flex flex-col w-56 flex-none dashboard-sidebar">
+          <aside className="hidden md:flex flex-col w-56 flex-none dashboard-sidebar overflow-hidden">
 
             {/* Brand */}
-            <div className="px-4 pt-5 pb-4">
-              <div className="brand-logo-shell">
-                <img src={`${BASE}drovik-logo-gold.png`} alt="Drovik Fitness" className="h-12 w-full object-contain" />
+            <div className={qaOpen ? 'px-4 pt-4 pb-2' : 'px-4 pt-5 pb-4'}>
+              <div className={`brand-logo-shell ${qaOpen ? 'is-compact' : ''}`}>
+                <img
+                  src={`${BASE}drovik-logo-gold.png`}
+                  alt="Drovik Fitness"
+                  className={`${qaOpen ? 'h-10' : 'h-12'} w-full object-contain`}
+                />
                 <SyncDot status={status} />
               </div>
             </div>
 
             {/* Nav items */}
-            <nav className="flex-1 px-4 py-3 space-y-3 overflow-y-auto">
+            <nav className={`${qaOpen ? 'flex-none px-3 py-2 space-y-2' : 'flex-1 px-4 py-3 space-y-3 overflow-y-auto'}`}>
               {NAV_ITEMS.map(({ to, label, Icon }) => (
                 <NavLink key={to} to={to} end={to === '/'}
                   className={({ isActive }) => [
-                    'premium-nav-item flex items-center gap-4 px-4 py-3 rounded-card text-sm font-bold transition-all',
+                    'premium-nav-item flex items-center gap-4 rounded-card text-sm font-bold transition-all',
+                    qaOpen ? 'px-3 py-2' : 'px-4 py-3',
                     isActive
                       ? 'is-active text-app-text'
                       : 'text-app-muted hover:text-app-text font-semibold',
@@ -233,15 +238,22 @@ export default function Layout() {
 
             {/* Quick Add items (inside sidebar, above button) */}
             {qaOpen && (
-              <nav className="px-3 pb-2 overflow-y-auto flex flex-col-reverse" style={{ maxHeight: 'calc(100% - 180px)' }}>
+              <nav className="quick-add-rail-list flex-1 min-h-0 px-3 pb-2 overflow-y-auto">
                 {QA_ITEMS.map((item, i) => (
                   <button
                     key={item.label}
                     onClick={() => handleQA(item)}
-                    className="qa-item w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-app-bg transition-colors text-left"
+                    className="qa-item w-full flex items-center gap-3 px-3 py-1.5 rounded-xl hover:bg-app-bg transition-colors text-left"
                     style={{ animationDelay: `${i * 35}ms` }}
                   >
-                    <QuickAddIcon icon={item.icon} tone={item.tone} />
+                    <PremiumIconTile
+                      name={item.icon}
+                      tone={item.tone}
+                      size="xs"
+                      usage="button"
+                      active
+                      iconSize={22}
+                    />
                     <span className="text-sm font-semibold text-app-text">{item.label}</span>
                   </button>
                 ))}

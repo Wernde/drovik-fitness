@@ -429,48 +429,49 @@ export default function Home() {
 
   return (
     <div className="dashboard-page min-h-full px-4 py-4 md:px-5 md:py-5 xl:px-6">
+      <header className="dashboard-topbar mb-4">
+        <div className="flex items-center gap-4 min-w-0">
+          <Link to="/profile" className="profile-orb flex-none" aria-label="Profile">
+            {avatarUrl
+              ? <img src={avatarUrl} alt="avatar" className="h-full w-full rounded-full object-cover" />
+              : <span>{initials}</span>}
+          </Link>
+          <div className="min-w-0">
+            <p className="text-sm font-extrabold text-accent-label">Let's Go,</p>
+            <h1 className="truncate text-2xl md:text-3xl font-extrabold text-app-text leading-tight">{displayName}</h1>
+            <p className="mt-1 flex items-center gap-2 text-sm font-medium text-app-muted">
+              <span aria-hidden="true">▦</span>
+              {fullDate}
+            </p>
+          </div>
+        </div>
+
+        <div className="date-strip-card">
+          {dateStrip.map(({ date, iso, dow }) => {
+            const isToday = iso === todayIso
+            const hasWorkout = data?.sessionDateSet.has(iso) ?? false
+            return (
+              <div key={iso} className={`date-tile ${isToday ? 'is-today' : ''}`}>
+                <p className="text-xs font-extrabold">{dow}</p>
+                <p className="text-2xl font-extrabold leading-none">{date.getDate()}</p>
+                <span className={`mx-auto mt-1 block h-1 w-1 rounded-full ${hasWorkout ? 'bg-accent' : 'bg-transparent'}`} />
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="dashboard-top-actions flex items-center gap-3">
+          <button className="today-button">Today</button>
+          <button className="arrow-button" aria-label="Previous day">‹</button>
+          <button className="arrow-button" aria-label="Next day">›</button>
+          <Link to="/settings" className="settings-button" aria-label="Settings">
+            <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" active iconSize={24} />
+          </Link>
+        </div>
+      </header>
+
       <div className="home-dashboard-grid">
         <div className="min-w-0 space-y-4">
-          <header className="dashboard-topbar">
-            <div className="flex items-center gap-4 min-w-0">
-              <Link to="/profile" className="profile-orb flex-none" aria-label="Profile">
-                {avatarUrl
-                  ? <img src={avatarUrl} alt="avatar" className="h-full w-full rounded-full object-cover" />
-                  : <span>{initials}</span>}
-              </Link>
-              <div className="min-w-0">
-                <p className="text-sm font-extrabold text-accent-label">Let's Go,</p>
-                <h1 className="truncate text-2xl md:text-3xl font-extrabold text-app-text leading-tight">{displayName}</h1>
-                <p className="mt-1 flex items-center gap-2 text-sm font-medium text-app-muted">
-                  <span aria-hidden="true">▦</span>
-                  {fullDate}
-                </p>
-              </div>
-            </div>
-
-            <div className="date-strip-card">
-              {dateStrip.map(({ date, iso, dow }) => {
-                const isToday = iso === todayIso
-                const hasWorkout = data?.sessionDateSet.has(iso) ?? false
-                return (
-                  <div key={iso} className={`date-tile ${isToday ? 'is-today' : ''}`}>
-                    <p className="text-xs font-extrabold">{dow}</p>
-                    <p className="text-2xl font-extrabold leading-none">{date.getDate()}</p>
-                    <span className={`mx-auto mt-1 block h-1 w-1 rounded-full ${hasWorkout ? 'bg-accent' : 'bg-transparent'}`} />
-                  </div>
-                )
-              })}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <button className="today-button">Today</button>
-              <button className="arrow-button" aria-label="Previous day">‹</button>
-              <button className="arrow-button" aria-label="Next day">›</button>
-              <Link to="/settings" className="settings-button" aria-label="Settings">
-                <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" active iconSize={24} />
-              </Link>
-            </div>
-          </header>
 
           <section className="dashboard-panel nutrition-band">
             <div className="flex items-center gap-4 min-w-[230px]">

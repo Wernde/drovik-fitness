@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Dashboard Layout Refinement
+
+### Changed
+- **Quick Add rail fit** - desktop Quick Add now uses a compact sidebar state so Home, Program, Nutrition, History, and every Quick Add item remain reachable without crowding.
+- **Dashboard header width** - the profile/date/action row now spans the full dashboard content width, giving the date strip, Today button, arrows, and Settings control more room.
+- **Right rail alignment** - Streak, Next Workout, and Achievements now start below the extended top row so the desktop dashboard matches the supplied layout more closely.
+
+---
+
 ## Reference Dashboard Modes
 
 ### Changed
