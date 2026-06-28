@@ -13,7 +13,7 @@ import { supabase } from '../lib/supabase'
 import { loadProfile, calcBMR, calcTDEE, calcMacros, DIET_PROGRAMS } from '../lib/tdee'
 import { useUnits } from '../contexts/UnitsContext'
 import { kgToDisplay, weightLabel, fmtVolume, mlToDisplay, waterLabel, displayToKg } from '../lib/units'
-import { PremiumIconTile } from '../components/BrandIcon'
+import { PremiumIconTile, brandIconTileStyle } from '../components/BrandIcon'
 import type { BrandIconName, BrandIconTone } from '../components/BrandIcon'
 
 const WATER_GOAL_ML = 2500
@@ -150,6 +150,184 @@ function WaterGraph({ pct }: { pct: number }) {
 
 function RailCard({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <aside className={`dashboard-panel p-5 ${className}`}>{children}</aside>
+}
+
+function FlameIconTile() {
+  return (
+    <span
+      className="relative flex items-center justify-center flex-shrink-0 overflow-hidden border w-16 h-16 rounded-2xl"
+      style={brandIconTileStyle('flame', true)}
+      aria-hidden="true"
+    >
+      <span className="absolute inset-x-2.5 top-2 h-3 rounded-full bg-white/45 blur-[1px]" />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
+      <span className="absolute right-0.5 top-1.5 bottom-1.5 w-px rounded-2xl bg-sky-300/55 blur-[0.5px]" />
+      <svg className="relative z-10" width="38" height="38" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="flame-outer" x1="12" y1="1" x2="12" y2="21" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FFE566" />
+            <stop offset="48%" stopColor="#FF8C00" />
+            <stop offset="100%" stopColor="#FF3D00" />
+          </linearGradient>
+          <linearGradient id="flame-inner" x1="12" y1="7" x2="12" y2="19" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FFFDE7" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#FFD740" stopOpacity="0.7" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M12 1C9.5 5 5.5 8 5.5 13C5.5 17.7 8.5 21 12 21.5C15.5 21 18.5 17.7 18.5 13C18.5 8 14.5 5 12 1Z"
+          fill="url(#flame-outer)"
+        />
+        <path
+          d="M12 7.5C10.8 10 9.8 11.8 9.8 14C9.8 16.1 10.7 17.8 12 18.3C13.3 17.8 14.2 16.1 14.2 14C14.2 11.8 13.2 10 12 7.5Z"
+          fill="url(#flame-inner)"
+        />
+      </svg>
+    </span>
+  )
+}
+
+function TrophyIconTile() {
+  return (
+    <span
+      className="relative flex items-center justify-center flex-shrink-0 overflow-hidden border w-14 h-14 rounded-2xl"
+      style={brandIconTileStyle('gold', true)}
+      aria-hidden="true"
+    >
+      <span className="absolute inset-x-2 top-1.5 h-2.5 rounded-full bg-white/45 blur-[1px]" />
+      <span className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-orange-200/45" />
+      <span className="absolute right-0.5 top-1.5 bottom-1.5 w-px rounded-2xl bg-sky-300/55 blur-[0.5px]" />
+      <svg className="relative z-10" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="trophy-grad" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#FFE566" />
+            <stop offset="55%" stopColor="#FFAA00" />
+            <stop offset="100%" stopColor="#FF8000" />
+          </linearGradient>
+        </defs>
+        <path d="M8 2H16V13C16 15.8 14.2 18 12 18C9.8 18 8 15.8 8 13V2Z" fill="url(#trophy-grad)" />
+        <path d="M2 4H8V9.5C8 11.4 5.2 12 4.5 10.5V4C4.5 3 2 3 2 4Z" fill="url(#trophy-grad)" opacity="0.85" />
+        <path d="M16 4H22V10.5C22 12 19.5 12 19 10.5V4C19 3 16 3 16 4Z" fill="url(#trophy-grad)" opacity="0.85" />
+        <rect x="11" y="18" width="2" height="3" rx="1" fill="url(#trophy-grad)" />
+        <rect x="8.5" y="21" width="7" height="1.5" rx="0.75" fill="url(#trophy-grad)" />
+        <path d="M10 8.5C10 8.5 10.8 10.5 12 10.5C13.2 10.5 14 8.5 14 8.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1.2" strokeLinecap="round" />
+      </svg>
+    </span>
+  )
+}
+
+function HeroAthlete() {
+  return (
+    <div className="hero-athlete-wrap" aria-hidden="true">
+      <svg viewBox="0 0 300 520" fill="none" xmlns="http://www.w3.org/2000/svg" className="hero-athlete-svg">
+        <defs>
+          <radialGradient id="hag-body" cx="50%" cy="40%" r="55%">
+            <stop offset="0%" stopColor="#FF8C00" stopOpacity="0.32" />
+            <stop offset="100%" stopColor="#FF6000" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="hag-head" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FF9A1F" stopOpacity="0.22" />
+            <stop offset="100%" stopColor="#FF9A1F" stopOpacity="0" />
+          </radialGradient>
+          <filter id="hag-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+          <filter id="hag-rim">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+
+        {/* ambient body glow */}
+        <ellipse cx="150" cy="220" rx="115" ry="185" fill="url(#hag-body)" />
+        {/* ground shadow */}
+        <ellipse cx="150" cy="508" rx="72" ry="13" fill="rgba(255,100,0,0.20)" />
+
+        <g filter="url(#hag-glow)">
+          {/* ── HEAD ── */}
+          <circle cx="150" cy="50" r="28" fill="#040C16" stroke="rgba(255,145,0,0.58)" strokeWidth="1.8" />
+          {/* head halo */}
+          <ellipse cx="150" cy="50" rx="46" ry="48" fill="url(#hag-head)" />
+
+          {/* ── NECK ── */}
+          <path d="M136 74 L164 74 L167 98 L133 98Z" fill="#040C16" />
+
+          {/* ── TRAPS + SHOULDER CAPS ── */}
+          <path d="M42 138 C68 106 106 94 150 92 C194 94 232 106 258 138 L250 168 C228 142 196 132 150 130 C104 132 72 142 50 168Z"
+            fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.2" />
+
+          {/* ── TORSO (V-taper) ── */}
+          <path d="M52 162 L68 280 L232 280 L248 162 C224 138 196 130 150 128 C104 130 76 138 52 162Z"
+            fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* pec line */}
+          <path d="M82 180 Q150 205 218 180" stroke="rgba(255,155,0,0.22)" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+          {/* sternum / center line */}
+          <line x1="150" y1="198" x2="150" y2="276" stroke="rgba(255,140,0,0.15)" strokeWidth="1" />
+          {/* abs bands */}
+          <line x1="108" y1="222" x2="192" y2="222" stroke="rgba(255,140,0,0.13)" strokeWidth="1" strokeLinecap="round" />
+          <line x1="102" y1="246" x2="198" y2="246" stroke="rgba(255,140,0,0.12)" strokeWidth="1" strokeLinecap="round" />
+          <line x1="98"  y1="268" x2="202" y2="268" stroke="rgba(255,140,0,0.10)" strokeWidth="1" strokeLinecap="round" />
+
+          {/* ── LEFT UPPER ARM (out & down) ── */}
+          <path d="M54 148 L8 238 L36 254 L80 162Z" fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* LEFT FOREARM (bent back up — creates double-bicep flex) */}
+          <path d="M8 238 L24 164 L50 170 L36 254Z" fill="#040C16" stroke="rgba(255,140,0,0.22)" strokeWidth="0.9" />
+          {/* LEFT FIST */}
+          <ellipse cx="32" cy="153" rx="19" ry="14" fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.3" />
+
+          {/* ── RIGHT UPPER ARM (mirrored) ── */}
+          <path d="M246 148 L292 238 L264 254 L220 162Z" fill="#040C16" stroke="rgba(255,140,0,0.28)" strokeWidth="1" />
+          {/* RIGHT FOREARM */}
+          <path d="M292 238 L276 164 L250 170 L264 254Z" fill="#040C16" stroke="rgba(255,140,0,0.22)" strokeWidth="0.9" />
+          {/* RIGHT FIST */}
+          <ellipse cx="268" cy="153" rx="19" ry="14" fill="#040C16" stroke="rgba(255,140,0,0.38)" strokeWidth="1.3" />
+
+          {/* ── SHORTS ── */}
+          <path d="M68 278 L80 362 L220 362 L232 278Z" fill="#080F1A" stroke="rgba(255,140,0,0.38)" strokeWidth="1.2" />
+          {/* waistband */}
+          <rect x="68" y="274" width="164" height="13" rx="5" fill="rgba(255,112,0,0.52)" />
+          {/* center seam */}
+          <line x1="150" y1="287" x2="150" y2="360" stroke="rgba(255,140,0,0.18)" strokeWidth="0.9" />
+
+          {/* ── LEFT THIGH ── */}
+          <path d="M78 358 L62 462 L110 466 L118 360Z" fill="#040C16" stroke="rgba(255,140,0,0.18)" strokeWidth="0.8" />
+          {/* LEFT CALF */}
+          <path d="M62 460 L56 510 L106 512 L108 462Z" fill="#040C16" />
+          {/* LEFT FOOT */}
+          <ellipse cx="82" cy="512" rx="28" ry="8" fill="#040C16" />
+
+          {/* ── RIGHT THIGH ── */}
+          <path d="M222 358 L238 462 L190 466 L182 360Z" fill="#040C16" stroke="rgba(255,140,0,0.18)" strokeWidth="0.8" />
+          {/* RIGHT CALF */}
+          <path d="M238 460 L244 510 L194 512 L192 462Z" fill="#040C16" />
+          {/* RIGHT FOOT */}
+          <ellipse cx="218" cy="512" rx="28" ry="8" fill="#040C16" />
+        </g>
+
+        {/* ── RIM LIGHTING ── */}
+        {/* orange rim — right body edge */}
+        <g filter="url(#hag-rim)">
+          <path d="M248 162 L234 278 L222 360 L236 462 L244 510"
+            stroke="rgba(255,138,0,0.62)" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+          {/* orange rim — right arm */}
+          <path d="M292 238 L276 162 L268 148"
+            stroke="rgba(255,130,0,0.55)" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+        </g>
+        {/* cool blue-white rim — left body edge */}
+        <path d="M52 162 L68 280 L80 362 L62 462 L56 510"
+          stroke="rgba(140,210,255,0.40)" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+        {/* cool blue-white rim — left arm */}
+        <path d="M8 238 L24 162 L32 148"
+          stroke="rgba(140,210,255,0.36)" strokeWidth="2" strokeLinecap="round" fill="none" />
+        {/* shoulder highlight — orange catch-light */}
+        <path d="M244 140 C252 145 260 154 260 162"
+          stroke="rgba(255,200,80,0.50)" strokeWidth="1.8" strokeLinecap="round" fill="none" />
+        <path d="M56 140 C48 145 40 154 40 162"
+          stroke="rgba(180,230,255,0.42)" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+      </svg>
+    </div>
+  )
 }
 
 function OutlineButton({ children, to }: { children: ReactNode; to: string }) {
@@ -687,7 +865,7 @@ export default function Home() {
           </section>
 
           <section className="workout-hero dashboard-panel overflow-hidden p-6 md:p-8">
-            <div className="relative z-10 max-w-[520px]">
+            <div className="relative z-10 pr-[44%]">
               <SectionTitle>Today's Workout</SectionTitle>
               <p className="mt-2 text-3xl md:text-4xl xl:text-5xl font-extrabold uppercase italic leading-none text-app-text">{heroTitle}</p>
               <p className="text-5xl md:text-6xl xl:text-7xl font-extrabold uppercase italic leading-none text-accent-label">Workout</p>
@@ -707,7 +885,7 @@ export default function Home() {
                 <Link to="/log" className="hero-action mt-5">▶ {heroButton}</Link>
               )}
             </div>
-            <PremiumIconTile name="workout" tone="gold" size="xl" usage="card" active iconSize={48} className="workout-hero-icon" />
+            <HeroAthlete />
           </section>
         </div>
 
@@ -715,7 +893,7 @@ export default function Home() {
           <RailCard>
             <SectionTitle>Streak</SectionTitle>
             <div className="mt-5 flex items-center gap-5">
-              <PremiumIconTile name="meal" tone="flame" size="xl" usage="card" active iconSize={50} />
+              <FlameIconTile />
               <div>
                 <p className="text-5xl font-extrabold text-accent-label leading-none">{streak}</p>
                 <p className="font-bold text-app-muted">Days</p>
@@ -745,7 +923,7 @@ export default function Home() {
           <RailCard>
             <SectionTitle>Achievements</SectionTitle>
             <div className="mt-5 flex items-center gap-4">
-              <PremiumIconTile name="progress" tone="gold" size="lg" usage="card" active iconSize={40} />
+              <TrophyIconTile />
               <div>
                 <p className="text-3xl font-extrabold text-accent-label">{unlockedCount} <span className="text-base text-app-muted">/ {totalAch}</span></p>
                 <p className="text-sm text-app-muted">Achievements Unlocked</p>

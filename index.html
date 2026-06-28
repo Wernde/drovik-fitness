@@ -38,7 +38,7 @@
         var styleEl = null;
         var done    = false;
 
-        // ── Dismiss: fade-to-black (200ms) → remove splash → fade-from-black (350ms) ──
+        // ── Dismiss: fade-to-black (400ms) → remove splash → fade-from-black (600ms) ──
         function dismiss() {
           if (done) return;
           done = true;
@@ -83,6 +83,7 @@
         fetch('./splash.html')
           .then(function (r) { return r.text(); })
           .then(function (html) {
+            if (done) return;
             var doc = new DOMParser().parseFromString(html, 'text/html');
 
             // Inject splash CSS into <head>
