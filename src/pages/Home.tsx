@@ -298,6 +298,72 @@ export default function Home() {
     [],
   )
 
+  // ── Achievements + streak ─────────────────────────────────────────────────
+  const achievementStats = useLiveQuery(async () => {
+    const [
+      allSessions, allBodyWeights, allFoodLogs, allNutritionLogs,
+      allPrograms, allSets, allSessionExercises, allHealthMetrics,
+    ] = await Promise.all([
+      db.workoutSessions.filter(s => !s.deleted && s.finishedAt !== null).toArray(),
+      db.bodyWeightLogs.filter(l => !l.deleted).toArray(),
+      db.foodLogs.filter(l => !l.deleted).toArray(),
+      db.nutritionLogs.filter(l => !l.deleted).toArray(),
+      db.programs.filter(p => !p.deleted).toArray(),
+      db.sets.filter(s => !s.deleted && !s.isWarmup && s.weight > 0 && s.reps > 0).toArray(),
+      db.sessionExercises.filter(se => !se.deleted).toArray(),
+      db.healthMetrics.filter(h => !h.deleted).toArray(),
+    ])
+    const sessionCount = allSessions.length
+    const sessionDates = new Set(allSessions.map(s => s.date))
+    // Streak
+    const todayD = new Date(); todayD.setHours(12, 0, 0, 0)
+    const isoD = (d: Date) => d.toISOString().slice(0, 10)
+    let streak = 0
+    const sc = new Date(todayD)
+    if (!sessionDates.has(isoD(sc))) sc.setDate(sc.getDate() - 1)
+    while (sessionDates.has(isoD(sc))) { streak++; sc.setDate(sc.getDate() - 1) }
+    // Last 7 days for dot indicators
+    const last7 = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(todayD); d.setDate(todayD.getDate() - 6 + i)
+      return sessionDates.has(isoD(d))
+    })
+    const totalVolumeKg   = allSets.reduce((sum, s) => sum + s.weight * s.reps, 0)
+    const uniqueExercises = new Set(allSessionExercises.map(se => se.exerciseId)).size
+    const bwDays          = new Set(allBodyWeights.map(l => l.date)).size
+    const foodDays        = new Set(allFoodLogs.map(l => l.date)).size
+    const hitWaterGoal    = allNutritionLogs.some(l => (l.waterMl ?? 0) >= WATER_GOAL_ML)
+    const { from, to }   = getWeekBounds()
+    const weekCount       = allSessions.filter(s => s.date >= from && s.date <= to).length
+    const TOTAL = 24
+    const achievements = [
+      { id: 'first-workout',  unlocked: sessionCount >= 1   },
+      { id: '5-workouts',     unlocked: sessionCount >= 5   },
+      { id: '10-workouts',    unlocked: sessionCount >= 10  },
+      { id: '25-workouts',    unlocked: sessionCount >= 25  },
+      { id: '50-workouts',    unlocked: sessionCount >= 50  },
+      { id: '100-workouts',   unlocked: sessionCount >= 100 },
+      { id: '3-streak',       unlocked: streak >= 3         },
+      { id: '7-streak',       unlocked: streak >= 7         },
+      { id: '14-streak',      unlocked: streak >= 14        },
+      { id: '30-streak',      unlocked: streak >= 30        },
+      { id: '10k-volume',     unlocked: totalVolumeKg >= 10000  },
+      { id: '100k-volume',    unlocked: totalVolumeKg >= 100000 },
+      { id: 'first-weight',   unlocked: bwDays >= 1         },
+      { id: '7-weights',      unlocked: bwDays >= 7         },
+      { id: '30-weights',     unlocked: bwDays >= 30        },
+      { id: 'first-meal',     unlocked: foodDays >= 1       },
+      { id: '7-food',         unlocked: foodDays >= 7       },
+      { id: '30-food',        unlocked: foodDays >= 30      },
+      { id: 'water-goal',     unlocked: hitWaterGoal        },
+      { id: 'week-beast',     unlocked: weekCount >= 5      },
+      { id: 'first-program',  unlocked: allPrograms.length >= 1      },
+      { id: 'apple-watch',    unlocked: allHealthMetrics.length >= 1 },
+      { id: '10-exercises',   unlocked: uniqueExercises >= 10 },
+      { id: '20-exercises',   unlocked: uniqueExercises >= 20 },
+    ]
+    return { streak, last7, unlockedCount: achievements.filter(a => a.unlocked).length, total: TOTAL }
+  }, [])
+
   const macroTargets = useMemo(() => {
     const profile = loadProfile()
     const weightKg = latestWeight?.weight
@@ -426,6 +492,21 @@ export default function Home() {
   const hasActiveSession = Boolean(data?.activeSession)
   const heroTitle = hasActiveSession ? 'Resume Your' : 'Start Your'
   const heroButton = hasActiveSession ? 'Resume Workout' : data?.nextDay ? `Start ${data.nextDay.name}` : 'Start Workout'
+
+  const streak        = achievementStats?.streak ?? 0
+  const last7         = achievementStats?.last7 ?? Array(7).fill(false)
+  const unlockedCount = achievementStats?.unlockedCount ?? 0
+  const totalAch      = achievementStats?.total ?? 24
+  const achPct        = Math.round((unlockedCount / totalAch) * 100)
+
+  const weekSessions = data?.weekStats.sessions ?? 0
+  const insightMsg = weekSessions === 0
+    ? { head: 'Time to train!',     body: 'No sessions logged yet this week. Head to the gym and start building momentum.' }
+    : weekSessions <= 2
+    ? { head: 'Good start!',        body: `${weekSessions} session${weekSessions > 1 ? 's' : ''} this week. Keep the momentum going.` }
+    : weekSessions <= 4
+    ? { head: 'Keep going strong!', body: "You're on track to crush your goals this week. Consistency is building champions." }
+    : { head: 'Outstanding week!',  body: `${weekSessions} sessions — you're absolutely crushing it. Elite consistency.` }
 
   return (
     <div className="dashboard-page min-h-full px-4 py-4 md:px-5 md:py-5 xl:px-6">
@@ -598,8 +679,8 @@ export default function Home() {
               <PremiumIconTile name="progress" tone="blue" size="xl" usage="card" active iconSize={48} />
               <div className="min-w-0">
                 <SectionTitle>Progress Insights</SectionTitle>
-                <p className="mt-2 font-extrabold text-app-text">Keep going strong!</p>
-                <p className="mt-2 text-sm text-app-muted">You're on track to crush your goals this week. Consistency is building champions.</p>
+                <p className="mt-2 font-extrabold text-app-text">{insightMsg.head}</p>
+                <p className="mt-2 text-sm text-app-muted">{insightMsg.body}</p>
                 <OutlineButton to="/progress">View Progress →</OutlineButton>
               </div>
             </div>
@@ -636,13 +717,15 @@ export default function Home() {
             <div className="mt-5 flex items-center gap-5">
               <PremiumIconTile name="meal" tone="flame" size="xl" usage="card" active iconSize={50} />
               <div>
-                <p className="text-5xl font-extrabold text-accent-label leading-none">12</p>
+                <p className="text-5xl font-extrabold text-accent-label leading-none">{streak}</p>
                 <p className="font-bold text-app-muted">Days</p>
-                <p className="mt-2 text-xs text-app-muted">Keep the fire alive!</p>
+                <p className="mt-2 text-xs text-app-muted">{streak > 0 ? 'Keep the fire alive!' : 'Start your streak today!'}</p>
               </div>
             </div>
             <div className="streak-dots mt-6">
-              {Array.from({ length: 8 }, (_, i) => <span key={i} className={i < 5 ? 'is-hot' : ''} />)}
+              {last7.map((active: boolean, i: number) => (
+                <span key={i} className={active ? 'is-hot' : ''} />
+              ))}
             </div>
           </RailCard>
 
@@ -664,14 +747,17 @@ export default function Home() {
             <div className="mt-5 flex items-center gap-4">
               <PremiumIconTile name="progress" tone="gold" size="lg" usage="card" active iconSize={40} />
               <div>
-                <p className="text-3xl font-extrabold text-accent-label">12 <span className="text-base text-app-muted">/ 24</span></p>
+                <p className="text-3xl font-extrabold text-accent-label">{unlockedCount} <span className="text-base text-app-muted">/ {totalAch}</span></p>
                 <p className="text-sm text-app-muted">Achievements Unlocked</p>
               </div>
             </div>
             <div className="mt-6 h-2 rounded-full bg-app-border overflow-hidden">
-              <div className="h-full w-1/2 rounded-full bg-accent shadow-[0_0_18px_-4px_rgba(255,112,0,0.95)]" />
+              <div
+                className="h-full rounded-full bg-accent shadow-[0_0_18px_-4px_rgba(255,112,0,0.95)] transition-all duration-500"
+                style={{ width: `${achPct}%` }}
+              />
             </div>
-            <OutlineButton to="/goals">View All →</OutlineButton>
+            <OutlineButton to="/history">View All →</OutlineButton>
           </RailCard>
         </div>
       </div>
