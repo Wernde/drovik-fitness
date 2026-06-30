@@ -526,6 +526,318 @@ html:not(.dark-theme) .workout-hero {
   .heartbeat-live { animation: none !important; stroke-dashoffset: 0 !important; }
 }
 
+/* ── Login page ──────────────────────────────────────────────────────────── */
+
+/* Layer 1 — diagonal orange-to-blue wash, slow crawl */
+@keyframes loginAmbient1 {
+  0%   { background-position: 0% 0%;   }
+  25%  { background-position: 50% 100%; }
+  50%  { background-position: 100% 50%; }
+  75%  { background-position: 50% 0%;  }
+  100% { background-position: 0% 0%;   }
+}
+
+/* Layer 2 — counter-diagonal at a different speed for depth */
+@keyframes loginAmbient2 {
+  0%   { background-position: 100% 100%; }
+  33%  { background-position: 0%   50%;  }
+  66%  { background-position: 100% 0%;   }
+  100% { background-position: 100% 100%; }
+}
+
+/* Ambient base — large gradient that pans slowly across the screen */
+.login-ambient-1 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    -45deg,
+    #4A2100 0%,    /* dark orange      */
+    #020509 22%,   /* base dark        */
+    #001540 44%,   /* dark navy blue   */
+    #1E0430 58%,   /* dark indigo-purple */
+    #020509 72%,   /* base dark        */
+    #451D00 86%,   /* dark amber       */
+    #001438 100%   /* dark blue        */
+  );
+  background-size: 360% 360%;
+  animation: loginAmbient1 30s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Second layer — perpendicular angle, slower, enriches the blend */
+.login-ambient-2 {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    #001A3E 0%,    /* dark cool blue   */
+    #020509 24%,   /* base dark        */
+    #3E1800 48%,   /* dark warm orange */
+    #020509 68%,   /* base dark        */
+    #00123A 88%,   /* dark navy        */
+    #361500 100%   /* dark amber       */
+  );
+  background-size: 340% 340%;
+  animation: loginAmbient2 42s ease-in-out infinite;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+@keyframes loginCardIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@keyframes loginBorderFlow {
+  to { --login-border-angle: 360deg; }
+}
+
+@property --login-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@property --input-border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes inputBorderFlow {
+  to { --input-border-angle: 360deg; }
+}
+@keyframes loginLogoIn {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0);     }
+}
+@keyframes loginIconGlow {
+  0%,  100% { opacity: 0.5; transform: scale(1);    }
+  50%        { opacity: 1;   transform: scale(1.18); }
+}
+@keyframes loginRingExpand {
+  0%   { transform: scale(1);   opacity: 0.75; }
+  100% { transform: scale(2.0); opacity: 0;    }
+}
+
+
+.login-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2.25rem;
+  animation: loginLogoIn 0.65s ease-out both;
+  position: relative;
+  z-index: 1;
+}
+
+.login-icon-wrap {
+  position: relative;
+  width: 84px; height: 84px;
+  margin-bottom: 1.35rem;
+}
+
+.login-icon-glow {
+  position: absolute;
+  inset: -26px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,100,0,0.46) 0%, rgba(255,65,0,0.16) 48%, transparent 70%);
+  pointer-events: none;
+  /* No animation — clean, no pulse */
+}
+
+.login-card {
+  position: relative;
+  background: rgba(6, 11, 20, 0.76);
+  backdrop-filter: blur(36px);
+  -webkit-backdrop-filter: blur(36px);
+  border-radius: 26px;
+  padding: 34px 32px;
+  width: 100%;
+  max-width: 430px;
+  animation: loginCardIn 0.7s 0.12s ease-out both;
+  box-shadow:
+    0 24px 72px -14px rgba(0,0,0,0.92),
+    0 8px 28px -8px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.30);
+  z-index: 1;
+}
+
+/* Flowing orange + blue border — conic-gradient rotates around the perimeter */
+.login-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--login-border-angle),
+    rgba(255,125,0,0.90)  0deg,
+    rgba(255,175,0,0.55) 20deg,
+    rgba(255,255,255,0.04) 55deg,
+    rgba(0,115,255,0.55) 140deg,
+    rgba(0,158,255,0.92) 180deg,
+    rgba(0,120,255,0.55) 220deg,
+    rgba(255,255,255,0.04) 300deg,
+    rgba(255,110,0,0.70) 340deg,
+    rgba(255,125,0,0.90) 360deg
+  );
+  animation: loginBorderFlow 5s linear infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Wrapper owns all border visuals so the input itself stays borderless */
+.login-input-wrap {
+  position: relative;
+  border-radius: 14px;
+}
+
+/* ::before — static diagonal orange→blue border, always visible at rest */
+.login-input-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1px;
+  background: linear-gradient(
+    148deg,
+    rgba(255,110,0,0.38) 0%,
+    rgba(255,255,255,0.05) 50%,
+    rgba(0,110,255,0.30) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 0.25s;
+  z-index: 1;
+}
+
+/* ::after — conic flowing border, fades in on focus */
+.login-input-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--input-border-angle),
+    rgba(255,125,0,0.90)  0deg,
+    rgba(255,170,0,0.50) 18deg,
+    rgba(255,255,255,0.04) 50deg,
+    rgba(0,115,255,0.50) 140deg,
+    rgba(0,155,255,0.90) 180deg,
+    rgba(0,120,255,0.50) 222deg,
+    rgba(255,255,255,0.04) 300deg,
+    rgba(255,105,0,0.65) 340deg,
+    rgba(255,125,0,0.90) 360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  animation: inputBorderFlow 3.5s linear infinite;
+  animation-play-state: paused;
+  transition: opacity 0.25s;
+  z-index: 1;
+}
+
+/* On focus: static border fades out, animated border flows in */
+.login-input-wrap:focus-within::before { opacity: 0; }
+.login-input-wrap:focus-within::after  { opacity: 1; animation-play-state: running; }
+
+.login-input {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  border-radius: 13px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: #EDEDF2;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none;
+  transition: background 0.25s;
+  box-sizing: border-box;
+}
+.login-input::placeholder { color: rgba(144,144,160,0.40); }
+.login-input:focus        { background: rgba(255,255,255,0.07); }
+.login-input:disabled     { opacity: 0.5; }
+
+.login-btn {
+  width: 100%;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #FF8C00 0%, #FF4200 100%);
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.025em;
+  padding: 15px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-shadow:
+    0 10px 32px -6px rgba(255,95,0,0.72),
+    0 0 0 1px rgba(255,128,0,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.login-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 80%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
+  transition: left 0.45s ease;
+}
+.login-btn:hover:not(:disabled)::after { left: 140%; }
+.login-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 14px 40px -6px rgba(255,95,0,0.88),
+    0 0 0 1px rgba(255,140,0,0.42),
+    inset 0 1px 0 rgba(255,255,255,0.22);
+}
+.login-btn:active:not(:disabled) { transform: translateY(0); }
+.login-btn:disabled { opacity: 0.48; cursor: not-allowed; }
+
+.login-pw-toggle {
+  position: absolute;
+  right: 13px; top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  color: rgba(144,144,160,0.65);
+  background: none; border: none;
+  cursor: pointer; padding: 0;
+  display: flex; align-items: center;
+  transition: color 0.15s;
+}
+.login-pw-toggle:hover { color: rgba(200,200,212,0.9); }
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card, .login-logo-section {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .login-card::before {
+    /* Freeze border at a nice diagonal snapshot instead of spinning */
+    animation: none !important;
+    background: linear-gradient(148deg,
+      rgba(255,125,0,0.75) 0%,
+      rgba(255,255,255,0.04) 45%,
+      rgba(0,150,255,0.65) 100%
+    ) !important;
+  }
+}
+
 /* Quick-add side panel item: fade up from below */
 @keyframes qa-item-in {
   from { opacity: 0; transform: translateY(8px); }
