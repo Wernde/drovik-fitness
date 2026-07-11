@@ -4,6 +4,13 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Build Warning Cleanup
+
+### Fixed
+- **Duplicate object keys removed** - cleaned up repeated exercise search aliases and seeded video mappings so production builds no longer emit esbuild duplicate-key warnings.
+
+---
+
 ## Dashboard Layout Refinement
 
 ### Changed
