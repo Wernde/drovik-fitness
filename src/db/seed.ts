@@ -651,7 +651,6 @@ const EXERCISE_VIDEOS: { [name: string]: string } = {
   'Windshield Wiper':                                   'https://www.youtube.com/watch?v=m8lSq4SC_eM',
 
   // ── Kettlebell specialist moves ───────────────────────────────────────────────
-  'Turkish Get-Up':                                     'https://www.youtube.com/watch?v=JFrItinMcyQ',
   'Kettlebell Turkish Get-Up (Lunge Style)':            'https://www.youtube.com/watch?v=JFrItinMcyQ',
   'Kettlebell Turkish Get-Up (Squat Style)':            'https://www.youtube.com/watch?v=JFrItinMcyQ',
   'Kettlebell Windmill':                                'https://www.youtube.com/watch?v=Znhqr4qHWgc',
@@ -686,7 +685,6 @@ const EXERCISE_VIDEOS: { [name: string]: string } = {
   'Assault Bike':                                       'https://www.youtube.com/watch?v=4zWu1yuJ0_g',
   'Aqua Jogging':                                       'https://www.youtube.com/watch?v=6_vXycbD2TM',
   'Cross-Country Skiing':                               'https://www.youtube.com/watch?v=4zWu1yuJ0_g',
-  'Cycling Sprints':                                    'https://www.youtube.com/watch?v=4zWu1yuJ0_g',
   'Dance Cardio':                                       'https://www.youtube.com/watch?v=uyaANzMXQHY',
   'Elliptical':                                         'https://www.youtube.com/watch?v=4zWu1yuJ0_g',
   'Hand Bike Ergometer':                                'https://www.youtube.com/watch?v=4zWu1yuJ0_g',
