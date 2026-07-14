@@ -26,6 +26,8 @@ const labelStyle: React.CSSProperties = {
   fontFamily: "'Plus Jakarta Sans', sans-serif",
 }
 
+const LOCAL_PIN = import.meta.env.VITE_LOCAL_PIN as string | undefined
+
 export default function Login() {
   const { signIn } = useAuth()
 
@@ -36,6 +38,19 @@ export default function Login() {
   const [loading,      setLoading]      = useState(false)
   const [resetSent,    setResetSent]    = useState(false)
   const [resetLoading, setResetLoading] = useState(false)
+  const [pin,          setPin]          = useState('')
+  const [pinError,     setPinError]     = useState('')
+  const [showLocal,    setShowLocal]    = useState(false)
+
+  function handleLocalAccess(e: React.FormEvent) {
+    e.preventDefault()
+    if (pin === LOCAL_PIN) {
+      localStorage.setItem('drovik:bypass-auth', '1')
+      window.location.reload()
+    } else {
+      setPinError('Incorrect PIN.')
+    }
+  }
 
   async function handleForgotPassword() {
     const addr = email.trim()
@@ -230,6 +245,51 @@ export default function Login() {
           )}
 
         </form>
+
+        {LOCAL_PIN && (
+          <div style={{ marginTop: 28, borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: 22 }}>
+            {!showLocal ? (
+              <button
+                type="button"
+                onClick={() => setShowLocal(true)}
+                style={{
+                  background: 'none', border: 'none', width: '100%',
+                  textAlign: 'center', fontSize: '0.8125rem',
+                  color: 'rgba(144,144,160,0.55)',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 500, cursor: 'pointer', padding: 0,
+                  transition: 'color 0.15s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(200,200,212,0.85)')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(144,144,160,0.55)')}
+              >
+                Use local access →
+              </button>
+            ) : (
+              <form onSubmit={handleLocalAccess} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <label style={labelStyle}>Local PIN</label>
+                <div className="login-input-wrap">
+                  <input
+                    type="password"
+                    value={pin}
+                    onChange={(e) => { setPin(e.target.value); setPinError('') }}
+                    placeholder="Enter PIN"
+                    autoFocus
+                    className="login-input"
+                  />
+                </div>
+                {pinError && (
+                  <p style={{ fontSize: '0.8125rem', color: '#F87171', margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    {pinError}
+                  </p>
+                )}
+                <button type="submit" className="login-btn">
+                  Enter
+                </button>
+              </form>
+            )}
+          </div>
+        )}
       </div>
 
       <p style={{
