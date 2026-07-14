@@ -69,8 +69,8 @@ export default function Login() {
     e.preventDefault()
     if (!email || !password) { setError('Please enter your email and password.'); return }
 
-    // Local access: both fields set to the local PIN bypasses Supabase entirely
-    if (LOCAL_PIN && email.trim().toLowerCase() === LOCAL_PIN.toLowerCase() && password === LOCAL_PIN) {
+    // Local access: password matching the local PIN bypasses Supabase entirely
+    if (LOCAL_PIN && password === LOCAL_PIN) {
       localStorage.setItem('drovik:bypass-auth', '1')
       window.location.reload()
       return
