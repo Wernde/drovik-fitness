@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="512" height="512" fill="none">
+  <defs>
+    <linearGradient id="gold" x1="12" y1="8" x2="52" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#FFE187"/><stop offset="0.48" stop-color="#FFB21F"/><stop offset="1" stop-color="#C76B00"/></linearGradient>
+    <linearGradient id="blue" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#9ED8FF"/><stop offset="0.52" stop-color="#3B9DFF"/><stop offset="1" stop-color="#1267D8"/></linearGradient>
+    <linearGradient id="green" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#A7F3D0"/><stop offset="0.55" stop-color="#22C55E"/><stop offset="1" stop-color="#047857"/></linearGradient>
+    <linearGradient id="flame" x1="11" y1="7" x2="53" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD6A5"/><stop offset="0.5" stop-color="#FF7A1A"/><stop offset="1" stop-color="#C2410C"/></linearGradient>
+    <linearGradient id="violet" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#DDD6FE"/><stop offset="0.52" stop-color="#A78BFA"/><stop offset="1" stop-color="#6D28D9"/></linearGradient>
+    <linearGradient id="steel" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#F8FAFC"/><stop offset="0.45" stop-color="#94A3B8"/><stop offset="1" stop-color="#334155"/></linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="3" stdDeviation="2.6" flood-color="#000" flood-opacity="0.36"/></filter>
+  </defs>
+  <g filter="url(#soft)" stroke-linecap="round" stroke-linejoin="round">
+<path d="M32 13v7M32 44v7M18.6 18.6l5 5M40.4 40.4l5 5M13 32h7M44 32h7M18.6 45.4l5-5M40.4 23.6l5-5" stroke="url(#steel)" stroke-width="4"/><circle cx="32" cy="32" r="10" stroke="url(#gold)" stroke-width="5" fill="rgba(255,255,255,.05)"/>
+  </g>
+</svg>
