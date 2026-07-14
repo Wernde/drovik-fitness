@@ -37,38 +37,38 @@ export type BrandIconName =
 
 const BASE = import.meta.env.BASE_URL
 
-const PREMIUM_ICON_FILES: Record<BrandIconName, string> = {
-  home:       'home.svg',
-  program:    'program.svg',
-  nutrition:  'nutrition.svg',
-  history:    'history.svg',
-  date:       'date.svg',
-  settings:   'settings.svg',
-  plus:       'plus.svg',
-  ai:         'ai.svg',
-  workout:    'workout.svg',
-  cardio:     'cardio.svg',
-  meal:       'meal.svg',
-  water:      'water.svg',
-  body:       'body-stats.svg',
-  progress:   'progress.svg',
-  exercises:  'exercise.svg',
-  calculator: 'calculator.svg',
-  push:       'workout.svg',
-  pull:       'workout.svg',
-  legs:       'workout.svg',
-  core:       'body-stats.svg',
-  full:       'workout.svg',
-  lift:       'exercise.svg',
-  template:   'program.svg',
-  barbell:    'exercise.svg',
-  dumbbell:   'exercise.svg',
-  cable:      'exercise.svg',
-  machine:    'exercise.svg',
-  bodyweight: 'workout.svg',
-  kettlebell: 'exercise.svg',
-  band:       'exercise.svg',
-  default:    'exercise.svg',
+const ICON_FILES: Record<BrandIconName, string> = {
+  home:       'icons/nav-home.svg',
+  program:    'icons/nav-program.svg',
+  nutrition:  'icons/nav-nutrition.svg',
+  history:    'icons/nav-history.svg',
+  date:       'icons/date.svg',
+  settings:   'icons/settings.svg',
+  plus:       'icons/plus.svg',
+  ai:         'icons/ai-coach.svg',
+  workout:    'icons/workout.svg',
+  cardio:     'icons/cardio.svg',
+  meal:       'icons/meal.svg',
+  water:      'icons/water.svg',
+  body:       'icons/body-stats.svg',
+  progress:   'icons/progress.svg',
+  exercises:  'icons/exercises.svg',
+  calculator: 'icons/calculator.svg',
+  push:       'icons/workout.svg',
+  pull:       'icons/workout.svg',
+  legs:       'icons/workout.svg',
+  core:       'icons/body-stats.svg',
+  full:       'icons/workout.svg',
+  lift:       'icons/exercises.svg',
+  template:   'icons/nav-program.svg',
+  barbell:    'icons/exercises.svg',
+  dumbbell:   'icons/exercises.svg',
+  cable:      'icons/exercises.svg',
+  machine:    'icons/exercises.svg',
+  bodyweight: 'icons/workout.svg',
+  kettlebell: 'icons/exercises.svg',
+  band:       'icons/exercises.svg',
+  default:    'icons/exercises.svg',
 }
 
 const toneLift: Record<BrandIconTone, string> = {
@@ -229,7 +229,7 @@ export default function BrandIcon({
   active = true,
   className,
 }: BrandIconProps) {
-  const src = `${BASE}icons/premium/${PREMIUM_ICON_FILES[name]}`
+  const src = `${BASE}${ICON_FILES[name]}`
 
   return (
     <img
@@ -245,10 +245,10 @@ export default function BrandIcon({
         height: size,
         objectFit: 'contain',
         opacity: active ? 1 : 0.72,
-        filter: active
-          ? 'var(--premium-icon-filter) drop-shadow(0 5px 5px rgba(0,0,0,0.34))'
-          : 'var(--premium-icon-filter) drop-shadow(0 3px 3px rgba(0,0,0,0.2))',
+        filter: 'var(--premium-icon-filter)',
+        transform: 'translateZ(0)',
       }}
     />
   )
 }
+
