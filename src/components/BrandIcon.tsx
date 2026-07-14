@@ -37,38 +37,38 @@ export type BrandIconName =
 
 const BASE = import.meta.env.BASE_URL
 
-const ICON_FILES: Record<BrandIconName, string> = {
-  home:       'icons/nav-home.svg',
-  program:    'icons/nav-program.svg',
-  nutrition:  'icons/nav-nutrition.svg',
-  history:    'icons/nav-history.svg',
-  date:       'icons/date.svg',
-  settings:   'icons/settings.svg',
-  plus:       'icons/plus.svg',
-  ai:         'icons/ai-coach.svg',
-  workout:    'icons/workout.svg',
-  cardio:     'icons/cardio.svg',
-  meal:       'icons/meal.svg',
-  water:      'icons/water.svg',
-  body:       'icons/body-stats.svg',
-  progress:   'icons/progress.svg',
-  exercises:  'icons/exercises.svg',
-  calculator: 'icons/calculator.svg',
-  push:       'icons/workout.svg',
-  pull:       'icons/workout.svg',
-  legs:       'icons/workout.svg',
-  core:       'icons/body-stats.svg',
-  full:       'icons/workout.svg',
-  lift:       'icons/exercises.svg',
-  template:   'icons/nav-program.svg',
-  barbell:    'icons/exercises.svg',
-  dumbbell:   'icons/exercises.svg',
-  cable:      'icons/exercises.svg',
-  machine:    'icons/exercises.svg',
-  bodyweight: 'icons/workout.svg',
-  kettlebell: 'icons/exercises.svg',
-  band:       'icons/exercises.svg',
-  default:    'icons/exercises.svg',
+const PREMIUM_ICON_FILES: Record<BrandIconName, string> = {
+  home:       'home.png',
+  program:    'program.png',
+  nutrition:  'nutrition.png',
+  history:    'history.png',
+  date:       'date.png',
+  settings:   'settings.png',
+  plus:       'plus.png',
+  ai:         'ai.png',
+  workout:    'workout.png',
+  cardio:     'cardio.png',
+  meal:       'meal.png',
+  water:      'water.png',
+  body:       'body-stats.png',
+  progress:   'progress.png',
+  exercises:  'exercise.png',
+  calculator: 'calculator.png',
+  push:       'workout.png',
+  pull:       'workout.png',
+  legs:       'workout.png',
+  core:       'body-stats.png',
+  full:       'workout.png',
+  lift:       'exercise.png',
+  template:   'program.png',
+  barbell:    'exercise.png',
+  dumbbell:   'exercise.png',
+  cable:      'exercise.png',
+  machine:    'exercise.png',
+  bodyweight: 'workout.png',
+  kettlebell: 'exercise.png',
+  band:       'exercise.png',
+  default:    'exercise.png',
 }
 
 const toneLift: Record<BrandIconTone, string> = {
@@ -229,7 +229,7 @@ export default function BrandIcon({
   active = true,
   className,
 }: BrandIconProps) {
-  const src = `${BASE}${ICON_FILES[name]}`
+  const src = `${BASE}icons/premium/${PREMIUM_ICON_FILES[name]}`
 
   return (
     <img
@@ -245,10 +245,10 @@ export default function BrandIcon({
         height: size,
         objectFit: 'contain',
         opacity: active ? 1 : 0.72,
-        filter: 'var(--premium-icon-filter)',
-        transform: 'translateZ(0)',
+        filter: active
+          ? 'var(--premium-icon-filter) drop-shadow(0 5px 5px rgba(0,0,0,0.34))'
+          : 'var(--premium-icon-filter) drop-shadow(0 3px 3px rgba(0,0,0,0.2))',
       }}
     />
   )
 }
-
