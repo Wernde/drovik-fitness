@@ -68,6 +68,14 @@ export default function Login() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email || !password) { setError('Please enter your email and password.'); return }
+
+    // Local access: both fields set to the local PIN bypasses Supabase entirely
+    if (LOCAL_PIN && email.trim().toLowerCase() === LOCAL_PIN.toLowerCase() && password === LOCAL_PIN) {
+      localStorage.setItem('drovik:bypass-auth', '1')
+      window.location.reload()
+      return
+    }
+
     setLoading(true)
     setError('')
     const err = await signIn(email, password)
