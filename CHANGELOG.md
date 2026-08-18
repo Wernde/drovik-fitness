@@ -4,6 +4,17 @@ All notable changes are documented here, newest first.
 
 ---
 
+## AI Product Team System
+
+### Added
+- **Comprehensive AI team charter** - defined owner authority, lead-engineer coordination, approval gates, safe parallel work, priorities, handoffs, and required specialist outputs.
+- **Specialist role library** - added individual instructions for product, UX, visual design, responsive/PWA experience, accessibility, React, local-first data, Supabase sync, quality, security, documentation, and focused supporting specialists.
+- **Living product and architecture guides** - documented the current product areas, core journeys, local-first invariants, subsystem boundaries, and change-review gates.
+- **Design and release standards** - added responsive, accessibility, device-testing, data-integrity, deployment, and release-decision guidance.
+- **Weekly lightweight review** - added a read-only Monday health-check process with rotating product journeys, severity levels, and a consistent owner-facing report template.
+
+---
+
 ## Build Warning Cleanup
 
 ### Fixed
