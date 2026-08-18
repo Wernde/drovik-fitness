@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Premium Icon and Thumbnail Consistency
+
+### Changed
+- **Navigation history icon brightened** - replaced the overly dark History artwork with a brighter brushed-metal version matching Home, Program, Nutrition, and Quick Add.
+- **Low-resolution tiles replaced** - regenerated Body Stats, Meal, Progress, and Workout as sharp transparent assets with consistent orange illumination, silver/gunmetal surfaces, and restrained blue edge light.
+- **Exercise categories differentiated** - Barbell, Dumbbell, Cable, Machine, Bodyweight, Kettlebell, and Band now have distinct premium thumbnails instead of sharing the generic exercise image.
+- **Programme days differentiated** - Push, Pull, Legs, and Core now use dedicated premium workout thumbnails while retaining the same Drovik visual family.
+
+---
+
 ## AI Product Team System
 
 ### Added
