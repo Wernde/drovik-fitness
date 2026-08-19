@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Workout Completion Integrity
+
+### Fixed
+- **Completed sets only** - auto-filled or typed values are no longer saved into workout history until their set checkmark is selected, preventing untouched suggestions from affecting volume and personal records.
+- **Background save flush** - pending completed-set and note changes are sent to IndexedDB when the app is backgrounded or its page is left, reducing the short data-loss window around phone app switching and closure.
+- **Retryable workout discard** - a failed discard now keeps the workout open, shows an error, and allows another attempt instead of silently navigating away.
+
+---
+
 ## Premium Icon and Thumbnail Consistency
 
 ### Changed

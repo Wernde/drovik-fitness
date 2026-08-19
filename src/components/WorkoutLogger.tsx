@@ -256,6 +256,30 @@ export default function WorkoutLogger({ session }: Props) {
     }
   }, [drafts, exerciseNotes]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Ask IndexedDB to persist the latest completed sets when the installed app
+  // is backgrounded or its page is being left. The normal debounce still
+  // handles typing without excessive writes during an active workout.
+  useEffect(() => {
+    const flushPendingSave = () => {
+      if (!draftsInit.current) return
+      if (autoSaveTimer.current) {
+        clearTimeout(autoSaveTimer.current)
+        autoSaveTimer.current = null
+      }
+      void saveSetsRef.current(true)
+    }
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') flushPendingSave()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('pagehide', flushPendingSave)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('pagehide', flushPendingSave)
+    }
+  }, [])
+
   const existingExerciseIds = useMemo(
     () => new Set(data?.sessionExercises.map((se) => se.exerciseId) ?? []),
     [data],
@@ -433,7 +457,7 @@ export default function WorkoutLogger({ session }: Props) {
         }
         for (const [seId, rows] of drafts) {
           const validRows = rows.filter(
-            (r) => r.reps.trim() !== '' && r.kg.trim() !== '' &&
+            (r) => r.done && r.reps.trim() !== '' && r.kg.trim() !== '' &&
                    !isNaN(Number(r.reps)) && !isNaN(Number(r.kg)),
           )
           const existing = await db.sets
@@ -516,6 +540,7 @@ export default function WorkoutLogger({ session }: Props) {
   }
 
   async function handleDiscard() {
+    setSaving(true)
     try {
       const ts = now()
       const sessionExercises = await db.sessionExercises
@@ -533,8 +558,11 @@ export default function WorkoutLogger({ session }: Props) {
             .modify({ deleted: true, updatedAt: ts, syncedAt: null })
         }
       })
-    } catch { /* best-effort */ }
-    navigate(-1)
+      navigate(-1)
+    } catch {
+      showToast('Failed to discard workout. Please try again.')
+      setSaving(false)
+    }
   }
 
   function toggleGuide(seId: string) {
@@ -1021,15 +1049,15 @@ export default function WorkoutLogger({ session }: Props) {
       {/* ── Discard confirmation modal ── */}
       {showDiscard && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowDiscard(false)} />
+          <div className="absolute inset-0 bg-black/40" onClick={() => { if (!saving) setShowDiscard(false) }} />
           <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-6 pb-8">
             <h2 className="text-lg font-extrabold text-app-text mb-1">Discard workout?</h2>
             <p className="text-sm text-app-muted mb-6">Your progress will not be saved.</p>
             <div className="flex flex-col gap-2">
-              <Button variant="danger" fullWidth size="lg" onClick={handleDiscard}>
-                Discard
+              <Button variant="danger" fullWidth size="lg" onClick={handleDiscard} disabled={saving}>
+                {saving ? 'Discarding…' : 'Discard'}
               </Button>
-              <Button variant="secondary" fullWidth size="lg" onClick={() => setShowDiscard(false)}>
+              <Button variant="secondary" fullWidth size="lg" onClick={() => setShowDiscard(false)} disabled={saving}>
                 Keep Going
               </Button>
             </div>
