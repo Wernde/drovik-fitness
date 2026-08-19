@@ -170,7 +170,7 @@ export default function Programs() {
       {/* ── No active program notice ──────────────────────────── */}
       {activePrograms.length === 0 && programs.length > 0 && (
         <div className="page-x mt-4">
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-sm text-amber-700">
+          <div className="bg-warning-bg border border-warning-text/35 rounded-card p-4 text-sm text-warning-text">
             No active program. Tap ✓ on a program below to activate it.
           </div>
         </div>

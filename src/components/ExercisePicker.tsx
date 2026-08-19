@@ -2,7 +2,7 @@
  * ExercisePicker — full-screen modal for searching and selecting an exercise.
  */
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import type { Exercise, ExerciseCategory } from '../db/db'
@@ -34,6 +34,12 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
   const [filter,       setFilter]       = useState<FilterCategory>('all')
   const [muscleFilter, setMuscleFilter] = useState('all')
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [onClose])
+
   const exercises = useLiveQuery(
     () => db.exercises.filter((e) => !e.deleted).toArray(),
     [],
@@ -53,7 +59,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
     : catFiltered.sort((a, b) => a.name.localeCompare(b.name))
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-app-bg">
+    <div role="dialog" aria-modal="true" aria-labelledby="exercise-picker-title" className="fixed inset-0 z-50 flex flex-col bg-app-bg">
 
       {/* Header */}
       <div className="flex items-center gap-3 px-4 pt-5 pb-3 border-b border-app-border">
@@ -66,7 +72,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
           </svg>
         </button>
-        <h2 className="text-lg font-bold text-app-text">Select Exercise</h2>
+        <h2 id="exercise-picker-title" className="text-lg font-bold text-app-text">Select Exercise</h2>
       </div>
 
       {/* Search */}
@@ -78,10 +84,10 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
           </svg>
           <input
             type="search"
+            autoFocus
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search exercises…"
-            autoFocus
             className="w-full rounded-card border border-app-border bg-app-surface text-app-text placeholder-app-faint pl-9 pr-3 py-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label"
           />
         </div>

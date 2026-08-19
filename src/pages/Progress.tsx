@@ -379,7 +379,7 @@ function MeasurementsSection() {
       <div className="rounded-2xl bg-app-card border border-app-border p-4 flex flex-col gap-3">
         <p className="text-xs text-app-muted">Log measurements ({measurementLabel(mUnit)}) — one entry per day</p>
 
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
           {visible.map(({ key, label }) => (
             <div key={key}>
               <label className="block text-xs text-app-muted mb-1">{label}</label>
@@ -388,7 +388,7 @@ function MeasurementsSection() {
                 value={fieldVal(key)}
                 onChange={(e) => set(key, e.target.value)}
                 placeholder={measurementLabel(mUnit)}
-                className="w-full rounded-xl border border-app-border bg-app-bg text-app-text px-2 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+                className="w-full min-h-11 rounded-input border border-app-border bg-app-bg text-app-text px-3 py-2 text-base focus:outline-none focus:ring-1 focus:ring-accent"
               />
             </div>
           ))}
@@ -694,7 +694,7 @@ function NutritionTab() {
       {todayDiary && (
         <div className="rounded-2xl bg-app-card border border-app-border p-4">
           <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-2">Today — Food Diary</p>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: 'Calories', value: Math.round(todayDiary.calories), unit: 'kcal' },
               { label: 'Protein',  value: Math.round(todayDiary.proteinG),  unit: 'g' },

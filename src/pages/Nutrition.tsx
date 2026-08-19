@@ -537,7 +537,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
           <PremiumIconTile name="nutrition" tone="flame" size="sm" usage="card" active iconSize={30} />
           <p className="text-xs font-bold uppercase tracking-wide text-app-muted">Nutrition</p>
         </div>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: 'Calories', value: fmtInt(totals.calories), unit: 'kcal', target: targets?.calories, color: 'bg-accent' },
             { label: 'Protein',  value: fmtInt(totals.protein),  unit: 'g',    target: targets?.proteinG, color: 'bg-blue-500' },
@@ -675,7 +675,7 @@ function DiaryTab({ targets, date }: DiaryTabProps) {
             <button
               key={ml}
               onClick={() => addWater(ml)}
-              className="flex-1 bg-blue-50 text-blue-600 text-sm font-bold py-2 rounded-xl active:bg-blue-100"
+              className="flex-1 bg-info-bg text-info-text text-sm font-bold py-2.5 rounded-input active:opacity-80"
             >
               +{mlToDisplay(ml, units.water)} {waterLabel(units.water)}
             </button>
@@ -1205,7 +1205,7 @@ function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
         </div>
 
         {/* Per-serving macros */}
-        <div className="grid grid-cols-4 gap-2 bg-app-bg rounded-xl border border-app-border p-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-app-bg rounded-card border border-app-border p-4">
           {[
             { label: 'Cal',    value: fmtInt(totals.cal),   unit: 'kcal' },
             { label: 'Protein', value: fmt1(totals.pro),    unit: 'g' },
@@ -1440,8 +1440,8 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
         <p className="text-xs font-bold uppercase tracking-wide text-app-muted mb-3">TDEE Calculator</p>
 
         {latestWeight == null && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 mb-3">
-            <p className="text-xs text-amber-700">Log your body weight on the Goals page to personalise your TDEE calculation.</p>
+          <div className="bg-warning-bg border border-warning-text/35 rounded-input px-3 py-2 mb-3">
+            <p className="text-xs text-warning-text">Log your body weight on the Goals page to personalise your TDEE calculation.</p>
           </div>
         )}
 
@@ -1507,7 +1507,7 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
         </div>
 
         {bmr != null && tdee != null && (
-          <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-3 mb-3">
             <div className="bg-app-bg rounded-xl border border-app-border p-3 text-center">
               <p className="text-xs text-app-muted">BMR</p>
               <p className="text-base font-extrabold text-app-text">{bmr}</p>
@@ -1527,14 +1527,14 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
         )}
 
         {macros != null && (
-          <div className="grid grid-cols-3 gap-2 mb-3">
-            <div className="bg-blue-50 rounded-xl border border-blue-100 p-2 text-center">
-              <p className="text-xs text-blue-500">Protein</p>
-              <p className="text-sm font-extrabold text-blue-700">{macros.proteinG}g</p>
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-3 mb-3">
+            <div className="bg-info-bg rounded-input border border-info-text/30 p-3 text-center">
+              <p className="text-xs text-info-text">Protein</p>
+              <p className="text-sm font-extrabold text-info-text">{macros.proteinG}g</p>
             </div>
-            <div className="bg-amber-50 rounded-xl border border-amber-100 p-2 text-center">
-              <p className="text-xs text-amber-500">Carbs</p>
-              <p className="text-sm font-extrabold text-amber-700">{macros.carbsG}g</p>
+            <div className="bg-warning-bg rounded-input border border-warning-text/30 p-3 text-center">
+              <p className="text-xs text-warning-text">Carbs</p>
+              <p className="text-sm font-extrabold text-warning-text">{macros.carbsG}g</p>
             </div>
             <div className="bg-red-50 rounded-xl border border-red-100 p-2 text-center">
               <p className="text-xs text-red-400">Fat</p>

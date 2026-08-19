@@ -11,6 +11,7 @@
   --color-accent-darker: #B45309;
   --color-accent-light:  #1C1400;
   --color-accent-label:  #FBBF24;
+  --color-on-accent:     #1A0B00;
 
   /* Surfaces — #111115 base: slightly warm near-black, not pure black (prevents halation) */
   --color-app-bg:            #111115;
@@ -87,6 +88,26 @@ html:not(.dark-theme) {
   padding-left:  1rem;    /* 16px mobile */
   padding-right: 1rem;
 }
+
+/* One background and one set of alignment guides across every route. */
+.app-shell-bg {
+  background:
+    radial-gradient(circle at 22% 0%, rgba(0, 164, 255, 0.10), transparent 30%),
+    radial-gradient(circle at 80% 8%, rgba(255, 112, 0, 0.09), transparent 28%),
+    linear-gradient(135deg, var(--color-app-bg) 0%, var(--color-app-card) 52%, var(--color-app-bg) 100%);
+}
+
+/* Existing accent-filled controls now use a deliberately high-contrast label. */
+.bg-accent.text-app-text { color: var(--color-on-accent); }
+
+/* Meaningful micro-copy remains legible while moving around the gym. */
+.text-\[9px\], .text-\[10px\], .text-\[11px\] { font-size: 0.75rem; line-height: 1rem; }
+
+/* Standard feature cards share the same lift as the premium Home panels. */
+.main-nav-clearance .bg-app-card.rounded-2xl,
+.main-nav-clearance .bg-app-surface.rounded-card {
+  box-shadow: var(--dash-panel-shadow);
+}
 @media (min-width: 640px) {
   .page-x {
     padding-left:  1.25rem; /* 20px small tablet */
@@ -123,17 +144,11 @@ html:not(.dark-theme) {
 /* Reference dashboard treatment */
 .dashboard-page {
   color: var(--color-app-text);
-  background:
-    radial-gradient(circle at 25% 0%, rgba(0, 164, 255, 0.12), transparent 30%),
-    radial-gradient(circle at 78% 5%, rgba(255, 112, 0, 0.11), transparent 28%),
-    linear-gradient(135deg, #02060A 0%, #07111B 48%, #02060A 100%);
+  background: transparent;
 }
 
 html:not(.dark-theme) .dashboard-page {
-  background:
-    radial-gradient(circle at 18% 0%, rgba(0, 136, 255, 0.14), transparent 32%),
-    radial-gradient(circle at 78% 14%, rgba(255, 112, 0, 0.10), transparent 30%),
-    linear-gradient(135deg, #F8FBFF 0%, #EEF4FB 50%, #FFFFFF 100%);
+  background: transparent;
 }
 
 .home-dashboard-grid {
@@ -458,8 +473,8 @@ html:not(.dark-theme) .workout-hero {
   right: 0;
   top: 0;
   bottom: 0;
-  width: 62%;
-  max-width: 560px;
+  width: 58%;
+  max-width: 620px;
   z-index: 2;
   pointer-events: none;
 }
@@ -472,8 +487,7 @@ html:not(.dark-theme) .workout-hero {
   z-index: 3;
   pointer-events: none;
   background:
-    linear-gradient(to right,  rgba(7, 17, 26, 0.92) 0%, rgba(7, 17, 26, 0.40) 22%, transparent 45%),
-    linear-gradient(to bottom, rgba(7, 17, 26, 0.55) 0%, transparent 28%);
+    linear-gradient(to right, rgba(7, 17, 26, 0.92) 0%, rgba(7, 17, 26, 0.28) 28%, transparent 55%);
 }
 
 .hero-athlete-img {
@@ -481,8 +495,16 @@ html:not(.dark-theme) .workout-hero {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 82% top;
+  object-fit: contain;
+  object-position: right bottom;
+  filter: drop-shadow(-18px 16px 28px rgba(0,0,0,0.42));
+}
+
+@media (max-width: 639px) {
+  .hero-athlete-wrap { width: 56%; opacity: 0.72; transform: translateX(12%); }
+  .hero-athlete-wrap::before {
+    background: linear-gradient(to right, rgba(7,17,26,0.96) 0%, rgba(7,17,26,0.48) 38%, transparent 72%);
+  }
 }
 
 /* ── Dashboard right rail — sticky on large screens ─────────────────────── */

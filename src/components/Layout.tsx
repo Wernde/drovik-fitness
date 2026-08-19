@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import type { CSSProperties } from 'react'
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
 import { useSyncStatus } from '../sync/useSyncStatus'
 import { PremiumIconTile } from './BrandIcon'
@@ -66,8 +67,8 @@ interface QAItem {
 // ── Sync dot ──────────────────────────────────────────────────────────────────
 
 function SyncDot({ status }: { status: 'idle' | 'syncing' | 'error' }) {
-  if (status === 'syncing') return <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse flex-shrink-0" />
-  if (status === 'error')   return <div className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
+  if (status === 'syncing') return <div role="status" aria-label="Synchronising" className="w-2 h-2 rounded-full bg-blue-500 animate-pulse flex-shrink-0" />
+  if (status === 'error')   return <div role="status" aria-label="Synchronisation error" className="w-2 h-2 rounded-full bg-red-400 flex-shrink-0" />
   return null
 }
 
@@ -186,7 +187,10 @@ export default function Layout() {
   }
 
   return (
-    <div className="fixed inset-0 bg-app-bg overflow-hidden">
+    <div
+      className="app-shell-bg fixed inset-0 bg-app-bg overflow-hidden"
+      style={{ '--offline-inset': isOnline ? '0px' : '32px' } as CSSProperties}
+    >
       <div className="flex flex-col h-full">
 
         {/* Offline banner */}
@@ -310,7 +314,7 @@ export default function Layout() {
                 {NAV_ITEMS.slice(0, 2).map(({ to, label, Icon }) => (
                   <NavLink key={to} to={to} end={to === '/'}
                     className={({ isActive }) => [
-                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-xs font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
                         ? 'border-accent text-accent'
                         : 'border-transparent text-app-muted font-semibold',
@@ -348,7 +352,7 @@ export default function Layout() {
                 {NAV_ITEMS.slice(2).map(({ to, label, Icon }) => (
                   <NavLink key={to} to={to}
                     className={({ isActive }) => [
-                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-[10px] font-bold uppercase tracking-wide border-t-[3px] transition-colors',
+                      'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-xs font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
                         ? 'border-accent text-accent'
                         : 'border-transparent text-app-muted font-semibold',

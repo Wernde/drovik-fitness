@@ -4,6 +4,21 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Unified UX and Creative System
+
+### Changed
+- **Shared application backdrop and gutters** - Home and feature screens now use one responsive background treatment and the same phone, tablet, and desktop alignment guides.
+- **Premium card continuity** - standard feature cards inherit the same depth and visual lift as the Home dashboard instead of appearing as a separate flatter interface.
+- **Roomier mobile forms** - body, nutrition, and measurement grids reflow to fewer columns on narrow phones, with larger meaningful text and input targets.
+- **Workout accessibility and responsiveness** - set fields have contextual labels, completion controls expose state, common controls meet larger touch targets, desktop fixed bars align with the sidebar, and the offline banner is no longer covered.
+- **Accessible sheets** - primary workout sheets expose dialog semantics and Escape-key dismissal, while the exercise picker receives initial keyboard focus.
+- **High-contrast accent actions** - orange controls now use a dedicated dark foreground token in both themes.
+- **Semantic dark-mode states** - workout, programme, nutrition, and summary callouts use theme-aware information and warning surfaces rather than fixed pale colours.
+- **Home athlete artwork** - replaced separate rectangular theme images with one optimised responsive athlete asset and a predictable text-safe crop.
+- **Corrected icon construction** - Streak, Achievements, Date, and History now use transparent frameless symbols inside the shared tile instead of black rectangles or frames nested inside frames.
+
+---
+
 ## Workout Completion Integrity
 
 ### Fixed

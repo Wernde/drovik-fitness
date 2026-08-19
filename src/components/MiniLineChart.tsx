@@ -102,7 +102,7 @@ export default function MiniLineChart({
         {yTicks.map(t => (
           <g key={t.val}>
             <line x1={pad.l} x2={width - pad.r} y1={t.y} y2={t.y} stroke="#E3E5E5" strokeWidth={1} />
-            <text x={pad.l - 4} y={t.y + 3} textAnchor="end" fontSize={9} fill="#7A7980">
+            <text x={pad.l - 4} y={t.y + 3} textAnchor="end" fontSize={11} fill="var(--color-app-muted)">
               {formatY ? formatY(t.val) : t.val.toFixed(1)}
             </text>
           </g>
@@ -110,7 +110,7 @@ export default function MiniLineChart({
 
         {/* X labels */}
         {xLabels.map(({ i, label: lbl }) => (
-          <text key={i} x={px(i)} y={height - 4} textAnchor="middle" fontSize={9} fill="#7A7980">
+          <text key={i} x={px(i)} y={height - 4} textAnchor="middle" fontSize={11} fill="var(--color-app-muted)">
             {formatX ? formatX(lbl) : lbl.slice(5)} {/* default: strip YYYY- */}
           </text>
         ))}
@@ -134,7 +134,7 @@ export default function MiniLineChart({
               width={72} height={34} rx={6}
               fill="white" stroke="#E3E5E5" strokeWidth={1}
             />
-            <text x={Math.min(tip.x + 10, width - 76)} y={Math.max(tip.y - 7, pad.t + 13)} fontSize={9} fill="#7A7980">
+            <text x={Math.min(tip.x + 10, width - 76)} y={Math.max(tip.y - 7, pad.t + 13)} fontSize={11} fill="var(--color-app-muted)">
               {tip.label.slice(5)}
             </text>
             <text x={Math.min(tip.x + 10, width - 76)} y={Math.max(tip.y + 8, pad.t + 28)} fontSize={11} fontWeight="bold" fill="#241F20">

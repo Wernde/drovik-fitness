@@ -11,7 +11,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT: Record<Variant, string> = {
-  primary:   'bg-accent text-app-text active:bg-accent-hover disabled:opacity-60',
+  primary:   'bg-accent text-[var(--color-on-accent)] active:bg-accent-hover disabled:opacity-60',
   secondary: 'border border-app-border text-app-muted active:bg-app-bg disabled:opacity-60',
   // bg-red-500 used intentionally — no danger semantic token in theme yet
   danger:    'bg-red-500 text-white active:bg-red-600 disabled:opacity-60',

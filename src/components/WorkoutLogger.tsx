@@ -280,6 +280,18 @@ export default function WorkoutLogger({ session }: Props) {
     }
   }, [])
 
+  useEffect(() => {
+    const closeTopSheet = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      if (showSummary) setShowSummary(false)
+      else if (showDiscard && !saving) setShowDiscard(false)
+      else if (exerciseMenu !== null) setExerciseMenu(null)
+      else if (showOptions) setShowOptions(false)
+    }
+    document.addEventListener('keydown', closeTopSheet)
+    return () => document.removeEventListener('keydown', closeTopSheet)
+  }, [showSummary, showDiscard, exerciseMenu, showOptions, saving])
+
   const existingExerciseIds = useMemo(
     () => new Set(data?.sessionExercises.map((se) => se.exerciseId) ?? []),
     [data],
@@ -604,7 +616,7 @@ export default function WorkoutLogger({ session }: Props) {
     <div style={{ paddingBottom: 'calc(148px + env(safe-area-inset-bottom, 0px))' }}>
 
       {/* ── Fixed header ── */}
-      <div className="fixed top-0 left-0 right-0 md:left-60 z-40 bg-app-surface border-b border-app-border">
+      <div className="fixed top-[var(--offline-inset,0px)] left-0 right-0 md:left-56 z-40 bg-app-surface border-b border-app-border">
         {/* Row 1 — Cancel | Workout name | Finish */}
         <div className="px-4 flex items-center justify-between h-11 border-b border-app-border/40">
           <button
@@ -706,7 +718,7 @@ export default function WorkoutLogger({ session }: Props) {
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors active:opacity-80 ${
                         guideOpen
                           ? 'bg-blue-500 border-blue-500 text-white'
-                          : 'bg-blue-50 border-blue-200 text-blue-600'
+                          : 'bg-info-bg border-info-text/40 text-info-text'
                       }`}
                     >
                       <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5 flex-shrink-0">
@@ -783,8 +795,8 @@ export default function WorkoutLogger({ session }: Props) {
 
                 {/* ── Guide / Instructions panel ── */}
                 {guideOpen && exercise.instructions && (
-                  <div className="mx-4 mb-3 p-3 rounded-input bg-blue-50 border border-blue-100">
-                    <p className="text-xs text-blue-800 leading-relaxed whitespace-pre-line">
+                  <div className="mx-4 mb-3 p-3 rounded-input bg-info-bg border border-info-text/30">
+                    <p className="text-xs text-info-text leading-relaxed whitespace-pre-line">
                       {exercise.instructions}
                     </p>
                   </div>
@@ -820,7 +832,7 @@ export default function WorkoutLogger({ session }: Props) {
                     </div>
                     <button
                       onClick={() => setRestTimer({ secs: dayEx.restSecs!, exerciseName: exercise.name })}
-                      className="rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs font-bold px-3 py-1 active:bg-blue-100"
+                      className="rounded-full border border-info-text/40 bg-info-bg text-info-text text-xs font-bold px-3 py-2 active:opacity-80"
                     >
                       {dayEx.restSecs}s
                     </button>
@@ -852,11 +864,11 @@ export default function WorkoutLogger({ session }: Props) {
                       <div key={i}>
                         <div
                           className={`flex items-center py-2.5 transition-colors rounded-lg my-0.5 ${
-                            row.done ? 'bg-amber-50' : ''
+                            row.done ? 'bg-warning-bg' : ''
                           }`}
                         >
                           {/* Set number */}
-                          <span className={`w-8 text-sm font-bold ${row.done ? 'text-amber-600' : 'text-app-muted'}`}>
+                          <span className={`w-8 text-sm font-bold ${row.done ? 'text-warning-text' : 'text-app-muted'}`}>
                             {i + 1}
                           </span>
 
@@ -869,7 +881,7 @@ export default function WorkoutLogger({ session }: Props) {
                             >
                               <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg border text-xs transition-colors ${
                                 row.done
-                                  ? 'bg-amber-100 border-amber-200 text-amber-700'
+                                  ? 'bg-warning-bg border-warning-text/40 text-warning-text'
                                   : 'bg-app-bg border-app-border text-app-muted active:bg-accent/20 active:border-accent'
                               }`}>
                                 {prevRow.reps} × {prevRow.kg}
@@ -888,10 +900,11 @@ export default function WorkoutLogger({ session }: Props) {
                             inputMode="numeric"
                             value={row.reps}
                             onChange={(e) => updateDraft(se.id, i, 'reps', e.target.value)}
-                            className={`w-[54px] h-10 rounded-input border text-center text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
+                            aria-label={`${exercise.name}, set ${i + 1}, repetitions`}
+                            className={`w-[54px] h-11 rounded-input border text-center text-base font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
                               row.done
-                                ? 'bg-amber-100 border-amber-200 text-amber-800'
-                                : 'bg-app-surface border-app-border text-app-text focus:bg-amber-50'
+                                ? 'bg-warning-bg border-warning-text/40 text-warning-text'
+                                : 'bg-app-surface border-app-border text-app-text focus:bg-warning-bg'
                             }`}
                             placeholder="—"
                           />
@@ -903,10 +916,11 @@ export default function WorkoutLogger({ session }: Props) {
                             value={row.kg}
                             step={units.weight === 'lbs' ? 1 : 0.5}
                             onChange={(e) => updateDraft(se.id, i, 'kg', e.target.value)}
-                            className={`w-[54px] h-10 rounded-input border text-center text-sm font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
+                            aria-label={`${exercise.name}, set ${i + 1}, weight in ${weightLabel(units.weight)}`}
+                            className={`w-[54px] h-11 rounded-input border text-center text-base font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label focus-visible:border-accent mx-1 transition-colors ${
                               row.done
-                                ? 'bg-amber-100 border-amber-200 text-amber-800'
-                                : 'bg-app-surface border-app-border text-app-text focus:bg-amber-50'
+                                ? 'bg-warning-bg border-warning-text/40 text-warning-text'
+                                : 'bg-app-surface border-app-border text-app-text focus:bg-warning-bg'
                             }`}
                             placeholder="—"
                           />
@@ -914,14 +928,16 @@ export default function WorkoutLogger({ session }: Props) {
                           {/* Done checkmark */}
                           <button
                             onClick={() => markDone(se.id, i, dayEx?.restSecs, exercise.name)}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
+                            aria-label={`${row.done ? 'Mark incomplete' : 'Mark complete'}: ${exercise.name}, set ${i + 1}`}
+                            aria-pressed={row.done}
+                            className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-colors ${
                               row.done
                                 ? 'bg-accent'
                                 : 'bg-app-bg border-2 border-app-border'
                             }`}
                           >
                             {row.done && (
-                              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-app-text">
+                              <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-[var(--color-on-accent)]">
                                 <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
                               </svg>
                             )}
@@ -963,10 +979,10 @@ export default function WorkoutLogger({ session }: Props) {
                   {/* Add set */}
                   <button
                     onClick={() => addRow(se.id)}
-                    className="flex items-center gap-2 py-3 text-blue-500 text-sm font-semibold"
+                    className="flex items-center gap-2 py-3 text-info-text text-sm font-semibold"
                   >
-                    <span className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-blue-500">
+                    <span className="w-6 h-6 rounded-full bg-info-bg flex items-center justify-center flex-shrink-0">
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-info-text">
                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                       </svg>
                     </span>
@@ -981,7 +997,7 @@ export default function WorkoutLogger({ session }: Props) {
         {/* ── Add Exercise button ── */}
         <button
           onClick={() => setShowPicker(true)}
-          className="w-full py-4 text-blue-500 text-sm font-semibold flex items-center justify-center gap-2 bg-app-surface rounded-card border border-dashed border-blue-200 shadow-card active:bg-blue-50"
+          className="w-full py-4 text-info-text text-sm font-semibold flex items-center justify-center gap-2 bg-app-surface rounded-card border border-dashed border-info-text/40 shadow-card active:bg-info-bg"
         >
           <PremiumIconTile name="plus" tone="blue" size="xs" usage="button" active iconSize={18} />
           Add Exercise
@@ -990,8 +1006,7 @@ export default function WorkoutLogger({ session }: Props) {
 
       {/* ── Sticky Finish Workout button ── */}
       <div
-        className="fixed left-0 right-0 md:left-60 bg-app-surface/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
-        style={{ bottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}
+        className="fixed left-0 right-0 md:left-56 bottom-[calc(72px+env(safe-area-inset-bottom,0px))] md:bottom-0 bg-app-surface/90 backdrop-blur-sm border-t border-app-border px-4 py-3"
       >
         <Button variant="primary" fullWidth size="lg" onClick={handleFinishPress} disabled={saving}>
           {saving ? 'Saving…' : 'Finish Workout'}
@@ -1002,9 +1017,9 @@ export default function WorkoutLogger({ session }: Props) {
       {showOptions && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => setShowOptions(false)} />
-          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-4 pb-8">
+          <div role="dialog" aria-modal="true" aria-labelledby="workout-options-title" className="relative z-50 w-full max-w-sm mx-auto bg-app-raised rounded-t-card px-5 pt-4 pb-8 shadow-modal">
             <div className="w-10 h-1 rounded-full bg-app-border mx-auto mb-5" />
-            <h2 className="text-base font-extrabold text-app-text mb-4">Workout Options</h2>
+            <h2 id="workout-options-title" className="text-base font-extrabold text-app-text mb-4">Workout Options</h2>
 
             {/* Auto-fill toggle */}
             <div className="flex items-center justify-between py-3 border-b border-app-border">
@@ -1050,8 +1065,8 @@ export default function WorkoutLogger({ session }: Props) {
       {showDiscard && (
         <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
           <div className="absolute inset-0 bg-black/40" onClick={() => { if (!saving) setShowDiscard(false) }} />
-          <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-6 pb-8">
-            <h2 className="text-lg font-extrabold text-app-text mb-1">Discard workout?</h2>
+          <div role="alertdialog" aria-modal="true" aria-labelledby="discard-workout-title" className="relative z-50 w-full max-w-sm mx-auto bg-app-raised rounded-t-card px-5 pt-6 pb-8 shadow-modal">
+            <h2 id="discard-workout-title" className="text-lg font-extrabold text-app-text mb-1">Discard workout?</h2>
             <p className="text-sm text-app-muted mb-6">Your progress will not be saved.</p>
             <div className="flex flex-col gap-2">
               <Button variant="danger" fullWidth size="lg" onClick={handleDiscard} disabled={saving}>
@@ -1072,7 +1087,7 @@ export default function WorkoutLogger({ session }: Props) {
         return (
           <div className="fixed inset-0 z-50 flex items-end justify-center" style={{ paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px))" }}>
             <div className="absolute inset-0 bg-black/40" onClick={() => setExerciseMenu(null)} />
-            <div className="relative z-50 w-full max-w-sm mx-auto bg-app-surface rounded-t-[24px] px-5 pt-4 pb-8">
+            <div role="dialog" aria-modal="true" aria-label="Exercise actions" className="relative z-50 w-full max-w-sm mx-auto bg-app-raised rounded-t-card px-5 pt-4 pb-8 shadow-modal">
               <div className="w-10 h-1 rounded-full bg-app-border mx-auto mb-4" />
               {menuEx && (
                 <p className="text-base font-extrabold text-app-text mb-4 truncate">{menuEx.name}</p>
@@ -1083,8 +1098,8 @@ export default function WorkoutLogger({ session }: Props) {
                 onClick={() => { setSubstituteSeId(exerciseMenu); setExerciseMenu(null) }}
                 className="w-full flex items-center gap-3 py-3.5 border-b border-app-border active:bg-app-bg rounded-xl"
               >
-                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5 text-blue-500">
+                <div className="w-11 h-11 rounded-input bg-info-bg flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5 text-info-text">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
                   </svg>
                 </div>

@@ -2,6 +2,7 @@
  * WorkoutSummary — slide-up modal shown when the user taps "Finish".
  */
 
+import { useEffect } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
 import type { WorkoutSession } from '../db/db'
@@ -35,6 +36,11 @@ interface Props {
 
 export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
   const { units } = useUnits()
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onBack() }
+    document.addEventListener('keydown', closeOnEscape)
+    return () => document.removeEventListener('keydown', closeOnEscape)
+  }, [onBack])
   const summary = useLiveQuery(async () => {
     const ses = await db.sessionExercises
       .where('workoutSessionId').equals(session.id)
@@ -114,12 +120,12 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/40" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }}>
-      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10 max-h-[85vh] overflow-y-auto">
+      <div role="dialog" aria-modal="true" aria-labelledby="workout-summary-title" className="w-full bg-app-raised rounded-t-card shadow-modal p-6 pb-10 max-h-[85vh] overflow-y-auto">
 
         {/* Header */}
         <div className="text-center mb-6">
           <p className="text-3xl mb-1">🎉</p>
-          <h2 className="text-xl font-extrabold text-app-text">Workout Complete!</h2>
+          <h2 id="workout-summary-title" className="text-xl font-extrabold text-app-text">Workout Complete!</h2>
           <p className="text-sm text-app-muted mt-1">{dur}</p>
         </div>
 
@@ -169,15 +175,15 @@ export default function WorkoutSummary({ session, onFinish, onBack }: Props) {
 
             {/* PRs */}
             {summary.newPRs.length > 0 && (
-              <div className="rounded-2xl bg-amber-50 border border-amber-200 px-4 py-3">
-                <p className="text-xs text-amber-700 font-semibold mb-2">
+              <div className="rounded-card bg-warning-bg border border-warning-text/35 px-4 py-3">
+                <p className="text-xs text-warning-text font-semibold mb-2">
                   🏆 {summary.newPRs.length} new PR{summary.newPRs.length !== 1 ? 's' : ''}!
                 </p>
                 <ul className="flex flex-col gap-1">
                   {summary.newPRs.map(({ exerciseName, e1rm }) => (
                     <li key={exerciseName} className="flex justify-between text-sm">
                       <span className="text-app-text truncate flex-1 mr-2">{exerciseName}</span>
-                      <span className="text-amber-700 font-semibold flex-none">{kgToDisplay(e1rm, units.weight)} {weightLabel(units.weight)} e1RM</span>
+                      <span className="text-warning-text font-semibold flex-none">{kgToDisplay(e1rm, units.weight)} {weightLabel(units.weight)} e1RM</span>
                     </li>
                   ))}
                 </ul>

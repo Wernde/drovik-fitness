@@ -153,41 +153,23 @@ function RailCard({ children, className = '' }: { children: ReactNode; className
 }
 
 function FlameIconTile() {
-  const base = import.meta.env.BASE_URL
   return (
-    <img
-      src={`${base}assets/streak-flame.png`}
-      alt=""
-      aria-hidden="true"
-      draggable={false}
-      className="w-16 h-16 object-contain flex-shrink-0"
-      style={{ filter: 'drop-shadow(0 0 14px rgba(255, 108, 0, 0.75))' }}
-    />
+    <PremiumIconTile name="streak" tone="flame" size="xl" usage="card" active iconSize={42} />
   )
 }
 
 function TrophyIconTile() {
-  const base = import.meta.env.BASE_URL
   return (
-    <img
-      src={`${base}assets/trophy.png`}
-      alt=""
-      aria-hidden="true"
-      draggable={false}
-      className="w-14 h-14 object-contain flex-shrink-0"
-      style={{ filter: 'drop-shadow(0 0 12px rgba(255, 170, 0, 0.70))' }}
-    />
+    <PremiumIconTile name="achievement" tone="gold" size="lg" usage="card" active iconSize={36} />
   )
 }
 
 function HeroAthlete() {
   const base = import.meta.env.BASE_URL
-  const isDark = document.documentElement.classList.contains('dark-theme')
-  const src = isDark ? `${base}assets/bodybuilder-dark.png` : `${base}assets/bodybuilder-light.png`
   return (
     <div className="hero-athlete-wrap" aria-hidden="true">
       <img
-        src={src}
+        src={`${base}assets/bodybuilder-hero.webp`}
         alt=""
         className="hero-athlete-img"
         draggable={false}
@@ -553,7 +535,7 @@ export default function Home() {
     : { head: 'Outstanding week!',  body: `${weekSessions} sessions — you're absolutely crushing it. Elite consistency.` }
 
   return (
-    <div className="dashboard-page min-h-full px-4 py-4 md:px-5 md:py-5 xl:px-6">
+    <div className="dashboard-page page-x min-h-full py-4 md:py-5">
       <header className="dashboard-topbar mb-4">
         <div className="flex items-center gap-4 min-w-0">
           <Link to="/profile" className="profile-orb flex-none" aria-label="Profile">

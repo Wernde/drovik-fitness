@@ -7,6 +7,7 @@ export interface Theme {
   accentDarker: string
   accentLight:  string
   accentLabel:  string
+  onAccent:     string
   appBg:        string
   appCard:      string
   appRaised:    string
@@ -55,7 +56,7 @@ export const THEMES: Theme[] = [
     // Glossy black/chrome + logo orange/blue.
     id: 'carbon', name: 'Carbon', dark: true,
     accent: '#FF7A00', accentDark: '#EA580C', accentDarker: '#9A3412', accentLight: '#261003',
-    accentLabel: '#FF7A00',
+    accentLabel: '#FF7A00', onAccent: '#1A0B00',
     appBg: '#02070B', appCard: '#07111A', appRaised: '#0C1824',
     appBorder: '#243545', appBorderSubtle: '#162432',
     appText: '#F8FAFC', appMuted: '#A9B4C0', appFaint: '#4B5D6D', appDisabled: '#263545',
@@ -70,7 +71,7 @@ export const THEMES: Theme[] = [
     // White/chrome version using the same logo orange/blue accents.
     id: 'arctic', name: 'Light', dark: false,
     accent: '#FF6B00', accentDark: '#EA580C', accentDarker: '#C2410C', accentLight: '#FFF1E6',
-    accentLabel: '#F25A00',
+    accentLabel: '#F25A00', onAccent: '#1A0B00',
     appBg: '#F8FBFF', appCard: '#FFFFFF', appRaised: '#F0F5FB',
     appBorder: '#D6E0EA', appBorderSubtle: '#E8EEF5',
     appText: '#101827', appMuted: '#4B5565', appFaint: '#AAB6C4', appDisabled: '#C6D0DB',
@@ -94,6 +95,7 @@ export function applyTheme(themeId: string): void {
   s.setProperty('--color-accent-darker', theme.accentDarker)
   s.setProperty('--color-accent-light',  theme.accentLight)
   s.setProperty('--color-accent-label',  theme.accentLabel)
+  s.setProperty('--color-on-accent',     theme.onAccent)
 
   s.setProperty('--color-app-bg',             theme.appBg)
   s.setProperty('--color-app-card',           theme.appCard)

@@ -7,6 +7,8 @@ export type BrandIconName =
   | 'program'
   | 'nutrition'
   | 'history'
+  | 'streak'
+  | 'achievement'
   | 'date'
   | 'settings'
   | 'plus'
@@ -41,8 +43,10 @@ const PREMIUM_ICON_FILES: Record<BrandIconName, string> = {
   home:       'home.png',
   program:    'program.png',
   nutrition:  'nutrition.png',
-  history:    'history.png',
-  date:       'date.png',
+  history:    'history-symbol.svg',
+  date:       'date-symbol.svg',
+  streak:     'streak-symbol.svg',
+  achievement:'achievement-symbol.svg',
   settings:   'settings.png',
   plus:       'plus.png',
   ai:         'ai.png',
