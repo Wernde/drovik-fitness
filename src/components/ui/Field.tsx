@@ -14,8 +14,8 @@ const inputBase = (hasError: boolean) =>
     'w-full min-w-0 max-w-full rounded-input border bg-app-bg text-app-text placeholder-app-faint',
     // iOS zooms the whole PWA when a focused input is smaller than 16px.
     'px-3 py-2.5 text-base sm:text-sm',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label',
-    hasError ? 'border-error-text' : 'border-app-border focus-visible:border-accent',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-info-text',
+    hasError ? 'border-error-text' : 'border-app-border focus-visible:border-info-text',
   ].join(' ')
 
 export default function Field({

@@ -102,7 +102,7 @@ export default function ExercisePicker({ onSelect, onClose, existingIds = new Se
             className={[
               'flex-none rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap',
               filter === value
-                ? 'bg-accent text-app-text'
+                ? 'bg-info-text text-info-on'
                 : 'bg-app-surface border border-app-border text-app-muted',
             ].join(' ')}
           >

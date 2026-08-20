@@ -4,6 +4,17 @@ All notable changes are documented here, newest first.
 
 ---
 
+## App-wide Orange and Blue Colour Rebalance
+
+### Changed
+- **Clear colour roles** - orange is reserved for primary actions, workout energy, and high-value progress, while the existing electric blue now identifies active, selected, focused, and informational states.
+- **Blue navigation and selection states** - mobile navigation, programme status, calendars, tabs, filters, segmented controls, profile choices, and workout selections now share one electric-blue state language.
+- **Blue field focus** - shared inputs and buttons use blue focus rings and borders, reducing orange repetition while improving interaction clarity.
+- **Theme-safe contrast** - added a dedicated on-blue foreground token so filled blue controls remain readable in both Carbon and Light modes.
+- **Brand restraint** - retained the supplied orange-and-blue 3D artwork and kept orange on primary creation, save, add, and workout actions.
+
+---
+
 ## Active Badge Contrast
 
 ### Fixed

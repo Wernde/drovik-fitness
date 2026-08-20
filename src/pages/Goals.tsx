@@ -345,7 +345,7 @@ export default function Goals() {
             onClick={() => setTab(t)}
             className={[
               'flex-1 rounded-xl py-2 text-sm font-bold transition-colors',
-              tab === t ? 'bg-accent text-app-text shadow-sm' : 'text-app-muted',
+              tab === t ? 'bg-info-text text-info-on shadow-sm' : 'text-app-muted',
             ].join(' ')}
           >
             {t === 'goals' ? 'Goals' : 'Habits'}

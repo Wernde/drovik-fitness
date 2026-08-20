@@ -21,6 +21,7 @@ export interface Theme {
   successText:  string
   infoBg:       string
   infoText:     string
+  onInfo:       string
   warningBg:    string
   warningText:  string
   errorBg:      string
@@ -61,7 +62,7 @@ export const THEMES: Theme[] = [
     appBorder: '#243545', appBorderSubtle: '#162432',
     appText: '#F8FAFC', appMuted: '#A9B4C0', appFaint: '#4B5D6D', appDisabled: '#263545',
     successBg: '#0A2010', successText: '#22C55E',
-    infoBg: '#031B2C', infoText: '#00A8FF',
+    infoBg: '#031B2C', infoText: '#00A8FF', onInfo: '#00131F',
     warningBg: '#261003', warningText: '#FF9A1F',
     errorBg: '#250A0A', errorText: '#F87171',
     neutralBg: '#061728', neutralText: '#38BDF8',
@@ -76,7 +77,7 @@ export const THEMES: Theme[] = [
     appBorder: '#D6E0EA', appBorderSubtle: '#E8EEF5',
     appText: '#101827', appMuted: '#4B5565', appFaint: '#AAB6C4', appDisabled: '#C6D0DB',
     successBg: '#F0FDF4', successText: '#15803D',
-    infoBg: '#E6F6FF', infoText: '#0078E7',
+    infoBg: '#E6F6FF', infoText: '#0078E7', onInfo: '#FFFFFF',
     warningBg: '#FFF1E6', warningText: '#EA580C',
     errorBg: '#FEF2F2', errorText: '#B91C1C',
     neutralBg: '#EAF6FF', neutralText: '#0284C7',
@@ -111,6 +112,7 @@ export function applyTheme(themeId: string): void {
   s.setProperty('--color-success-text', theme.successText)
   s.setProperty('--color-info-bg',      theme.infoBg)
   s.setProperty('--color-info-text',    theme.infoText)
+  s.setProperty('--color-on-info',      theme.onInfo)
   s.setProperty('--color-warning-bg',   theme.warningBg)
   s.setProperty('--color-warning-text', theme.warningText)
   s.setProperty('--color-error-bg',     theme.errorBg)

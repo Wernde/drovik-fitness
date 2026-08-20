@@ -107,6 +107,7 @@ const config: Config = {
         info: {
           bg:   'var(--color-info-bg)',
           text: 'var(--color-info-text)',
+          on:   'var(--color-on-info)',
         },
         warning: {
           bg:   'var(--color-warning-bg)',

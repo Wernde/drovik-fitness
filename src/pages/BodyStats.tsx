@@ -387,7 +387,7 @@ export default function BodyStats() {
                 onClick={() => setMetric(value)}
                 className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-colors ${
                   metric === value
-                    ? 'bg-accent text-app-text'
+                    ? 'bg-info-text text-info-on'
                     : 'bg-app-bg border border-app-border text-app-muted active:bg-app-border'
                 }`}
               >
@@ -404,7 +404,7 @@ export default function BodyStats() {
                 onClick={() => setPeriod(p)}
                 className={`flex-1 py-1 rounded-lg text-[11px] font-semibold transition-colors ${
                   period === p
-                    ? 'bg-accent text-app-text'
+                    ? 'bg-info-text text-info-on'
                     : 'text-app-muted bg-app-bg border border-app-border'
                 }`}
               >

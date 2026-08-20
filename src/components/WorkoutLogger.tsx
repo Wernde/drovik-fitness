@@ -731,9 +731,9 @@ export default function WorkoutLogger({ session }: Props) {
                     onClick={() => toggleExNote(se.id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-colors active:opacity-80 ${
                       exNoteOpen
-                        ? 'bg-accent border-accent text-app-text'
+                        ? 'bg-info-text border-info-text text-info-on'
                         : exerciseNotes.get(se.id)
-                          ? 'bg-accent-light border-accent text-accent-dark'
+                          ? 'bg-info-bg border-info-text text-info-text'
                           : 'bg-app-bg border-app-border text-app-muted'
                     }`}
                   >

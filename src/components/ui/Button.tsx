@@ -35,7 +35,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       disabled={disabled || loading}
       className={[
         'inline-flex items-center justify-center transition-colors',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-label',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-info-text',
         VARIANT[variant],
         SIZE[size],
         fullWidth ? 'w-full' : '',

@@ -166,7 +166,7 @@ function PlateCalculator() {
                 className={[
                   'rounded-xl px-3 py-1.5 text-xs font-semibold',
                   parseFloat(barbellStr) === value && !customBar
-                    ? 'bg-accent text-app-text'
+                    ? 'bg-info-text text-info-on'
                     : 'bg-app-bg border border-app-border text-app-muted',
                 ].join(' ')}
               >

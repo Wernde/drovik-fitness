@@ -188,20 +188,20 @@ export default function Programs() {
                   {confirmDel !== program.id ? (
                     <div className={[
                       'rounded-2xl border overflow-hidden',
-                      program.isActive ? 'bg-accent-light border-accent' : 'bg-app-card border-app-border',
+                      program.isActive ? 'bg-info-bg border-info-text' : 'bg-app-card border-app-border',
                     ].join(' ')}>
-                      {program.isActive && <div className="h-1 w-full bg-accent" />}
+                      {program.isActive && <div className="h-1 w-full bg-info-text" />}
                       <div className="px-4 py-3 flex items-center gap-2">
                         <button onClick={() => navigate(`/programs/${program.id}`)} className="flex-1 text-left min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-extrabold text-sm text-app-text truncate">{program.name}</span>
-                            {program.isActive && <span className="bg-accent px-2 py-0.5 text-xs font-bold text-[var(--color-on-accent)] rounded-full flex-shrink-0">Active</span>}
+                            {program.isActive && <span className="bg-info-text px-2 py-0.5 text-xs font-bold text-info-on rounded-full flex-shrink-0">Active</span>}
                           </div>
                           <p className="text-xs text-app-muted mt-0.5">{days} {days === 1 ? 'day' : 'days'}</p>
                         </button>
                         <button
                           onClick={() => toggleActive(program)}
-                          className={`p-1.5 ${program.isActive ? 'text-accent-dark' : 'text-app-faint active:text-accent-dark'}`}
+                          className={`p-1.5 ${program.isActive ? 'text-info-text' : 'text-app-faint active:text-info-text'}`}
                           title={program.isActive ? 'Deactivate' : 'Activate'}
                         >
                           <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
@@ -237,7 +237,7 @@ export default function Programs() {
               <p className="text-base font-extrabold text-app-text">{program.name}</p>
               <button
                 onClick={() => navigate(`/programs/${program.id}`)}
-                className="text-xs font-bold text-accent-dark"
+                className="text-xs font-bold text-info-text"
               >
                 Manage
               </button>

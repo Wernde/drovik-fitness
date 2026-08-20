@@ -344,7 +344,7 @@ export default function Profile() {
                     className={[
                       'px-4 py-1.5 rounded-full text-xs font-bold border transition-colors',
                       fitness.sex === s
-                        ? 'bg-accent border-accent text-app-text'
+                        ? 'bg-info-text border-info-text text-info-on'
                         : 'bg-app-bg border-app-border text-app-muted',
                     ].join(' ')}
                   >
@@ -365,7 +365,7 @@ export default function Profile() {
                     className={[
                       'w-full text-left px-3 py-2 rounded-xl border text-xs transition-colors',
                       fitness.activity_level === a
-                        ? 'bg-accent-light border-accent text-accent-dark font-bold'
+                        ? 'bg-info-bg border-info-text text-info-text font-bold'
                         : 'bg-app-bg border-app-border text-app-muted',
                     ].join(' ')}
                   >
@@ -386,11 +386,11 @@ export default function Profile() {
                     className={[
                       'w-full text-left px-3 py-2.5 rounded-xl border transition-colors',
                       fitness.diet_id === d.id
-                        ? 'bg-accent-light border-accent'
+                        ? 'bg-info-bg border-info-text'
                         : 'bg-app-bg border-app-border',
                     ].join(' ')}
                   >
-                    <p className={`text-xs font-bold ${fitness.diet_id === d.id ? 'text-accent-dark' : 'text-app-text'}`}>
+                    <p className={`text-xs font-bold ${fitness.diet_id === d.id ? 'text-info-text' : 'text-app-text'}`}>
                       {GOAL_LABELS[d.id as DietId]}
                     </p>
                     <p className="text-[10px] text-app-muted mt-0.5">{d.tagline}</p>

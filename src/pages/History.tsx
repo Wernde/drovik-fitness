@@ -123,7 +123,7 @@ function YearHeatmap({
                   gridColumn: wi + 1,
                   gridRow: di + 1,
                   backgroundColor: heatColor(count, isToday, isFuture),
-                  outline: isToday ? '2px solid var(--color-accent-dark)' : undefined,
+                  outline: isToday ? '2px solid var(--color-info-text)' : undefined,
                   outlineOffset: isToday ? 1 : undefined,
                   cursor: hasSession ? 'pointer' : 'default',
                 }}
@@ -303,7 +303,7 @@ export default function History() {
                 <span className={[
                   'w-8 h-8 flex items-center justify-center rounded-full text-xs font-medium',
                   isToday
-                    ? 'bg-accent text-app-text font-bold'
+                    ? 'bg-info-text text-info-on font-bold'
                     : hasSession
                     ? 'text-app-text'
                     : 'text-app-muted',
@@ -311,7 +311,7 @@ export default function History() {
                   {date.getDate()}
                 </span>
                 {hasSession && !isToday && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent-dark mt-0.5" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-info-text mt-0.5" />
                 )}
               </button>
             )

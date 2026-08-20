@@ -141,7 +141,7 @@ export default function Exercises() {
             className={[
               'flex-none rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap',
               filter === value
-                ? 'bg-accent text-app-text'
+                ? 'bg-info-text text-info-on'
                 : 'bg-app-card border border-app-border text-app-muted',
             ].join(' ')}
           >
