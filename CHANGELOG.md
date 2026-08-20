@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile Home Duplication and Accent Cleanup
+
+### Changed
+- **Single workout reference** - removed the duplicated Up Next workout from mobile Home because Today's Workout already provides the name and primary action.
+- **Full-width achievements** - expanded the remaining progress strip for clearer achievement count, progress, and navigation.
+- **Orange restraint** - ordinary mobile Home values such as Nutrition, Calories, and Active Calories now use neutral text; blue handles the greeting and state/navigation cues, leaving orange concentrated on the workout action and small energy accents.
+
+---
+
 ## Mobile Home Health Summary
 
 ### Changed
