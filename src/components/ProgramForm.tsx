@@ -46,11 +46,20 @@ export default function ProgramForm({ program, onClose }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end" style={{ paddingBottom: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} onClick={(e) => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="w-full bg-app-surface rounded-t-card shadow-modal p-6 pb-10">
+    <div
+      className="fixed inset-0 z-50 flex min-w-0 items-end overflow-hidden bg-black/35"
+      style={{ paddingBottom: 'calc(68px + env(safe-area-inset-bottom, 0px))' }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="program-form-title"
+        className="mx-auto max-h-[calc(100dvh-92px-env(safe-area-inset-bottom,0px))] w-full min-w-0 max-w-lg overflow-x-hidden overflow-y-auto overscroll-contain rounded-t-card bg-app-surface p-4 pb-8 shadow-modal sm:p-6 sm:pb-10"
+      >
 
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-app-text">{program ? 'Edit Program' : 'New Program'}</h2>
+        <div className="mb-5 flex items-center justify-between sm:mb-6">
+          <h2 id="program-form-title" className="text-lg font-bold text-app-text">{program ? 'Edit Program' : 'New Program'}</h2>
           <button onClick={onClose} className="text-app-muted active:text-app-text p-1" aria-label="Close">
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
               <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clipRule="evenodd" />
@@ -58,7 +67,7 @@ export default function ProgramForm({ program, onClose }: Props) {
           </button>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <Field
             label="Name"
             type="text"

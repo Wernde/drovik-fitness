@@ -4,6 +4,15 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile Program Form Zoom Repair
+
+### Fixed
+- **iPhone focus zoom** - shared form fields now render at 16px on phones, preventing iOS from magnifying and horizontally shifting the PWA when an input receives focus.
+- **Program sheet containment** - the New/Edit Program sheet is constrained to the viewport, clips horizontal overflow, and scrolls vertically on shorter phones.
+- **Program sheet safe area** - aligned the modal above the compact mobile navigation and added a backdrop plus dialog semantics for clearer focus.
+
+---
+
 ## Mobile History Layout Repair
 
 ### Fixed
