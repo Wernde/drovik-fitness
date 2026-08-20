@@ -2,7 +2,7 @@
  * History — calendar view of all past workout sessions.
  */
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../db/db'
@@ -72,26 +72,69 @@ function YearHeatmap({
     streakCheck.setDate(streakCheck.getDate() - 1)
   }
 
-  // Responsive cell sizing — measure container, compute cell width to fit exactly
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [cellSize, setCellSize] = useState(10)
+  function HeatmapBand({ start, end }: { start: number; end: number }) {
+    const bandWeeks = weeks.slice(start, end)
+    let previousLabelWeek = -99
 
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const GAP = 2
-    const WEEKS = 52
-    const measure = () => {
-      const w = el.clientWidth
-      setCellSize(Math.max(6, Math.floor((w - GAP * (WEEKS - 1)) / WEEKS)))
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [])
+    return (
+      <div>
+        <div
+          className="grid gap-0.5 mb-1"
+          style={{ gridTemplateColumns: `repeat(${bandWeeks.length}, minmax(0, 1fr))` }}
+          aria-hidden="true"
+        >
+          {bandWeeks.map((_, index) => {
+            const weekIndex = start + index
+            const hasRoom = weekIndex - previousLabelWeek >= 3
+            const label = monthLabels.get(weekIndex)
+            const showLabel = Boolean(label && hasRoom)
+            if (showLabel) previousLabelWeek = weekIndex
 
-  const GAP = 2
+            return (
+              <span
+                key={weekIndex}
+                className="min-w-0 overflow-visible whitespace-nowrap text-[9px] leading-3 text-app-muted"
+              >
+                {showLabel ? label : ''}
+              </span>
+            )
+          })}
+        </div>
+
+        <div
+          className="grid gap-0.5"
+          style={{ gridTemplateColumns: `repeat(${bandWeeks.length}, minmax(0, 1fr))` }}
+        >
+          {bandWeeks.flatMap((week, wi) => week.map((day, di) => {
+            const count = sessionCountMap.get(day) ?? 0
+            const isToday = day === todayStr
+            const isFuture = day > todayStr
+            const hasSession = count > 0
+
+            return (
+              <button
+                key={day}
+                type="button"
+                title={hasSession ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : day}
+                aria-label={hasSession ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : undefined}
+                onClick={hasSession ? () => onDayClick?.(day) : undefined}
+                className="aspect-square min-w-0 rounded-[3px]"
+                style={{
+                  gridColumn: wi + 1,
+                  gridRow: di + 1,
+                  backgroundColor: heatColor(count, isToday, isFuture),
+                  outline: isToday ? '2px solid var(--color-accent-dark)' : undefined,
+                  outlineOffset: isToday ? 1 : undefined,
+                  cursor: hasSession ? 'pointer' : 'default',
+                }}
+                tabIndex={hasSession ? 0 : -1}
+              />
+            )
+          }))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="rounded-card bg-app-surface border border-app-border p-4 mb-5">
@@ -106,56 +149,15 @@ function YearHeatmap({
         </div>
       </div>
 
-      {/* Responsive grid — no scroll, fills container width */}
-      <div ref={containerRef}>
-        {/* Month labels */}
-        <div style={{ display: 'flex', gap: GAP, marginBottom: 4 }}>
-          {weeks.map((_, wi) => (
-            <div key={wi} style={{ width: cellSize, flexShrink: 0, overflow: 'visible' }}>
-              {monthLabels.has(wi) && (
-                <span style={{ fontSize: 9, color: 'var(--color-app-muted)', whiteSpace: 'nowrap', display: 'block' }}>
-                  {monthLabels.get(wi)}
-                </span>
-              )}
-            </div>
-          ))}
+      {/* Two readable half-year bands on phones; one continuous year on larger screens. */}
+      <div>
+        <div className="space-y-3 sm:hidden">
+          <HeatmapBand start={0} end={26} />
+          <HeatmapBand start={26} end={52} />
         </div>
-
-        {/* 7 day rows */}
-        {Array.from({ length: 7 }, (_, d) => (
-          <div key={d} style={{ display: 'flex', gap: GAP, marginBottom: d < 6 ? GAP : 0 }}>
-            {weeks.map((week, wi) => {
-              const day     = week[d]
-              const count   = sessionCountMap.get(day) ?? 0
-              const isToday = day === todayStr
-              const isFuture = day > todayStr
-              const bg      = heatColor(count, isToday, isFuture)
-              const hasSession = count > 0
-              return (
-                <div
-                  key={wi}
-                  role={hasSession ? 'button' : undefined}
-                  tabIndex={hasSession ? 0 : undefined}
-                  title={hasSession ? `${day}: ${count} session${count !== 1 ? 's' : ''}` : day}
-                  onClick={hasSession ? () => onDayClick?.(day) : undefined}
-                  onKeyDown={hasSession ? (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDayClick?.(day) }
-                  } : undefined}
-                  style={{
-                    width:        cellSize,
-                    height:       cellSize,
-                    flexShrink:   0,
-                    borderRadius: Math.max(2, Math.floor(cellSize / 4)),
-                    backgroundColor: bg,
-                    outline:      isToday ? '2px solid var(--color-accent-dark)' : undefined,
-                    outlineOffset: isToday ? 1 : undefined,
-                    cursor:       hasSession ? 'pointer' : undefined,
-                  }}
-                />
-              )
-            })}
-          </div>
-        ))}
+        <div className="hidden sm:block">
+          <HeatmapBand start={0} end={52} />
+        </div>
 
         {/* Colour legend */}
         <div className="flex items-center gap-1.5 mt-3">
@@ -163,7 +165,8 @@ function YearHeatmap({
           {['#EEF0F3', '#FDE68A', '#FBBF24', '#F59E0B', '#B45309'].map((c) => (
             <div
               key={c}
-              style={{ width: cellSize, height: cellSize, borderRadius: 2, backgroundColor: c, flexShrink: 0 }}
+              className="w-2.5 h-2.5 rounded-[3px] flex-shrink-0"
+              style={{ backgroundColor: c }}
             />
           ))}
           <span className="text-nav text-app-faint">More</span>
@@ -233,7 +236,7 @@ export default function History() {
     .toLocaleDateString('en-AU', { month: 'long', year: 'numeric' })
 
   return (
-    <div className="page-x pt-6">
+    <div className="page-x pt-6 pb-6">
       <div className="flex items-center gap-3 mb-5">
         <PremiumIconTile name="history" tone="gold" size="md" usage="card" active />
         <h1 className="text-2xl font-extrabold text-app-text">History</h1>
@@ -249,9 +252,9 @@ export default function History() {
       />
 
       {/* ── Calendar ── */}
-      <div className="rounded-card bg-app-surface border border-app-border p-4 mb-5">
+      <div className="rounded-card bg-app-surface border border-app-border p-3 sm:p-4 mb-5">
         {/* Month nav */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
           <button
             onClick={prevMonth}
             className="p-2 rounded-input bg-app-bg border border-app-border text-app-muted active:bg-app-border"
@@ -274,14 +277,14 @@ export default function History() {
         </div>
 
         {/* Day headers */}
-        <div className="grid grid-cols-7 mb-2">
+        <div className="grid grid-cols-7 mb-1 sm:mb-2">
           {DAY_LABELS.map((d) => (
             <div key={d} className="text-center text-xs text-app-faint font-medium py-1">{d}</div>
           ))}
         </div>
 
         {/* Day cells */}
-        <div className="grid grid-cols-7 gap-y-1">
+        <div className="grid grid-cols-7 gap-y-0.5 sm:gap-y-1">
           {calendarDays.map((date, idx) => {
             if (!date) return <div key={idx} />
             const dateStr      = isoDate(date)
