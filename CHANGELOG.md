@@ -4,6 +4,17 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Premium Mobile Home Visual Polish
+
+### Changed
+- **Branded workout focal point** - upgraded the mobile workout card to a high-contrast gunmetal surface with restrained orange and electric-blue lighting plus a compact premium icon.
+- **Differentiated dashboard surfaces** - Health, Nutrition, Water, and Weight now use purposeful blue, orange, and chrome-tinted surfaces instead of identical white cards.
+- **Compact icon rhythm** - added small premium icons and coloured edge cues to the weekly metrics without increasing the dashboard's section count.
+- **Branded achievement finish** - added a trophy tile, dual-colour background treatment, and blue-to-orange progress bar.
+- **Compact target retained** - visual depth and hierarchy were added inside the existing layout dimensions, preserving the 1.5-phone Home target.
+
+---
+
 ## Mobile Home Duplication and Accent Cleanup
 
 ### Changed

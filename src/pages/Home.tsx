@@ -560,7 +560,10 @@ export default function Home() {
     <div className="dashboard-page page-x min-h-full py-4 md:py-5">
       {/* Mobile is intentionally a launchpad, not a stacked desktop dashboard. */}
       <div className="md:hidden space-y-3 pb-3">
-        <header className="flex items-center justify-between gap-3">
+        <header
+          className="dashboard-panel flex items-center justify-between gap-3 px-3 py-2"
+          style={{ background: 'linear-gradient(110deg, var(--color-info-bg), var(--dash-panel-strong) 55%, var(--color-accent-light))' }}
+        >
           <div className="flex min-w-0 items-center gap-3">
             <Link to="/profile" className="profile-orb !h-12 !w-12 flex-none" aria-label="Profile">
               {avatarUrl
@@ -591,16 +594,20 @@ export default function Home() {
           })}
         </div>
 
-        <section className="dashboard-panel relative min-h-[142px] overflow-hidden border-l-4 border-l-accent p-4">
+        <section
+          className="relative min-h-[142px] overflow-hidden rounded-card border border-orange-500/70 p-4 shadow-card"
+          style={{ background: 'radial-gradient(circle at 92% 18%, rgba(0,168,255,0.28), transparent 31%), radial-gradient(circle at 8% 110%, rgba(255,107,0,0.22), transparent 38%), linear-gradient(135deg, #07111A, #0C1824)' }}
+        >
+          <PremiumIconTile name="workout" tone="blue" size="sm" usage="card" active iconSize={28} className="absolute right-3 top-3" />
           <div className="flex h-full min-h-[110px] flex-col justify-between">
-            <div className="min-w-0">
-              <SectionTitle>Today's Workout</SectionTitle>
-              <h1 className="mt-1 truncate text-2xl font-extrabold italic leading-tight text-app-text">
+            <div className="min-w-0 pr-12">
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-sky-300">Today's Workout</p>
+              <h1 className="mt-1 truncate text-2xl font-extrabold italic leading-tight text-white">
                 {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
               </h1>
             </div>
             <div className="flex items-end justify-between gap-3">
-              <p className="min-w-0 text-xs font-semibold text-app-muted">
+              <p className="min-w-0 text-xs font-semibold text-slate-300">
                 {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
               </p>
             {hasActiveSession ? (
@@ -620,9 +627,12 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="dashboard-panel p-3">
+        <section className="dashboard-panel border-info-text/30 bg-info-bg p-3 shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)]">
           <div className="flex items-center justify-between gap-3">
-            <SectionTitle>Health Today</SectionTitle>
+            <div className="flex items-center gap-2">
+              <PremiumIconTile name="cardio" tone="blue" size="xs" usage="card" active iconSize={19} />
+              <SectionTitle>Health Today</SectionTitle>
+            </div>
             {healthSyncLabel ? (
               <span className="text-[10px] font-semibold text-info-text">{healthSyncLabel}</span>
             ) : (
@@ -658,19 +668,33 @@ export default function Home() {
             <span className="text-[10px] font-semibold text-app-faint">Tap for details</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
+            <Link
+              to="/nutrition"
+              className="dashboard-panel relative min-w-0 overflow-hidden border-orange-400/35 p-2.5 text-center"
+              style={{ background: 'linear-gradient(160deg, var(--dash-panel-strong), var(--color-accent-light))' }}
+            >
+              <PremiumIconTile name="nutrition" tone="flame" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Nutrition</p>
-              <p className="mt-1 truncate text-lg font-extrabold text-app-text">{cals.toLocaleString()}</p>
+              <p className="truncate text-lg font-extrabold text-app-text">{cals.toLocaleString()}</p>
               <p className="text-[10px] font-semibold text-app-faint">of {macroTargets.calories.toLocaleString()} cal</p>
             </Link>
-            <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
+            <Link
+              to="/nutrition"
+              className="dashboard-panel min-w-0 border-info-text/35 bg-info-bg p-2.5 text-center"
+            >
+              <PremiumIconTile name="water" tone="blue" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Water</p>
-              <p className="mt-1 truncate text-lg font-extrabold text-info-text">{waterPct}%</p>
+              <p className="truncate text-lg font-extrabold text-info-text">{waterPct}%</p>
               <p className="text-[10px] font-semibold text-app-faint">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)}</p>
             </Link>
-            <Link to="/body" className="dashboard-panel min-w-0 p-3 text-center">
+            <Link
+              to="/body"
+              className="dashboard-panel min-w-0 border-slate-400/35 p-2.5 text-center"
+              style={{ background: 'linear-gradient(160deg, var(--dash-panel-strong), var(--color-app-raised))' }}
+            >
+              <PremiumIconTile name="body" tone="steel" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Weight</p>
-              <p className="mt-1 truncate text-lg font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}</p>
+              <p className="truncate text-lg font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}</p>
               <p className="text-[10px] font-semibold text-app-faint">{weightLabel(units.weight)} · {wtDate ?? 'not logged'}</p>
             </Link>
           </div>
@@ -679,29 +703,39 @@ export default function Home() {
         <section>
           <SectionTitle>This week</SectionTitle>
           <div className="mt-1.5 grid grid-cols-2 gap-2">
-            {[
-              { label: 'Sessions', value: String(weekSessions), to: '/history', colour: 'text-info-text' },
-              { label: 'Volume', value: data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—', to: '/progress', colour: 'text-app-text' },
-              { label: 'Calories', value: cals > 0 ? cals.toLocaleString() : '—', to: '/nutrition', colour: 'text-app-text' },
-              { label: 'Streak', value: `${streak} day${streak === 1 ? '' : 's'}`, to: '/history', colour: 'text-app-text' },
-            ].map((item) => (
-              <Link key={item.label} to={item.to} className="dashboard-panel flex min-h-[62px] items-center justify-between gap-2 px-3 py-2">
-                <p className="text-[10px] font-extrabold uppercase text-app-muted">{item.label}</p>
+            {([
+              { label: 'Sessions', value: String(weekSessions), to: '/history', colour: 'text-info-text', icon: 'workout', tone: 'blue', edge: 'border-l-info-text' },
+              { label: 'Volume', value: data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—', to: '/progress', colour: 'text-app-text', icon: 'progress', tone: 'steel', edge: 'border-l-slate-400' },
+              { label: 'Calories', value: cals > 0 ? cals.toLocaleString() : '—', to: '/nutrition', colour: 'text-app-text', icon: 'meal', tone: 'flame', edge: 'border-l-orange-400' },
+              { label: 'Streak', value: `${streak} day${streak === 1 ? '' : 's'}`, to: '/history', colour: 'text-app-text', icon: 'streak', tone: 'flame', edge: 'border-l-orange-400' },
+            ] as const).map((item) => (
+              <Link key={item.label} to={item.to} className={`dashboard-panel flex min-h-[62px] items-center gap-2 border-l-2 px-2.5 py-2 ${item.edge}`}>
+                <PremiumIconTile name={item.icon} tone={item.tone} size="xs" usage="card" active iconSize={17} />
+                <p className="min-w-0 flex-1 text-[10px] font-extrabold uppercase text-app-muted">{item.label}</p>
                 <p className={`truncate text-lg font-extrabold ${item.colour}`}>{item.value}</p>
               </Link>
             ))}
           </div>
         </section>
 
-        <section className="dashboard-panel min-h-[74px] px-4 py-3">
-          <Link to="/history" className="block min-w-0">
-            <p className="text-[10px] font-extrabold uppercase text-app-muted">Achievements</p>
-            <div className="flex items-end justify-between gap-3">
-              <p className="text-base font-extrabold text-app-text">{unlockedCount} <span className="text-xs text-app-muted">/ {totalAch} unlocked</span></p>
-              <span className="text-[10px] font-bold text-info-text">View achievements →</span>
-            </div>
-            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-app-border">
-              <div className="h-full rounded-full bg-info-text" style={{ width: `${achPct}%` }} />
+        <section
+          className="dashboard-panel min-h-[74px] overflow-hidden border-info-text/25 px-4 py-3"
+          style={{ background: 'linear-gradient(110deg, var(--color-info-bg), var(--dash-panel-strong) 58%, var(--color-accent-light))' }}
+        >
+          <Link to="/history" className="flex min-w-0 items-center gap-3">
+            <PremiumIconTile name="achievement" tone="gold" size="xs" usage="card" active iconSize={20} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] font-extrabold uppercase text-app-muted">Achievements</p>
+              <div className="flex items-end justify-between gap-3">
+                <p className="text-base font-extrabold text-app-text">{unlockedCount} <span className="text-xs text-app-muted">/ {totalAch} unlocked</span></p>
+                <span className="text-[10px] font-bold text-info-text">View all →</span>
+              </div>
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-app-border">
+                <div
+                  className="h-full rounded-full"
+                  style={{ width: `${achPct}%`, background: 'linear-gradient(90deg, var(--color-info-text), var(--color-accent))' }}
+                />
+              </div>
             </div>
           </Link>
         </section>
