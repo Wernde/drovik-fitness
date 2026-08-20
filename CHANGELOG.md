@@ -4,6 +4,13 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Active Badge Contrast
+
+### Fixed
+- **Readable programme status** - Active badges now use the theme's dedicated high-contrast foreground colour instead of orange text on an orange background in light mode.
+
+---
+
 ## Mobile Program Form Zoom Repair
 
 ### Fixed

@@ -195,7 +195,7 @@ export default function Programs() {
                         <button onClick={() => navigate(`/programs/${program.id}`)} className="flex-1 text-left min-w-0">
                           <div className="flex items-center gap-2">
                             <span className="font-extrabold text-sm text-app-text truncate">{program.name}</span>
-                            {program.isActive && <span className="text-xs font-bold text-accent-dark bg-accent px-2 py-0.5 rounded-full flex-shrink-0">Active</span>}
+                            {program.isActive && <span className="bg-accent px-2 py-0.5 text-xs font-bold text-[var(--color-on-accent)] rounded-full flex-shrink-0">Active</span>}
                           </div>
                           <p className="text-xs text-app-muted mt-0.5">{days} {days === 1 ? 'day' : 'days'}</p>
                         </button>
