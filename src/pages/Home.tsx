@@ -601,20 +601,17 @@ export default function Home() {
           style={{ background: 'linear-gradient(115deg, var(--color-info-bg), var(--dash-panel-strong) 62%, var(--color-accent-light))' }}
         >
           <span className="absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-info-text" aria-hidden="true" />
-          <div className="flex min-h-[92px] flex-col justify-between pl-1">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <PremiumIconTile name="workout" tone="blue" size="xs" usage="card" active iconSize={20} />
-                <p className="text-[10px] font-extrabold uppercase tracking-widest text-info-text">Today's Workout</p>
-              </div>
-              <h1 className="mt-1 truncate text-lg font-extrabold leading-tight text-app-text">
+          <div className="flex items-center gap-2 pl-1">
+            <PremiumIconTile name="workout" tone="blue" size="xs" usage="card" active iconSize={20} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[9px] font-extrabold uppercase tracking-wider text-info-text">Today's Workout</p>
+              <h1 className="truncate text-base font-extrabold leading-tight text-app-text">
                 {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
               </h1>
-            </div>
-            <div className="flex items-end justify-between gap-3">
-              <p className="min-w-0 text-xs font-semibold text-app-muted">
+              <p className="truncate text-[10px] font-semibold text-app-muted">
                 {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
               </p>
+            </div>
             {hasActiveSession ? (
               <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
             ) : data?.nextDay && data?.activeProgram ? (
@@ -628,7 +625,6 @@ export default function Home() {
             ) : (
               <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
             )}
-            </div>
           </div>
         </section>
 
