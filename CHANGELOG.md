@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile Home Health Summary
+
+### Changed
+- **Functional workout card** - removed the bodybuilder artwork from the phone Home screen and converted the recovered space into a shorter, full-width workout action card; tablet and desktop artwork is unchanged.
+- **Health Today strip** - added synced Steps, Active Calories, Resting Heart Rate, latest health workout, and last-sync time to mobile Home.
+- **Compact empty state** - phones without synced data receive one small Apple Health connection link instead of a large setup panel.
+- **Home length protected** - the shorter workout card offsets the added health strip so the compact launchpad remains within the agreed 1.5-phone target.
+
+---
+
 ## Compact Mobile Home Launchpad
 
 ### Changed
