@@ -549,6 +549,13 @@ export default function Home() {
     ? { head: 'Keep going strong!', body: "You're on track to crush your goals this week. Consistency is building champions." }
     : { head: 'Outstanding week!',  body: `${weekSessions} sessions — you're absolutely crushing it. Elite consistency.` }
 
+  const healthSyncLabel = todayHealth?.updatedAt
+    ? `Synced ${new Date(todayHealth.updatedAt).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' })}`
+    : null
+  const healthWorkoutSummary = latestHealthWorkout
+    ? `${latestHealthWorkout.workoutType || 'Workout'}${latestHealthWorkout.durationSecs ? ` · ${Math.round(latestHealthWorkout.durationSecs / 60)} min` : ''}`
+    : null
+
   return (
     <div className="dashboard-page page-x min-h-full py-4 md:py-5">
       {/* Mobile is intentionally a launchpad, not a stacked desktop dashboard. */}
@@ -584,38 +591,65 @@ export default function Home() {
           })}
         </div>
 
-        <section className="dashboard-panel relative h-[190px] overflow-hidden p-4">
-          <div className="relative z-10 flex h-full max-w-[62%] flex-col items-start justify-between">
-            <div>
+        <section className="dashboard-panel relative min-h-[142px] overflow-hidden border-l-4 border-l-accent p-4">
+          <div className="flex h-full min-h-[110px] flex-col justify-between">
+            <div className="min-w-0">
               <SectionTitle>Today's Workout</SectionTitle>
-              <h1 className="mt-1 line-clamp-2 text-2xl font-extrabold italic leading-tight text-app-text">
+              <h1 className="mt-1 truncate text-2xl font-extrabold italic leading-tight text-app-text">
                 {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
               </h1>
-              <p className="mt-1 text-xs font-semibold text-app-muted">
+            </div>
+            <div className="flex items-end justify-between gap-3">
+              <p className="min-w-0 text-xs font-semibold text-app-muted">
                 {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
               </p>
-            </div>
             {hasActiveSession ? (
-              <Link to="/log" className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Resume Workout</Link>
+              <Link to="/log" className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Resume</Link>
             ) : data?.nextDay && data?.activeProgram ? (
               <button
                 onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
                 disabled={starting}
-                className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)] disabled:opacity-60"
+                className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)] disabled:opacity-60"
               >
                 {starting ? 'Starting…' : 'Start Workout'}
               </button>
             ) : (
-              <Link to="/log" className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Start Workout</Link>
+              <Link to="/log" className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Start Workout</Link>
+            )}
+            </div>
+          </div>
+        </section>
+
+        <section className="dashboard-panel p-3">
+          <div className="flex items-center justify-between gap-3">
+            <SectionTitle>Health Today</SectionTitle>
+            {healthSyncLabel ? (
+              <span className="text-[10px] font-semibold text-info-text">{healthSyncLabel}</span>
+            ) : (
+              <Link to="/settings" className="text-[10px] font-bold text-info-text">Connect Apple Health →</Link>
             )}
           </div>
-          <img
-            src={`${import.meta.env.BASE_URL}assets/bodybuilder-hero.webp`}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-y-0 right-0 h-full w-[48%] object-cover object-top opacity-90"
-          />
-          <div className="pointer-events-none absolute inset-y-0 left-[45%] z-[1] w-24 bg-gradient-to-r from-[var(--dash-panel-strong)] to-transparent" />
+          {todayHealth ? (
+            <>
+              <div className="mt-2 grid grid-cols-3 divide-x divide-app-border">
+                <div className="px-2 first:pl-0">
+                  <p className="text-[10px] font-extrabold uppercase text-app-muted">Steps</p>
+                  <p className="truncate text-lg font-extrabold text-app-text">{todayHealth.steps?.toLocaleString() ?? '—'}</p>
+                </div>
+                <div className="px-2">
+                  <p className="text-[10px] font-extrabold uppercase text-app-muted">Active</p>
+                  <p className="truncate text-lg font-extrabold text-accent-label">{todayHealth.activeCalories ?? '—'} <span className="text-[10px] text-app-muted">kcal</span></p>
+                </div>
+                <div className="px-2 pr-0">
+                  <p className="text-[10px] font-extrabold uppercase text-app-muted">Resting HR</p>
+                  <p className="truncate text-lg font-extrabold text-info-text">{todayHealth.restingHr ?? '—'} <span className="text-[10px] text-app-muted">bpm</span></p>
+                </div>
+              </div>
+              {healthWorkoutSummary && <p className="mt-2 truncate border-t border-app-border pt-2 text-[10px] font-semibold text-app-muted">Latest: {healthWorkoutSummary}</p>}
+            </>
+          ) : (
+            <p className="mt-2 text-xs font-medium text-app-muted">No synced health data for today.</p>
+          )}
         </section>
 
         <section>
