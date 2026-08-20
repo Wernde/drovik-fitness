@@ -559,7 +559,7 @@ export default function Home() {
   return (
     <div className="dashboard-page page-x min-h-full py-4 md:py-5">
       {/* Mobile is intentionally a launchpad, not a stacked desktop dashboard. */}
-      <div className="md:hidden space-y-3 pb-3">
+      <div className="md:hidden space-y-3 pb-6">
         <header
           className="dashboard-panel flex items-center justify-between gap-3 px-3 py-2"
           style={{ background: 'linear-gradient(110deg, var(--color-info-bg), var(--dash-panel-strong) 55%, var(--color-accent-light))' }}
@@ -578,7 +578,7 @@ export default function Home() {
             </div>
           </div>
           <Link to="/settings" className="flex-none" aria-label="Settings">
-            <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" active iconSize={22} />
+            <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" iconSize={22} />
           </Link>
         </header>
 
@@ -613,26 +613,29 @@ export default function Home() {
               </p>
             </div>
             {hasActiveSession ? (
-              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
+              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent-dark px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
             ) : data?.nextDay && data?.activeProgram ? (
               <button
                 onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
                 disabled={starting}
-                className="min-h-11 flex-none rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm disabled:opacity-60"
+                className="min-h-11 flex-none rounded-input bg-accent-dark px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm disabled:opacity-60"
               >
                 {starting ? 'Starting…' : 'Start Workout'}
               </button>
             ) : (
-              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
+              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent-dark px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
             )}
           </div>
         </section>
 
-        <section className="dashboard-panel border-info-text/30 bg-info-bg p-3 shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)]">
+        <section className={`dashboard-panel border-info-text/30 bg-info-bg shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)] ${todayHealth ? 'p-3' : 'px-3 py-2.5'}`}>
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <PremiumIconTile name="cardio" tone="blue" size="xs" usage="card" active iconSize={19} />
-              <SectionTitle>Health Today</SectionTitle>
+              <PremiumIconTile name="cardio" tone="blue" size="xs" usage="card" iconSize={19} />
+              <div>
+                <SectionTitle>Health Today</SectionTitle>
+                {!todayHealth && <p className="text-[10px] font-medium text-app-muted">No synced health data for today.</p>}
+              </div>
             </div>
             {healthSyncLabel ? (
               <span className="text-[10px] font-semibold text-info-text">{healthSyncLabel}</span>
@@ -658,42 +661,38 @@ export default function Home() {
               </div>
               {healthWorkoutSummary && <p className="mt-2 truncate border-t border-app-border pt-2 text-[10px] font-semibold text-app-muted">Latest: {healthWorkoutSummary}</p>}
             </>
-          ) : (
-            <p className="mt-2 text-xs font-medium text-app-muted">No synced health data for today.</p>
-          )}
+          ) : null}
         </section>
 
         <section>
           <div className="mb-1.5 flex items-center justify-between">
             <SectionTitle>Today at a glance</SectionTitle>
-            <span className="text-[10px] font-semibold text-app-faint">Tap for details</span>
+            <span className="text-[10px] font-semibold text-app-muted">Tap for details</span>
           </div>
           <div className="grid grid-cols-3 gap-2">
             <Link
               to="/nutrition"
-              className="dashboard-panel relative min-w-0 overflow-hidden border-orange-400/35 p-2.5 text-center"
-              style={{ background: 'linear-gradient(160deg, var(--dash-panel-strong), var(--color-accent-light))' }}
+              className="dashboard-panel min-w-0 p-2.5 text-center"
             >
-              <PremiumIconTile name="nutrition" tone="flame" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
+              <PremiumIconTile name="nutrition" tone="flame" size="xs" usage="card" iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Nutrition</p>
               <p className="truncate text-lg font-extrabold text-app-text">{cals.toLocaleString()}</p>
               <p className="text-[10px] font-semibold text-app-faint">of {macroTargets.calories.toLocaleString()} cal</p>
             </Link>
             <Link
               to="/nutrition"
-              className="dashboard-panel min-w-0 border-info-text/35 bg-info-bg p-2.5 text-center"
+              className="dashboard-panel min-w-0 p-2.5 text-center"
             >
-              <PremiumIconTile name="water" tone="blue" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
+              <PremiumIconTile name="water" tone="blue" size="xs" usage="card" iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Water</p>
               <p className="truncate text-lg font-extrabold text-info-text">{waterPct}%</p>
               <p className="text-[10px] font-semibold text-app-faint">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)}</p>
             </Link>
             <Link
               to="/body"
-              className="dashboard-panel min-w-0 border-slate-400/35 p-2.5 text-center"
-              style={{ background: 'linear-gradient(160deg, var(--dash-panel-strong), var(--color-app-raised))' }}
+              className="dashboard-panel min-w-0 p-2.5 text-center"
             >
-              <PremiumIconTile name="body" tone="steel" size="xs" usage="card" active iconSize={18} className="mx-auto mb-1" />
+              <PremiumIconTile name="body" tone="steel" size="xs" usage="card" iconSize={18} className="mx-auto mb-1" />
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Weight</p>
               <p className="truncate text-lg font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}</p>
               <p className="text-[10px] font-semibold text-app-faint">{weightLabel(units.weight)} · {wtDate ?? 'not logged'}</p>
@@ -711,7 +710,7 @@ export default function Home() {
               { label: 'Streak', value: `${streak} day${streak === 1 ? '' : 's'}`, to: '/history', colour: 'text-app-text', icon: 'streak', tone: 'flame', edge: 'border-l-orange-400' },
             ] as const).map((item) => (
               <Link key={item.label} to={item.to} className={`dashboard-panel flex min-h-[62px] items-center gap-2 border-l-2 px-2.5 py-2 ${item.edge}`}>
-                <PremiumIconTile name={item.icon} tone={item.tone} size="xs" usage="card" active iconSize={17} />
+                <PremiumIconTile name={item.icon} tone={item.tone} size="xs" usage="card" iconSize={17} />
                 <p className="min-w-0 flex-1 text-[10px] font-extrabold uppercase text-app-muted">{item.label}</p>
                 <p className={`truncate text-lg font-extrabold ${item.colour}`}>{item.value}</p>
               </Link>
@@ -724,7 +723,7 @@ export default function Home() {
           style={{ background: 'linear-gradient(110deg, var(--color-info-bg), var(--dash-panel-strong) 58%, var(--color-accent-light))' }}
         >
           <Link to="/history" className="flex min-w-0 items-center gap-3">
-            <PremiumIconTile name="achievement" tone="gold" size="xs" usage="card" active iconSize={20} />
+            <PremiumIconTile name="achievement" tone="gold" size="xs" usage="card" iconSize={20} />
             <div className="min-w-0 flex-1">
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Achievements</p>
               <div className="flex items-end justify-between gap-3">
