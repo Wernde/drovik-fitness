@@ -316,7 +316,7 @@ export default function Layout() {
                     className={({ isActive }) => [
                       'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-xs font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
-                        ? 'border-accent text-accent'
+                        ? 'border-info-text text-info-text'
                         : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >
@@ -354,7 +354,7 @@ export default function Layout() {
                     className={({ isActive }) => [
                       'flex-1 flex flex-col items-center justify-center gap-0.5 h-full text-xs font-bold uppercase tracking-wide border-t-[3px] transition-colors',
                       isActive
-                        ? 'border-accent text-accent'
+                        ? 'border-info-text text-info-text'
                         : 'border-transparent text-app-muted font-semibold',
                     ].join(' ')}
                   >

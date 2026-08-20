@@ -179,7 +179,7 @@ function UnitToggle<T extends string>({
           key={id}
           onClick={() => onChange(id)}
           className={`flex-1 py-2 text-sm font-semibold transition-colors ${
-            value === id ? 'bg-accent text-app-text' : 'bg-app-bg text-app-muted'
+            value === id ? 'bg-info-text text-info-on' : 'bg-app-bg text-app-muted'
           }`}
         >
           {label}
@@ -322,7 +322,7 @@ export default function Settings() {
                   onClick={() => handleThemeChange(option.themeId)}
                   className={`rounded-card border px-3 py-3 text-left transition-all active:scale-[0.98] ${
                     isActive
-                      ? 'border-accent bg-accent-light shadow-card'
+                      ? 'border-info-text bg-info-bg shadow-card'
                       : 'border-app-border bg-app-bg active:bg-app-border'
                   }`}
                 >

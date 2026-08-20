@@ -853,7 +853,7 @@ function FoodsTab() {
             className={[
               'flex-shrink-0 text-xs font-bold px-3 py-1.5 rounded-full border transition-colors',
               catFilter === c
-                ? 'bg-accent border-accent text-app-text'
+                ? 'bg-info-text border-info-text text-info-on'
                 : 'bg-app-bg border-app-border text-app-muted',
             ].join(' ')}
           >
@@ -1258,7 +1258,7 @@ function RecipeDetailModal({ recipe, onClose }: RecipeDetailModalProps) {
                 className={[
                   'flex-1 text-xs font-bold py-2 rounded-xl border transition-colors',
                   loggedMeal === m
-                    ? 'bg-accent border-accent text-app-text'
+                    ? 'bg-info-text border-info-text text-info-on'
                     : 'bg-app-bg border-app-border text-app-muted',
                 ].join(' ')}
               >
@@ -1483,7 +1483,7 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
                   onClick={() => setSex(s)}
                   className={[
                     'flex-1 py-2.5 text-sm font-bold transition-colors',
-                    sex === s ? 'bg-accent text-app-text' : 'bg-app-bg text-app-muted',
+                    sex === s ? 'bg-info-text text-info-on' : 'bg-app-bg text-app-muted',
                   ].join(' ')}
                 >
                   {s === 'male' ? 'Male' : 'Female'}
@@ -1565,7 +1565,7 @@ function PlanTab({ onProfileSaved }: PlanTabProps) {
                 className={[
                   'rounded-xl border p-3 text-left transition-colors',
                   isActive
-                    ? 'bg-accent-light border-accent'
+                    ? 'bg-info-bg border-info-text'
                     : 'bg-app-bg border-app-border',
                 ].join(' ')}
               >
@@ -1654,7 +1654,7 @@ export default function Nutrition() {
             onClick={() => setTab(id)}
             className={[
               'flex-1 rounded-xl py-2 text-sm font-bold transition-colors',
-              tab === id ? 'bg-accent text-app-text shadow-sm' : 'text-app-muted',
+              tab === id ? 'bg-info-text text-info-on shadow-sm' : 'text-app-muted',
             ].join(' ')}
           >
             {label}

@@ -157,7 +157,7 @@ export default function DayExerciseForm(props: Props) {
                 onClick={() => { setRestSecs(''); setCustomMode(false) }}
                 className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
                   !restSecs.trim() && !customMode
-                    ? 'bg-accent border-accent text-app-text'
+                    ? 'bg-info-text border-info-text text-info-on'
                     : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
                 }`}
               >
@@ -171,7 +171,7 @@ export default function DayExerciseForm(props: Props) {
                   onClick={() => { setRestSecs(String(secs)); setCustomMode(false) }}
                   className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
                     !customMode && parseInt(restSecs, 10) === secs
-                      ? 'bg-accent border-accent text-app-text'
+                      ? 'bg-info-text border-info-text text-info-on'
                       : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
                   }`}
                 >
@@ -185,7 +185,7 @@ export default function DayExerciseForm(props: Props) {
                 onClick={() => { setCustomMode(true); setRestSecs('') }}
                 className={`px-3 py-1.5 rounded-full text-sm font-semibold border transition-colors ${
                   customMode
-                    ? 'bg-accent border-accent text-app-text'
+                    ? 'bg-info-text border-info-text text-info-on'
                     : 'bg-app-bg border-app-border text-app-muted active:bg-app-border'
                 }`}
               >

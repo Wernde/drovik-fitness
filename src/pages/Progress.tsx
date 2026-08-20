@@ -170,7 +170,7 @@ function LiftChartTab({ exercises }: { exercises: Exercise[] }) {
                 onClick={() => setChartMode(m)}
                 className={[
                   'flex-1 rounded-lg py-1.5 text-xs font-semibold',
-                  chartMode === m ? 'bg-accent text-app-text' : 'text-app-muted',
+                  chartMode === m ? 'bg-info-text text-info-on' : 'text-app-muted',
                 ].join(' ')}
               >
                 {m === 'e1rm' ? 'Est. 1RM' : 'Volume'}
@@ -458,7 +458,7 @@ function BodyTab() {
             onClick={() => setSub(s)}
             className={[
               'flex-1 rounded-lg py-1.5 text-xs font-semibold',
-              sub === s ? 'bg-accent text-app-text' : 'text-app-muted',
+              sub === s ? 'bg-info-text text-info-on' : 'text-app-muted',
             ].join(' ')}
           >
             {s === 'weight' ? 'Weight' : 'Measurements'}
@@ -877,7 +877,7 @@ export default function Progress() {
             className={[
               'flex-1 rounded-xl py-2 text-xs font-semibold',
               tab === value
-                ? 'bg-accent text-app-text shadow-sm'
+                ? 'bg-info-text text-info-on shadow-sm'
                 : 'text-app-muted',
             ].join(' ')}
           >
