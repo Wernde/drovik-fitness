@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Compact Mobile Home Launchpad
+
+### Changed
+- **Workout-first mobile flow** - Today's workout now appears directly below a compact five-day selector, with one clear primary action and a shorter athlete hero.
+- **1.5-screen content target** - replaced the stacked desktop modules on phones with three Today tiles, a compact 2×2 weekly grid, and one combined achievements/next-workout strip.
+- **Progressive disclosure** - detailed nutrition rings, water graph and controls, body-weight form, Apple Watch setup, progress insight, and large motivation cards remain available on their dedicated screens instead of expanding Home.
+- **Desktop preserved** - tablet and desktop retain the complete rich dashboard and its existing controls.
+
+---
+
 ## App-wide Orange and Blue Colour Rebalance
 
 ### Changed

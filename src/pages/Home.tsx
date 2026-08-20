@@ -47,6 +47,20 @@ function buildDateStrip() {
   })
 }
 
+function buildMobileDateStrip() {
+  const t = new Date()
+  t.setHours(12, 0, 0, 0)
+  return Array.from({ length: 5 }, (_, i) => {
+    const d = new Date(t)
+    d.setDate(t.getDate() + i - 2)
+    return {
+      date: d,
+      iso: d.toISOString().slice(0, 10),
+      dow: d.toLocaleDateString('en-AU', { weekday: 'short' }).toUpperCase(),
+    }
+  })
+}
+
 function Donut({ pct, color, size = 66 }: { pct: number; color: string; size?: number }) {
   const r = 20
   const c = 2 * Math.PI * r
@@ -209,6 +223,7 @@ export default function Home() {
 
   const todayIso = today()
   const dateStrip = buildDateStrip()
+  const mobileDateStrip = buildMobileDateStrip()
   const fullDate = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
 
   const data = useLiveQuery(async () => {
@@ -536,6 +551,131 @@ export default function Home() {
 
   return (
     <div className="dashboard-page page-x min-h-full py-4 md:py-5">
+      {/* Mobile is intentionally a launchpad, not a stacked desktop dashboard. */}
+      <div className="md:hidden space-y-3 pb-3">
+        <header className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <Link to="/profile" className="profile-orb !h-12 !w-12 flex-none" aria-label="Profile">
+              {avatarUrl
+                ? <img src={avatarUrl} alt="avatar" className="h-full w-full rounded-full object-cover" />
+                : <span className="!text-sm">{initials}</span>}
+            </Link>
+            <div className="min-w-0">
+              <p className="text-xs font-extrabold text-accent-label">Let's Go, {displayName}</p>
+              <p className="truncate text-sm font-semibold text-app-muted">{fullDate}</p>
+            </div>
+          </div>
+          <Link to="/settings" className="flex-none" aria-label="Settings">
+            <PremiumIconTile name="settings" tone="steel" size="xs" usage="button" active iconSize={22} />
+          </Link>
+        </header>
+
+        <div className="dashboard-panel grid grid-cols-5 overflow-hidden p-0">
+          {mobileDateStrip.map(({ date, iso, dow }) => {
+            const isToday = iso === todayIso
+            const hasWorkout = data?.sessionDateSet.has(iso) ?? false
+            return (
+              <div key={iso} className={`relative flex min-h-[58px] flex-col items-center justify-center border-r border-app-border last:border-r-0 ${isToday ? 'bg-info-bg text-info-text' : 'text-app-text'}`}>
+                <p className="text-[10px] font-extrabold">{dow}</p>
+                <p className="text-xl font-extrabold leading-none">{date.getDate()}</p>
+                <span className={`absolute bottom-1.5 h-1 w-1 rounded-full ${hasWorkout ? 'bg-accent' : 'bg-transparent'}`} />
+              </div>
+            )
+          })}
+        </div>
+
+        <section className="dashboard-panel relative h-[190px] overflow-hidden p-4">
+          <div className="relative z-10 flex h-full max-w-[62%] flex-col items-start justify-between">
+            <div>
+              <SectionTitle>Today's Workout</SectionTitle>
+              <h1 className="mt-1 line-clamp-2 text-2xl font-extrabold italic leading-tight text-app-text">
+                {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
+              </h1>
+              <p className="mt-1 text-xs font-semibold text-app-muted">
+                {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
+              </p>
+            </div>
+            {hasActiveSession ? (
+              <Link to="/log" className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Resume Workout</Link>
+            ) : data?.nextDay && data?.activeProgram ? (
+              <button
+                onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
+                disabled={starting}
+                className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)] disabled:opacity-60"
+              >
+                {starting ? 'Starting…' : 'Start Workout'}
+              </button>
+            ) : (
+              <Link to="/log" className="rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Start Workout</Link>
+            )}
+          </div>
+          <img
+            src={`${import.meta.env.BASE_URL}assets/bodybuilder-hero.webp`}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-y-0 right-0 h-full w-[48%] object-cover object-top opacity-90"
+          />
+          <div className="pointer-events-none absolute inset-y-0 left-[45%] z-[1] w-24 bg-gradient-to-r from-[var(--dash-panel-strong)] to-transparent" />
+        </section>
+
+        <section>
+          <div className="mb-1.5 flex items-center justify-between">
+            <SectionTitle>Today at a glance</SectionTitle>
+            <span className="text-[10px] font-semibold text-app-faint">Tap for details</span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
+              <p className="text-[10px] font-extrabold uppercase text-app-muted">Nutrition</p>
+              <p className="mt-1 truncate text-lg font-extrabold text-accent-label">{cals.toLocaleString()}</p>
+              <p className="text-[10px] font-semibold text-app-faint">of {macroTargets.calories.toLocaleString()} cal</p>
+            </Link>
+            <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
+              <p className="text-[10px] font-extrabold uppercase text-app-muted">Water</p>
+              <p className="mt-1 truncate text-lg font-extrabold text-info-text">{waterPct}%</p>
+              <p className="text-[10px] font-semibold text-app-faint">{mlToDisplay(waterMl, units.water)} {waterLabel(units.water)}</p>
+            </Link>
+            <Link to="/body" className="dashboard-panel min-w-0 p-3 text-center">
+              <p className="text-[10px] font-extrabold uppercase text-app-muted">Weight</p>
+              <p className="mt-1 truncate text-lg font-extrabold text-app-text">{wt != null ? kgToDisplay(wt, units.weight) : '—'}</p>
+              <p className="text-[10px] font-semibold text-app-faint">{weightLabel(units.weight)} · {wtDate ?? 'not logged'}</p>
+            </Link>
+          </div>
+        </section>
+
+        <section>
+          <SectionTitle>This week</SectionTitle>
+          <div className="mt-1.5 grid grid-cols-2 gap-2">
+            {[
+              { label: 'Sessions', value: String(weekSessions), to: '/history', colour: 'text-info-text' },
+              { label: 'Volume', value: data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—', to: '/progress', colour: 'text-app-text' },
+              { label: 'Calories', value: cals > 0 ? cals.toLocaleString() : '—', to: '/nutrition', colour: 'text-accent-label' },
+              { label: 'Streak', value: `${streak} day${streak === 1 ? '' : 's'}`, to: '/history', colour: 'text-app-text' },
+            ].map((item) => (
+              <Link key={item.label} to={item.to} className="dashboard-panel flex min-h-[62px] items-center justify-between gap-2 px-3 py-2">
+                <p className="text-[10px] font-extrabold uppercase text-app-muted">{item.label}</p>
+                <p className={`truncate text-lg font-extrabold ${item.colour}`}>{item.value}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="dashboard-panel flex min-h-[74px] items-center justify-between gap-3 px-4 py-3">
+          <Link to="/history" className="min-w-0 flex-1">
+            <p className="text-[10px] font-extrabold uppercase text-app-muted">Achievements</p>
+            <p className="text-base font-extrabold text-app-text">{unlockedCount} <span className="text-xs text-app-muted">/ {totalAch} unlocked</span></p>
+            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-app-border">
+              <div className="h-full rounded-full bg-info-text" style={{ width: `${achPct}%` }} />
+            </div>
+          </Link>
+          <div className="h-10 w-px bg-app-border" />
+          <Link to="/programs" className="max-w-[45%] min-w-0 flex-1 text-right">
+            <p className="text-[10px] font-extrabold uppercase text-app-muted">Up next</p>
+            <p className="truncate text-sm font-extrabold text-info-text">{data?.nextDay?.name ?? 'Choose program'}</p>
+          </Link>
+        </section>
+      </div>
+
+      <div className="hidden md:block">
       <header className="dashboard-topbar mb-4">
         <div className="flex items-center gap-4 min-w-0">
           <Link to="/profile" className="profile-orb flex-none" aria-label="Profile">
@@ -786,6 +926,7 @@ export default function Home() {
             <OutlineButton to="/history">View All →</OutlineButton>
           </RailCard>
         </div>
+      </div>
       </div>
     </div>
   )
