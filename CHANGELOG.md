@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile Home Workout Card Correction
+
+### Fixed
+- **Workout card hierarchy** - replaced the oversized dark hero with a compact blue-tinted dashboard card that matches the rest of mobile Home.
+- **Icon collision** - moved the workout icon into the card heading row so it can no longer cover the label at narrow widths.
+- **Accent restraint** - limited orange to the primary workout action while blue carries the card's structure and information state.
+- **Greeting punctuation** - removed the dangling comma when no profile name is available.
+
+---
+
 ## Premium Mobile Home Visual Polish
 
 ### Changed

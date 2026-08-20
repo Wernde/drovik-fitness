@@ -571,7 +571,9 @@ export default function Home() {
                 : <span className="!text-sm">{initials}</span>}
             </Link>
             <div className="min-w-0">
-              <p className="text-xs font-extrabold text-info-text">Let's Go, {displayName}</p>
+              <p className="text-xs font-extrabold text-info-text">
+                {displayName ? `Let's Go, ${displayName}` : "Let's Go"}
+              </p>
               <p className="truncate text-sm font-semibold text-app-muted">{fullDate}</p>
             </div>
           </div>
@@ -595,33 +597,36 @@ export default function Home() {
         </div>
 
         <section
-          className="relative min-h-[142px] overflow-hidden rounded-card border border-orange-500/70 p-4 shadow-card"
-          style={{ background: 'radial-gradient(circle at 92% 18%, rgba(0,168,255,0.28), transparent 31%), radial-gradient(circle at 8% 110%, rgba(255,107,0,0.22), transparent 38%), linear-gradient(135deg, #07111A, #0C1824)' }}
+          className="dashboard-panel relative overflow-hidden border-info-text/30 p-3 shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)]"
+          style={{ background: 'linear-gradient(115deg, var(--color-info-bg), var(--dash-panel-strong) 62%, var(--color-accent-light))' }}
         >
-          <PremiumIconTile name="workout" tone="blue" size="sm" usage="card" active iconSize={28} className="absolute right-3 top-3" />
-          <div className="flex h-full min-h-[110px] flex-col justify-between">
-            <div className="min-w-0 pr-12">
-              <p className="text-[10px] font-extrabold uppercase tracking-widest text-sky-300">Today's Workout</p>
-              <h1 className="mt-1 truncate text-2xl font-extrabold italic leading-tight text-white">
+          <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-info-text" aria-hidden="true" />
+          <div className="flex min-h-[112px] flex-col justify-between pl-1">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <PremiumIconTile name="workout" tone="blue" size="xs" usage="card" active iconSize={20} />
+                <p className="text-[10px] font-extrabold uppercase tracking-widest text-info-text">Today's Workout</p>
+              </div>
+              <h1 className="mt-2 truncate text-xl font-extrabold leading-tight text-app-text">
                 {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
               </h1>
             </div>
             <div className="flex items-end justify-between gap-3">
-              <p className="min-w-0 text-xs font-semibold text-slate-300">
+              <p className="min-w-0 text-xs font-semibold text-app-muted">
                 {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
               </p>
             {hasActiveSession ? (
-              <Link to="/log" className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Resume</Link>
+              <Link to="/log" className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
             ) : data?.nextDay && data?.activeProgram ? (
               <button
                 onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
                 disabled={starting}
-                className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)] disabled:opacity-60"
+                className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm disabled:opacity-60"
               >
                 {starting ? 'Starting…' : 'Start Workout'}
               </button>
             ) : (
-              <Link to="/log" className="flex-none rounded-input bg-accent px-4 py-2.5 text-sm font-extrabold text-[var(--color-on-accent)]">Start Workout</Link>
+              <Link to="/log" className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
             )}
             </div>
           </div>
