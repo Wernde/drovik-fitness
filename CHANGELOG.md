@@ -4,6 +4,14 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Single-row Mobile Workout Card
+
+### Fixed
+- **Visible height reduction** - replaced the stacked mobile workout layout with one horizontal row so the content no longer forces the card back to its former height.
+- **Compact information block** - grouped the workout label, title, and exercise count between the icon and action while retaining truncation for narrow phones.
+
+---
+
 ## Compact Mobile Workout Card
 
 ### Changed
