@@ -4,6 +4,16 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile History Layout Repair
+
+### Fixed
+- **52-week heatmap containment** - narrow phones now show the full year as two readable 26-week bands, while wider screens retain a continuous 52-week view.
+- **Month-label collisions** - closely spaced labels are suppressed when there is not enough room, preventing August and September from overlapping.
+- **Calendar density** - reduced narrow-screen card padding and row spacing so the monthly calendar uses the available height more efficiently.
+- **Bottom-navigation clearance** - added History-page breathing room and slightly reduced the mobile navigation rail height so empty states and session content remain visible.
+
+---
+
 ## Unified UX and Creative System
 
 ### Changed

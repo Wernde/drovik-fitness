@@ -308,7 +308,7 @@ export default function Layout() {
               className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-app-card border-t border-app-border shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.45)]"
               style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
-              <div className="h-[72px] flex items-center">
+              <div className="h-[68px] flex items-center">
 
                 {/* Left two: Home + Program */}
                 {NAV_ITEMS.slice(0, 2).map(({ to, label, Icon }) => (
