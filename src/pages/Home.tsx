@@ -568,7 +568,7 @@ export default function Home() {
                 : <span className="!text-sm">{initials}</span>}
             </Link>
             <div className="min-w-0">
-              <p className="text-xs font-extrabold text-accent-label">Let's Go, {displayName}</p>
+              <p className="text-xs font-extrabold text-info-text">Let's Go, {displayName}</p>
               <p className="truncate text-sm font-semibold text-app-muted">{fullDate}</p>
             </div>
           </div>
@@ -638,7 +638,7 @@ export default function Home() {
                 </div>
                 <div className="px-2">
                   <p className="text-[10px] font-extrabold uppercase text-app-muted">Active</p>
-                  <p className="truncate text-lg font-extrabold text-accent-label">{todayHealth.activeCalories ?? '—'} <span className="text-[10px] text-app-muted">kcal</span></p>
+                  <p className="truncate text-lg font-extrabold text-app-text">{todayHealth.activeCalories ?? '—'} <span className="text-[10px] text-app-muted">kcal</span></p>
                 </div>
                 <div className="px-2 pr-0">
                   <p className="text-[10px] font-extrabold uppercase text-app-muted">Resting HR</p>
@@ -660,7 +660,7 @@ export default function Home() {
           <div className="grid grid-cols-3 gap-2">
             <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
               <p className="text-[10px] font-extrabold uppercase text-app-muted">Nutrition</p>
-              <p className="mt-1 truncate text-lg font-extrabold text-accent-label">{cals.toLocaleString()}</p>
+              <p className="mt-1 truncate text-lg font-extrabold text-app-text">{cals.toLocaleString()}</p>
               <p className="text-[10px] font-semibold text-app-faint">of {macroTargets.calories.toLocaleString()} cal</p>
             </Link>
             <Link to="/nutrition" className="dashboard-panel min-w-0 p-3 text-center">
@@ -682,7 +682,7 @@ export default function Home() {
             {[
               { label: 'Sessions', value: String(weekSessions), to: '/history', colour: 'text-info-text' },
               { label: 'Volume', value: data && data.weekStats.volumeKg > 0 ? fmtVolume(data.weekStats.volumeKg, units.weight) : '—', to: '/progress', colour: 'text-app-text' },
-              { label: 'Calories', value: cals > 0 ? cals.toLocaleString() : '—', to: '/nutrition', colour: 'text-accent-label' },
+              { label: 'Calories', value: cals > 0 ? cals.toLocaleString() : '—', to: '/nutrition', colour: 'text-app-text' },
               { label: 'Streak', value: `${streak} day${streak === 1 ? '' : 's'}`, to: '/history', colour: 'text-app-text' },
             ].map((item) => (
               <Link key={item.label} to={item.to} className="dashboard-panel flex min-h-[62px] items-center justify-between gap-2 px-3 py-2">
@@ -693,18 +693,16 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="dashboard-panel flex min-h-[74px] items-center justify-between gap-3 px-4 py-3">
-          <Link to="/history" className="min-w-0 flex-1">
+        <section className="dashboard-panel min-h-[74px] px-4 py-3">
+          <Link to="/history" className="block min-w-0">
             <p className="text-[10px] font-extrabold uppercase text-app-muted">Achievements</p>
-            <p className="text-base font-extrabold text-app-text">{unlockedCount} <span className="text-xs text-app-muted">/ {totalAch} unlocked</span></p>
-            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-app-border">
+            <div className="flex items-end justify-between gap-3">
+              <p className="text-base font-extrabold text-app-text">{unlockedCount} <span className="text-xs text-app-muted">/ {totalAch} unlocked</span></p>
+              <span className="text-[10px] font-bold text-info-text">View achievements →</span>
+            </div>
+            <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-app-border">
               <div className="h-full rounded-full bg-info-text" style={{ width: `${achPct}%` }} />
             </div>
-          </Link>
-          <div className="h-10 w-px bg-app-border" />
-          <Link to="/programs" className="max-w-[45%] min-w-0 flex-1 text-right">
-            <p className="text-[10px] font-extrabold uppercase text-app-muted">Up next</p>
-            <p className="truncate text-sm font-extrabold text-info-text">{data?.nextDay?.name ?? 'Choose program'}</p>
           </Link>
         </section>
       </div>
