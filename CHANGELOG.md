@@ -4,6 +4,17 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Mobile Home Visual Restraint
+
+### Changed
+- **Reduced decorative glow** - softened non-primary mobile Home icon tiles so the workout action retains the strongest emphasis.
+- **Tighter empty health state** - combined the Health Today title and empty-state message into one compact row.
+- **Consistent glance cards** - standardised Nutrition, Water, and Weight surfaces so colour no longer implies a selected card.
+- **Quieter workout action** - shifted the workout button to the darker orange brand shade while preserving contrast and touch size.
+- **Improved finishing details** - increased the visibility of the details hint and added breathing room above the fixed navigation.
+
+---
+
 ## Single-row Mobile Workout Card
 
 ### Fixed
