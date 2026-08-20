@@ -4,6 +4,14 @@ All notable changes are documented here, newest first.
 
 ---
 
+## Compact Mobile Workout Card
+
+### Changed
+- **Reduced card height** - tightened the mobile workout card's padding, title scale, and internal spacing to recover Home-screen space.
+- **Touch target retained** - kept the primary workout action at a comfortable 44px minimum height despite the smaller card.
+
+---
+
 ## Mobile Home Workout Card Correction
 
 ### Fixed

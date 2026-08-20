@@ -597,17 +597,17 @@ export default function Home() {
         </div>
 
         <section
-          className="dashboard-panel relative overflow-hidden border-info-text/30 p-3 shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)]"
+          className="dashboard-panel relative overflow-hidden border-info-text/30 px-3 py-2.5 shadow-[0_14px_30px_-24px_rgba(0,132,255,0.65)]"
           style={{ background: 'linear-gradient(115deg, var(--color-info-bg), var(--dash-panel-strong) 62%, var(--color-accent-light))' }}
         >
-          <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-info-text" aria-hidden="true" />
-          <div className="flex min-h-[112px] flex-col justify-between pl-1">
+          <span className="absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-info-text" aria-hidden="true" />
+          <div className="flex min-h-[92px] flex-col justify-between pl-1">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <PremiumIconTile name="workout" tone="blue" size="xs" usage="card" active iconSize={20} />
                 <p className="text-[10px] font-extrabold uppercase tracking-widest text-info-text">Today's Workout</p>
               </div>
-              <h1 className="mt-2 truncate text-xl font-extrabold leading-tight text-app-text">
+              <h1 className="mt-1 truncate text-lg font-extrabold leading-tight text-app-text">
                 {hasActiveSession ? 'Resume workout' : data?.nextDay?.name ?? 'Start your workout'}
               </h1>
             </div>
@@ -616,17 +616,17 @@ export default function Home() {
                 {data?.nextDayExCount ? `${data.nextDayExCount} exercises` : 'Ready when you are'}
               </p>
             {hasActiveSession ? (
-              <Link to="/log" className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
+              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Resume</Link>
             ) : data?.nextDay && data?.activeProgram ? (
               <button
                 onClick={() => startNextDay(data.nextDay!, data.activeProgram!.id)}
                 disabled={starting}
-                className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm disabled:opacity-60"
+                className="min-h-11 flex-none rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm disabled:opacity-60"
               >
                 {starting ? 'Starting…' : 'Start Workout'}
               </button>
             ) : (
-              <Link to="/log" className="flex-none rounded-input bg-accent px-3.5 py-2 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
+              <Link to="/log" className="flex min-h-11 flex-none items-center rounded-input bg-accent px-3 text-xs font-extrabold text-[var(--color-on-accent)] shadow-sm">Start Workout</Link>
             )}
             </div>
           </div>
